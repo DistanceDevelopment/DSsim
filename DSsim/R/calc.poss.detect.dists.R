@@ -1,0 +1,48 @@
+calc.poss.detect.dists <- function(population, survey, perp.truncation, rad.truncation, plot = FALSE){
+  transects <- survey@sampler.info
+  individuals <- population@population
+  #find all perpendicular distances at which animals may be detected 
+  for(i in seq(along = individuals$object)){
+    x.coord <- individuals[i,"x"]
+    y.coord <- individuals[i,"y"]
+    #find the angle between the transect and the vector from the animal to the start of the transect
+    transect.angle <- atan2(transects[["end.Y"]]-transects[["start.Y"]], transects[["end.X"]]-transects[["start.X"]]) 
+    animal.angle   <- atan2(y.coord-transects[["start.Y"]], x.coord-transects[["start.X"]])
+    delta.angle <- abs(animal.angle-transect.angle)
+    delta.angle <- (ifelse(delta.angle > pi, 2*pi - delta.angle, delta.angle))
+    #calculate the distance from the transect start to the animal (the hypotenuse)
+    hyp         <- sqrt((y.coord-transects[["start.Y"]])^2+(x.coord-transects[["start.X"]])^2)
+    #calculate the perpendicular distance (the opposite side of the RA triangle)
+    all.perp.dists  <- hyp*sin(delta.angle)   
+    #check to see if the perpendicular line intersects the transect or not
+    intersects.transects <- apply(cbind(transects[,c("start.X", "start.Y", "end.X", "end.Y", "length")], p.dist = all.perp.dists), 1, FUN = check.intersection, point = data.frame(x = x.coord, y = y.coord), display.diagnostics = FALSE)
+    #find the distances to the end points
+    dist.to.start <- sqrt((transects$start.X - x.coord)^2 + (transects$start.Y - y.coord)^2)
+    dist.to.end <- sqrt((transects$end.X - x.coord)^2 + (transects$end.Y - y.coord)^2)
+    #check if it is available from the transect end points
+    #i.e. not available on the perpendicular and within the radial truncation distance
+    available.from.start <- ifelse(!intersects.transects & dist.to.start <= rad.truncation, TRUE, FALSE)
+    available.from.end <- ifelse(!intersects.transects & dist.to.end <= rad.truncation, TRUE, FALSE)   
+    perp.dists <- ifelse(intersects.transects & all.perp.dists < perp.truncation, TRUE, FALSE)
+    detect.dists <- data.frame(object = rep(individuals[i,"object"], length(transects$ID)), transect.ID = transects$ID, distance = all.perp.dists, available.from.pdist = perp.dists, available.from.rdist.to.start = available.from.start, available.from.rdist.to.end = available.from.end)
+    #add on to larger dataframe
+    if(i == 1){
+      poss.detect.dists <- detect.dists
+    }else{
+      poss.detect.dists <- rbind(poss.detect.dists, detect.dists)
+    }    
+  }
+  #Only keep animals that may be detected
+  poss.detect.dists <- poss.detect.dists[poss.detect.dists$available.from.pdist | poss.detect.dists$available.from.rdist.to.start | poss.detect.dists$available.from.rdist.to.end,]
+  #Add the x-y coords back in
+  poss.detect.dists <- merge(poss.detect.dists, individuals, by="object") 
+  #plot if desired 
+  if(plot){ 
+    transect.IDs <- sort(unique(poss.detect.dists$transect.ID))
+    for(i in seq(along = transect.IDs)){
+      points(poss.detect.dists$x[poss.detect.dists$transect.ID == transect.IDs[i]], poss.detect.dists$y[poss.detect.dists$transect.ID == transect.IDs[i]], col = i, pch = 20)
+      points(poss.detect.dists$x[poss.detect.dists$transect.ID == transect.IDs[i]], poss.detect.dists$y[poss.detect.dists$transect.ID == transect.IDs[i]], col = i) 
+    }
+  }
+  return(poss.detect.dists)
+}

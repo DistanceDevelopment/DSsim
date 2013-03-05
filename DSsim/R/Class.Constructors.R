@@ -1,0 +1,193 @@
+#' Creates an object of class Region
+#'
+#' This creates an instance of the Region class. If the user supplied a 
+#' shapefile all information will be extracted from here. Otherwise the user
+#' needs to specify a list of polygons describing the areas of interest (coords) and 
+#' optionally a list of polygons describing the areas to be excluded (gaps).
+#' 
+#' @param region.name the region name.
+#' @param area the area of the region (optional - if not supplied it will be 
+#'   calculated for you if you supply a shapefile)
+#' @param shapefile a shapefile of the region
+#' @param coords list of polygons describing the areas of interest
+#' @param gaps list of polygons describing the areas to be excluded
+#' @return object of either class Region 
+#' @export
+#' @author Laura Marshall
+#'
+make.region <- function(region.name, area = numeric(0), shapefile = NULL, coords = list(), gaps = list()){
+  region <- new(Class="Region", region.name = region.name, shapefile = shapefile)
+  return(region)
+}
+  
+#' Creates an object of a class which inherits from class Survey.Design
+#'
+#' Currently surveys are only generated within the GIS in Distance therefore
+#' if you are running a simulation in R you will need to get Distance to 
+#' generate all the surveys as shapefiles in advance and supply the path to
+#' these files.
+#'
+#' The \code{design.details} argument should specify a list of either 1
+#' or 2 elements. These options are described in the table below:
+#'
+#' \tabular{lll}{ Transect Type \tab Design Details \tab              \tab \cr 
+#'                Line          \tab Parallel       \tab Systematic   \tab \cr
+#'                Line          \tab Parallel       \tab Random       \tab \cr
+#'                Line          \tab Zigzag         \tab Equal Angle  \tab \cr
+#'                Line          \tab Zigzag         \tab Equal Spaced \tab \cr
+#'                Point         \tab Systematic     \tab              \tab \cr
+#'                Point         \tab Random         \tab              \tab \cr}
+#'
+#' @param transect.type character variable specifying either "Line" or "Point"
+#' @param design.details a list describing the type of design. See details.
+#' @param region the name of the Region object where the survey is to be carried out.
+#' @param design.axis - user may provide details but not currently used
+#' @param spacing - user may provide details but not currently used
+#' @param plus.sampling - user may provide details but not currently used
+#' @param path file pathway giving the location of the survey shapefiles 
+#' @return object of a class which inherits from class Survey.Design 
+#' @export
+#' @author Laura Marshall
+#'
+make.design <- function(transect.type, design.details, region, design.axis = numeric(0), spacing = numeric(0), plus.sampling = logical(0), path = character(0)){
+  if(class(region) != "character"){
+    message("Error: the region argument is not of class character. Only the object name should be provided using quotes.")
+    return(NULL)
+  }             
+  design <- NULL
+  if(transect.type %in% c("Line", "line", "Line Transect", "line transect", "LT")){
+    if(length(design.details) != 2){
+      message("Error, two design descriptors must be provided in design.details.")
+    }
+    if(design.details[1] %in% c("Z", "ZZ", "ZigZag", "Zigzag", "zigzag")){
+      if(design.details[2] %in% c("Equal Spaced", "ES", "equal spaced", "Equal spaced")){
+        design <- new(Class = "LT.EqSpace.ZZ.Design", region = region, design.axis = design.axis, spacing = spacing, plus.sampling = plus.sampling, path = path)
+      }
+    }
+  }
+  if(is.null(design)){
+    message("Design type not supported at present.")
+  }
+  return(design)
+}
+
+#' Creates an object of class Density
+#' 
+#' The user has the option to create a grid describing the density of the 
+#' objects and pass this in giving the x and y spacings used in the creation
+#' of this grid.
+#'
+#' Alternatively the user can specify a constant density and x, y spacings
+#' and this grid will be generated automatically.
+#'
+#' Further options will be added to allow the creation of non-constant surfaces
+#' within this method.
+#'
+#' @param region the name of the Region object in which this population exists.
+#' @param density.surface a dataframe describing the density with columns
+#'   x, y,  and density.
+#' @param x.space the intervals in the grid in the x direction
+#' @param y.space the intervals in the grid in the y direction
+#' @param constant a value describing a constant density across the surface.
+#' @param shapefile - not yet implemented
+#' @param density.gam - not yet implemented
+#' @param jit a value descibing how many positions the grid should be moved to 
+#'   ensure that the grid covers the entire survey region.
+#' @return object of either class Density 
+#' @export
+#' @author Laura Marshall
+#'
+make.density <- function(region, strata = character(0), density.surface = NULL, x.space, y.space, constant = NULL, shapefile = NULL, density.gam = NULL, jit = 1){
+  density <- new(Class = "Density", region.name = region, strata.name = strata, x.space = x.space, y.space = y.space, constant = constant, shapefile = shapefile, density.gam = density.gam, jit = jit)
+ return(density)
+}
+
+#' Creates an object of class Population.Description
+#'
+#' @param N the number of individuals / clusters in a population
+#' @param density.obj an object of class Density describing the density of the
+#'   individuals / clusters.
+#' @param region the name of the Region object in which this population exists.
+#' @param cluster.size - not yet implemented
+#' @param size.min - not yet implemented
+#' @param size.max - not yet implemented
+#' @param size.lambda - not yet implemented
+#' @param gen.by.N a logical value. If TRUE the population is generated from the
+#'   value in N otherwise it is generated from the density description (not yet
+#'   implemented)
+#' @return object of either class Density 
+#' @export
+#' @author Laura Marshall
+#'
+make.population.description <- make.pop.description <- function(N, density.obj, region, cluster.size = logical(0), size.min = numeric(0), size.max = numeric(0), size.lambda = numeric(0), gen.by.N = TRUE){
+  pop.description <- new(Class = "Population.Description", N = N, density = density.obj, region.name = region, size = cluster.size, size.min = size.min, size.max = size.max, size.lambda = size.lambda, gen.by.N = gen.by.N)
+  return(pop.description)
+}
+
+#' Creates an object of class Detectablility
+#'
+#' @param key.function specifies shape of the detection function (either 
+#'   half-normal or hazard rate)
+#' @param scale.param parameters associated with the detection function
+#' @param shape.param parameters associated with the detection function
+#' @param adjustment - not yet implemented
+#' @param adj.param - not yet implemented
+#' @param covariates - not yet implemented
+#' @param cov.param - not yet implemented
+#' @param perp.truncation the maximum perpendicular distance at which objects
+#'   may be detected. Must be specified for line transect surveys.
+#' @param rad.truncation  the maximum radial distance at which objects may be
+#'   detected. Must be specified for both line transect and point transect 
+#'   surveys.
+#' @return object of either class Detectablility 
+#' @export
+#' @author Laura Marshall
+#'
+make.detectability <- function(key.function, scale.param, shape.param = numeric(0), adjustment = character(0), adj.param = numeric(0), covariates = character(0), cov.param = numeric(0), perp.truncation = numeric(0), rad.truncation){
+  detectability <- new(Class = "Detectability", key.function = key.function, scale.param = scale.param, shape.param = shape.param, adjustment = adjustment, adj.param = adj.param, covariates = covariates, cov.param = cov.param, perp.truncation = perp.truncation, rad.truncation = rad.truncation)
+  return(detectability)
+}
+
+#' Creates an object of a class which inherits from class DDF.Analysis
+#'
+#' @param dsmodel distance sampling model for the detection function (see
+#'   \code{?ddf} for further details)
+#' @param mrmodel mark-recapture model specification (see \code{?ddf} for further
+#'   details.
+#' @param criteria model selection criteria (AIC, AICc, BIC) - only AIC implemented
+#'   at present.
+#' @return object of either class DS.Analysis or MRDS.Analysis 
+#' @export
+#' @author Laura Marshall
+#' @seealso \code{ddf} in \code{library(mrds)},
+#'
+make.ddf.analysis <- function(dsmodel, mrmodel = NULL, criteria){
+  if(is.null(mrmodel)){
+    ddf.analysis <- new(Class = "DS.Analysis", dsmodel = dsmodel, criteria = criteria)
+  }else{
+    message("Double observer methods are not yet implemented")
+    return(NULL)
+  }
+  return(ddf.analysis)
+}
+
+#' Creates an object of class Simulation
+#'
+#' @param reps number of times the simulation should be repeated
+#' @param double.observer logical value indicating TRUE for a double observer
+#'   mark recapture survey or FALSE for normal distance sampling.
+#' @param region.obj an object of class Region
+#' @param design.obj an object of class Survey.Design
+#' @param population.description.obj an object of class Population.Description
+#' @param detectability.obj and object of class Detectabolity
+#' @param ddf.analyses.list a list of objects of class DS.Analysis
+#' @return object of class Simulation 
+#' @export
+#' @author Laura Marshall
+#'
+make.simulation <- function(reps, double.observer = FALSE, region.obj, design.obj, population.description.obj, detectability.obj, ddf.analyses.list){
+  simulation <- new(Class = "Simulation", reps = reps, double.observer = double.observer, region = region.obj, design = design.obj, population.description = population.description.obj, detectability = detectability.obj, ddf.analyses = ddf.analyses.list)
+  return(simulation)
+}
+
+
