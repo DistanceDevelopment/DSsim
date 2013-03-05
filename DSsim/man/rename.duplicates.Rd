@@ -1,0 +1,39 @@
+\name{rename.duplicates}
+\alias{rename.duplicates}
+\title{Renumbers the object IDs for the duplicate observations generated when
+bootstrapping}
+\usage{
+  rename.duplicates(ddf.dat, double.observer = FALSE)
+}
+\arguments{
+  \item{ddf.dat}{dataframe containing a single dataset with
+  duplicate observations}
+
+  \item{obs.table}{dataframe of observation records with
+  fields object, Region.Label, and Sample.Label which give
+  links to sample.table, region.table and the data records
+  used in \code{model}}
+}
+\value{
+  list with 2 elements: ddf.dat dataframe containing a
+  single dataset with new and unique observation IDs
+  obs.table the updated obs.table dataframe containing the
+  new observation IDs
+}
+\description{
+  Find the largest object ID and renumbers all duplicate
+  IDs starting form this value. The information for the
+  duplicates is also added to the obs.table
+}
+\note{
+  Internal function not intended to be called by user.
+}
+\author{
+  Laura Marshall
+}
+\seealso{
+  \code{resample.data}
+}
+\keyword{data}
+\keyword{manipulation}
+

@@ -1,26 +1,53 @@
 Package: DSsim
 Imports:
     mrds,
+    shapefiles,
+    splancs,
     testthat
 Type: Package
 Title: Distance Sampling Simulation.
 Version: 1.0
-Date: 2012-12-04
+Date: 2013-03-05
 Author: Laura Marshall
 Maintainer: Laura Marshall <lauram@mcs.st-and.ac.uk>
-Description: Performs distance sampling simulations. It repeatedly generates a population
-  withing a given survey region, a realisation of a survey design and simulated the
-  detection process. The data are then analysed so that the results can be compared
-  for accuracy and precision across all replications. 
+Description: Performs distance sampling simulations. It repeatedly generates a
+    population withing a given survey region, a realisation of a survey design
+    and simulated the detection process. The data are then analysed so that the
+    results can be compared for accuracy and precision across all replications.
 License: GPL (>=2)
 Collate:
-    'Density.R'
-    'Detectability.R'
-    'LTSurvey.R'
-    'Population.R'
-    'PopulationDescription.R'
+    'generic.functions.R'
     'Region.R'
-    'SurveyData.R'
-
-
-
+    'Strata.R'
+    'Survey.Design.R'
+    'LT.Design.R'
+    'LT.EqSpace.ZZ.Design.R'
+    'Line.Transect.R'
+    'Density.R'
+    'Population.Description.R'
+    'in.polygons.R'
+    'Detectability.R'
+    'Population.R'
+    'Survey.R'
+    'LT.Survey.R'
+    'Single.Obs.LT.Survey.R'
+    'check.intersection.R'
+    'calc.poss.detect.dists.R'
+    'simulate.detections.R'
+    'hn.detect.R'
+    'hr.detect.R'
+    'DDF.Data.R'
+    'Single.Obs.DDF.Data.R'
+    'Obs.Table.R'
+    'Region.Table.R'
+    'Sample.Table.R'
+    'rename.duplicates.R'
+    'DDF.Analysis.R'
+    'DS.Analysis.R'
+    'DSM.Analysis.R'
+    'Class.Constructors.R'
+    'LT.Survey.Results.R'
+    'Simulation.R'
+    'DHT.Analysis,R.r'
+    'LT.Sys.Random.Design.R'
+    'PT.Design.R'

@@ -2,20 +2,16 @@
 # CONSTRUCT CLASS AND DEFINE INITIALIZE AND VALIDITY
 ################################################################################
 
-##' Class "LTSurvey" containing an instance of a Line Transect Survey design
-##'
-##' Class \code{"LTSurvey"} is an S4 class detailing the type of line transect 
-##' design and the co-ordinates of the end points of the transects.
-##' class \code{\link{lm}} with a common model.
-##' @name lmList-class
-##' @aliases lmList-class show,lmList-method
-##' @docType class
-##' @section Objects from the Class: Objects can be created by calls of the form
-##' \code{new("lmList", ...)} or, more commonly, by a call to
-##' \code{\link{lmList}}.
-##' @keywords classes
-##' @export
-setClass("Line.Transect", representation( design.obj = "character", sampler.info = "data.frame"))
+#' Class "Line.Transect" containing an instance of a Line Transect Survey
+#'
+#' Class \code{"LTSurvey"} is an S4 class detailing a set of line transect 
+#' @name Line.Transect-class
+#' @aliases lmList-class show,lmList-method
+#' @docType class
+#' @section Objects from the Class: 
+#' @keywords classes
+#' @export
+setClass("Line.Transect", representation(design.obj = "character", sampler.info = "data.frame"))
 
 setMethod(
   f="initialize",
@@ -79,18 +75,18 @@ setMethod(
 
 get.sampler.info <- function(shapefile, region.obj){
   ID <- start.X <- start.Y <- end.X <- end.Y <- tot.length <- region <- NULL
-  for(samp in seq(along = survey.shapefile$shp$shp)){
+  for(samp in seq(along = shapefile$shp$shp)){
     #segs <- nrow(survey.shapefile$shp$shp[[samp]]$points)/2
-    segs <- survey.shapefile$shp$shp[[samp]]$num.parts
+    segs <- shapefile$shp$shp[[samp]]$num.parts
     temp.length <- 0 
     for(seg in seq(1:segs)){
-      ID      <- c(ID, survey.shapefile$shp$shp[[samp]]$record)
-      start.X <- c(start.X, survey.shapefile$shp$shp[[samp]]$points$X[2*seg-1])
-      start.Y <- c(start.Y, survey.shapefile$shp$shp[[samp]]$points$Y[2*seg-1])
-      end.X   <- c(end.X, survey.shapefile$shp$shp[[samp]]$points$X[2*seg])
-      end.Y   <- c(end.Y, survey.shapefile$shp$shp[[samp]]$points$Y[2*seg])
-      temp.length  <- temp.length + sqrt((survey.shapefile$shp$shp[[samp]]$points$X[2*seg] - survey.shapefile$shp$shp[[samp]]$points$X[2*seg-1])^2 + 
-                                         (survey.shapefile$shp$shp[[samp]]$points$Y[2*seg] - survey.shapefile$shp$shp[[samp]]$points$Y[2*seg-1])^2   )
+      ID      <- c(ID, shapefile$shp$shp[[samp]]$record)
+      start.X <- c(start.X, shapefile$shp$shp[[samp]]$points$X[2*seg-1])
+      start.Y <- c(start.Y, shapefile$shp$shp[[samp]]$points$Y[2*seg-1])
+      end.X   <- c(end.X, shapefile$shp$shp[[samp]]$points$X[2*seg])
+      end.Y   <- c(end.Y, shapefile$shp$shp[[samp]]$points$Y[2*seg])
+      temp.length  <- temp.length + sqrt((shapefile$shp$shp[[samp]]$points$X[2*seg] - shapefile$shp$shp[[samp]]$points$X[2*seg-1])^2 + 
+                                         (shapefile$shp$shp[[samp]]$points$Y[2*seg] - shapefile$shp$shp[[samp]]$points$Y[2*seg-1])^2   )
     }
     tot.length <- c(tot.length, rep(temp.length, segs))
     region     <- c(region, rep(region.obj@region.name, segs))
