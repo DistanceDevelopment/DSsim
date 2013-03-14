@@ -121,6 +121,7 @@ coords.from.shapefile <- function(shapefile){
 }           
 
 is.gap <- function(poly, poly.list){
+  require(splancs)
   #is.gap checks to see if a set of points belonging to one polygon are all inside any one of a list of polygons
   all.true <- function(pts.check){
     true.vals <- which(pts.check)
@@ -152,6 +153,7 @@ is.gap <- function(poly, poly.list){
 }
 
 calc.area <- function(coords, gaps){
+  require(splancs)
   temp.coords <- lapply(coords, as.matrix)
   temp.gaps <- lapply(gaps, as.matrix)
   gross.area <- lapply(temp.coords, areapl)

@@ -76,25 +76,38 @@ setValidity("Simulation",
 # GENERIC METHODS
 ################################################################################
 
+
 setMethod(
-  f="summary",
+  f="Summary",
   signature="Simulation",
-  definition=function(object){
-    cat("\nRegion: ", object@region@region.name)
-    cat("\nTrue N:", object@population.description@N, "\n")
-    if(length(which(!is.na(object@N.D.Estimates))) > 0){
-      print(apply(object@N.D.Estimates, 2, mean))
+  definition=function(x, ..., na.rm = FALSE){
+    cat("\nRegion: ", x@region@region.name)
+    cat("\nTrue N:", x@population.description@N, "\n")
+    if(length(which(!is.na(x@N.D.Estimates))) > 0){
+      print(apply(x@N.D.Estimates, 2, mean))
     }
-    invisible(object)
+    invisible(x)
+  }    
+)
+  
+setMethod(
+  f="hist",
+  signature="Simulation",
+  definition=function(x, ...){
+    hist(x@N.D.Estimates[,1], xlab = "Estimate of N")
+    abline(v=x@population.description@N, col=2, lwd = 2)
+    invisible(x)
   }    
 )
 
 setMethod(
-  f="hist",
-  signature="Simulation",
-  definition=function(x){
-    hist(x@N.D.Estimates[,1], xlab = "Estimate of N")
-    abline(v=x@population.description@N, col=2, lwd = 2)
+  f="plot",
+  signature="Region",
+  definition=function(x, y, type = "l", ...){
+    #Input pre-processing
+    plot(c(x@box[["xmin"]], x@box[["xmax"]]), c(x@box[["ymin"]], x@box[["ymax"]]), col = "white", xlab = "X-coords (units to be added)", ylab = "Y-coords (units to be added)", main = x@region.name, ...) 
+    lapply(x@coords, FUN = lines, type = type)
+    lapply(x@gaps, FUN = lines, type = type, col = 8)
     invisible(x)
   }    
 )
@@ -152,6 +165,7 @@ setMethod(
   f="run.analysis",
   signature=c("Simulation","LT.Survey.Results"),
   definition=function(object, data, dht = TRUE){
+    require(mrds)
     dist.data <- survey.results@ddf.data
     ddf.analyses <- object@ddf.analyses
     criteria <- NULL
@@ -175,6 +189,7 @@ setMethod(
   f="run.analysis",
   signature=c("Simulation","DDF.Data"),
   definition=function(object, data, dht = TRUE){
+    require(mrds)
     ddf.analyses <- object@ddf.analyses
     criteria <- NULL
     results <- list()
@@ -192,6 +207,8 @@ setMethod(
   f="run",
   signature="Simulation",
   definition=function(object){
+    require(mrds)
+    require(splancs)
     #set the transect index to 1
     orig.file.index <- object@design@file.index
     object@design@file.index <- 1

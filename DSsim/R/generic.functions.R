@@ -1,3 +1,8 @@
+
+
+
+
+
 #' S4 generic method to run a simulation
 #'
 #' @param object an object of class simulation
@@ -106,6 +111,18 @@ setGeneric(name = "create.sample.table", def = function(object){standardGeneric 
 #' @docType methods
 setGeneric(name = "simulate.survey", def = function(object, dht.tables, ...){standardGeneric ("simulate.survey")})
 
+
+#' S4 generic method to access the selection criteria
+#'
+#' Provides the selection criteria value
+#'
+#' @param object an object of class Simulation or DDF.Analysis
+#' @usage get.criteria(object)
+#' @return the model selection criteria value
+#' @docType methods
+setGeneric(name = "get.criteria", def = function(object){standardGeneric ("get.criteria")})
+
+
 #' S4 generic method to simulate a survey
 #'
 #' Simulates the process by which individuals / clusters are detected.
@@ -119,15 +136,25 @@ setGeneric(name = "simulate.survey", def = function(object, dht.tables, ...){sta
 #' @docType methods
 #setGeneric(name = "get.table", def = function(object){standardGeneric ("get.table")})
 
-#' S4 generic method to access the selection criteria
+
+#' S4 generic method to display a histogram of Abundance estimates
 #'
-#' Provides the selection criteria value
+#' Displays a histogram of the abundance estimates. Truth is indicated by
+#' the red line
 #'
-#' @param object an object of class Simulation or DDF.Analysis
-#' @usage get.criteria(object)
-#' @return the model selection criteria value
+#' @param x an object of class simulation
+#' @usage hist(x, ...)
+#' @export
+#' @author Laura Marshall 
 #' @docType methods
-setGeneric(name = "get.criteria", def = function(object){standardGeneric ("get.criteria")})
-
-
-
+#'setGeneric(name = "hist", def = function(x, ...){standardGeneric ("hist")})
+#' S4 generic method to displays a summary of the simulation
+#'
+#' If the simulation has been run this will include a summary of the results
+#'
+#' @param object an object of class simulation
+#' @usage summary(object, ...)
+#' @export
+#' @author Laura Marshall 
+#' @docType methods
+#' setGeneric(name = "summary", def = function(object, ...){standardGeneric ("summary")})
