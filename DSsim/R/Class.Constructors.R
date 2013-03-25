@@ -30,13 +30,13 @@ make.region <- function(region.name, area = numeric(0), shapefile = NULL, coords
 #' The \code{design.details} argument should specify a list of either 1
 #' or 2 elements. These options are described in the table below:
 #'
-#' \tabular{lll}{ Transect Type \tab Design Details \tab              \tab \cr 
-#'                Line          \tab Parallel       \tab Systematic   \tab \cr
-#'                Line          \tab Parallel       \tab Random       \tab \cr
-#'                Line          \tab Zigzag         \tab Equal Angle  \tab \cr
-#'                Line          \tab Zigzag         \tab Equal Spaced \tab \cr
-#'                Point         \tab Systematic     \tab              \tab \cr
-#'                Point         \tab Random         \tab              \tab \cr}
+#' \tabular{lll}{ Transect Type \tab Design Details \tab              \cr 
+#'                Line          \tab Parallel       \tab Systematic   \cr
+#'                Line          \tab Parallel       \tab Random       \cr
+#'                Line          \tab Zigzag         \tab Equal Angle  \cr
+#'                Line          \tab Zigzag         \tab Equal Spaced \cr
+#'                Point         \tab Systematic     \tab              \cr
+#'                Point         \tab Random         \tab              \cr}
 #'
 #' @param transect.type character variable specifying either "Line" or "Point"
 #' @param design.details a list describing the type of design. See details.
