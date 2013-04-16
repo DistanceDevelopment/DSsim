@@ -25,8 +25,12 @@ setMethod(
   f="create.region.table",
   signature="Survey",
   definition=function(object, region){
-    population <- object@population       
-    region.table <- data.frame(Region.Label = population@strata.names, Area = get.area(region))
+    population <- object@population
+    if(length(region@strata.name) > 0){       
+      region.table <- data.frame(Region.Label = region@strata.name, Area = get.area(region))
+    }else{
+      region.table <- data.frame(Region.Label = region@region.name, Area = get.area(region))
+    }
     region.table.obj <- new(Class = "Region.Table", data = region.table)
     return(region.table.obj)
   }    

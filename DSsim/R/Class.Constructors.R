@@ -15,8 +15,12 @@
 #' @export
 #' @author Laura Marshall
 #'
-make.region <- function(region.name, area = numeric(0), shapefile = NULL, coords = list(), gaps = list()){
-  region <- new(Class="Region", region.name = region.name, shapefile = shapefile)
+make.region <- function(region.name, strata.name = character(0), no.strata = NA, area = numeric(0), shapefile = NULL, coords = list(), gaps = list()){
+  #if(is.na(no.strata) | no.strata == 1){
+    region <- new(Class="Region", region.name = region.name, strata.name = strata.name, shapefile = shapefile)
+  #}else if(no.strata > 1){
+  #  region <- new(Class="Strata", region.name = region.name, shapefile = shapefile, no.strata = no.strata)
+  #}
   return(region)
 }
   
@@ -98,7 +102,7 @@ make.design <- function(transect.type, design.details, region, design.axis = num
 #' @author Laura Marshall
 #'
 make.density <- function(region, strata = character(0), density.surface = NULL, x.space, y.space, constant = NULL, shapefile = NULL, density.gam = NULL, jit = 1){
-  density <- new(Class = "Density", region.name = region, strata.name = strata, x.space = x.space, y.space = y.space, constant = constant, shapefile = shapefile, density.gam = density.gam, jit = jit)
+  density <- new(Class = "Density", region = region, strata.name = strata, x.space = x.space, y.space = y.space, constant = constant, shapefile = shapefile, density.gam = density.gam, jit = jit)
  return(density)
 }
 
@@ -186,8 +190,21 @@ make.ddf.analysis <- function(dsmodel, mrmodel = NULL, criteria){
 #' @author Laura Marshall
 #'
 make.simulation <- function(reps, double.observer = FALSE, region.obj, design.obj, population.description.obj, detectability.obj, ddf.analyses.list){
-  simulation <- new(Class = "Simulation", reps = reps, double.observer = double.observer, region = region.obj, design = design.obj, population.description = population.description.obj, detectability = detectability.obj, ddf.analyses = ddf.analyses.list)
+  #Make the results arrays
+  no.strata <- ifelse(length(region.obj@strata.name) > 0, length(region.obj@strata.name)+1, 1) 
+  if(length(region.obj@strata.name) > 0){
+    strata.name <- c(sort(region.obj@strata.name), "Total")
+  }else{
+    strata.name <- region.obj@region.name
+  }
+  results <- list(summary = array(NA, dim = c(no.strata, 8, reps+2), dimnames = list(strata.name, c("Area", "CoveredArea", "Effort", "n", "k", "ER", "se.ER", "cv.ER"), c(1:reps,"mean","sd"))), 
+                  N = array(NA, dim = c(no.strata, 6, reps+2), dimnames = list(strata.name, c("Estimate", "se", "cv", "lcl", "ucl", "df"), c(1:reps,"mean","sd"))), 
+                  D = array(NA, dim = c(no.strata, 6, reps+2), dimnames = list(strata.name, c("Estimate", "se", "cv", "lcl", "ucl", "df"), c(1:reps,"mean", "sd"))),
+                  Detection = array(NA, dim = c(1, 3, reps+2), dimnames = list("Pooled", c("Pa", "ESW", "f(0)"), c(1:reps,"mean","sd"))))
+  simulation <- new(Class = "Simulation", reps = reps, double.observer = double.observer, region = region.obj, design = design.obj, population.description = population.description.obj, detectability = detectability.obj, ddf.analyses = ddf.analyses.list, results = results)
   return(simulation)
 }
+
+
 
 

@@ -66,7 +66,7 @@ setMethod(
     if(class(region.obj) != "Region"){
       region.obj <- get(object@region.name)
     }
-    n.cells <- nrow(density.obj@density.surface)
+    n.cells <- nrow(density.obj@density.surface)       
     probs <- density.obj@density.surface[["density"]]/sum(density.obj@density.surface[["density"]])
     #sample more animals than required as some will fall outside the survey region
     samp <- suppressWarnings(sample(x = 1:n.cells, size = 2*object@N, replace = TRUE, prob = probs))
@@ -79,8 +79,23 @@ setMethod(
     grid.locations$y.coord <- grid.locations$y+ry
     #find which x,y coords are within the region
     pts <- as.points(grid.locations$x.coord,grid.locations$y.coord) 
-    grid.locations$in.region <- in.polygons(pts, region.obj@coords, boundary = TRUE)
-    grid.locations$in.gaps   <- in.polygons(pts, region.obj@gaps, boundary = TRUE)
+    in.region <- lapply(region.obj@coords, FUN = in.polygons, pts = pts, boundary = TRUE)
+    in.gaps <- lapply(region.obj@gaps, FUN = in.polygons, pts = pts, boundary = TRUE)
+    for(i in seq(along = in.region)){
+      if(i == 1){
+        in.region.temp <- in.region[[1]] 
+        in.gaps.temp <- in.gaps[[1]]
+      }else{ 
+        in.region.temp <- cbind(in.region.temp, in.region[[i]])
+        in.gaps.temp <- cbind(in.gaps.temp, in.gaps[[i]])
+      }
+    }
+    in.region <- apply(in.region.temp, 1, FUN = sum)
+    in.gaps <- apply(in.gaps.temp, 1, FUN = sum)
+    grid.locations$in.region <- ifelse(in.region == 1, TRUE, FALSE)
+    grid.locations$in.gaps <- ifelse(in.gaps == 1, TRUE, FALSE)    
+    #grid.locations$in.region <- in.polygons(pts, region.obj@coords, boundary = TRUE)
+    #grid.locations$in.gaps   <- in.polygons(pts, region.obj@gaps, boundary = TRUE)
     #Find the first N animals inside the region
     grid.locations <- grid.locations[grid.locations$in.region,]
     grid.locations <- grid.locations[!grid.locations$in.gaps,]

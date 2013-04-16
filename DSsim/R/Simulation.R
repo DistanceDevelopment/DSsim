@@ -15,21 +15,19 @@
 #' @export
 setClass("Simulation", representation(reps = "numeric",
                                       double.observer = "logical",                                        
-                                      region  = "Region",
+                                      region = "Region",
                                       design = "Survey.Design",
-                                      population.description  = "Population.Description",
-                                      detectability    = "Detectability",
-                                      ddf.analyses   = "list", 
+                                      population.description = "Population.Description",
+                                      detectability = "Detectability",
+                                      ddf.analyses = "list", 
                                       dsm.analysis = "DSM.Analysis",                                          
-                                      ddf.param.ests   = "array",
-                                      N.D.Estimates    = "array")) 
+                                      ddf.param.ests = "array",
+                                      results = "list")) 
                                       
 setMethod(
   f="initialize",
   signature="Simulation",
-  definition=function(.Object, reps, double.observer = FALSE, region, design, population.description, detectability, ddf.analyses){
-    #Input pre-processing
-    N.D.Estimates <- array(NA, dim = c(reps, 3), dimnames = list(1:reps, c("N estimate", "N lcl", "N ucl")))
+  definition=function(.Object, reps, double.observer = FALSE, region, design, population.description, detectability, ddf.analyses, results){
     #Set slots
     .Object@reps            <- reps
     .Object@double.observer <- double.observer    
@@ -38,7 +36,7 @@ setMethod(
     .Object@population.description <- population.description
     .Object@detectability   <- detectability
     .Object@ddf.analyses    <- ddf.analyses
-    .Object@N.D.Estimates   <- N.D.Estimates
+    .Object@results          <- results
     #Check object is valid
     validObject(.Object)
     # return object
@@ -81,37 +79,46 @@ setMethod(
   f="Summary",
   signature="Simulation",
   definition=function(x, ..., na.rm = FALSE){
-    cat("\nRegion: ", x@region@region.name)
-    cat("\nTrue N:", x@population.description@N, "\n")
-    if(length(which(!is.na(x@N.D.Estimates))) > 0){
-      print(apply(x@N.D.Estimates, 2, mean))
-    }
+    cat("\nRegion: ", x@region@region.name)       
+    cat("\n\nSummary Statistics")
+    cat("\n\nMean values across bootstrap repetitions\n\n")
+    print(x@results$summary[,,"mean"])
+    cat("\nStandard deviations of values across bootstrap repetitions\n\n")
+    print(x@results$summary[,,"sd"])
+    cat("\n     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+    cat("\nTrue N (over entire study area):", x@population.description@N, "\n")
+    cat("\nN Estimates\n")
+    cat("\nMean values across bootstrap repetitions\n\n")
+    print(x@results$N[,,"mean"])
+    cat("\nStandard deviations of values across bootstrap repetitions\n\n")
+    print(x@results$N[,,"sd"])
+    cat("\n     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+    cat("\nTrue D (over entire study area):", x@population.description@N/sum(x@region@area), "\n")
+    cat("\nD Estimates\n")
+    cat("\nMean values across bootstrap repetitions\n\n")
+    print(x@results$D[,,"mean"])
+    cat("\nStandard deviations of values across bootstrap repetitions\n\n")
+    print(x@results$D[,,"sd"])  
+    cat("\n     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+    cat("\n\nDetection Function Values\n")
+    cat("\nMean values across bootstrap repetitions\n\n")
+    print(x@results$Detection[,,"mean"])
+    cat("\nStandard deviations of values across bootstrap repetitions\n\n")
+    print(x@results$Detection[,,"sd"])     
     invisible(x)
   }    
 )
   
 setMethod(
-  f="hist",
+  f="plot",
   signature="Simulation",
   definition=function(x, ...){
-    hist(x@N.D.Estimates[,1], xlab = "Estimate of N")
-    abline(v=x@population.description@N, col=2, lwd = 2)
+    message("not currently implemented")
+    #hist(x@results[,1], xlab = "Estimate of N")
+    #abline(v=x@population.description@N, col=2, lwd = 2)
     invisible(x)
   }    
 )
-
-setMethod(
-  f="plot",
-  signature="Region",
-  definition=function(x, y, type = "l", ...){
-    #Input pre-processing
-    plot(c(x@box[["xmin"]], x@box[["xmax"]]), c(x@box[["ymin"]], x@box[["ymax"]]), col = "white", xlab = "X-coords (units to be added)", ylab = "Y-coords (units to be added)", main = x@region.name, ...) 
-    lapply(x@coords, FUN = lines, type = type)
-    lapply(x@gaps, FUN = lines, type = type, col = 8)
-    invisible(x)
-  }    
-)
-
 
 setMethod(
   f="generate.population",
@@ -218,7 +225,7 @@ setMethod(
       population <- generate.population(object)
       #generate transects
       transects <- generate.transects(object)
-      #make survey
+      #make survey object
       if(object@double.observer){
         message("Double observer simulations not supported at present")#move this to the checking of the simulation object
       }else{
@@ -234,14 +241,15 @@ setMethod(
       region.table <- survey.data$region.table 
       #analyse survey
       ddf.results <- run.analysis(simulation, ddf.data)
-      dht = TRUE
-      if(dht){
-        dht.results <- dht(ddf.results, region.table@region.table, sample.table@sample.table, obs.table@obs.table)                                           
+      object@results$Detection <- store.ddf.results(object@results$Detection, ddf.results, i)
+      compute.dht = TRUE
+      if(compute.dht){
+        dht.results <- dht(ddf.results, region.table@region.table, sample.table@sample.table, obs.table@obs.table)
+        object@results <- store.dht.results(object@results, dht.results, i)                                           
       }
-      #store results 
-      object@N.D.Estimates[i,] <- as.matrix(dht.results$individuals$N[c("Estimate", "lcl", "ucl")])
       object@design@file.index <- object@design@file.index + 1
     }
+  object@results <- add.summary.results(object@results)
   object@design@file.index <- orig.file.index
   return(object)  
   }  

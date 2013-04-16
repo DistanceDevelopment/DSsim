@@ -147,7 +147,7 @@ setGeneric(name = "get.criteria", def = function(object){standardGeneric ("get.c
 #' @export
 #' @author Laura Marshall 
 #' @docType methods
-#'setGeneric(name = "hist", def = function(x, ...){standardGeneric ("hist")})
+setGeneric(name = "hist", def = function(x, ...){standardGeneric ("hist")})
 #' S4 generic method to displays a summary of the simulation
 #'
 #' If the simulation has been run this will include a summary of the results

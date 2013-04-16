@@ -1,4 +1,4 @@
-in.polygons <- function(pts, poly.list, boundary){
+in.polygons <- function(poly.list, pts, boundary){
 #in.polygons checks to see if a set of points are in any one of a list of polygons
   any.true <- function(pts.check){
     true.vals <- which(pts.check)

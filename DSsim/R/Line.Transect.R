@@ -90,8 +90,28 @@ get.sampler.info <- function(shapefile, region.obj){
     }
     tot.length <- c(tot.length, rep(temp.length, segs))
     region     <- c(region, rep(region.obj@region.name, segs))
-  } 
-  sampler.info <- data.frame(ID = ID, start.X = start.X, start.Y = start.Y, end.X = end.X, end.Y = end.Y, length = tot.length, region = region)
+  }
+  #Get strata names for each transect - checks that both endpoints and mid point agree
+  start.point.coords <- data.frame(x = start.X, y = start.Y)
+  end.point.coords <- data.frame(x = end.X, y = end.Y)
+  mid.point.coords <- data.frame(x = (end.X + start.X)/2, y = (end.Y + start.Y)/2)
+  strata.start <- lapply(region.obj@coords, FUN = in.polygons, pts = start.point.coords, boundary = TRUE) 
+  strata.end <- lapply(region.obj@coords, FUN = in.polygons, pts = end.point.coords, boundary = TRUE) 
+  strata.mid <- lapply(region.obj@coords, FUN = in.polygons, pts = mid.point.coords, boundary = TRUE) 
+  strata.id <- rep(NA, nrow(start.point.coords))
+  for(strat in seq(along = strata.start)){
+    strata.temp <- cbind(start = strata.start[[strat]], end = strata.end[[strat]], mid = strata.mid[[strat]])
+    strata.temp <- apply(strata.temp, 1, sum) 
+    strata.id <- ifelse(strata.temp == 3, strat, strata.id)   
+  }
+  if(length(which(is.na(strata.id))) > 0){
+    message("Error, transect cannot be allocated to strata debug get.sampler.info")
+  }
+  if(length(region.obj@strata.name) > 0){
+    sampler.info <- data.frame(ID = ID, start.X = start.X, start.Y = start.Y, end.X = end.X, end.Y = end.Y, length = tot.length, region = region.obj@strata.name[strata.id])
+  }else{
+    sampler.info <- data.frame(ID = ID, start.X = start.X, start.Y = start.Y, end.X = end.X, end.Y = end.Y, length = tot.length, region = region)
+  }
   return(sampler.info)
 }
 

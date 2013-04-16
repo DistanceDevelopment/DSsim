@@ -11,20 +11,20 @@
 #' @keywords classes
 #' @export
 setClass(Class = "Region", 
-         representation(region.name = "character", area = "numeric", box = "numeric", coords = "list", gaps = "list")
+         representation(region.name = "character", strata.name = "character", area = "numeric", box = "numeric", coords = "list", gaps = "list")
 )
 
 setMethod(
   f="initialize",
   signature="Region",
-  definition=function(.Object, region.name = character(0), area = numeric(0), shapefile = NULL, coords = list(), gaps = list()){
+  definition=function(.Object, region.name = character(0), strata.name = character(0), area = numeric(0), shapefile = NULL, coords = list(), gaps = list()){
     #Input pre-processing
     boundbox <- numeric(0)
     if(length(coords) == 0 & !is.null(shapefile)){
       polygons <- coords.from.shapefile(shapefile)
       coords <- polygons$coords
       gaps <- polygons$gaps
-      boundbox <- shapefile$shp$shp[[1]]$box
+      boundbox <- get.bound.box(shapefile)
     }
     #if(units == "m"){
     #  convert.units
@@ -36,6 +36,7 @@ setMethod(
     }
     #Set slots
     .Object@region.name <- region.name
+    .Object@strata.name <- strata.name
     .Object@area        <- area
     .Object@box         <- boundbox
     .Object@coords      <- coords
@@ -48,9 +49,16 @@ setMethod(
 )
 setValidity("Region",
   function(object){
-    if(object@area < 0){
+    if(length(which(object@area < 0)) > 0){
       return("negative area")
-    }else{
+    }    
+    if(length(object@coords) != length(object@gaps)){
+      return("mismatch in coords and gaps length for strata")
+    }
+    #print(paste("length of coords: ",length(object@coords)))
+    #print(object@strata.name) 
+    if(length(object@coords) > 1 & length(object@coords) != length(object@strata.name)){
+      return("Number of strata names differs to number of strata in the shapefile")
     }
     return(TRUE)
   }
@@ -64,11 +72,17 @@ setGeneric(name = "get.area", def = function(object){standardGeneric ("get.area"
 setMethod(
   f="plot",
   signature="Region",
-  definition=function(x, y, type = "l", ...){
+  definition=function(x, y, type = "l", add = FALSE, ...){
+    plot.list <- function(list.coords, type, col = 1){
+      lapply(list.coords, FUN = lines, type = type, col = col)
+      invisible(list.coords)
+    }
     #Input pre-processing
-    plot(c(x@box[["xmin"]], x@box[["xmax"]]), c(x@box[["ymin"]], x@box[["ymax"]]), col = "white", xlab = "X-coords (units to be added)", ylab = "Y-coords (units to be added)", main = x@region.name, ...) 
-    lapply(x@coords, FUN = lines, type = type)
-    lapply(x@gaps, FUN = lines, type = type, col = 8)
+    if(!add){
+      plot(c(x@box[["xmin"]], x@box[["xmax"]]), c(x@box[["ymin"]], x@box[["ymax"]]), col = "white", xlab = "X-coords (units to be added)", ylab = "Y-coords (units to be added)", main = x@region.name, ...) 
+    }
+    lapply(x@coords, FUN = plot.list, type = type)
+    lapply(x@gaps, FUN = plot.list, type = type, col = 8)
     invisible(x)
   }    
 ) 
@@ -93,77 +107,45 @@ setMethod(
 # ASSOCIATED METHODS
 ################################################################################
 
-coords.from.shapefile <- function(shapefile){
-  coords <- list()
-  main.polygons <- list()
-  gaps <- list()
-  num.parts <- shapefile$shp$shp[[1]]$num.parts
-  indexes <- c(shapefile$shp$shp[[1]]$parts, nrow(shapefile$shp$shp[[1]]$points))
-  for(p in 1:num.parts){ 
-    X <- shapefile$shp$shp[[1]]$points$X[(indexes[p]+1):indexes[p+1]]
-    Y <- shapefile$shp$shp[[1]]$points$Y[(indexes[p]+1):indexes[p+1]]
-    coords[[p]] <- data.frame(x = X, y = Y)
-  }
-  #check to see if any are gaps
-  count.gap <- 0
-  count.outer.poly <- 0
-  for(p in 1:num.parts){
-    gap <- is.gap(coords[p][[1]], coords[-p])
-    if(gap){
-      count.gap <- count.gap + 1
-      gaps[[count.gap]] <- coords[p][[1]]        
-    }else{
-      count.outer.poly <- count.outer.poly + 1
-      main.polygons[[count.outer.poly]] <- coords[p][[1]] 
-    }
-  }
-  return(list(coords = main.polygons, gaps = gaps))
-}           
-
-is.gap <- function(poly, poly.list){
-  require(splancs)
-  #is.gap checks to see if a set of points belonging to one polygon are all inside any one of a list of polygons
-  all.true <- function(pts.check){
-    true.vals <- which(pts.check)
-    if(length(true.vals) == length(pts.check)){
-      return(TRUE)
-    }else if(length(true.vals) == length(pts.check)-1){
-      message("Warning two of the shapefiles have a shared boundary point.")
-      return(TRUE)
-    }else if(length(true.vals) > 0){
-      stop(paste("Some of the polygons in the shapefile are intersecting.",sep = ""), call. = FALSE)    
-    }else{
-      return(FALSE)
-    }
-  }
-  pts <- as.points(poly)
-  pts.in <- array(NA, dim = c(nrow(pts),length(poly.list)))
-  for(p in seq(along = poly.list)){
-    pts.in[,p] <- inout(as.points(pts), poly.list[[p]], bound = FALSE)
-  }
-  poly.inside <- apply(pts.in, 2, FUN = all.true)
-  if(length(which(poly.inside)) == 1){
-    gap <- TRUE
-  }else if(length(which(poly.inside)) > 1){
-    stop(paste("One polygon is inside more than one other polygon. The simulation engine cannot deal with this scenario.",sep = ""), call. = FALSE)
-  }else{
-    gap <- FALSE
-  }
-  return(gap)
-}
-
 calc.area <- function(coords, gaps){
+  list.area <- function(coords.list){
+    matrix.coords <- lapply(coords.list, as.matrix)
+    areas <- lapply(matrix.coords, areapl)
+    areas <- unlist(areas)
+    total.area <- sum(areas) 
+    return(total.area)
+  }
   require(splancs)
-  temp.coords <- lapply(coords, as.matrix)
-  temp.gaps <- lapply(gaps, as.matrix)
-  gross.area <- lapply(temp.coords, areapl)
-  gross.area <- as.numeric(gross.area)
-  gross.area <- sum(gross.area)
-  gap.area <- lapply(temp.gaps, areapl)
-  gap.area <- as.numeric(gap.area)
-  gap.area <- sum(gap.area)
+  
+  gross.area <- unlist(lapply(coords, list.area))
+  gap.area <- unlist(lapply(gaps, list.area))
+  
+#  temp.coords <- lapply(coords, as.matrix)
+#  gross.area <- lapply(temp.coords, areapl)
+#  gross.area <- as.numeric(gross.area)
+#  gross.area <- sum(gross.area)
+#  temp.gaps <- lapply(gaps, as.matrix)
+#  gap.area <- lapply(temp.gaps, areapl)
+#  gap.area <- as.numeric(gap.area)
+#  gap.area <- sum(gap.area)
+  
   net.area <- gross.area - gap.area
   return(net.area)
+}
+
+get.bound.box <- function(shapefile){
+  bound.box <- shapefile$shp$shp[[1]]$box
+  if(length(shapefile$shp$shp) == 1){
+    return(bound.box)
+  }
+  for(strat in seq(along = shapefile$shp$shp)[-1]){
+    bound.box <- rbind(bound.box, shapefile$shp$shp[[strat]]$box)  
+  }     
+  bound.box <- as.array(bound.box)
+  dimnames(bound.box)[[1]] <- seq(along = shapefile$shp$shp)
+  bound.box <- as.data.frame(bound.box)
+  total.bound.box <- c(xmin = min(bound.box[,"xmin"]), ymin = min(bound.box[,"ymin"]), xmax = max(bound.box[,"xmax"]), ymax = max(bound.box[,"ymax"]))
+  return(total.bound.box) 
 }
 
 
