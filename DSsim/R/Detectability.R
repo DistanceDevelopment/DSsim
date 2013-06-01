@@ -4,7 +4,7 @@
 #' of detecting individuals / clusters in a population.
 #'
 #' @name Detectability-class
-#' @docType class
+#' @docType class                             
 #' @section Objects from the Class: Objects can be created by calls of the form
 #' \code{make.detectability(key.function, scale.param, perp.truncation, rad.truncation)} 
 #' @keywords classes

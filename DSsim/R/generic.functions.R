@@ -158,3 +158,14 @@ setGeneric(name = "hist", def = function(x, ...){standardGeneric ("hist")})
 #' @author Laura Marshall 
 #' @docType methods
 #' setGeneric(name = "summary", def = function(object, ...){standardGeneric ("summary")})
+
+#' S4 generic method to access the selection criteria
+#'
+#' Provides the selection criteria value
+#'
+#' @param object an object of class Simulation or DDF.Analysis
+#' @usage get.criteria(object)
+#' @return the model selection criteria value
+#' @docType methods
+setGeneric(name = "add.hotspot", def = function(object, centre, radius, amplitude){standardGeneric ("add.hotspot")})
+

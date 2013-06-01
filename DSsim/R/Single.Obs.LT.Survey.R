@@ -47,12 +47,12 @@ setMethod(
     poss.distances <- calc.poss.detect.dists(population, line.transect, perp.truncation = object@perpendicular.truncation, rad.truncation = object@radial.truncation)
     dist.data <- simulate.detections(poss.distances, population@detectability)
     dist.data <- rename.duplicates(dist.data)
+    ddf.data.obj <- new(Class = "Single.Obs.DDF.Data", data = dist.data)
     if(dht.tables){
       region.table <- create.region.table(object, ...)
       sample.table <- create.sample.table(object)
       obs.table <- data.frame(object = dist.data$object, Sample.Label = dist.data$transect.ID)
-      obs.table <- merge(obs.table, sample.table@sample.table, by = "Sample.Label")[,c("object","Sample.Label","Region.Label")]
-      ddf.data.obj <- new(Class = "Single.Obs.DDF.Data", data = dist.data)
+      obs.table <- merge(obs.table, sample.table@sample.table, by = "Sample.Label")[,c("object","Sample.Label","Region.Label")] 
       obs.table.obj <- new(Class = "Obs.Table", data = obs.table)
       return(list(ddf.data = ddf.data.obj, obs.table = obs.table.obj, sample.table = sample.table, region.table = region.table))
     }else{

@@ -9,7 +9,8 @@
 #' \code{make.density(region, x.space, y.space, constant)} 
 #' @keywords classes
 #' @export
-setClass("Density", representation(region.name = "character", strata.name = "character", density.surface = "data.frame", x.space = "numeric", y.space = "numeric", used = "logical"))
+setClass("Density", representation(region.name = "character", strata.name = "character", density.surface = "list", x.space = "numeric", y.space = "numeric", used = "logical"))
+
 
 setMethod(
   f="initialize",
@@ -18,6 +19,8 @@ setMethod(
     #Input pre-processing
     if(is.null(density.surface) & !is.null(constant)){
       density.surface <- get.surface.constant(region, x.space, y.space, constant, jit)
+    }else if(is.null(density.surface) & !is.null(density.gam)){
+      density.surface <- get.surface.gam(region, x.space, y.space, gam.model = density.gam)
     }else{      
     }
     #Set slots
@@ -74,137 +77,169 @@ setValidity("Density",
 setMethod("plot","Density",
   function(x, y, ...){
     density.surface <- x@density.surface
-    zlim <- range(density.surface$density)
+    densities <- NULL
+    for(strat in seq(along = density.surface)){
+      densities <- c(densities, density.surface[[strat]]$density)
+    }
+    zlim <- range(densities) 
+    if(zlim[2] - zlim[1] < 1){
+      multiplier <- (1/zlim[1])*10
+    }else{
+      multiplier <- 1
+    }
+    zlim <- range(densities*multiplier)
     zlen <- zlim[2] - zlim[1] + 1
     colorlut <- heat.colors(zlen) 
     colorlut <- colorlut[length(colorlut):1]
-    col <- colorlut[density.surface$density-zlim[1]+1] 
-    points(density.surface$x, density.surface$y, col = col, pch = 20)
+    for(strat in seq(along = density.surface)){
+      col <- colorlut[density.surface[[strat]]$density*multiplier-zlim[1]+1]
+      points(density.surface[[strat]]$x, density.surface[[strat]]$y, col = col, pch = 20)
+    }         
   }
 )
+
+
+setMethod("add.hotspot","Density",
+  function(object, centre, radius, amplitude){
+    density.surface <- object@density.surface    
+    for(strat in seq(along = density.surface)){
+      #Find distances from centre to each point on the density surface
+      strata.surface <- density.surface[[strat]]
+      dists <- sqrt((strata.surface$x-centre[1])^2 + (strata.surface$y-centre[2])^2) 
+      #Calculate radial decay
+      additive.values <- (exp(-dists^2/(2*radius^2)))*amplitude
+      #Add to surface
+      strata.surface$density <- strata.surface$density+additive.values
+      density.surface[[strat]] <- strata.surface
+    }
+    object@density.surface <- density.surface
+    return(object)         
+  }
+)
+
 
 ################################################################################
 # ASSOCIATED METHODS
 ################################################################################
-get.surface.constant <- function(region, x.space, y.space, constant, jit){
-  make.id.col <- function(matrix.row){
-    x <- matrix.row[1]
-    y <- matrix.row[2]
-    x.y <- paste(x,y, sep=",") 
-    return(x.y)
-  }
-  find.closest.strata <- function(point, grid, x.space, y.space){
-    point.left <- which(grid$x == point[["x"]] - x.space & grid$y == point[["y"]])
-    point.right <- which(grid$x == point[["x"]] + x.space & grid$y == point[["y"]])
-    point.down <- which(grid$x == point[["x"]] & grid$y == point[["y"]] - y.space)
-    point.up <- which(grid$x == point[["x"]] & grid$y == point[["y"]] + y.space)
-    point.left.up <- which(grid$x == point[["x"]] - x.space & grid$y == point[["y"]] + y.space)
-    point.right.up <- which(grid$x == point[["x"]] + x.space & grid$y == point[["y"]] + y.space)
-    point.left.down <- which(grid$x == point[["x"]] - x.space & grid$y == point[["y"]] - y.space)
-    point.right.down <- which(grid$x == point[["x"]] + x.space & grid$y == point[["y"]] - y.space)
-    strata <- c(grid[point.left,"strata.id"], grid[point.right,"strata.id"], grid[point.up,"strata.id"], grid[point.down,"strata.id"], grid[point.left.up,"strata.id"], grid[point.right.up,"strata.id"], grid[point.left.down,"strata.id"], grid[point.right.down,"strata.id"])
-    table.strata <- table(strata)
-    index <- which(table.strata == max(table.strata))
-    strata.id <- names(table.strata)[index]
-    if(length(strata.id) > 1){
-      strata.id <- strata.id[1]
-    }
-    return(strata.id)
-  }
-  
-  #region <- get(region.name)
-  #Create a rectangular grid over the entire region
-  no.x.ints <- ceiling((region@box[["xmax"]]-region@box[["xmin"]])/x.space)
-  no.y.ints <- ceiling((region@box[["ymax"]]-region@box[["ymin"]])/y.space)
-  x.adj <- (x.space*no.x.ints - (region@box[["xmax"]]-region@box[["xmin"]]))/2
-  y.adj <- (y.space*no.y.ints - (region@box[["ymax"]]-region@box[["ymin"]]))/2
-  x.vals <- seq(region@box[["xmin"]]-x.adj, region@box[["xmax"]]+x.adj, by = x.space)
-  y.vals <- seq(region@box[["ymin"]]-y.adj, region@box[["ymax"]]+y.adj, by = y.space)
-  temp.coords <- expand.grid(x.vals, y.vals)
-  names(temp.coords) <- names(region@coords[[1]][[1]])
-  #Find which grid points fall withing each strata.
-  to.keep <- lapply(region@coords, FUN = in.polygons, pts = temp.coords, boundary = TRUE)
-  #get strata ids and turn list into a
-  strata.id <- rep(NA, nrow(temp.coords))
-  for(i in seq(along = to.keep)){
-    strata.id <- ifelse(to.keep[[i]], i, strata.id)
-    if(i == 1){
-      to.keep.temp <- to.keep[[1]] 
-    }else{ 
-      to.keep.temp <- cbind(to.keep.temp, to.keep[[i]])
-    }
-  }
-  #check that points only occur in one strata
-  to.keep <- to.keep.temp
-  to.keep.check <- apply(to.keep, 1, FUN = sum)
-  if(length(which(to.keep.check > 1)) > 0){
-    message("Error: the density grid could not be completed there are overlapping polygons between strata.")
-    return(NULL)
-  }     
-  #Turn to.keep into one logical vector
-  to.keep <- ifelse(to.keep.check == 1, TRUE, FALSE)
-  #Extract the gridpoint coordinates that fall in one of the strata  
-  gridpoints <- cbind(temp.coords[to.keep,], strata.id = strata.id[to.keep]) 
-  to.discard <- lapply(region@gaps, FUN = in.polygons, pts = gridpoints[,1:2], boundary = FALSE)
-  #to.discard <- in.polygons(gridpoints, region@gaps, boundary = FALSE)
-  for(i in seq(along = to.discard)){
-    if(i == 1){
-      to.discard.temp <- to.discard[[1]] 
-    }else{ 
-      to.discard.temp <- cbind(to.discard.temp, to.discard[[i]])
-    }
-  }
-  to.discard <- to.discard.temp
-  to.discard <- apply(to.discard, 1, FUN = sum)
-  gridpoints <- gridpoints[to.discard == 0,]
-  
-  #temp.coords <- lapply(region@coords, FUN = as.matrix)
-  #gridpoints <- lapply(temp.coords, FUN = gridpts, xs = x.space, ys = y.space)  
-  #gridpoints <- gridpts(poly = as.matrix(region@coords), xs = x.space, ys = y.space)
-  #gridpoints <- as.data.frame(gridpoints)
-  #names(gridpoints) <- names(region@coords)
-  
-  #Create a buffer region                                                       #TRY EXPANDING THE AREA
-  grid.up <- gridpoints
-  grid.up$y <- grid.up$y + y.space
-  grid.down <- gridpoints
-  grid.down$y <-grid.down$y - y.space
-  grid.right <- gridpoints
-  grid.right$x <- grid.right$x + x.space
-  grid.left <- gridpoints
-  grid.left$x <- grid.left$x - x.space
-  gridpoints.new <- rbind(gridpoints, grid.up, grid.down, grid.left, grid.right)
-  gridpoints.new <- gridpoints.new[,1:2]
-  gridpoints.new <- unique(gridpoints.new)
-  if(!length(which(names(gridpoints)[1:2] == names(gridpoints.new)[1:2])) == 2){
-    message("Error: there is a mismatch with dataframe names.")
-  }
-  gridpoints <- cbind(id = apply(as.matrix(gridpoints), 1, FUN = make.id.col), gridpoints)
-  gridpoints.new <- cbind(id = apply(as.matrix(gridpoints.new), 1, FUN = make.id.col), gridpoints.new)
-  grid.temp <- merge(gridpoints[,c("id","strata.id")], gridpoints.new, by = "id", all = TRUE)
-  new.gridpoints <- rbind(grid.up, grid.down, grid.left, grid.right)
-  new.gridpoints <- cbind(id = apply(as.matrix(new.gridpoints), 1, FUN = make.id.col), new.gridpoints)
-  
-  outside.strata <- grid.temp[is.na(grid.temp$strata.id),]
-  inside.strata <- grid.temp[!is.na(grid.temp$strata.id),]
-  
-  coord.names <- names(region@coords[[1]][[1]])
-  
-  outside.strata.ids <- apply(as.matrix(outside.strata[,coord.names]),1 ,FUN = find.closest.strata, grid = inside.strata[,c(coord.names, "strata.id")], x.space = x.space, y.space = y.space)
-  outside.strata$strata.id <- outside.strata.ids
-
-  gridpoints <- rbind(inside.strata, outside.strata)[, c(coord.names, "strata.id")]
-  density.value <- rep(NA, nrow(gridpoints))
-  strata.id <- unique(gridpoints$strata.id)
-
-  for(st in seq(along = strata.id)){
-    density.value <- ifelse(gridpoints$strata.id == strata.id[st], constant[names(constant) == strata.id[st]], density.value)  
-  }
-  #Add density
-  density.surface <- cbind(gridpoints, density = density.value)
-  return(density.surface)
-}
-
+#get.surface.constant <- function(region, x.space, y.space, constant, jit){
+#  make.id.col <- function(matrix.row){
+#    x <- matrix.row[1]
+#    y <- matrix.row[2]
+#    x.y <- paste(x,y, sep=",") 
+#    return(x.y)
+#  }
+#  find.closest.strata <- function(point, grid, x.space, y.space){
+#    point.left <- which(grid$x == point[["x"]] - x.space & grid$y == point[["y"]])
+#    point.right <- which(grid$x == point[["x"]] + x.space & grid$y == point[["y"]])
+#    point.down <- which(grid$x == point[["x"]] & grid$y == point[["y"]] - y.space)
+#    point.up <- which(grid$x == point[["x"]] & grid$y == point[["y"]] + y.space)
+#    point.left.up <- which(grid$x == point[["x"]] - x.space & grid$y == point[["y"]] + y.space)
+#    point.right.up <- which(grid$x == point[["x"]] + x.space & grid$y == point[["y"]] + y.space)
+#    point.left.down <- which(grid$x == point[["x"]] - x.space & grid$y == point[["y"]] - y.space)
+#    point.right.down <- which(grid$x == point[["x"]] + x.space & grid$y == point[["y"]] - y.space)
+#    strata <- c(grid[point.left,"strata.id"], grid[point.right,"strata.id"], grid[point.up,"strata.id"], grid[point.down,"strata.id"], grid[point.left.up,"strata.id"], grid[point.right.up,"strata.id"], grid[point.left.down,"strata.id"], grid[point.right.down,"strata.id"])
+#    table.strata <- table(strata)
+#    index <- which(table.strata == max(table.strata))
+#    strata.id <- names(table.strata)[index]
+#    if(length(strata.id) > 1){
+#      strata.id <- strata.id[1]
+#    }
+#    return(strata.id)
+#  }
+#  
+#  #region <- get(region.name)
+#  #Create a rectangular grid over the entire region
+#  no.x.ints <- ceiling((region@box[["xmax"]]-region@box[["xmin"]])/x.space)
+#  no.y.ints <- ceiling((region@box[["ymax"]]-region@box[["ymin"]])/y.space)
+#  x.adj <- (x.space*no.x.ints - (region@box[["xmax"]]-region@box[["xmin"]]))/2
+#  y.adj <- (y.space*no.y.ints - (region@box[["ymax"]]-region@box[["ymin"]]))/2
+#  x.vals <- seq(region@box[["xmin"]]-x.adj, region@box[["xmax"]]+x.adj, by = x.space)
+#  y.vals <- seq(region@box[["ymin"]]-y.adj, region@box[["ymax"]]+y.adj, by = y.space)
+#  temp.coords <- expand.grid(x.vals, y.vals)
+#  names(temp.coords) <- names(region@coords[[1]][[1]])
+#  #Find which grid points fall withing each strata.
+#  to.keep <- lapply(region@coords, FUN = in.polygons, pts = temp.coords, boundary = TRUE)
+#  #get strata ids and turn list into a
+#  strata.id <- rep(NA, nrow(temp.coords))
+#  for(i in seq(along = to.keep)){
+#    strata.id <- ifelse(to.keep[[i]], i, strata.id)
+#    if(i == 1){
+#      to.keep.temp <- to.keep[[1]] 
+#    }else{ 
+#      to.keep.temp <- cbind(to.keep.temp, to.keep[[i]])
+#    }
+#  }
+#  #check that points only occur in one strata
+#  to.keep <- to.keep.temp
+#  to.keep.check <- apply(to.keep, 1, FUN = sum)
+#  if(length(which(to.keep.check > 1)) > 0){
+#    message("Error: the density grid could not be completed there are overlapping polygons between strata.")
+#    return(NULL)
+#  }     
+#  #Turn to.keep into one logical vector
+#  to.keep <- ifelse(to.keep.check == 1, TRUE, FALSE)
+#  #Extract the gridpoint coordinates that fall in one of the strata  
+#  gridpoints <- cbind(temp.coords[to.keep,], strata.id = strata.id[to.keep]) 
+#  to.discard <- lapply(region@gaps, FUN = in.polygons, pts = gridpoints[,1:2], boundary = FALSE)
+#  #to.discard <- in.polygons(gridpoints, region@gaps, boundary = FALSE)
+#  for(i in seq(along = to.discard)){
+#    if(i == 1){
+#      to.discard.temp <- to.discard[[1]] 
+#    }else{ 
+#      to.discard.temp <- cbind(to.discard.temp, to.discard[[i]])
+#    }
+#  }
+#  to.discard <- to.discard.temp
+#  to.discard <- apply(to.discard, 1, FUN = sum)
+#  gridpoints <- gridpoints[to.discard == 0,]
+#  
+#  #temp.coords <- lapply(region@coords, FUN = as.matrix)
+#  #gridpoints <- lapply(temp.coords, FUN = gridpts, xs = x.space, ys = y.space)  
+#  #gridpoints <- gridpts(poly = as.matrix(region@coords), xs = x.space, ys = y.space)
+#  #gridpoints <- as.data.frame(gridpoints)
+#  #names(gridpoints) <- names(region@coords)
+#  
+#  #Create a buffer region                                                       #TRY EXPANDING THE AREA
+#  grid.up <- gridpoints
+#  grid.up$y <- grid.up$y + y.space
+#  grid.down <- gridpoints
+#  grid.down$y <-grid.down$y - y.space
+#  grid.right <- gridpoints
+#  grid.right$x <- grid.right$x + x.space
+#  grid.left <- gridpoints
+#  grid.left$x <- grid.left$x - x.space
+#  gridpoints.new <- rbind(gridpoints, grid.up, grid.down, grid.left, grid.right)
+#  gridpoints.new <- gridpoints.new[,1:2]
+#  gridpoints.new <- unique(gridpoints.new)
+#  if(!length(which(names(gridpoints)[1:2] == names(gridpoints.new)[1:2])) == 2){
+#    message("Error: there is a mismatch with dataframe names.")
+#  }
+#  gridpoints <- cbind(id = apply(as.matrix(gridpoints), 1, FUN = make.id.col), gridpoints)
+#  gridpoints.new <- cbind(id = apply(as.matrix(gridpoints.new), 1, FUN = make.id.col), gridpoints.new)
+#  grid.temp <- merge(gridpoints[,c("id","strata.id")], gridpoints.new, by = "id", all = TRUE)
+#  new.gridpoints <- rbind(grid.up, grid.down, grid.left, grid.right)
+#  new.gridpoints <- cbind(id = apply(as.matrix(new.gridpoints), 1, FUN = make.id.col), new.gridpoints)
+#  
+#  outside.strata <- grid.temp[is.na(grid.temp$strata.id),]
+#  inside.strata <- grid.temp[!is.na(grid.temp$strata.id),]
+#  
+#  coord.names <- names(region@coords[[1]][[1]])
+#  
+#  outside.strata.ids <- apply(as.matrix(outside.strata[,coord.names]),1 ,FUN = find.closest.strata, grid = inside.strata[,c(coord.names, "strata.id")], x.space = x.space, y.space = y.space)
+#  outside.strata$strata.id <- outside.strata.ids
+#
+#  gridpoints <- rbind(inside.strata, outside.strata)[, c(coord.names, "strata.id")]
+#  density.value <- rep(NA, nrow(gridpoints))
+#  strata.id <- unique(gridpoints$strata.id)
+#
+#  for(st in seq(along = strata.id)){
+#    density.value <- ifelse(gridpoints$strata.id == strata.id[st], constant[names(constant) == strata.id[st]], density.value)  
+#  }
+#  #Add density
+#  density.surface <- cbind(gridpoints, density = density.value)
+#  return(density.surface)
+#}
+#
 
 
 #For when there 

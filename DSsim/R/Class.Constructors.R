@@ -34,13 +34,13 @@ make.region <- function(region.name, strata.name = character(0), no.strata = NA,
 #' The \code{design.details} argument should specify a list of either 1
 #' or 2 elements. These options are described in the table below:
 #'
-#' \tabular{lll}{ Transect Type \tab Design Details \tab              \cr 
-#'                Line          \tab Parallel       \tab Systematic   \cr
-#'                Line          \tab Parallel       \tab Random       \cr
-#'                Line          \tab Zigzag         \tab Equal Angle  \cr
-#'                Line          \tab Zigzag         \tab Equal Spaced \cr
-#'                Point         \tab Systematic     \tab              \cr
-#'                Point         \tab Random         \tab              \cr}
+#' \tabular{lll}{ Transect Type \tab Design Details \tab              \tab \cr 
+#'                Line          \tab Parallel       \tab Systematic   \tab \cr
+#'                Line          \tab Parallel       \tab Random       \tab \cr
+#'                Line          \tab Zigzag         \tab Equal Angle  \tab \cr
+#'                Line          \tab Zigzag         \tab Equal Spaced \tab \cr
+#'                Point         \tab Systematic     \tab              \tab \cr
+#'                Point         \tab Random         \tab              \tab \cr}
 #'
 #' @param transect.type character variable specifying either "Line" or "Point"
 #' @param design.details a list describing the type of design. See details.
@@ -102,6 +102,11 @@ make.design <- function(transect.type, design.details, region, design.axis = num
 #' @author Laura Marshall
 #'
 make.density <- function(region, strata = character(0), density.surface = NULL, x.space, y.space, constant = NULL, shapefile = NULL, density.gam = NULL, jit = 1){
+  if(!is.null(constant)){
+    if(length(region@strata.name) > 0 & length(constant) != length(region@strata.name)){
+      message("Error: the length of constant does not correspond to the number of strata")
+    }
+  }
   density <- new(Class = "Density", region = region, strata.name = strata, x.space = x.space, y.space = y.space, constant = constant, shapefile = shapefile, density.gam = density.gam, jit = jit)
  return(density)
 }
@@ -123,8 +128,13 @@ make.density <- function(region, strata = character(0), density.surface = NULL, 
 #' @export
 #' @author Laura Marshall
 #'
-make.population.description <- make.pop.description <- function(N, density.obj, region, cluster.size = logical(0), size.min = numeric(0), size.max = numeric(0), size.lambda = numeric(0), gen.by.N = TRUE){
-  pop.description <- new(Class = "Population.Description", N = N, density = density.obj, region.name = region, size = cluster.size, size.min = size.min, size.max = size.max, size.lambda = size.lambda, gen.by.N = gen.by.N)
+make.population.description <- make.pop.description <- function(N = numeric(0), density.obj, region, cluster.size.table = NULL, size.min = numeric(0), size.max = numeric(0), size.lambda = numeric(0), gen.by.N = TRUE){
+  if(!is.null(cluster.size.table)){
+    cluster.size <- TRUE
+  }else{
+    cluster.size <- FALSE
+  }
+  pop.description <- new(Class = "Population.Description", N = N, density = density.obj, region.obj = region, size.table = cluster.size.table, size = cluster.size, size.min = size.min, size.max = size.max, size.lambda = size.lambda, gen.by.N = gen.by.N)
   return(pop.description)
 }
 
@@ -190,20 +200,32 @@ make.ddf.analysis <- function(dsmodel, mrmodel = NULL, criteria){
 #' @author Laura Marshall
 #'
 make.simulation <- function(reps, double.observer = FALSE, region.obj, design.obj, population.description.obj, detectability.obj, ddf.analyses.list){
-  #Make the results arrays
+  #Make the results arrays and store in a list
   no.strata <- ifelse(length(region.obj@strata.name) > 0, length(region.obj@strata.name)+1, 1) 
   if(length(region.obj@strata.name) > 0){
     strata.name <- c(sort(region.obj@strata.name), "Total")
   }else{
     strata.name <- region.obj@region.name
   }
-  results <- list(summary = array(NA, dim = c(no.strata, 8, reps+2), dimnames = list(strata.name, c("Area", "CoveredArea", "Effort", "n", "k", "ER", "se.ER", "cv.ER"), c(1:reps,"mean","sd"))), 
+  individuals <- list(summary = array(NA, dim = c(no.strata, 7, reps+2), dimnames = list(strata.name, c("Area", "CoveredArea", "Effort", "n", "ER", "se.ER", "cv.ER"), c(1:reps,"mean","sd"))), 
                   N = array(NA, dim = c(no.strata, 6, reps+2), dimnames = list(strata.name, c("Estimate", "se", "cv", "lcl", "ucl", "df"), c(1:reps,"mean","sd"))), 
-                  D = array(NA, dim = c(no.strata, 6, reps+2), dimnames = list(strata.name, c("Estimate", "se", "cv", "lcl", "ucl", "df"), c(1:reps,"mean", "sd"))),
-                  Detection = array(NA, dim = c(1, 3, reps+2), dimnames = list("Pooled", c("Pa", "ESW", "f(0)"), c(1:reps,"mean","sd"))))
+                  D = array(NA, dim = c(no.strata, 6, reps+2), dimnames = list(strata.name, c("Estimate", "se", "cv", "lcl", "ucl", "df"), c(1:reps,"mean", "sd"))))
+  detection = array(NA, dim = c(1, 3, reps+2), dimnames = list("Pooled", c("Pa", "ESW", "f(0)"), c(1:reps,"mean","sd")))
+  #create additional arrays if animals are in clusters
+  if(population.description.obj@size){
+    clusters <- list(summary = array(NA, dim = c(no.strata, 8, reps+2), dimnames = list(strata.name, c("Area", "CoveredArea", "Effort", "n", "k", "ER", "se.ER", "cv.ER"), c(1:reps,"mean","sd"))), 
+                    N = array(NA, dim = c(no.strata, 6, reps+2), dimnames = list(strata.name, c("Estimate", "se", "cv", "lcl", "ucl", "df"), c(1:reps,"mean","sd"))), 
+                    D = array(NA, dim = c(no.strata, 6, reps+2), dimnames = list(strata.name, c("Estimate", "se", "cv", "lcl", "ucl", "df"), c(1:reps,"mean", "sd"))))
+    expected.size <- array(NA, dim = c(no.strata, 3, reps+2), dimnames = list(strata.name, c("Expected.S", "se.Expected.S", "cv.Expected.S"), c(1:reps,"mean","sd")))
+    results <- list(individuals = individuals, clusters = clusters, expected.size = expected.size, Detection = detection)
+  }else{
+    results <- list(individuals = individuals, Detection = detection)
+  }
+  #create a simulation object
   simulation <- new(Class = "Simulation", reps = reps, double.observer = double.observer, region = region.obj, design = design.obj, population.description = population.description.obj, detectability = detectability.obj, ddf.analyses = ddf.analyses.list, results = results)
   return(simulation)
 }
+
 
 
 

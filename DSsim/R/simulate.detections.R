@@ -7,6 +7,9 @@ simulate.detections <- function(poss.distances, detectability){
   for(i in seq(along = probs)){
     detected[i] <- rbinom(1, 1, probs[i])
   }
-  dist.data <- poss.distances[detected == 1, c("object", "transect.ID", "distance", "x", "y")] 
+  #remove the logical availability variable columns
+  var.names <- names(poss.distances)[!names(poss.distances)%in%c("available.from.pdist", "available.from.rdist.to.start", "available.from.rdist.to.end")] 
+  dist.data <- poss.distances[detected == 1, var.names] 
   return(dist.data)
 }
+
