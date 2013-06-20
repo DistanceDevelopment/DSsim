@@ -117,7 +117,9 @@ make.density <- function(region, strata = character(0), density.surface = NULL, 
 #' @param density.obj an object of class Density describing the density of the
 #'   individuals / clusters.
 #' @param region the name of the Region object in which this population exists.
-#' @param cluster.size - not yet implemented
+#' @param cluster.size.table - data.frame with two columns size (giving the 
+#'   cluster sizes) and prob (giving the probability that that size of cluster
+#'   appears). prob must sum to 1. 
 #' @param size.min - not yet implemented
 #' @param size.max - not yet implemented
 #' @param size.lambda - not yet implemented
@@ -128,13 +130,13 @@ make.density <- function(region, strata = character(0), density.surface = NULL, 
 #' @export
 #' @author Laura Marshall
 #'
-make.population.description <- make.pop.description <- function(N = numeric(0), density.obj, region, cluster.size.table = NULL, size.min = numeric(0), size.max = numeric(0), size.lambda = numeric(0), gen.by.N = TRUE){
-  if(!is.null(cluster.size.table)){
+make.population.description <- make.pop.description <- function(N = numeric(0), density.obj, region, cluster.size.table = data.frame(NULL), size.min = numeric(0), size.max = numeric(0), size.lambda = numeric(0), gen.by.N = TRUE){
+  if(nrow(cluster.size.table) > 0){
     cluster.size <- TRUE
   }else{
     cluster.size <- FALSE
   }
-  pop.description <- new(Class = "Population.Description", N = N, density = density.obj, region.obj = region, size.table = cluster.size.table, size = cluster.size, size.min = size.min, size.max = size.max, size.lambda = size.lambda, gen.by.N = gen.by.N)
+  pop.description <- new(Class = "Population.Description", N = N, density = density.obj, region.obj = region, size.table = cluster.size.table, size = cluster.size, gen.by.N = gen.by.N)
   return(pop.description)
 }
 
@@ -210,7 +212,7 @@ make.simulation <- function(reps, double.observer = FALSE, region.obj, design.ob
   individuals <- list(summary = array(NA, dim = c(no.strata, 7, reps+2), dimnames = list(strata.name, c("Area", "CoveredArea", "Effort", "n", "ER", "se.ER", "cv.ER"), c(1:reps,"mean","sd"))), 
                   N = array(NA, dim = c(no.strata, 6, reps+2), dimnames = list(strata.name, c("Estimate", "se", "cv", "lcl", "ucl", "df"), c(1:reps,"mean","sd"))), 
                   D = array(NA, dim = c(no.strata, 6, reps+2), dimnames = list(strata.name, c("Estimate", "se", "cv", "lcl", "ucl", "df"), c(1:reps,"mean", "sd"))))
-  detection = array(NA, dim = c(1, 3, reps+2), dimnames = list("Pooled", c("Pa", "ESW", "f(0)"), c(1:reps,"mean","sd")))
+  detection = array(NA, dim = c(1, 4, reps+2), dimnames = list("Pooled", c("True.Pa", "Pa", "ESW", "f(0)"), c(1:reps,"mean","sd")))
   #create additional arrays if animals are in clusters
   if(population.description.obj@size){
     clusters <- list(summary = array(NA, dim = c(no.strata, 8, reps+2), dimnames = list(strata.name, c("Area", "CoveredArea", "Effort", "n", "k", "ER", "se.ER", "cv.ER"), c(1:reps,"mean","sd"))), 

@@ -15,16 +15,13 @@ setClass("Population.Description", representation(N           = "numeric",
                                                   density     = "Density", 
                                                   region.name = "character",
                                                   size        = "logical",
-                                                  size.min    = "numeric",
-                                                  size.max    = "numeric",
-                                                  size.lambda = "numeric",
                                                   size.table  = "data.frame",
                                                   size.dist   = "character",
                                                   gen.by.N    = "logical"))
 setMethod(
   f="initialize",
   signature="Population.Description",
-  definition=function(.Object, N, density, region.obj, size.table, size, size.min, size.max, size.lambda, gen.by.N = TRUE){
+  definition=function(.Object, N, density, region.obj, size.table, size, gen.by.N = TRUE){
     #Input pre-processing
     if(!gen.by.N){
       ave.density <- NULL
@@ -41,9 +38,6 @@ setMethod(
     .Object@region.name <- region.obj@region.name
     .Object@size.table  <- size.table
     .Object@size        <- size
-    .Object@size.min    <- size.min
-    .Object@size.max    <- size.max
-    .Object@size.lambda <- size.lambda
     .Object@gen.by.N    <- gen.by.N
     #Check object is valid
     validObject(.Object)
@@ -53,13 +47,13 @@ setMethod(
 )
 setValidity("Population.Description",
   function(object){
-    if(length(object@size.min) > 0){
-      if(object@size.min < 1){
-        return("Cannot have group sizes less than 1")
+    if(object@size){
+      if(sum(object@size.table$prob) != 1){
+        return("Probabilities in cluster size table must sum to 1")
       }
-    }
-    if(sum(object@size.table$prob) != 1){
-      return("Probabilities in cluster size table must sum to 1")
+      if(min(object@size.table$size) < 1){
+        return("Cannot have cluster sizes less than 1")
+      }
     }
     return(TRUE)
   }

@@ -1,4 +1,4 @@
-run.sim.in.parallel <- function(i, object){
+single.simulation.loop <- function(i, object){
     #cat("filename = ", object@design@filenames[i])
     #print("filename = ", object@design@filenames[i])
     #generate population
@@ -19,10 +19,11 @@ run.sim.in.parallel <- function(i, object){
     ddf.data <- survey.data$ddf.data 
     obs.table <- survey.data$obs.table
     sample.table <- survey.data$sample.table
-    region.table <- survey.data$region.table 
+    region.table <- survey.data$region.table
+    n.in.covered <- survey.data$n.in.covered 
     #analyse survey
     ddf.results <- run.analysis(object, ddf.data)
-    object@results$Detection <- store.ddf.results(object@results$Detection, ddf.results, i)
+    object@results$Detection <- store.ddf.results(object@results$Detection, ddf.results, i, n.in.covered)
     compute.dht = TRUE
     if(compute.dht){
       dht.results <- dht(ddf.results, region.table@region.table, sample.table@sample.table, obs.table@obs.table)

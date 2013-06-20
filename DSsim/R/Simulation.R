@@ -25,7 +25,7 @@ setClass("Simulation", representation(reps = "numeric",
                                       results = "list")) 
                                       
 setMethod(
-  f="initialize",
+  f="initialize",   
   signature="Simulation",
   definition=function(.Object, reps, double.observer = FALSE, region, design, population.description, detectability, ddf.analyses, results){
     #Set slots
@@ -36,7 +36,7 @@ setMethod(
     .Object@population.description <- population.description
     .Object@detectability   <- detectability
     .Object@ddf.analyses    <- ddf.analyses
-    .Object@results          <- results
+    .Object@results         <- results
     #Check object is valid
     validObject(.Object)
     # return object
@@ -76,9 +76,10 @@ setValidity("Simulation",
 
 
 setMethod(
-  f="Summary",
+  f="summary",
   signature="Simulation",
-  definition=function(x, ..., na.rm = FALSE){
+  definition=function(object, ..., na.rm = FALSE){
+    x <- object
     reps <- dim(x@results$individuals$N)[3]-2
     #Calculate true values
     strata.names <- x@region@strata.name
@@ -112,79 +113,101 @@ setMethod(
 
     #Create summary tables
     capture <- array(NA, dim = c(reps, length(true.N.individuals)))
+    capture.D <- array(NA, dim = c(reps, length(true.D.individuals)))
+    zero.n <- array(NA, dim = c(reps, length(true.N.individuals)))
     for(strat in seq(along = true.N.individuals)){
       for(i in 1:reps){
         capture[i, strat] <- ifelse(x@results$individuals$N[strat, "lcl", i] < true.N.individuals[strat] & x@results$individuals$N[strat, "ucl", i] > true.N.individuals[strat], TRUE, FALSE)
+        capture.D[i, strat] <- ifelse(x@results$individuals$D[strat, "lcl", i] < true.D.individuals[strat] & x@results$individuals$D[strat, "ucl", i] > true.D.individuals[strat], TRUE, FALSE)
+        zero.n[i, strat] <- ifelse(x@results$individuals$summary[strat, "n", i] == 0, TRUE, FALSE)
       }
     }
     percent.capture <- (apply(capture, 2, sum)/nrow(capture))*100
-    individual.N.est <- data.frame(Truth = true.N.individuals, Estimate = x@results$individuals$N[,"Estimate","mean"], percent.bias = abs(true.N.individuals - x@results$individuals$N[,"Estimate","mean"])/true.N.individuals*100, lcl = x@results$individuals$N[,"lcl","mean"], ucl = x@results$individuals$N[,"ucl","mean"], percent.CI.capture = percent.capture)
+    percent.capture.D <- (apply(capture.D, 2, sum)/nrow(capture.D))*100    
+    zero.n <- apply(zero.n, 2, sum)
+    individual.summary <- data.frame(mean.Cover.Area = x@results$individuals$summary[,"CoveredArea","mean"], 
+                                     mean.Effort = x@results$individuals$summary[,"Effort","mean"],
+                                     mean.n = x@results$individuals$summary[,"n","mean"],
+                                     zero.n = zero.n,
+                                     mean.ER = x@results$individuals$summary[,"ER","mean"],
+                                     mean.se.ER = x@results$individuals$summary[,"se.ER","mean"],
+                                     sd.mean.ER = x@results$individuals$summary[,"ER","sd"])
+    individual.N <- data.frame(Truth = true.N.individuals, 
+                                   mean.Estimate = x@results$individuals$N[,"Estimate","mean"], 
+                                   percent.bias = abs(true.N.individuals - x@results$individuals$N[,"Estimate","mean"])/true.N.individuals*100, 
+                                   #lcl = x@results$individuals$N[,"lcl","mean"], 
+                                   #ucl = x@results$individuals$N[,"ucl","mean"], 
+                                   percent.CI.capture = percent.capture,
+                                   mean.se = x@results$individuals$N[,"se","mean"],
+                                   sd.of.means = x@results$individuals$N[,"Estimate","sd"])
+    individual.D <- data.frame(Truth = true.D.individuals, 
+                                   mean.Estimate = x@results$individuals$D[,"Estimate","mean"], 
+                                   percent.bias = abs(true.D.individuals - x@results$individuals$D[,"Estimate","mean"])/true.D.individuals*100, 
+                                   #lcl = x@results$individuals$N[,"lcl","mean"], 
+                                   #ucl = x@results$individuals$N[,"ucl","mean"], 
+                                   percent.CI.capture = percent.capture.D,
+                                   mean.se = x@results$individuals$D[,"se","mean"],
+                                   sd.of.means = x@results$individuals$D[,"Estimate","sd"])
     
-    #print(individual.N.est)
-    return(percent.capture)
-      
-    
-    #Display summaries
-    cat("\nRegion: ", x@region@region.name) 
-    cat("\n\nSummary for Individuals")      
-    cat("\n\nSummary Statistics")
-    cat("\n\nMean values across bootstrap repetitions\n\n")
-    print(x@results$individuals$summary[,,"mean"])
-    cat("\nStandard deviations of values across bootstrap repetitions\n\n")
-    print(x@results$individuals$summary[,,"sd"])
-    cat("\n     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-    cat("\nTrue N:", true.N.individuals, "\n")
-    cat("\nN Estimates\n")
-    cat("\nMean values across bootstrap repetitions\n\n")
-    print(x@results$individuals$N[,,"mean"])
-    cat("\nStandard deviations of values across bootstrap repetitions\n\n")
-    print(x@results$individuals$N[,,"sd"])
-    cat("\n     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-    cat("\nTrue D:", true.D.individuals, "\n")
-    cat("\nD Estimates\n")
-    cat("\nMean values across bootstrap repetitions\n\n")
-    print(x@results$individuals$D[,,"mean"])
-    cat("\nStandard deviations of values across bootstrap repetitions\n\n")
-    print(x@results$individuals$D[,,"sd"])  
-    cat("\n     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-    cat("\n     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
     if(!is.null(x@results$clusters)){
-      cat("\n\nSummary for Clusters")      
-      cat("\n\nSummary Statistics")
-      cat("\n\nMean values across bootstrap repetitions\n\n")
-      print(x@results$clusters$summary[,,"mean"])
-      cat("\nStandard deviations of values across bootstrap repetitions\n\n")
-      print(x@results$clusters$summary[,,"sd"])
-      cat("\n     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-      cat("\nTrue N:", true.N.clusters, "\n")
-      cat("\nN Estimates\n")
-      cat("\nMean values across bootstrap repetitions\n\n")
-      print(x@results$clusters$N[,,"mean"])
-      cat("\nStandard deviations of values across bootstrap repetitions\n\n")
-      print(x@results$clusters$N[,,"sd"])
-      cat("\n     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-      cat("\nTrue D:", true.D.clusters, "\n")
-      cat("\nD Estimates\n")
-      cat("\nMean values across bootstrap repetitions\n\n")
-      print(x@results$clusters$D[,,"mean"])
-      cat("\nStandard deviations of values across bootstrap repetitions\n\n")
-      print(x@results$clusters$D[,,"sd"])  
-      cat("\n     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~") 
-      cat("\n\nTrue Expected.S:", true.expected.s, "\n")
-      cat("\nD Estimates\n")
-      cat("\nMean values across bootstrap repetitions\n\n")
-      print(x@results$expected.size[,,"mean"])
-      cat("\nStandard deviations of values across bootstrap repetitions\n\n")
-      print(x@results$expected.size[,,"sd"])  
-      cat("\n     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-      cat("\n     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+      capture <- array(NA, dim = c(reps, length(true.N.individuals)))
+      capture.D <- array(NA, dim = c(reps, length(true.D.individuals)))
+      zero.n <- array(NA, dim = c(reps, length(true.N.individuals)))
+      for(strat in seq(along = true.N.clusters)){
+        for(i in 1:reps){
+          capture[i, strat] <- ifelse(x@results$clusters$N[strat, "lcl", i] < true.N.clusters[strat] & x@results$clusters$N[strat, "ucl", i] > true.N.clusters[strat], TRUE, FALSE)
+          capture.D[i, strat] <- ifelse(x@results$clusters$D[strat, "lcl", i] < true.D.clusters[strat] & x@results$clusters$D[strat, "ucl", i] > true.D.clusters[strat], TRUE, FALSE)
+          zero.n[i, strat] <- ifelse(x@results$clusters$summary[strat, "n", i] == 0, TRUE, FALSE)
+        }
+      }
+      percent.capture <- (apply(capture, 2, sum)/nrow(capture))*100
+      percent.capture.D <- (apply(capture.D, 2, sum)/nrow(capture.D))*100    
+      zero.n <- apply(zero.n, 2, sum)
+      cluster.summary <- data.frame(mean.Cover.Area = x@results$clusters$summary[,"CoveredArea","mean"], 
+                                       mean.Effort = x@results$clusters$summary[,"Effort","mean"],
+                                       mean.n = x@results$clusters$summary[,"n","mean"],
+                                       zero.n = zero.n,
+                                       mean.k = x@results$clusters$summary[,"k","mean"],
+                                       mean.ER = x@results$clusters$summary[,"ER","mean"],
+                                       mean.se.ER = x@results$clusters$summary[,"se.ER","mean"],
+                                       sd.mean.ER = x@results$clusters$summary[,"ER","sd"])
+      cluster.N <- data.frame(Truth = true.N.clusters, 
+                                     mean.Estimate = x@results$clusters$N[,"Estimate","mean"], 
+                                     percent.bias = abs(true.N.clusters - x@results$clusters$N[,"Estimate","mean"])/true.N.clusters*100, 
+                                     #lcl = x@results$clusters$N[,"lcl","mean"], 
+                                     #ucl = x@results$clusters$N[,"ucl","mean"], 
+                                     percent.CI.capture = percent.capture,
+                                     mean.se = x@results$clusters$N[,"se","mean"],
+                                     sd.of.means = x@results$clusters$N[,"Estimate","sd"])
+      cluster.D <- data.frame(Truth = true.D.clusters, 
+                                     mean.Estimate = x@results$clusters$D[,"Estimate","mean"], 
+                                     percent.bias = abs(true.D.clusters - x@results$clusters$D[,"Estimate","mean"])/true.D.clusters*100, 
+                                     #lcl = x@results$clusters$N[,"lcl","mean"], 
+                                     #ucl = x@results$clusters$N[,"ucl","mean"], 
+                                     percent.CI.capture = percent.capture.D,
+                                     mean.se = x@results$clusters$D[,"se","mean"],
+                                     sd.of.means = x@results$clusters$D[,"Estimate","sd"])
+      expected.size <- data.frame(Truth = true.expected.s,
+                                  mean.Expected.S = x@results$expected.size[,"Expected.S","mean"],
+                                  percent.bias = abs(true.expected.s - x@results$expected.size[,"Expected.S","mean"])/true.expected.s*100,
+                                  mean.se.ExpS = x@results$expected.size[,"se.Expected.S","mean"],
+                                  sd.mean.ExpS = x@results$expected.size[,"Expected.S","sd"]) 
+      clusters <- list(summary = cluster.summary, N = cluster.N, D = cluster.D)   
     }
-    cat("\n\nDetection Function Values\n")
-    cat("\nMean values across bootstrap repetitions\n\n")
-    print(x@results$Detection[,,"mean"])
-    cat("\nStandard deviations of values across bootstrap repetitions\n\n")
-    print(x@results$Detection[,,"sd"])     
-    invisible(x)
+    detection <- data.frame(mean.observed.Pa = x@results$Detection[,"True.Pa","mean"], 
+                            mean.Pa = x@results$Detection[,"Pa","mean"], 
+                            sd.Pa = x@results$Detection[,"Pa","sd"],
+                            mean.ESW = x@results$Detection[,"ESW","mean"],  
+                            sd.ESW = x@results$Detection[,"ESW","sd"])
+    
+    #print(individual.N.est)  
+    individuals <- list(summary = individual.summary, N = individual.N, D = individual.D)
+    if(!is.null(x@results$clusters)){
+      summary.x <- new(Class = "Simulation.Summary", region.name = x@region@region.name, individuals = individuals, clusters = clusters, expected.size = expected.size, detection = detection)
+    }else{  
+      summary.x <- new(Class = "Simulation.Summary", region.name = x@region@region.name, individuals = individuals, detection = detection)
+    } 
+    return(summary.x)
   }    
 )
 
@@ -335,43 +358,44 @@ setMethod(
                                require(mrds)
                                require(shapefiles)})
       #clusterEvalQ(myCluster, require(DSsim))
-      results <- parLapply(myCluster, X = as.list(1:object@reps), fun = run.sim.in.parallel, object = object)
+      results <- parLapply(myCluster, X = as.list(1:object@reps), fun = single.simulation.loop, object = object)
       object <- accumulate.PP.results(simulation = object, results = results)
       stopCluster(myCluster)
     }else{
-      for(i in 1:object@reps){  
-        message("file index = ", object@design@file.index, ", filename = ", object@design@filenames[object@design@file.index])
-        #generate population
-        population <- generate.population(object)
-        #generate transects
-        transects <- generate.transects(object)
-        #make survey object
-        if(object@double.observer){
-          message("Double observer simulations not supported at present")#move this to the checking of the simulation object
-        }else{
-          if(inherits(object@design, "LT.Design")){
-            survey <- new(Class = "Single.Obs.LT.Survey", population = population, line.transect = transects, rad.truncation = object@detectability@rad.truncation, perp.truncation = object@detectability@perp.truncation)
-          }
-        }
-        #simulate survey
-        survey.data <- simulate.survey(object = survey, dht.table = TRUE, region = object@region)
-        ddf.data <- survey.data$ddf.data 
-        obs.table <- survey.data$obs.table
-        sample.table <- survey.data$sample.table
-        region.table <- survey.data$region.table 
-        #analyse survey
-        ddf.results <- run.analysis(object, ddf.data)
-        object@results$Detection <- store.ddf.results(object@results$Detection, ddf.results, i)
-        compute.dht = TRUE
-        if(compute.dht){
-          dht.results <- dht(ddf.results, region.table@region.table, sample.table@sample.table, obs.table@obs.table)
-          object@results <- store.dht.results(object@results, dht.results, i, object@population.description@size)                                           
-        }
-        object@design@file.index <- object@design@file.index + 1
+      for(i in 1:object@reps){ 
+        object@results <- single.simulation.loop(i, object) 
+#        message("file index = ", object@design@file.index, ", filename = ", object@design@filenames[object@design@file.index])
+#        #generate population
+#        population <- generate.population(object)
+#        #generate transects
+#        transects <- generate.transects(object)
+#        #make survey object
+#        if(object@double.observer){
+#          message("Double observer simulations not supported at present")#move this to the checking of the simulation object
+#        }else{
+#          if(inherits(object@design, "LT.Design")){
+#            survey <- new(Class = "Single.Obs.LT.Survey", population = population, line.transect = transects, rad.truncation = object@detectability@rad.truncation, perp.truncation = object@detectability@perp.truncation)
+#          }
+#        }
+#        #simulate survey
+#        survey.data <- simulate.survey(object = survey, dht.table = TRUE, region = object@region)
+#        ddf.data <- survey.data$ddf.data 
+#        obs.table <- survey.data$obs.table
+#        sample.table <- survey.data$sample.table
+#        region.table <- survey.data$region.table 
+#        #analyse survey
+#        ddf.results <- run.analysis(object, ddf.data)
+#        object@results$Detection <- store.ddf.results(object@results$Detection, ddf.results, i)
+#        compute.dht = TRUE
+#        if(compute.dht){
+#          dht.results <- dht(ddf.results, region.table@region.table, sample.table@sample.table, obs.table@obs.table)
+#          object@results <- store.dht.results(object@results, dht.results, i, object@population.description@size)                                           
+#        }
+#        object@design@file.index <- object@design@file.index + 1
       }
     }  
-    #object@results <- add.summary.results(object@results)
-    #object@design@file.index <- orig.file.index
+    object@results <- add.summary.results(object@results)
+    object@design@file.index <- orig.file.index
     return(object)  
   }  
 )

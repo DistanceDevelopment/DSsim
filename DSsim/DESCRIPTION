@@ -58,5 +58,6 @@ Collate:
     'get.surface.constant.R' 
     'get.ave.density.R' 
     'get.surface.gam.R' 
-    'run.sim.in.parallel.R'   
+    'single.simulation.loop.R'   
     'accumulate.PP.results.R'
+    'Simulation.Summary.R'

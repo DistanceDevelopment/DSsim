@@ -157,13 +157,20 @@ setGeneric(name = "hist", def = function(x, ...){standardGeneric ("hist")})
 #' @export
 #' @author Laura Marshall 
 #' @docType methods
+setGeneric("summary")
+
 #' setGeneric(name = "summary", def = function(object, ...){standardGeneric ("summary")})
 
-#' S4 generic method to access the selection criteria
+
+#' S4 generic method to add a hotspot to the density grid
 #'
-#' Provides the selection criteria value
+#' Uses a Gaussian decay around a central location to add a hotspot to the 
+#' density grid.
 #'
-#' @param object an object of class Simulation or DDF.Analysis
+#' @param object an object of class Simulation or Density
+#' @param centre an x,y-coordinate giving the centre of the hotspot
+#' @param radius a value giving the scale parameter for a gaussian decay
+#' @param amplitude the height of the hotspot at its centre
 #' @usage get.criteria(object)
 #' @return the model selection criteria value
 #' @docType methods

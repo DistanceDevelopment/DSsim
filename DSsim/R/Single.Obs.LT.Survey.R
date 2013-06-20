@@ -45,6 +45,7 @@ setMethod(
     population <- object@population
     line.transect <- object@line.transect
     poss.distances <- calc.poss.detect.dists(population, line.transect, perp.truncation = object@perpendicular.truncation, rad.truncation = object@radial.truncation)
+    n.in.covered <- nrow(poss.distances)
     dist.data <- simulate.detections(poss.distances, population@detectability)
     dist.data <- rename.duplicates(dist.data)
     ddf.data.obj <- new(Class = "Single.Obs.DDF.Data", data = dist.data)
@@ -54,9 +55,9 @@ setMethod(
       obs.table <- data.frame(object = dist.data$object, Sample.Label = dist.data$transect.ID)
       obs.table <- merge(obs.table, sample.table@sample.table, by = "Sample.Label")[,c("object","Sample.Label","Region.Label")] 
       obs.table.obj <- new(Class = "Obs.Table", data = obs.table)
-      return(list(ddf.data = ddf.data.obj, obs.table = obs.table.obj, sample.table = sample.table, region.table = region.table))
+      return(list(ddf.data = ddf.data.obj, obs.table = obs.table.obj, sample.table = sample.table, region.table = region.table, n.in.covered = n.in.covered))
     }else{
-      return(list(ddf.data = ddf.data.obj))
+      return(list(ddf.data = ddf.data.obj, n.in.covered = n.in.covered))
     }
   }    
 ) 
