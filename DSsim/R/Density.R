@@ -15,11 +15,11 @@ setClass("Density", representation(region.name = "character", strata.name = "cha
 setMethod(
   f="initialize",
   signature="Density",
-  definition=function(.Object, region, strata.name = character(0), density.surface = NULL, x.space, y.space, constant = NULL, shapefile = NULL, density.gam = NULL, jit = 1){
+  definition=function(.Object, region, strata.name = character(0), density.surface = list(), x.space, y.space, constant = NULL, shapefile = NULL, density.gam = NULL, jit = 1){
     #Input pre-processing
-    if(is.null(density.surface) & !is.null(constant)){
+    if(length(density.surface) == 0 & !is.null(constant)){
       density.surface <- get.surface.constant(region, x.space, y.space, constant, jit)
-    }else if(is.null(density.surface) & !is.null(density.gam)){
+    }else if(length(density.surface) == 0 & !is.null(density.gam)){
       density.surface <- get.surface.gam(region, x.space, y.space, gam.model = density.gam)
     }else{      
     }
