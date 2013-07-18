@@ -16,11 +16,7 @@
 #' @author Laura Marshall
 #'
 make.region <- function(region.name, strata.name = character(0), no.strata = NA, area = numeric(0), shapefile = NULL, coords = list(), gaps = list()){
-  #if(is.na(no.strata) | no.strata == 1){
     region <- new(Class="Region", region.name = region.name, strata.name = strata.name, shapefile = shapefile)
-  #}else if(no.strata > 1){
-  #  region <- new(Class="Strata", region.name = region.name, shapefile = shapefile, no.strata = no.strata)
-  #}
   return(region)
 }
   
@@ -41,7 +37,7 @@ make.region <- function(region.name, strata.name = character(0), no.strata = NA,
 #'                Line          \tab Zigzag         \tab Equal Spaced \tab \cr
 #'                Point         \tab Systematic     \tab              \tab \cr
 #'                Point         \tab Random         \tab              \tab \cr}
-#'
+#'                                                                                     
 #' @param transect.type character variable specifying either "Line" or "Point"
 #' @param design.details a list describing the type of design. See details.
 #' @param region the name of the Region object where the survey is to be carried out.
@@ -99,15 +95,15 @@ make.design <- function(transect.type, design.details, region, design.axis = num
 #'   ensure that the grid covers the entire survey region.
 #' @return object of either class Density 
 #' @export
-#' @author Laura Marshall
+#' @author Laura Marshall                         
 #'
-make.density <- function(region, strata = character(0), density.surface = NULL, x.space, y.space, constant = NULL, shapefile = NULL, density.gam = NULL, jit = 1){
+make.density <- function(region, strata = character(0), density.surface = list(), x.space, y.space, constant = NULL, shapefile = NULL, density.gam = NULL, jit = 1){
   if(!is.null(constant)){
     if(length(region@strata.name) > 0 & length(constant) != length(region@strata.name)){
       message("Error: the length of constant does not correspond to the number of strata")
     }
   }
-  density <- new(Class = "Density", region = region, strata.name = strata, x.space = x.space, y.space = y.space, constant = constant, shapefile = shapefile, density.gam = density.gam, jit = jit)
+  density <- new(Class = "Density", region = region, strata.name = strata, density.surface = density.surface, x.space = x.space, y.space = y.space, constant = constant, shapefile = shapefile, density.gam = density.gam, jit = jit)
  return(density)
 }
 
@@ -190,6 +186,8 @@ make.ddf.analysis <- function(dsmodel, mrmodel = NULL, criteria){
 #' Creates an object of class Simulation
 #'
 #' @param reps number of times the simulation should be repeated
+#' @param single.transect.set logical specifying whether the transects should
+#'   be kept the same throughout the simulation.
 #' @param double.observer logical value indicating TRUE for a double observer
 #'   mark recapture survey or FALSE for normal distance sampling.
 #' @param region.obj an object of class Region
@@ -201,7 +199,7 @@ make.ddf.analysis <- function(dsmodel, mrmodel = NULL, criteria){
 #' @export
 #' @author Laura Marshall
 #'
-make.simulation <- function(reps, double.observer = FALSE, region.obj, design.obj, population.description.obj, detectability.obj, ddf.analyses.list){
+make.simulation <- function(reps, single.transect.set = FALSE, double.observer = FALSE, region.obj, design.obj, population.description.obj, detectability.obj, ddf.analyses.list){
   #Make the results arrays and store in a list
   no.strata <- ifelse(length(region.obj@strata.name) > 0, length(region.obj@strata.name)+1, 1) 
   if(length(region.obj@strata.name) > 0){
@@ -224,7 +222,7 @@ make.simulation <- function(reps, double.observer = FALSE, region.obj, design.ob
     results <- list(individuals = individuals, Detection = detection)
   }
   #create a simulation object
-  simulation <- new(Class = "Simulation", reps = reps, double.observer = double.observer, region = region.obj, design = design.obj, population.description = population.description.obj, detectability = detectability.obj, ddf.analyses = ddf.analyses.list, results = results)
+  simulation <- new(Class = "Simulation", reps = reps, single.transect.set = single.transect.set, double.observer = double.observer, region = region.obj, design = design.obj, population.description = population.description.obj, detectability = detectability.obj, ddf.analyses = ddf.analyses.list, results = results)
   return(simulation)
 }
 
