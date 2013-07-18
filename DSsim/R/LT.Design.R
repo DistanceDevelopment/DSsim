@@ -61,14 +61,15 @@ setValidity("LT.Design",
 setMethod(
   f="generate.transects",
   signature="LT.Design",
-  definition=function(object, read.from.file = TRUE, write.to.file = FALSE, region = NULL){
+  definition=function(object, read.from.file = TRUE, write.to.file = FALSE, region = NULL, index = NULL){
     if(is.null(region) | class(region) != "Region"){
       region <- object@region.obj
       region <- get(region, pos = 1)
     }
+    file.index <- ifelse(is.null(index), object@file.index, index)
     #Input pre-processing
     if(read.from.file){
-      shapefile <- read.shapefile(paste(object@path, "/", object@filenames[object@file.index], sep=""))
+      shapefile <- read.shapefile(paste(object@path, "/", object@filenames[file.index], sep=""))
       #lt.survey <- make.line.transect(region = region, shapefile = shapefile)
       line.transect <- new(Class = "Line.Transect", region = region, shapefile = shapefile)
     }else{
@@ -91,35 +92,25 @@ setMethod(
 #  }    
 #) 
 
-setMethod(
-  f="plot",
-  signature="LT.Design",
-  definition=function(x, y, col = 1){
-    plot.transect <- function(sampler.info, col){
-      lines(x = c(sampler.info[["start.X"]],sampler.info[["end.X"]]), y = c(sampler.info[["start.Y"]],sampler.info[["end.Y"]]), col = col)
-      invisible(sampler.info)  
-    }
-    sampler.info <- x@sampler.info
-    sampler.info$ID <- as.numeric(sampler.info$ID)
-    apply(as.matrix(sampler.info), 1, FUN = plot.transect, col = col)
-    invisible()
-  }
-)
+#setMethod(
+#  f="plot",
+#  signature="LT.Design",
+#  definition=function(x, y, col = 1){
+#    plot.transect <- function(sampler.info, col){
+#      lines(x = c(sampler.info[["start.X"]],sampler.info[["end.X"]]), y = c(sampler.info[["start.Y"]],sampler.info[["end.Y"]]), col = col)
+#      invisible(sampler.info)  
+#    }
+#    sampler.info <- x@sampler.info
+#    sampler.info$ID <- as.numeric(sampler.info$ID)                                         
+#    apply(as.matrix(sampler.info), 1, FUN = plot.transect, col = col)
+#    invisible()
+#  }
+#)
 
 ################################################################################
 # ASSOCIATED METHODS
 ################################################################################
 
-get.shapefile.names <- function(path){
-  #get all filenames in folder
-  all.filenames <- list.files(path)
-  #remove file extenstions
-  all.filenames.list <- strsplit(all.filenames, split="[.]")
-  all.filenames <- lapply(all.filenames.list, function(x){return(x[1])})
-  all.filenames <- as.character(all.filenames)
-  #find unique shapefiles 
-  unique.shapefiles <- unique(all.filenames)
-  return(unique.shapefiles)
-}
+
 
 
