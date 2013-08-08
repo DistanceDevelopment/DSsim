@@ -14,6 +14,7 @@
 #' @keywords classes
 #' @export
 setClass("Simulation", representation(reps = "numeric",
+                                      single.transect.set = "logical",
                                       double.observer = "logical",                                        
                                       region = "Region",
                                       design = "Survey.Design",
@@ -27,9 +28,10 @@ setClass("Simulation", representation(reps = "numeric",
 setMethod(
   f="initialize",   
   signature="Simulation",
-  definition=function(.Object, reps, double.observer = FALSE, region, design, population.description, detectability, ddf.analyses, results){
+  definition=function(.Object, reps, single.transect.set = FALSE, double.observer = FALSE, region, design, population.description, detectability, ddf.analyses, results){
     #Set slots
     .Object@reps            <- reps
+    .Object@single.transect.set <- single.transect.set
     .Object@double.observer <- double.observer    
     .Object@region          <- region
     .Object@design          <- design
@@ -52,12 +54,15 @@ setValidity("Simulation",
     }
     design <- object@design
     transects.from.file <- ifelse(length(design@path) == 1, TRUE, FALSE)
-    if(transects.from.file){
+    if(transects.from.file & !object@single.transect.set){
       no.files <- length(design@filenames)
       if(object@reps > no.files){
         message("You have specified a higher number of repetitions than you have provided transect shapefiles at: ", design@path)
         return(FALSE)
       }    
+    }else if(!transects.from.file){
+      message("The generation of transects is not currently implemented in R")
+      return(FALSE)
     }     
     return(TRUE)
   }
@@ -266,17 +271,17 @@ setMethod(
 setMethod(
   f="simulate.survey",
   signature="Simulation",
-  definition=function(object, dht.tables = TRUE, ...){       
+  definition=function(object, dht.tables = FALSE, ...){       
     population <- generate.population(object) 
     transects  <- generate.transects(object)
     if(object@double.observer){
       message("Double observer simulations not supported at present")#move this to the checking of the simulation object
     }else{
       if(inherits(object@design, "LT.Design")){
-        survey <- new(Class = "Single.Obs.LT.Survey", population = population, line.transect = transects, rad.truncation = object@detectability@rad.truncation, perp.truncation = object@detectability@perp.truncation)
+        survey <- new(Class = "Single.Obs.LT.Survey", population = population, line.transect = transects, perp.truncation = object@detectability@truncation)
       }
     }
-    survey.data <- simulate.survey(object = survey, dht.table = dht.tables, region = object@region)
+    survey.data <- simulate.survey(object = survey, dht.tables = dht.tables, region = object@region)
     ddf.data <- survey.data$ddf.data 
     if(dht.tables){
       obs.table <- survey.data$obs.table
@@ -377,7 +382,7 @@ setMethod(
 #            survey <- new(Class = "Single.Obs.LT.Survey", population = population, line.transect = transects, rad.truncation = object@detectability@rad.truncation, perp.truncation = object@detectability@perp.truncation)
 #          }
 #        }
-#        #simulate survey
+#        #simulate survey           
 #        survey.data <- simulate.survey(object = survey, dht.table = TRUE, region = object@region)
 #        ddf.data <- survey.data$ddf.data 
 #        obs.table <- survey.data$obs.table
