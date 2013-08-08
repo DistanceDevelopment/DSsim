@@ -11,32 +11,40 @@
 #' @keywords classes
 #' @export
 setClass(Class = "Region", 
-         representation(region.name = "character", strata.name = "character", area = "numeric", box = "numeric", coords = "list", gaps = "list")
+         representation(region.name = "character", 
+                        strata.name = "character",
+                        units = "character", 
+                        area = "numeric", 
+                        box = "numeric", 
+                        coords = "list", 
+                        gaps = "list")
 )
 
 setMethod(
   f="initialize",
   signature="Region",
-  definition=function(.Object, region.name = character(0), strata.name = character(0), area = numeric(0), shapefile = NULL, coords = list(), gaps = list()){
+  definition=function(.Object, region.name = character(0), strata.name = character(0), units, area, shapefile = NULL, coords, gaps){
     #Input pre-processing
     boundbox <- numeric(0)
     if(length(coords) == 0 & !is.null(shapefile)){
+      #if no coordinates have been supplied then it uses the shapefile
       polygons <- coords.from.shapefile(shapefile)
       coords <- polygons$coords
       gaps <- polygons$gaps
       boundbox <- get.bound.box(shapefile)
+    }else if(length(coords) == 0 & is.null(shapefile)){
+      #complains if neither the coordinates or the shapefile are supplied
+      message("Error: You must provide either coordinates or a shapefile")
+      return(NULL)
     }
-    #if(units == "m"){
-    #  convert.units
-    #}else if(units != "km"){
-    #  stop("Unsupported units", .call = FALSE)
-    #}
+    #calculates the strata areas
     if(length(area) == 0){
       area <- calc.area(coords, gaps)
     }
     #Set slots
     .Object@region.name <- region.name
     .Object@strata.name <- strata.name
+    .Object@units       <- units
     .Object@area        <- area
     .Object@box         <- boundbox
     .Object@coords      <- coords
@@ -72,17 +80,41 @@ setGeneric(name = "get.area", def = function(object){standardGeneric ("get.area"
 setMethod(
   f="plot",
   signature="Region",
-  definition=function(x, y, type = "l", add = FALSE, ...){
+  definition=function(x, y, type = "l", add = FALSE, plot.units = character(0),...){
     plot.list <- function(list.coords, type, col = 1){
       lapply(list.coords, FUN = lines, type = type, col = col)
-      invisible(list.coords)
+      invisible(list.coords)                          
     }
-    #Input pre-processing
-    if(!add){
-      plot(c(x@box[["xmin"]], x@box[["xmax"]]), c(x@box[["ymin"]], x@box[["ymax"]]), col = "white", xlab = "X-coords (units to be added)", ylab = "Y-coords (units to be added)", main = x@region.name, ...) 
+    #Set up plot
+    if(length(plot.units) == 0){
+      plot.units <- region@units
+    }
+    if(!add){      
+      xlabel <- paste("X-coords (",plot.units[1],")", sep = "")
+      ylabel <- paste("Y-coords (",plot.units[1],")", sep = "")
+      plot(c(x@box[["xmin"]], x@box[["xmax"]]), c(x@box[["ymin"]], x@box[["ymax"]]), col = "white", xlab = xlabel, ylab = ylabel, main = x@region.name, yaxt = "n", xaxt = "n", ...)
+      xticks <- axTicks(1)
+      yticks <- axTicks(2)
+      #Set up axes
+      if(plot.units != region@units){
+        #convert units
+        if(region@units == "m" & plot.units == "km"){ 
+          axis(1, at = xticks, labels = xticks/1000)
+          axis(2, at = yticks, labels = yticks/1000)
+        }else if(region@units == "km" & plot.units == "m"){
+          axis(1, at = xticks, labels = xticks*1000)
+          axis(2, at = yticks, labels = yticks*1000)
+        }else{
+          message("These units are not currently supported.")
+        }
+      }else{
+        #no unit conversion needed
+        axis(1, at = xticks, labels = xticks)
+        axis(2, at = yticks, labels = yticks)
+      }
     }
     lapply(x@coords, FUN = plot.list, type = type)
-    lapply(x@gaps, FUN = plot.list, type = type, col = 8)
+    lapply(x@gaps, FUN = plot.list, type = type, col = 1)
     invisible(x)
   }    
 ) 
@@ -103,49 +135,9 @@ setMethod(
 #                  return(region.name)
 #})
 
-################################################################################
-# ASSOCIATED METHODS
-################################################################################
 
-calc.area <- function(coords, gaps){
-  list.area <- function(coords.list){
-    matrix.coords <- lapply(coords.list, as.matrix)
-    areas <- lapply(matrix.coords, areapl)
-    areas <- unlist(areas)
-    total.area <- sum(areas) 
-    return(total.area)
-  }
-  require(splancs)
-  
-  gross.area <- unlist(lapply(coords, list.area))
-  gap.area <- unlist(lapply(gaps, list.area))
-  
-#  temp.coords <- lapply(coords, as.matrix)
-#  gross.area <- lapply(temp.coords, areapl)
-#  gross.area <- as.numeric(gross.area)
-#  gross.area <- sum(gross.area)
-#  temp.gaps <- lapply(gaps, as.matrix)
-#  gap.area <- lapply(temp.gaps, areapl)
-#  gap.area <- as.numeric(gap.area)
-#  gap.area <- sum(gap.area)
-  
-  net.area <- gross.area - gap.area
-  return(net.area)
-}
 
-get.bound.box <- function(shapefile){
-  bound.box <- shapefile$shp$shp[[1]]$box
-  if(length(shapefile$shp$shp) == 1){
-    return(bound.box)
-  }
-  for(strat in seq(along = shapefile$shp$shp)[-1]){
-    bound.box <- rbind(bound.box, shapefile$shp$shp[[strat]]$box)  
-  }     
-  bound.box <- as.array(bound.box)
-  dimnames(bound.box)[[1]] <- seq(along = shapefile$shp$shp)
-  bound.box <- as.data.frame(bound.box)
-  total.bound.box <- c(xmin = min(bound.box[,"xmin"]), ymin = min(bound.box[,"ymin"]), xmax = max(bound.box[,"xmax"]), ymax = max(bound.box[,"ymax"]))
-  return(total.bound.box) 
-}
+
+
 
 
