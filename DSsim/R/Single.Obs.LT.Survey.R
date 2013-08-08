@@ -11,7 +11,7 @@ setClass(Class = "Single.Obs.LT.Survey",
 setMethod(
   f="initialize",
   signature="Single.Obs.LT.Survey",
-  definition=function(.Object, population, line.transect, rad.truncation, perp.truncation){
+  definition=function(.Object, population, line.transect, perp.truncation){
     #Input pre-processing
     #full.data <- calculate.distances(get(population), get(survey))
     #dist.data <- simulate.detection(full.data, pop@detectability)
@@ -20,7 +20,6 @@ setMethod(
     #.Object@full.data     <- full.data
     .Object@population    <- population
     .Object@line.transect <- line.transect
-    .Object@radial.truncation <- rad.truncation
     .Object@perpendicular.truncation <- perp.truncation
     #Check object is valid
     validObject(.Object)
@@ -41,10 +40,10 @@ setValidity("Single.Obs.LT.Survey",
 setMethod(
   f="simulate.survey",
   signature="Single.Obs.LT.Survey",
-  definition=function(object, dht.tables = TRUE, ...){
+  definition=function(object, dht.tables = FALSE, ...){
     population <- object@population
     line.transect <- object@line.transect
-    poss.distances <- calc.poss.detect.dists(population, line.transect, perp.truncation = object@perpendicular.truncation, rad.truncation = object@radial.truncation)
+    poss.distances <- calc.poss.detect.dists(population, line.transect, perp.truncation = object@perpendicular.truncation)
     n.in.covered <- nrow(poss.distances)
     dist.data <- simulate.detections(poss.distances, population@detectability)
     dist.data <- rename.duplicates(dist.data)
