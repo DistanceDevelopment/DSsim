@@ -11,10 +11,9 @@
 #' @section Objects from the Class: Objects which inherit from this class 
 #' are usually created internally, however, an instance is also contained in the 
 #' object returned from \code{simulate.survey(simulation)}
-#' @keywords classes
+#' @keywords classes         
 #' @export
-setClass("Survey", representation(population = "Population",
-                                  radial.truncation = "numeric", "VIRTUAL")) 
+setClass("Survey", representation(population = "Population", "VIRTUAL")) 
 
 ################################################################################
 # GENERIC METHODS
