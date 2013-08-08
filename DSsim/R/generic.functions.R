@@ -73,7 +73,7 @@ setGeneric("generate.population", function(object, ...){standardGeneric ("genera
 #' @return an object of class Population
 #' @export
 #' @docType methods
-setGeneric("generate.transects", function(object, read.from.file = TRUE, write.to.file = FALSE, region = NULL){standardGeneric ("generate.transects")})
+setGeneric("generate.transects", function(object, read.from.file = TRUE, write.to.file = FALSE, region = NULL, ...){standardGeneric ("generate.transects")})
 
 #' S4 generic method to generate a region table
 #'
@@ -109,7 +109,7 @@ setGeneric(name = "create.sample.table", def = function(object){standardGeneric 
 #' @return an object of class Region.Table
 #' @export
 #' @docType methods
-setGeneric(name = "simulate.survey", def = function(object, dht.tables, ...){standardGeneric ("simulate.survey")})
+setGeneric(name = "simulate.survey", def = function(object, dht.tables = FALSE, ...){standardGeneric ("simulate.survey")})
 
 
 #' S4 generic method to access the selection criteria
@@ -174,5 +174,5 @@ setGeneric("summary")
 #' @usage get.criteria(object)
 #' @return the model selection criteria value
 #' @docType methods
-setGeneric(name = "add.hotspot", def = function(object, centre, radius, amplitude){standardGeneric ("add.hotspot")})
+setGeneric(name = "add.hotspot", def = function(object, centre, sigma, amplitude){standardGeneric ("add.hotspot")})
 
