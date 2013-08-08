@@ -4,14 +4,16 @@ single.simulation.loop <- function(i, object){
     #generate population
     population <- generate.population(object)
     #generate transects
-    object@design@file.index <- i
+    if(!object@single.transect.set){
+      object@design@file.index <- i
+    }
     transects <- generate.transects(object)
     #make survey object
     if(object@double.observer){
       message("Double observer simulations not supported at present")#move this to the checking of the simulation object
     }else{
       if(inherits(object@design, "LT.Design")){
-        survey <- new(Class = "Single.Obs.LT.Survey", population = population, line.transect = transects, rad.truncation = object@detectability@rad.truncation, perp.truncation = object@detectability@perp.truncation)
+        survey <- new(Class = "Single.Obs.LT.Survey", population = population, line.transect = transects, perp.truncation = object@detectability@truncation)
       }
     }
     #simulate survey
