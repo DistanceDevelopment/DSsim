@@ -27,7 +27,7 @@ setMethod(
   f="plot",
   signature="Single.Obs.DDF.Data",
   definition=function(x, y, ...){
-    points(x@ddf.dat$x, x@ddf.dat$y, col = 3, pch = 20) 
+    points(x@ddf.dat$x, x@ddf.dat$y, col = 5, pch = 20, cex = 1.5) 
     invisible(x)
   }    
 )
