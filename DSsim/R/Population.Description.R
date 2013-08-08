@@ -3,7 +3,7 @@
 #' Class \code{"Population.Description"} is an S4 class containing a 
 #' description of the population. It provides methods to generate an
 #' example population.
-#'
+#'                                  
 #' @name Population.Description-class
 #' @aliases Population.Description-class generate.population, Population.Description-method
 #' @docType class
@@ -16,12 +16,12 @@ setClass("Population.Description", representation(N           = "numeric",
                                                   region.name = "character",
                                                   size        = "logical",
                                                   size.table  = "data.frame",
-                                                  size.dist   = "character",
-                                                  gen.by.N    = "logical"))
+                                                  gen.by.N    = "logical",
+                                                  D.dist      = "character"))
 setMethod(
   f="initialize",
   signature="Population.Description",
-  definition=function(.Object, N, density, region.obj, size.table, size, gen.by.N = TRUE){
+  definition=function(.Object, N, density, region.obj, size.table, size, gen.by.N = TRUE, D.dist = character(0)){
     #Input pre-processing
     if(!gen.by.N){
       ave.density <- NULL
@@ -39,6 +39,7 @@ setMethod(
     .Object@size.table  <- size.table
     .Object@size        <- size
     .Object@gen.by.N    <- gen.by.N
+    .Object@D.dist      <- D.dist
     #Check object is valid
     validObject(.Object)
     # return object
@@ -74,37 +75,19 @@ setMethod(
   f="generate.population",
   signature="Population.Description",
   definition=function(object, detectability, region.obj = NULL){
+    #If the user has not passed in the region object
     if(class(region.obj) != "Region"){
+      message("Warning: obtaining region object from the global workspace") 
       region.obj <- get(object@region.name)
-    }
-    N <- object@N
-    density.obj <- object@density
-    for(strat in seq(along = density.obj@density.surface)){
-      n.cells <- nrow(density.obj@density.surface[[strat]])
-      probs <- density.obj@density.surface[[strat]][["density"]]/sum(density.obj@density.surface[[strat]][["density"]])
-      #sample more animals than required as some will fall outside the survey region
-      samp <- suppressWarnings(sample(x = 1:n.cells, size = 2*N[strat], replace = TRUE, prob = probs))
-      grid.locations <- density.obj@density.surface[[strat]][samp,]
-      #generate random locations within grid cell
-      rx <- runif(nrow(grid.locations), -density.obj@x.space/2, density.obj@x.space/2)  
-      ry <- runif(nrow(grid.locations), -density.obj@y.space/2, density.obj@y.space/2)
-      #find x,y coords of animals
-      grid.locations$x.coord <- grid.locations$x+rx
-      grid.locations$y.coord <- grid.locations$y+ry
-      #find which x,y coords are within the region
-      pts <- as.points(grid.locations$x.coord, grid.locations$y.coord) 
-      grid.locations$in.region <- in.polygons(poly.list = region.obj@coords[[strat]], pts = pts, boundary = TRUE)
-      grid.locations$in.gaps   <- in.polygons(poly.list = region.obj@gaps[[strat]], pts = pts, boundary = TRUE)
-      #Find the first N animals inside the region
-      grid.locations <- grid.locations[grid.locations$in.region,]
-      grid.locations <- grid.locations[!grid.locations$in.gaps,]
-      grid.locations <- grid.locations[1:N[strat],]
-      if(strat == 1){
-        all.grid.locations <- grid.locations
-      }else{
-        all.grid.locations <- rbind(all.grid.locations, grid.locations)
-      }
-    }
+    }  
+    #If the population has fixed N
+    if(object@gen.by.N){
+      all.grid.locations <- generate.pop.N(object, region.obj)  
+    }else{
+      all.grid.locations <- generate.pop.D(object, region.obj)
+      
+    } 
+    N <- nrow(all.grid.locations)   
     #create population object
     population.dataframe <- data.frame(object = 1:nrow(all.grid.locations), x = all.grid.locations$x.coord, y = all.grid.locations$y.coord)
     if(object@size){
