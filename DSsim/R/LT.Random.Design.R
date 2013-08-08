@@ -2,7 +2,6 @@
 # CONSTRUCT CLASS AND DEFINE INITIALIZE AND VALIDITY
 ################################################################################
 
-setClass(Class = "LT.Sys.Random.Design", 
+setClass(Class = "LT.Random.Design", 
          contains = "LT.Design"
-)    
-
+) 
