@@ -12,27 +12,21 @@
 setClass("Detectability", representation(key.function    = "character",                                        
                                          scale.param     = "numeric",
                                          shape.param     = "numeric",
-                                         adjustment      = "character",
-                                         adj.param       = "numeric",
                                          covariates      = "character",
                                          cov.param       = "numeric",
-                                         perp.truncation = "numeric",
-                                         rad.truncation  = "numeric")) 
+                                         truncation      = "numeric")) 
 setMethod(
   f="initialize",
   signature="Detectability",
-  definition=function(.Object, key.function, scale.param, shape.param = numeric(0), adjustment = character(0), adj.param = numeric(0), covariates = character(0), cov.param = numeric(0), perp.truncation = numeric(0), rad.truncation){
+  definition=function(.Object, key.function, scale.param, shape.param = numeric(0), covariates = character(0), cov.param = numeric(0), truncation = numeric(0)){
     #Input pre-processing
     #Set slots
     .Object@key.function <- key.function
     .Object@scale.param  <- scale.param
     .Object@shape.param  <- shape.param
-    .Object@adjustment   <- adjustment
-    .Object@adj.param    <- adj.param
     .Object@covariates   <- covariates
     .Object@cov.param    <- cov.param
-    .Object@perp.truncation <- perp.truncation    
-    .Object@rad.truncation  <- rad.truncation    
+    .Object@truncation   <- truncation      
     #Check object is valid
     validObject(.Object)
     # return object
