@@ -5,7 +5,8 @@
 #' needs to specify a list of polygons describing the areas of interest (coords) and 
 #' optionally a list of polygons describing the areas to be excluded (gaps).
 #' 
-#' @param region.name the region name.
+#' @param region.name the region name
+#' @param strata.name the region name
 #' @param area the area of the region (optional - if not supplied it will be 
 #'   calculated for you if you supply a shapefile)
 #' @param shapefile a shapefile of the region
@@ -15,8 +16,8 @@
 #' @export
 #' @author Laura Marshall
 #'
-make.region <- function(region.name, strata.name = character(0), no.strata = NA, area = numeric(0), shapefile = NULL, coords = list(), gaps = list()){
-    region <- new(Class="Region", region.name = region.name, strata.name = strata.name, shapefile = shapefile)
+make.region <- function(region.name, strata.name = character(0), no.strata = numeric(0), units, area = numeric(0), shapefile = NULL, coords = list(), gaps = list()){
+    region <- new(Class="Region", region.name = region.name, strata.name = strata.name, units = units, area = area, shapefile = shapefile, coords = coords, gaps = gaps)
   return(region)
 }
   
@@ -49,24 +50,39 @@ make.region <- function(region.name, strata.name = character(0), no.strata = NA,
 #' @export
 #' @author Laura Marshall
 #'
-make.design <- function(transect.type, design.details, region, design.axis = numeric(0), spacing = numeric(0), plus.sampling = logical(0), path = character(0)){
-  if(class(region) != "character"){
-    message("Error: the region argument is not of class character. Only the object name should be provided using quotes.")
-    return(NULL)
-  }             
+make.design <- function(transect.type, design.details, region.obj, design.axis = numeric(0), spacing = numeric(0), angle = numeric(0), plus.sampling = logical(0), path = character(0)){
+  region <- global.name <- deparse(substitute(region.obj))
+  #if(class(region) != "character"){
+  #  message("Error: the region argument is not of class character. Only the object name should be provided using quotes.")
+  #  return(NULL)
+  #}             
   design <- NULL
-  if(transect.type %in% c("Line", "line", "Line Transect", "line transect", "LT")){
-    if(length(design.details) != 2){
-      message("Error, two design descriptors must be provided in design.details.")
-    }
-    if(design.details[1] %in% c("Z", "ZZ", "ZigZag", "Zigzag", "zigzag")){
-      if(design.details[2] %in% c("Equal Spaced", "ES", "equal spaced", "Equal spaced")){
-        design <- new(Class = "LT.EqSpace.ZZ.Design", region = region, design.axis = design.axis, spacing = spacing, plus.sampling = plus.sampling, path = path)
+  if(transect.type %in% c("Line", "line", "Line Transect", "line transect")){
+    if(length(design.details) == 1){
+      if(length(design.details) == 1 & design.details %in% c("user specified", "User Specified")){
+        design <- new(Class = "LT.User.Specified.Design", region = region, design.axis = design.axis, spacing = spacing, plus.sampling = plus.sampling, path = path)
+      }
+    }else if(length(design.details) == 2){
+      if(design.details[1] %in% c("ZZ", "ZigZag", "Zigzag", "zigzag")){
+        if(design.details[2] %in% c("Equal Spaced", "ES", "equal spaced", "Equal spaced")){
+          design <- new(Class = "LT.EqSpace.ZZ.Design", region = region, design.axis = design.axis, spacing = spacing, plus.sampling = plus.sampling, path = path)
+        }
+        if(design.details[2] %in% c("Equal Angle", "equal angle", "Equal angle")){               #error in this no spacing only angle
+          design <- new(Class = "LT.EqAngle.ZZ.Design", region = region, design.axis = design.axis, angle = angle, plus.sampling = plus.sampling, path = path)
+        }
+      }
+      if(design.details[1] %in% c("P", "Parallel", "parallel")){
+        if(design.details[2] %in% c("Random", "random")){
+          design <- new(Class = "LT.Random.Design", region = region, design.axis = design.axis, spacing = spacing, plus.sampling = plus.sampling, path = path)
+        }
+        if(design.details[2] %in% c("Systematic", "systematic")){
+          design <- new(Class = "LT.Systematic.Design", region = region, design.axis = design.axis, spacing = spacing, plus.sampling = plus.sampling, path = path)
+        }
       }
     }
   }
   if(is.null(design)){
-    message("Design type not supported at present.")
+    message("Apologies, this design type is not supported at present.")
   }
   return(design)
 }
@@ -97,13 +113,13 @@ make.design <- function(transect.type, design.details, region, design.axis = num
 #' @export
 #' @author Laura Marshall                         
 #'
-make.density <- function(region, strata = character(0), density.surface = list(), x.space, y.space, constant = NULL, shapefile = NULL, density.gam = NULL, jit = 1){
+make.density <- function(region.obj, density.surface = list(), x.space, y.space, constant = numeric(0), density.gam = NULL, dsm = NULL, formula = NULL){
   if(!is.null(constant)){
     if(length(region@strata.name) > 0 & length(constant) != length(region@strata.name)){
-      message("Error: the length of constant does not correspond to the number of strata")
+      message("Error: the length of the constant vector does not correspond to the number of strata")
     }
   }
-  density <- new(Class = "Density", region = region, strata.name = strata, density.surface = density.surface, x.space = x.space, y.space = y.space, constant = constant, shapefile = shapefile, density.gam = density.gam, jit = jit)
+  density <- new(Class = "Density", region = region, strata.name = region@strata.name, density.surface = density.surface, x.space = x.space, y.space = y.space, constant = constant, density.gam = density.gam, jit = 1)
  return(density)
 }
 
@@ -126,13 +142,13 @@ make.density <- function(region, strata = character(0), density.surface = list()
 #' @export
 #' @author Laura Marshall
 #'
-make.population.description <- make.pop.description <- function(N = numeric(0), density.obj, region, cluster.size.table = data.frame(NULL), size.min = numeric(0), size.max = numeric(0), size.lambda = numeric(0), gen.by.N = TRUE){
-  if(nrow(cluster.size.table) > 0){
+make.population.description <- make.pop.description <- function(region.obj, density.obj, cluster.size.table = data.frame(NULL), size.distribution = character(0), size.param = numeric(0), N = numeric(0), fixed.N = TRUE, average.D = numeric(0)){
+  if(nrow(cluster.size.table) > 0 | length(size.distribution) > 0){   
     cluster.size <- TRUE
   }else{
     cluster.size <- FALSE
   }
-  pop.description <- new(Class = "Population.Description", N = N, density = density.obj, region.obj = region, size.table = cluster.size.table, size = cluster.size, gen.by.N = gen.by.N)
+  pop.description <- new(Class = "Population.Description", N = N, density = density.obj, region.obj = region.obj, size.table = cluster.size.table, size = cluster.size, gen.by.N = fixed.N)
   return(pop.description)
 }
 
@@ -155,8 +171,8 @@ make.population.description <- make.pop.description <- function(N = numeric(0), 
 #' @export
 #' @author Laura Marshall
 #'
-make.detectability <- function(key.function, scale.param, shape.param = numeric(0), adjustment = character(0), adj.param = numeric(0), covariates = character(0), cov.param = numeric(0), perp.truncation = numeric(0), rad.truncation){
-  detectability <- new(Class = "Detectability", key.function = key.function, scale.param = scale.param, shape.param = shape.param, adjustment = adjustment, adj.param = adj.param, covariates = covariates, cov.param = cov.param, perp.truncation = perp.truncation, rad.truncation = rad.truncation)
+make.detectability <- function(key.function, scale.param, shape.param = numeric(0), covariates = character(0), cov.param = numeric(0), truncation){
+  detectability <- new(Class = "Detectability", key.function = key.function, scale.param = scale.param, shape.param = shape.param, covariates = covariates, cov.param = cov.param, truncation = truncation)
   return(detectability)
 }
 
@@ -173,14 +189,17 @@ make.detectability <- function(key.function, scale.param, shape.param = numeric(
 #' @author Laura Marshall
 #' @seealso \code{ddf} in \code{library(mrds)},
 #'
-make.ddf.analysis <- function(dsmodel, mrmodel = NULL, criteria){
-  if(is.null(mrmodel)){
-    ddf.analysis <- new(Class = "DS.Analysis", dsmodel = dsmodel, criteria = criteria)
+make.ddf.analysis.list <- function(dsmodel, mrmodel = NULL, method, criteria){
+  ddf.analyses <- list()
+  if(method == "ds"){
+    for(a in seq(along = dsmodel)){
+      ddf.analyses[[a]] <- new(Class = "DS.Analysis", dsmodel = dsmodel[[a]], criteria = criteria)
+    }
   }else{
     message("Double observer methods are not yet implemented")
     return(NULL)
   }
-  return(ddf.analysis)
+  return(ddf.analyses)
 }
 
 #' Creates an object of class Simulation
