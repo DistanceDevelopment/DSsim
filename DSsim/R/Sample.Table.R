@@ -15,7 +15,7 @@ setClass(Class = "Sample.Table", representation(sample.table = "data.frame"))
 setMethod(
   f="initialize",
   signature="Sample.Table",
-  definition=function(.Object, data){
+  definition=function(.Object, data = data.frame(NULL)){
     .Object@sample.table <- data
     #Check object is valid
     validObject(.Object)

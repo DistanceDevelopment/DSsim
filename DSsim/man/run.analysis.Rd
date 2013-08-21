@@ -3,13 +3,13 @@
 \alias{run.analysis}
 \title{S4 generic method to run analyses}
 \arguments{
-  \item{object}{an object of class simulation}
+  \item{object}{an object of class Simulation}
 
   \item{data}{an object of class Survey.Results}
 }
 \value{
   a list containing an S3 ddf object and optionally an S3
-  dht object of relating to the model with the miminum
+  dht object relating to the model with the miminum
   criteria.
 }
 \description{

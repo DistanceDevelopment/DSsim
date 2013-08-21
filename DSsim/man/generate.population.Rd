@@ -15,12 +15,10 @@
 }
 \description{
   Uses the population description and detectability details
-  to generate an instance of the population.
-}
-\details{
-  Note that if the first argument supplied is of class
-  Population.Description rather than simulation then a
-  second argument \code{detectabity} must also be supplied
-  and must be an object of class Detectability.
+  to generate an instance of the population. Note that if
+  the first argument supplied is of class
+  Population.Description rather than class Simulation then
+  a second argument \code{detectabity} must also be
+  supplied and must be an object of class Detectability.
 }
 

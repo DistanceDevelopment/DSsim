@@ -1,18 +1,21 @@
 \name{make.simulation}
 \alias{make.simulation}
-\title{Creates an object of class Simulation}
+\title{Creates a Simulation object}
 \usage{
-  make.simulation(reps, double.observer = FALSE,
-    region.obj, design.obj, population.description.obj,
-    detectability.obj, ddf.analyses.list)
+  make.simulation(reps, single.transect.set = FALSE,
+    double.observer = FALSE, region.obj, design.obj,
+    population.description.obj, detectability.obj,
+    ddf.analyses.list)
 }
 \arguments{
   \item{reps}{number of times the simulation should be
   repeated}
 
-  \item{double.observer}{logical value indicating TRUE for
-  a double observer mark recapture survey or FALSE for
-  normal distance sampling.}
+  \item{single.transect.set}{logical specifying whether the
+  transects should be kept the same throughout the
+  simulation.}
+
+  \item{double.observer}{not currently implemented.}
 
   \item{region.obj}{an object of class Region}
 
@@ -25,13 +28,14 @@
   Detectabolity}
 
   \item{ddf.analyses.list}{a list of objects of class
-  DS.Analysis}
+  DDF.Analysis}
 }
 \value{
   object of class Simulation
 }
 \description{
-  Creates an object of class Simulation
+  This creates a simulation object which groups together
+  all the objects needed to complete the simulation.
 }
 \author{
   Laura Marshall

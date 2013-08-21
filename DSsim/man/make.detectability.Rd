@@ -1,44 +1,35 @@
 \name{make.detectability}
 \alias{make.detectability}
-\title{Creates an object of class Detectablility}
+\title{Creates a Detectablility object}
 \usage{
   make.detectability(key.function, scale.param,
-    shape.param = numeric(0), adjustment = character(0),
-    adj.param = numeric(0), covariates = character(0),
-    cov.param = numeric(0), perp.truncation = numeric(0),
-    rad.truncation)
+    shape.param = numeric(0), covariates = character(0),
+    cov.param = numeric(0), truncation)
 }
 \arguments{
   \item{key.function}{specifies shape of the detection
-  function (either half-normal or hazard rate)}
+  function (either half-normal "hn" or hazard rate "hr")}
 
-  \item{scale.param}{parameters associated with the
+  \item{scale.param}{parameter value associated with the
   detection function}
 
-  \item{shape.param}{parameters associated with the
+  \item{shape.param}{parameter value associated with the
   detection function}
 
-  \item{adjustment}{- not yet implemented}
+  \item{covariates}{not yet implemented}
 
-  \item{adj.param}{- not yet implemented}
+  \item{cov.param}{not yet implemented}
 
-  \item{covariates}{- not yet implemented}
-
-  \item{cov.param}{- not yet implemented}
-
-  \item{perp.truncation}{the maximum perpendicular distance
-  at which objects may be detected. Must be specified for
-  line transect surveys.}
-
-  \item{rad.truncation}{the maximum radial distance at
-  which objects may be detected. Must be specified for both
-  line transect and point transect surveys.}
+  \item{truncation}{the maximum perpendicular (or radial)
+  distance at which objects may be detected from a line (or
+  point) transect.}
 }
 \value{
-  object of either class Detectablility
+  object of class Detectablility
 }
 \description{
-  Creates an object of class Detectablility
+  The detectability of the population is described by the
+  values in this class.
 }
 \author{
   Laura Marshall

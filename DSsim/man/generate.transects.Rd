@@ -11,15 +11,15 @@
 
   \item{write.to.file}{not currently implemented}
 
-  \item{region}{optional if object is of class
-  Survey.Design. If left blank the method will load the
-  object from the global environment based on the region
-  object name inside the Survey.Design object.}
+  \item{region}{optional only required if object is of
+  class Survey.Design.}
 }
 \value{
   an object of class Population
 }
 \description{
   Uses the Survey.Design details to generate transects.
+  Currenty this involves loading a survey shapefile from
+  the path specified in the Survey.Design object.
 }
 

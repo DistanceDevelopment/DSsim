@@ -15,7 +15,7 @@ setClass(Class = "Region.Table", representation(region.table = "data.frame"))
 setMethod(
   f="initialize",
   signature="Region.Table",
-  definition=function(.Object, data){
+  definition=function(.Object, data = data.frame(NULL)){
     .Object@region.table <- data
     #Check object is valid
     validObject(.Object)

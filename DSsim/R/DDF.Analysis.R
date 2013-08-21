@@ -38,16 +38,7 @@ setValidity("DDF.Analysis",
 
 ################################################################################
 # GENERIC METHODS
-################################################################################
-
-setMethod(
-  f="get.criteria",
-  signature="DDF.Analysis",
-  definition=function(object){
-    aic <- object@ddf.result[[1]]$criterion
-    return(aic)
-  }    
-)   
+################################################################################  
 
 setMethod(
   f="run.analysis",

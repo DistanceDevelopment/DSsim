@@ -133,24 +133,24 @@ setMethod(
     individual.summary <- data.frame(mean.Cover.Area = x@results$individuals$summary[,"CoveredArea","mean"], 
                                      mean.Effort = x@results$individuals$summary[,"Effort","mean"],
                                      mean.n = x@results$individuals$summary[,"n","mean"],
-                                     zero.n = zero.n,
+                                     no.zero.n = zero.n,
                                      mean.ER = x@results$individuals$summary[,"ER","mean"],
                                      mean.se.ER = x@results$individuals$summary[,"se.ER","mean"],
                                      sd.mean.ER = x@results$individuals$summary[,"ER","sd"])
     individual.N <- data.frame(Truth = true.N.individuals, 
                                    mean.Estimate = x@results$individuals$N[,"Estimate","mean"], 
-                                   percent.bias = abs(true.N.individuals - x@results$individuals$N[,"Estimate","mean"])/true.N.individuals*100, 
+                                   percent.bias = (x@results$individuals$N[,"Estimate","mean"] - true.N.individuals)/true.N.individuals*100, 
                                    #lcl = x@results$individuals$N[,"lcl","mean"], 
                                    #ucl = x@results$individuals$N[,"ucl","mean"], 
-                                   percent.CI.capture = percent.capture,
+                                   CI.coverage.prob = percent.capture/100,
                                    mean.se = x@results$individuals$N[,"se","mean"],
                                    sd.of.means = x@results$individuals$N[,"Estimate","sd"])
     individual.D <- data.frame(Truth = true.D.individuals, 
                                    mean.Estimate = x@results$individuals$D[,"Estimate","mean"], 
-                                   percent.bias = abs(true.D.individuals - x@results$individuals$D[,"Estimate","mean"])/true.D.individuals*100, 
+                                   percent.bias = (x@results$individuals$D[,"Estimate","mean"] - true.D.individuals)/true.D.individuals*100, 
                                    #lcl = x@results$individuals$N[,"lcl","mean"], 
                                    #ucl = x@results$individuals$N[,"ucl","mean"], 
-                                   percent.CI.capture = percent.capture.D,
+                                   CI.coverage.prob = percent.capture.D/100,
                                    mean.se = x@results$individuals$D[,"se","mean"],
                                    sd.of.means = x@results$individuals$D[,"Estimate","sd"])
     
@@ -171,25 +171,25 @@ setMethod(
       cluster.summary <- data.frame(mean.Cover.Area = x@results$clusters$summary[,"CoveredArea","mean"], 
                                        mean.Effort = x@results$clusters$summary[,"Effort","mean"],
                                        mean.n = x@results$clusters$summary[,"n","mean"],
-                                       zero.n = zero.n,
+                                       no.zero.n = zero.n,
                                        mean.k = x@results$clusters$summary[,"k","mean"],
                                        mean.ER = x@results$clusters$summary[,"ER","mean"],
                                        mean.se.ER = x@results$clusters$summary[,"se.ER","mean"],
                                        sd.mean.ER = x@results$clusters$summary[,"ER","sd"])
       cluster.N <- data.frame(Truth = true.N.clusters, 
                                      mean.Estimate = x@results$clusters$N[,"Estimate","mean"], 
-                                     percent.bias = abs(true.N.clusters - x@results$clusters$N[,"Estimate","mean"])/true.N.clusters*100, 
+                                     percent.bias = (x@results$clusters$N[,"Estimate","mean"] - true.N.clusters)/true.N.clusters*100, 
                                      #lcl = x@results$clusters$N[,"lcl","mean"], 
                                      #ucl = x@results$clusters$N[,"ucl","mean"], 
-                                     percent.CI.capture = percent.capture,
+                                     CI.coverage.prob = percent.capture/100,
                                      mean.se = x@results$clusters$N[,"se","mean"],
                                      sd.of.means = x@results$clusters$N[,"Estimate","sd"])
       cluster.D <- data.frame(Truth = true.D.clusters, 
                                      mean.Estimate = x@results$clusters$D[,"Estimate","mean"], 
-                                     percent.bias = abs(true.D.clusters - x@results$clusters$D[,"Estimate","mean"])/true.D.clusters*100, 
+                                     percent.bias = abs(x@results$clusters$D[,"Estimate","mean"] - true.D.clusters)/true.D.clusters*100, 
                                      #lcl = x@results$clusters$N[,"lcl","mean"], 
                                      #ucl = x@results$clusters$N[,"ucl","mean"], 
-                                     percent.CI.capture = percent.capture.D,
+                                     CI.coverage.prob = percent.capture.D/100,
                                      mean.se = x@results$clusters$D[,"se","mean"],
                                      sd.of.means = x@results$clusters$D[,"Estimate","sd"])
       expected.size <- data.frame(Truth = true.expected.s,
@@ -200,8 +200,8 @@ setMethod(
       clusters <- list(summary = cluster.summary, N = cluster.N, D = cluster.D)   
     }
     detection <- data.frame(mean.observed.Pa = x@results$Detection[,"True.Pa","mean"], 
-                            mean.Pa = x@results$Detection[,"Pa","mean"], 
-                            sd.Pa = x@results$Detection[,"Pa","sd"],
+                            mean.estimate.Pa = x@results$Detection[,"Pa","mean"], 
+                            sd.estimate.Pa = x@results$Detection[,"Pa","sd"],
                             mean.ESW = x@results$Detection[,"ESW","mean"],  
                             sd.ESW = x@results$Detection[,"ESW","sd"])
     
@@ -221,8 +221,6 @@ setMethod(
   signature="Simulation",
   definition=function(x, ...){
     message("not currently implemented")
-    #hist(x@results[,1], xlab = "Estimate of N")
-    #abline(v=x@population.description@N, col=2, lwd = 2)
     invisible(x)
   }    
 )
@@ -232,8 +230,6 @@ setMethod(
   signature="Simulation",
   definition=function(object){
     message("show not currently implemented")
-    #hist(x@results[,1], xlab = "Estimate of N")
-    #abline(v=x@population.description@N, col=2, lwd = 2)
     invisible(object)
   }    
 )
@@ -243,8 +239,6 @@ setMethod(
   signature="Simulation",
   definition=function(x, ...){
     message("not currently implemented")
-    #hist(x@results[,1], xlab = "Estimate of N")
-    #abline(v=x@population.description@N, col=2, lwd = 2)
     invisible(x)
   }    
 )
@@ -290,7 +284,10 @@ setMethod(
       survey.results <- new(Class = "LT.Survey.Results", region = object@region, population = population, transects = transects, ddf.data = ddf.data, obs.table = obs.table, sample.table = sample.table, region.table = region.table)
       #return(list(survey = survey, ddf.data = ddf.data, obs.table = obs.table, sample.table = sample.table, region.table = region.table))
     }else{
-      survey.results <- new(Class = "LT.Survey.Results", region = object@region, population = population, transects = transects, ddf.data = ddf.data)
+      obs.table <- new(Class = "Obs.Table")
+      sample.table <- new(Class = "Sample.Table")
+      region.table <- new(Class = "Region.Table")
+      survey.results <- new(Class = "LT.Survey.Results", region = object@region, population = population, transects = transects, ddf.data = ddf.data, obs.table = obs.table, sample.table = sample.table, region.table = region.table)
       #return(list(survey = survey, ddf.data = ddf.data))
     }
     return(survey.results)     
@@ -352,7 +349,7 @@ setMethod(
     if(run.parallel){
       nCores <- getOption("cl.cores", detectCores()) # counts the number of cores you have
       if(!is.na(max.cores)){
-        nCores <- min(nCores, max.cores)    
+        nCores <- min(nCores - 1, max.cores)    
       }
       myCluster <- makeCluster(nCores) # intitialise the cluster
       #clusterExport(myCluster)

@@ -1,6 +1,8 @@
 \docType{class}
 \name{Population.Description-class}
+\alias{generate.population,}
 \alias{Population.Description-class}
+\alias{Population.Description-method}
 \title{Class "Population.Description"}
 \description{
   Class \code{"Population.Description"} is an S4 class

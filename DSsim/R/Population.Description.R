@@ -69,8 +69,6 @@ setMethod("get.N","Population.Description",
   }
 )
 
-#' @rdname generate.population-methods
-#' @aliases generate.population, Population.Description, ANY-method
 setMethod(
   f="generate.population",
   signature="Population.Description",

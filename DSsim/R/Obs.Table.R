@@ -15,7 +15,7 @@ setClass(Class = "Obs.Table", representation(obs.table = "data.frame"))
 setMethod(
   f="initialize",
   signature="Obs.Table",
-  definition=function(.Object, data){
+  definition=function(.Object, data = data.frame(NULL)){
     .Object@obs.table <- data
     #Check object is valid
     validObject(.Object)

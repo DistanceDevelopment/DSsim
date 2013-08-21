@@ -1,12 +1,17 @@
 \name{make.region}
 \alias{make.region}
-\title{Creates an object of class Region}
+\title{Creates a Region object}
 \usage{
-  make.region(region.name, area = numeric(0),
-    shapefile = NULL, coords = list(), gaps = list())
+  make.region(region.name, strata.name = character(0),
+    units, area = numeric(0), shapefile = NULL,
+    coords = list(), gaps = list())
 }
 \arguments{
-  \item{region.name}{the region name.}
+  \item{region.name}{the region name}
+
+  \item{strata.name}{the region name}
+
+  \item{units}{the units given as a character}
 
   \item{area}{the area of the region (optional - if not
   supplied it will be calculated for you if you supply a
@@ -21,7 +26,7 @@
   excluded}
 }
 \value{
-  object of either class Region
+  object of class Region
 }
 \description{
   This creates an instance of the Region class. If the user
@@ -29,7 +34,8 @@
   from here. Otherwise the user needs to specify a list of
   polygons describing the areas of interest (coords) and
   optionally a list of polygons describing the areas to be
-  excluded (gaps).
+  excluded (gaps). If area is not specified it will be
+  calculated.
 }
 \author{
   Laura Marshall

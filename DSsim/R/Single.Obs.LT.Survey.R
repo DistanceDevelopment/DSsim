@@ -47,6 +47,7 @@ setMethod(
     n.in.covered <- nrow(poss.distances)
     dist.data <- simulate.detections(poss.distances, population@detectability)
     dist.data <- rename.duplicates(dist.data)
+    dist.data <- dist.data[,c("object", "transect.ID", "distance", "x", "y")]    
     ddf.data.obj <- new(Class = "Single.Obs.DDF.Data", data = dist.data)
     if(dht.tables){
       region.table <- create.region.table(object, ...)

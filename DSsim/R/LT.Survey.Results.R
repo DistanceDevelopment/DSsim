@@ -16,7 +16,7 @@ setClass("LT.Survey.Results", representation(region = "Region",
 setMethod(
   f="initialize",
   signature="LT.Survey.Results",
-  definition=function(.Object, region, population, transects, ddf.data, obs.table = NULL, sample.table = NULL, region.table = NULL){
+  definition=function(.Object, region, population, transects, ddf.data, obs.table = data.frame(NULL), sample.table = data.frame(NULL), region.table = data.frame(NULL)){
     #Set slots
     .Object@region        <- region    
     .Object@population    <- population
@@ -45,6 +45,16 @@ setMethod(
     plot(x@population)
     plot(x@ddf.data)
     invisible(x)
+  }    
+)  
+
+
+setMethod(
+  f="get.distance.data",
+  signature="LT.Survey.Results",
+  definition=function(object){
+    dist.data <- object@ddf.data@ddf.dat
+    return(dist.data)
   }    
 )  
 
