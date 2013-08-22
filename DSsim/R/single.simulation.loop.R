@@ -1,6 +1,4 @@
-single.simulation.loop <- function(i, object){
-    #cat("filename = ", object@design@filenames[i])
-    #print("filename = ", object@design@filenames[i])
+single.simulation.loop <- function(i, object, save.data = FALSE, load.data = FALSE, data.path = character(0)){
     #generate population
     population <- generate.population(object)
     #generate transects
@@ -16,16 +14,31 @@ single.simulation.loop <- function(i, object){
         survey <- new(Class = "Single.Obs.LT.Survey", population = population, line.transect = transects, perp.truncation = object@detectability@truncation)
       }
     }
-    #simulate survey
-    survey.data <- simulate.survey(object = survey, dht.table = TRUE, region = object@region)
-    ddf.data <- survey.data$ddf.data 
-    obs.table <- survey.data$obs.table
-    sample.table <- survey.data$sample.table
-    region.table <- survey.data$region.table
-    n.in.covered <- survey.data$n.in.covered 
+    if(load.data){
+      #load data
+      load(paste(data.path,"dataset_",i,".robj", sep = ""))
+      ddf.data <- dist.data$ddf 
+      obs.table <- dist.data$obs.table
+      sample.table <- dist.data$sample.table
+      region.table <- dist.data$region.table
+      n.in.covered <- dist.data$n.in.covered 
+    }else{
+      #simulate survey
+      survey.data <- simulate.survey(object = survey, dht.table = TRUE, region = object@region)
+      ddf.data <- survey.data$ddf.data 
+      obs.table <- survey.data$obs.table
+      sample.table <- survey.data$sample.table
+      region.table <- survey.data$region.table
+      n.in.covered <- survey.data$n.in.covered 
+      if(save.data){
+        dist.data <- list(ddf = ddf.data, obs.table = obs.table, sample.table = sample.table, region.table = region.table, n.in.covered = n.in.covered)  
+        save(dist.data, file = paste("dataset_",i,".robj", sep = ""))
+      }
+    }
     #analyse survey
     ddf.results <- run.analysis(object, ddf.data)
     object@results$Detection <- store.ddf.results(object@results$Detection, ddf.results, i, n.in.covered)
+    #Compute density / abundance estimates
     compute.dht = TRUE
     if(compute.dht){
       dht.results <- dht(ddf.results, region.table@region.table, sample.table@sample.table, obs.table@obs.table)

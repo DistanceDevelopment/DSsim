@@ -339,7 +339,8 @@ setMethod(
 setMethod(
   f="run",
   signature="Simulation",
-  definition=function(object, run.parallel = FALSE, max.cores = NA){
+  definition=function(object, run.parallel = FALSE, max.cores = NA, save.data = FALSE, load.data = FALSE, data.path = character(0)){
+    #Note options save.data, load.data, data.path are not implemented in simulations run in parallel.
     require(mrds)
     require(splancs)
     require(parallel)
@@ -347,53 +348,22 @@ setMethod(
     orig.file.index <- object@design@file.index
     object@design@file.index <- 1
     if(run.parallel){
-      nCores <- getOption("cl.cores", detectCores()) # counts the number of cores you have
+      # counts the number of cores you have
+      nCores <- getOption("cl.cores", detectCores()) 
       if(!is.na(max.cores)){
         nCores <- min(nCores - 1, max.cores)    
       }
       myCluster <- makeCluster(nCores) # intitialise the cluster
-      #clusterExport(myCluster)
-      #clusterExport(myCluster, "run.sim.in.parallel")
-      #clusterExport(myCluster, c("run.sim.in.parallel", "generate.population", "in.polygons"))
       clusterEvalQ(myCluster, {require(splancs)
                                require(DSsim)
                                require(mrds)
                                require(shapefiles)})
-      #clusterEvalQ(myCluster, require(DSsim))
       results <- parLapply(myCluster, X = as.list(1:object@reps), fun = single.simulation.loop, object = object)
       object <- accumulate.PP.results(simulation = object, results = results)
       stopCluster(myCluster)
     }else{
       for(i in 1:object@reps){ 
-        object@results <- single.simulation.loop(i, object) 
-#        message("file index = ", object@design@file.index, ", filename = ", object@design@filenames[object@design@file.index])
-#        #generate population
-#        population <- generate.population(object)
-#        #generate transects
-#        transects <- generate.transects(object)
-#        #make survey object
-#        if(object@double.observer){
-#          message("Double observer simulations not supported at present")#move this to the checking of the simulation object
-#        }else{
-#          if(inherits(object@design, "LT.Design")){
-#            survey <- new(Class = "Single.Obs.LT.Survey", population = population, line.transect = transects, rad.truncation = object@detectability@rad.truncation, perp.truncation = object@detectability@perp.truncation)
-#          }
-#        }
-#        #simulate survey           
-#        survey.data <- simulate.survey(object = survey, dht.table = TRUE, region = object@region)
-#        ddf.data <- survey.data$ddf.data 
-#        obs.table <- survey.data$obs.table
-#        sample.table <- survey.data$sample.table
-#        region.table <- survey.data$region.table 
-#        #analyse survey
-#        ddf.results <- run.analysis(object, ddf.data)
-#        object@results$Detection <- store.ddf.results(object@results$Detection, ddf.results, i)
-#        compute.dht = TRUE
-#        if(compute.dht){
-#          dht.results <- dht(ddf.results, region.table@region.table, sample.table@sample.table, obs.table@obs.table)
-#          object@results <- store.dht.results(object@results, dht.results, i, object@population.description@size)                                           
-#        }
-#        object@design@file.index <- object@design@file.index + 1
+        object@results <- single.simulation.loop(i, object, save.data = save.data, load.data = load.data, data.path = data.path) 
       }
     }  
     object@results <- add.summary.results(object@results)

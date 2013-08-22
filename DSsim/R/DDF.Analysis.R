@@ -11,14 +11,20 @@
 #' @export
 setClass(Class = "DDF.Analysis", representation(dsmodel = "formula",
                                                 criteria = "character",
+                                                truncation = "numeric",
+                                                binned.data = "logical",
+                                                cutpoints = "numeric",
                                                 ddf.result = "list", "VIRTUAL"))
                                                 
 setMethod(
   f="initialize",
   signature="DDF.Analysis",
-  definition=function(.Object, dsmodel, criteria){
+  definition=function(.Object, dsmodel, criteria, truncation, binned.data, cutpoints){
     .Object@dsmodel <- dsmodel
     .Object@criteria <- criteria
+    .Object@truncation <- truncation
+    .Object@binned.data <- binned.data
+    .Object@cutpoints <- cutpoints
     #Check object is valid
     validObject(.Object)
     # return object
@@ -45,9 +51,19 @@ setMethod(
   signature="DDF.Analysis",
   definition=function(object, ddf.dat){
     dist.data <- ddf.dat@ddf.dat
-    ddf.result <- ddf(dsmodel = object@dsmodel, data = dist.data, method = "ds")
-    #ddf.result.list <- list(ddf.result = ddf.result)
-    #object@ddf.result <- ddf.result.list
+    if(object@binned.data){
+      #binned data
+      dist.data <- dist.data[dist.data$distance <= max(object@cutpoints),]
+      dist.data <- create.bins(dist.data, cutpoints = object@cutpoints)
+      ddf.result <- ddf(dsmodel = object@dsmodel, data = dist.data, method = "ds", meta.data = list(binned = TRUE, breaks = object@cutpoints))
+    }else{
+      #exact distances
+      if(length(object@truncation) == 0){
+        ddf.result <- ddf(dsmodel = object@dsmodel, data = dist.data, method = "ds")   
+      }else{
+        ddf.result <- ddf(dsmodel = object@dsmodel, data = dist.data, method = "ds", meta.data = list(width = object@truncation))   
+      }
+    }
     return(ddf.result)
   }    
 ) 

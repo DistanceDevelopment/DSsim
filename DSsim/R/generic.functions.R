@@ -131,7 +131,7 @@ setGeneric(name = "add.hotspot", def = function(object, centre, sigma, amplitude
 #' @return an object of class simulation which now includes the results
 #' @export
 #' @docType methods
-setGeneric(name = "run", def = function(object, run.parallel = FALSE, max.cores = NA){standardGeneric ("run")})
+setGeneric(name = "run", def = function(object, run.parallel = FALSE, max.cores = NA, ...){standardGeneric ("run")})
 
 
 #' S4 generic method to run analyses
