@@ -37,6 +37,13 @@ single.simulation.loop <- function(i, object, save.data = FALSE, load.data = FAL
     }
     #analyse survey
     ddf.results <- run.analysis(object, ddf.data)
+    #Find how many animals were in the covered region
+    if(length(object@ddf.analyses[[1]]@truncation) > 0){
+      n.in.covered <- length(which(n.in.covered <= object@ddf.analyses[[1]]@truncation))  
+    }else{
+      n.in.covered <- length(n.in.covered)
+    }
+    #Store ddf results
     object@results$Detection <- store.ddf.results(object@results$Detection, ddf.results, i, n.in.covered)
     #Compute density / abundance estimates
     compute.dht = TRUE
