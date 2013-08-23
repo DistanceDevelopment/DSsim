@@ -320,7 +320,7 @@ setMethod(
 
 setMethod(
   f="run.analysis",
-  signature=c("Simulation","DDF.Data"),
+  signature=c("Simulation","Single.Obs.DDF.Data"),
   definition=function(object, data, dht = TRUE){
     require(mrds)
     ddf.analyses <- object@ddf.analyses
