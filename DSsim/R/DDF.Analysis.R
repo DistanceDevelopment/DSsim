@@ -31,6 +31,7 @@ setMethod(
     return(.Object) 
   }
 )
+
 setValidity("DDF.Analysis",
   function(object){
     if(object@criteria %in% c("aic", "AIC")){

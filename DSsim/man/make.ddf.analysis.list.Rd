@@ -3,7 +3,8 @@
 \title{Creates a list of DDF.Analysis objects}
 \usage{
   make.ddf.analysis.list(dsmodel, mrmodel = NULL, method,
-    criteria)
+    criteria, truncation = numeric(0), binned.data = FALSE,
+    cutpoints = numeric(0))
 }
 \arguments{
   \item{dsmodel}{list of distance sampling model formula
@@ -17,6 +18,11 @@
 
   \item{criteria}{model selection criteria (AIC, AICc, BIC)
   - only AIC implemented at present.}
+
+  \item{binned.data}{logical whether the data should be
+  analsed in bins}
+
+  \item{cutpoints}{}
 }
 \value{
   list of objects of class DDF.Analysis
