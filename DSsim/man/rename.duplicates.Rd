@@ -9,10 +9,8 @@ bootstrapping}
   \item{ddf.dat}{dataframe containing a single dataset with
   duplicate observations}
 
-  \item{obs.table}{dataframe of observation records with
-  fields object, Region.Label, and Sample.Label which give
-  links to sample.table, region.table and the data records
-  used in \code{model}}
+  \item{double.observer}{logical indicating whether it is a
+  double obsever survey or not}
 }
 \value{
   list with 2 elements: ddf.dat dataframe containing a

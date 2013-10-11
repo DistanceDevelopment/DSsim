@@ -17,7 +17,7 @@ single.simulation.loop <- function(i, object){
       }
     }
     #simulate survey
-    survey.data <- simulate.survey(object = survey, dht.table = TRUE, region = object@region)
+    survey.data <- simulate.survey(object = survey, dht.tables = TRUE, region = object@region)
     ddf.data <- survey.data$ddf.data 
     obs.table <- survey.data$obs.table
     sample.table <- survey.data$sample.table

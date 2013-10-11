@@ -341,6 +341,7 @@ setMethod(
   signature="Simulation",
   definition=function(object, run.parallel = FALSE, max.cores = NA){
     require(mrds)
+    require(mgcv)
     require(splancs)
     require(parallel)
     #set the transect index to 1

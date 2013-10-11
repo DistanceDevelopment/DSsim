@@ -6,9 +6,7 @@
 #'  
 #' @param ddf.dat dataframe containing a single dataset with duplicate 
 #'   observations
-#' @param obs.table dataframe of observation records with fields object,
-#'   Region.Label, and Sample.Label which give links to sample.table,
-#'   region.table and the data records used in \code{model}
+#' @param double.observer logical indicating whether it is a double obsever survey or not
 #' @return list with 2 elements:
 #'   ddf.dat dataframe containing a single dataset with new and unique 
 #'     observation IDs 
