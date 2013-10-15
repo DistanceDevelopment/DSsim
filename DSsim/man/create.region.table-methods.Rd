@@ -1,6 +1,7 @@
 \docType{methods}
 \name{create.region.table}
 \alias{create.region.table}
+\alias{create.region.table,Survey-method}
 \title{S4 generic method to generate a region table}
 \arguments{
   \item{object}{an object of a class inheriting from

@@ -1,6 +1,8 @@
 \docType{methods}
 \name{create.sample.table}
 \alias{create.sample.table}
+\alias{create.sample.table,}
+\alias{Survey-method}
 \title{S4 generic method to generate a sample table}
 \arguments{
   \item{object}{an object of a class inheriting from

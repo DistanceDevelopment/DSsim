@@ -40,11 +40,14 @@ setValidity("DDF.Analysis",
 # GENERIC METHODS
 ################################################################################  
 
+
+#' @rdname run.analysis-methods
+#' @aliases run.analysis,DDF.Analysis,DDF.Data-method
 setMethod(
   f="run.analysis",
-  signature="DDF.Analysis",
-  definition=function(object, ddf.dat){
-    dist.data <- ddf.dat@ddf.dat
+  signature=c("DDF.Analysis","DDF.Data"),
+  definition=function(object, data, dht = FALSE){
+    dist.data <- data@ddf.dat
     ddf.result <- ddf(dsmodel = object@dsmodel, data = dist.data, method = "ds")
     #ddf.result.list <- list(ddf.result = ddf.result)
     #object@ddf.result <- ddf.result.list

@@ -1,6 +1,9 @@
 single.simulation.loop <- function(i, object){
-    #cat("filename = ", object@design@filenames[i])
-    #print("filename = ", object@design@filenames[i])
+# Input: i - integer representing the loop number
+#        object - an object of class Simulation
+#
+# Output: the updated Simulation object 
+#
     #generate population
     population <- generate.population(object)
     #generate transects
@@ -17,7 +20,7 @@ single.simulation.loop <- function(i, object){
       }
     }
     #simulate survey
-    survey.data <- simulate.survey(object = survey, dht.tables = TRUE, region = object@region)
+    survey.data <- create.survey.results(object = survey, dht.tables = TRUE, region = object@region)
     ddf.data <- survey.data$ddf.data 
     obs.table <- survey.data$obs.table
     sample.table <- survey.data$sample.table
@@ -31,7 +34,6 @@ single.simulation.loop <- function(i, object){
       dht.results <- dht(ddf.results, region.table@region.table, sample.table@sample.table, obs.table@obs.table)
       object@results <- store.dht.results(object@results, dht.results, i, object@population.description@size)                                           
     }
-    #object@design@file.index <- object@design@file.index + 1 
     object@results$filename <- object@design@filenames[object@design@file.index] 
     return(object@results)
 }

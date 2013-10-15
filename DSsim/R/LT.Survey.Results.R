@@ -35,7 +35,8 @@ setMethod(
 # GENERIC METHODS
 ################################################################################
 
-
+#' @rdname plot-methods
+#' @aliases plot,LT.Survey.Results-method
 setMethod(
   f="plot",
   signature="LT.Survey.Results",
@@ -48,7 +49,8 @@ setMethod(
   }    
 )  
 
-
+#' @rdname get.distance.data-methods
+#' @aliases get.distance.data,LT.Survey.Results-method
 setMethod(
   f="get.distance.data",
   signature="LT.Survey.Results",

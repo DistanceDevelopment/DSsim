@@ -1,9 +1,10 @@
 \docType{methods}
 \name{run}
 \alias{run}
+\alias{run,Simulation-method}
 \title{S4 generic method to run a simulation}
 \arguments{
-  \item{object}{an object of class simulation}
+  \item{object}{an object of class Simulation}
 
   \item{logical}{option to use multiple processors}
 

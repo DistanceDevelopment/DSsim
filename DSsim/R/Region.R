@@ -74,9 +74,25 @@ setValidity("Region",
 ################################################################################
 # GENERIC METHODS
 ################################################################################
+#' Returns the are of the region
+#' 
+#' @param object object of class Region
+#' @return numeric value specifying the are of the region
+#' @rdname get.area-methods 
 setGeneric(name = "get.area", def = function(object){standardGeneric ("get.area")})
 
+#' @rdname get.area-methods
+#' @aliases get.area,Region-method
+setMethod(
+  f="get.area",
+  signature="Region",
+  definition=function(object){
+    return(object@area)
+  }
+)
 
+#' @rdname plot-methods
+#' @aliases plot,Region-method
 setMethod(
   f="plot",
   signature="Region",
@@ -119,21 +135,8 @@ setMethod(
   }    
 ) 
 
-setMethod(
-  f="get.area",
-  signature="Region",
-  definition=function(object){
-    return(object@area)
-  }
-)
 
-#setMethod(f="$", signature="Region",
-#                definition=function(x, name) {
-#                  message("Checking other parts of the object first...")
-#                  message("Area of this region is: ",x@area, sep="")
-#                  region.name <- eval(parse(text = paste("x@", name, sep="")))                                       
-#                  return(region.name)
-#})
+
 
 
 

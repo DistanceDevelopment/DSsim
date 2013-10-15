@@ -1,6 +1,8 @@
 \docType{methods}
 \name{generate.transects}
 \alias{generate.transects}
+\alias{generate.transects,LT.Design-method}
+\alias{generate.transects,Simulation-method}
 \title{S4 generic method to generate an instance of a design}
 \arguments{
   \item{object}{an object of class Simulaiton or a class

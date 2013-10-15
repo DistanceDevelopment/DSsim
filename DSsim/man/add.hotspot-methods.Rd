@@ -1,8 +1,8 @@
 \docType{methods}
 \name{add.hotspot}
 \alias{add.hotspot}
-\title{setGeneric(name = "summary", def = function(object, ...){standardGeneric ("summary")})
-S4 generic method to add a hotspot to the density grid}
+\alias{add.hotspot,Density-method}
+\title{S4 generic method to add a hotspot to the density grid}
 \arguments{
   \item{object}{an object of class Density or Simulation}
 

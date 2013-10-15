@@ -1,6 +1,8 @@
 \docType{methods}
-\name{simulate.survey}
-\alias{simulate.survey}
+\name{create.survey.results}
+\alias{create.survey.results}
+\alias{create.survey.results,Simulation-method}
+\alias{create.survey.results,Single.Obs.LT.Survey-method}
 \title{S4 generic method to simulate a survey}
 \arguments{
   \item{object}{an object of class Simulation}

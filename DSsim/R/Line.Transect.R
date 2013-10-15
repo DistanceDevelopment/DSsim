@@ -6,9 +6,7 @@
 #'
 #' Class \code{"LTSurvey"} is an S4 class detailing a set of line transect 
 #' @name Line.Transect-class
-#' @aliases lmList-class show,lmList-method
 #' @docType class
-#' @section Objects from the Class: 
 #' @keywords classes            
 #' @export
 setClass("Line.Transect", representation(design.obj = "character", sampler.info = "data.frame"))
@@ -52,6 +50,9 @@ setValidity("Line.Transect",
 ################################################################################
 # GENERIC METHODS
 ################################################################################
+
+#' @rdname plot-methods
+#' @aliases plot,Line.Transect-method
 setMethod(
   f="plot",
   signature="Line.Transect",

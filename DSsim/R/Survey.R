@@ -19,7 +19,8 @@ setClass("Survey", representation(population = "Population", "VIRTUAL"))
 # GENERIC METHODS
 ################################################################################
 
-
+#' @rdname create.region.table-methods
+#' @aliases create.region.table,Survey-method
 setMethod(
   f="create.region.table",
   signature="Survey",

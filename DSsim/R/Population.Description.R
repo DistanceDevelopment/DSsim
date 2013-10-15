@@ -62,13 +62,30 @@ setValidity("Population.Description",
 ################################################################################
 # GENERIC METHODS
 ################################################################################
+
+
+#' S4 generic method to return N
+#' 
+#' Returns the population size
+#'
+#' @param object an object of class Population.Description
+#' @return numeric value of the population size
+#' @export
+#' @docType methods
+#' @rdname get.N-methods
 setGeneric("get.N",function(object){standardGeneric ("get.N")})
+
+#' @rdname get.N-methods
+#' @aliases get.N,Population.Description-method
 setMethod("get.N","Population.Description",
   function(object){
     return(object@N)
   }
 )
 
+
+#' @rdname generate.population-methods
+#' @aliases generate.population,Population.Description-method
 setMethod(
   f="generate.population",
   signature="Population.Description",
@@ -97,42 +114,4 @@ setMethod(
   }    
 ) 
 
-
-################################################################################
-# ASSOCIATED METHODS
-################################################################################
-#generate.population <- function(population.description, detectability){
-##need to expand this to the case where there are strata and clustered data
-#  if(!class(population.description) == "Population.Description"){
-#    return(NULL)
-#  }
-#  density.obj <- population.description@density
-#  region.obj <- get(population.description@region.name)
-#  n.cells <- nrow(density.obj@density.surface)
-#  probs <- density.obj@density.surface[["density"]]/sum(density.obj@density.surface[["density"]])
-#  #sample more animals than required as some will fall outside the survey region
-#  samp <- suppressWarnings(sample(x = 1:n.cells, size = 2*population.description@N, replace = TRUE, prob = probs))
-#  grid.locations <- density.obj@density.surface[samp,]
-#  #generate random locations within grid cell
-#  rx <- runif(nrow(grid.locations), -density.obj@x.space/2, density.obj@x.space/2)  
-#  ry <- runif(nrow(grid.locations), -density.obj@y.space/2, density.obj@y.space/2)
-#  #find x,y coords of animals
-#  grid.locations$x.coord <- grid.locations$x+rx
-#  grid.locations$y.coord <- grid.locations$y+ry
-#  #find which x,y coords are within the region
-#  pts <- as.points(grid.locations$x.coord,grid.locations$y.coord) 
-#  #grid.locations$in.region <- inout(pts = pts, poly = as.matrix(region.obj@coords), bound = TRUE)
-#  grid.locations$in.region <- in.polygons(pts, region.obj@coords, boundary = TRUE)
-#  grid.locations$in.gaps   <- in.polygons(pts, region.obj@gaps, boundary = TRUE)
-#  #points(grid.locations$x.coord[grid.locations$in.region], grid.locations$y.coord[grid.locations$in.region], col=3, pch=20) 
-#  #points(grid.locations$x.coord[!grid.locations$in.region], grid.locations$y.coord[!grid.locations$in.region], col=2, pch=20) 
-#  #Find the first N animals inside the region
-#  grid.locations <- grid.locations[grid.locations$in.region,]
-#  grid.locations <- grid.locations[!grid.locations$in.gaps,]
-#  grid.locations <- grid.locations[1:population.description@N,]
-#  #create population object
-#  population <- new(Class = "Population", region = population.description@region.name, strata.names = region.obj@region.name, N = population.description@N, D = population.description@N/region.obj@area, population = data.frame(object = 1:nrow(grid.locations), x = grid.locations$x.coord, y = grid.locations$y.coord), detectability = detectability) 
-#  return(population) 
-#}
-#
 

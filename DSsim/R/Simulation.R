@@ -13,6 +13,7 @@
 #' population.description.obj, detectability.obj, ddf.analyses.list)} 
 #' @keywords classes
 #' @export
+#' @rdname Simulation-class
 setClass("Simulation", representation(reps = "numeric",
                                       single.transect.set = "logical",
                                       double.observer = "logical",                                        
@@ -79,7 +80,8 @@ setValidity("Simulation",
 # GENERIC METHODS
 ################################################################################
 
-
+#' @rdname summary-methods
+#' @aliases summary,Simulation-method
 setMethod(
   f="summary",
   signature="Simulation",
@@ -216,6 +218,8 @@ setMethod(
   }    
 )
 
+#' @rdname print-methods
+#' @aliases print,Simulation-method
 setMethod(
   f="print",
   signature="Simulation",
@@ -225,6 +229,8 @@ setMethod(
   }    
 )
 
+#' @rdname show-methods
+#' @aliases show,Simulation-method
 setMethod(
   f="show",
   signature="Simulation",
@@ -233,7 +239,10 @@ setMethod(
     invisible(object)
   }    
 )
-  
+
+
+#' @rdname plot-methods
+#' @aliases plot,Simulation-method
 setMethod(
   f="plot",
   signature="Simulation",
@@ -243,6 +252,8 @@ setMethod(
   }    
 )
 
+#' @rdname generate.population-methods
+#' @aliases generate.population,Simulation-method
 setMethod(
   f="generate.population",
   signature="Simulation",
@@ -252,6 +263,8 @@ setMethod(
   }    
 )
 
+#' @rdname generate.transects-methods
+#' @aliases generate.transects,Simulation-method
 setMethod(
   f="generate.transects",
   signature="Simulation",
@@ -262,8 +275,10 @@ setMethod(
   }    
 ) 
 
+#' @rdname create.survey.results-methods
+#' @aliases create.survey.results,Simulation-method
 setMethod(
-  f="simulate.survey",
+  f="create.survey.results",
   signature="Simulation",
   definition=function(object, dht.tables = FALSE, ...){       
     population <- generate.population(object) 
@@ -275,7 +290,7 @@ setMethod(
         survey <- new(Class = "Single.Obs.LT.Survey", population = population, line.transect = transects, perp.truncation = object@detectability@truncation)
       }
     }
-    survey.data <- simulate.survey(object = survey, dht.tables = dht.tables, region = object@region)
+    survey.data <- create.survey.results(object = survey, dht.tables = dht.tables, region = object@region)
     ddf.data <- survey.data$ddf.data 
     if(dht.tables){
       obs.table <- survey.data$obs.table
@@ -294,6 +309,8 @@ setMethod(
   }    
 )
 
+#' @rdname run.analysis-methods
+#' @aliases run.analysis,Simulation,LT.Survey.Results-method
 setMethod(
   f="run.analysis",
   signature=c("Simulation","LT.Survey.Results"),
@@ -318,6 +335,8 @@ setMethod(
   }    
 )
 
+#' @rdname run.analysis-methods
+#' @aliases run.analysis,Simulation,DDF.Data-method
 setMethod(
   f="run.analysis",
   signature=c("Simulation","DDF.Data"),
@@ -335,15 +354,14 @@ setMethod(
   }    
 )
 
-
+#' @rdname run-methods
+#' @aliases run,Simulation-method
 setMethod(
   f="run",
   signature="Simulation",
   definition=function(object, run.parallel = FALSE, max.cores = NA){
-    require(mrds)
-    require(mgcv)
-    require(splancs)
     require(parallel)
+    require(mrds)
     #set the transect index to 1
     orig.file.index <- object@design@file.index
     object@design@file.index <- 1

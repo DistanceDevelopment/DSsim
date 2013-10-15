@@ -13,6 +13,7 @@
 #' @return an object of class Population
 #' @export
 #' @docType methods
+#' @rdname generate.population-methods
 setGeneric("generate.population", function(object, ...){standardGeneric ("generate.population")})
 
 #' S4 generic method to generate an instance of a design
@@ -31,6 +32,7 @@ setGeneric("generate.population", function(object, ...){standardGeneric ("genera
 #' @return an object of class Population
 #' @export
 #' @docType methods
+#' @rdname generate.transects-methods
 setGeneric("generate.transects", function(object, read.from.file = TRUE, write.to.file = FALSE, region = NULL, ...){standardGeneric ("generate.transects")})
 
 #' S4 generic method to generate a region table
@@ -43,6 +45,7 @@ setGeneric("generate.transects", function(object, read.from.file = TRUE, write.t
 #' @usage create.region.table(object, region)
 #' @return an object of class Region.Table
 #' @docType methods
+#' @rdname create.region.table-methods
 setGeneric(name = "create.region.table", def = function(object, region){standardGeneric ("create.region.table")})
 
 #' S4 generic method to generate a sample table
@@ -54,6 +57,7 @@ setGeneric(name = "create.region.table", def = function(object, region){standard
 #' @usage create.region.table(object, region)
 #' @return an object of class Region.Table
 #' @docType methods
+#' @rdname create.sample.table-methods
 setGeneric(name = "create.sample.table", def = function(object){standardGeneric ("create.sample.table")}) 
 
 #' S4 generic method to simulate a survey
@@ -74,7 +78,8 @@ setGeneric(name = "create.sample.table", def = function(object){standardGeneric 
 #' @return an object of class LT.Survey.Results
 #' @export
 #' @docType methods
-setGeneric(name = "simulate.survey", def = function(object, dht.tables = FALSE, ...){standardGeneric ("simulate.survey")})
+#' @rdname create.survey.results-methods
+setGeneric(name = "create.survey.results", def = function(object, dht.tables = FALSE, ...){standardGeneric ("create.survey.results")})
 
 
 #' S4 generic method to extract distance data
@@ -86,21 +91,43 @@ setGeneric(name = "simulate.survey", def = function(object, dht.tables = FALSE, 
 #' @return a data.frame describing the distance data
 #' @export
 #' @docType methods
+#' @rdname get.distance.data-methods
 setGeneric(name = "get.distance.data", def = function(object){standardGeneric ("get.distance.data")})
 
 #' S4 generic method to displays a summary of a Simulation object
 #'
 #' If the simulation has been run this will include a summary of the results.
 #'
-#' @param object an object of class simulation
-#' @usage summary(object, ...)
 #' @export
 #' @author Laura Marshall 
 #' @docType methods
-setGeneric("summary")
+#' @rdname summary-methods
+setGeneric(name = "summary", def = function(object, ...){standardGeneric("summary")})
+# setGeneric(name = "summary", def = function(object, ...){standardGeneric ("summary")})
 
-#' setGeneric(name = "summary", def = function(object, ...){standardGeneric ("summary")})
+#' S4 generic method to plot an  object
+#'
+#' @export
+#' @author Laura Marshall 
+#' @docType methods
+#' @rdname plot-methods
+setGeneric(name = "plot", def = function(x, y, ...){standardGeneric("plot")})
 
+#' S4 generic method to print an object
+#'
+#' @export
+#' @author Laura Marshall 
+#' @docType methods
+#' @rdname print-methods
+setGeneric(name = "print", def = function(x, ...){standardGeneric("print")})
+
+#' S4 generic method to show an object
+#'
+#' @export
+#' @author Laura Marshall 
+#' @docType methods
+#' @rdname show-methods
+setGeneric(name = "show", def = function(object){standardGeneric("show")})
 
 #' S4 generic method to add a hotspot to the density grid
 #'
@@ -111,10 +138,10 @@ setGeneric("summary")
 #' @param centre an x,y-coordinate giving the centre of the hotspot
 #' @param sigma a value giving the scale parameter for a gaussian decay
 #' @param amplitude the height of the hotspot at its centre
-#' @usage add.hotspot(object, centre, sigma, amplitude)
 #' @return the updated Density or Simulation object
 #' @export
 #' @docType methods
+#' @rdname add.hotspot-methods
 setGeneric(name = "add.hotspot", def = function(object, centre, sigma, amplitude){standardGeneric ("add.hotspot")})
 
 
@@ -124,13 +151,14 @@ setGeneric(name = "add.hotspot", def = function(object, centre, sigma, amplitude
 #' running in parallel and max.cores is not specified it will default to using
 #' one less than the number of cores / threads on your machine.
 #'
-#' @param object an object of class simulation
+#' @param object an object of class Simulation
 #' @param logical option to use multiple processors
 #' @param integer maximum number of processors to use
 #' @usage run(object, ...)
 #' @return an object of class simulation which now includes the results
 #' @export
 #' @docType methods
+#' @rdname run-methods
 setGeneric(name = "run", def = function(object, run.parallel = FALSE, max.cores = NA){standardGeneric ("run")})
 
 
@@ -147,6 +175,7 @@ setGeneric(name = "run", def = function(object, run.parallel = FALSE, max.cores 
 #' @return a list containing an S3 ddf object and optionally an S3 dht object relating to the model with the miminum criteria.
 #' @export
 #' @docType methods
+#' @rdname run.analysis-methods
 setGeneric(name = "run.analysis", def = function(object, data, ...){standardGeneric ("run.analysis")})
 
 

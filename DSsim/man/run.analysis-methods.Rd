@@ -1,6 +1,9 @@
 \docType{methods}
 \name{run.analysis}
 \alias{run.analysis}
+\alias{run.analysis,DDF.Analysis,DDF.Data-method}
+\alias{run.analysis,Simulation,DDF.Data-method}
+\alias{run.analysis,Simulation,LT.Survey.Results-method}
 \title{S4 generic method to run analyses}
 \arguments{
   \item{object}{an object of class Simulation}

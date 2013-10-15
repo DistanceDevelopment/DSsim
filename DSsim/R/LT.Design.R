@@ -58,6 +58,9 @@ setValidity("LT.Design",
 # GENERIC METHODS
 ################################################################################
 
+
+#' @rdname generate.transects-methods
+#' @aliases generate.transects,LT.Design-method
 setMethod(
   f="generate.transects",
   signature="LT.Design",
@@ -82,35 +85,5 @@ setMethod(
 
 
  
-#setMethod(
-#  f="generate.transects",
-#  signature="character",
-#  definition=function(object, read.from.file = TRUE, write.to.file = FALSE){
-#    design.object <- get(object)
-#    transects <- generate.transects(design.object, object)    
-#    return(transects)
-#  }    
-#) 
-
-#setMethod(
-#  f="plot",
-#  signature="LT.Design",
-#  definition=function(x, y, col = 1){
-#    plot.transect <- function(sampler.info, col){
-#      lines(x = c(sampler.info[["start.X"]],sampler.info[["end.X"]]), y = c(sampler.info[["start.Y"]],sampler.info[["end.Y"]]), col = col)
-#      invisible(sampler.info)  
-#    }
-#    sampler.info <- x@sampler.info
-#    sampler.info$ID <- as.numeric(sampler.info$ID)                                         
-#    apply(as.matrix(sampler.info), 1, FUN = plot.transect, col = col)
-#    invisible()
-#  }
-#)
-
-################################################################################
-# ASSOCIATED METHODS
-################################################################################
-
-
 
 

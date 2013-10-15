@@ -1,6 +1,8 @@
 \docType{methods}
 \name{generate.population}
 \alias{generate.population}
+\alias{generate.population,Population.Description-method}
+\alias{generate.population,Simulation-method}
 \title{S4 generic method to generate an instance of a population}
 \arguments{
   \item{object}{an object of class Simulation or

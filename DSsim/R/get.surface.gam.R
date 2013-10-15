@@ -1,5 +1,4 @@
 get.surface.gam <- function(region, x.space, y.space, gam.model){
-  fitted(fit)
   
   #Create a rectangular grid over the entire region
   no.x.ints <- ceiling((region@box[["xmax"]]-region@box[["xmin"]])/x.space)

@@ -23,6 +23,12 @@ setValidity("Single.Obs.DDF.Data",
   }
 )
 
+################################################################################
+# GNERIC METHOD DEFINITIONS
+################################################################################
+
+#' @rdname plot-methods
+#' @aliases plot,Single.Obs.DDF.Data-method
 setMethod(
   f="plot",
   signature="Single.Obs.DDF.Data",

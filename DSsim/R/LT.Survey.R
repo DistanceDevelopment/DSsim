@@ -18,6 +18,12 @@ setClass(Class = "LT.Survey",
          contains = "Survey"
 ) 
 
+################################################################################
+# GENERIC METHODS
+################################################################################
+
+#' @rdname create.sample.table-methods
+#' @aliases create.sample.table, Survey-method
 setMethod(
   f="create.sample.table",
   signature="Survey",

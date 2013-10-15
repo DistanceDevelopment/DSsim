@@ -41,8 +41,14 @@ setValidity("Simulation.Summary",
   function(object){   
     return(TRUE)
   }
-)                                     
-                                      
+)  
+
+################################################################################
+# GENERIC METHODS
+################################################################################
+
+#' @rdname show-methods
+#' @aliases show,Simulation.Summary-method                                      
 setMethod(
   f="show",   
   signature="Simulation.Summary",
