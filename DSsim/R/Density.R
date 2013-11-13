@@ -84,7 +84,7 @@ setValidity("Density",
 # OTHER GENERIC METHODS
 ################################################################################ 
 
-#' @rdname plot-methods
+#' @rdname Density-class
 #' @aliases plot,Density-method
 setMethod("plot","Density",
   function(x, y, add = FALSE, plot.units = character(0), ...){

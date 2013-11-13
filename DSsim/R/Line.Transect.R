@@ -51,7 +51,7 @@ setValidity("Line.Transect",
 # GENERIC METHODS
 ################################################################################
 
-#' @rdname plot-methods
+#' @rdname Line.Transect-class
 #' @aliases plot,Line.Transect-method
 setMethod(
   f="plot",

@@ -2,7 +2,15 @@
 # CONSTRUCT CLASS AND DEFINE INITIALIZE AND VALIDITY
 ################################################################################
 
-##' Class "LT.Survey"
+#' Class "Single.Obs.LT.Survey" 
+#' 
+#' An S4 class containing an instance of a population
+#' and a set of transects. 
+#'
+#' @name Single.Obs.LT.Survey-class
+#' @docType class
+#' @keywords classes         
+#' @export
 
 setClass(Class = "Single.Obs.LT.Survey",
          contains = "LT.Survey"

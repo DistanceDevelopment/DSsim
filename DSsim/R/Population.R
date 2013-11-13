@@ -2,6 +2,17 @@
 ################################################################################
 # CONSTRUCT CLASS AND DEFINE INITIALIZE AND VALIDITY
 ################################################################################
+
+#' Class "Population" 
+#' 
+#' Contains an instance of a population including a description of their detectability
+#' in the form of an object of calss Detectability.
+#'
+#' @name Population-class
+#' @docType class
+#' @section Objects from the Class: Objects can be created by calls of the form
+#' @keywords classes
+#' @export
 setClass("Population", representation(region.obj   = "character",
                                       strata.names = "character", 
                                       N            = "numeric", 
@@ -34,7 +45,7 @@ setValidity("Population",
 ################################################################################
 # GENERIC METHODS
 ################################################################################
-#' @rdname plot-methods
+#' @rdname Population-class
 #' @aliases plot,Population-method
 setMethod(
   f="plot",

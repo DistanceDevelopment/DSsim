@@ -1,6 +1,7 @@
 \docType{class}
 \name{Density-class}
 \alias{Density-class}
+\alias{plot,Density-method}
 \title{Class "Density"}
 \description{
   Class \code{"Density"} is an S4 class containing a grid

@@ -81,7 +81,6 @@ setGeneric(name = "create.sample.table", def = function(object){standardGeneric 
 #' @rdname create.survey.results-methods
 setGeneric(name = "create.survey.results", def = function(object, dht.tables = FALSE, ...){standardGeneric ("create.survey.results")})
 
-
 #' S4 generic method to extract distance data
 #'
 #' Extracts distance data from a Survey.Results object
@@ -93,41 +92,6 @@ setGeneric(name = "create.survey.results", def = function(object, dht.tables = F
 #' @docType methods
 #' @rdname get.distance.data-methods
 setGeneric(name = "get.distance.data", def = function(object){standardGeneric ("get.distance.data")})
-
-#' S4 generic method to displays a summary of a Simulation object
-#'
-#' If the simulation has been run this will include a summary of the results.
-#'
-#' @export
-#' @author Laura Marshall 
-#' @docType methods
-#' @rdname summary-methods
-setGeneric(name = "summary", def = function(object, ...){standardGeneric("summary")})
-# setGeneric(name = "summary", def = function(object, ...){standardGeneric ("summary")})
-
-#' S4 generic method to plot an  object
-#'
-#' @export
-#' @author Laura Marshall 
-#' @docType methods
-#' @rdname plot-methods
-setGeneric(name = "plot", def = function(x, y, ...){standardGeneric("plot")})
-
-#' S4 generic method to print an object
-#'
-#' @export
-#' @author Laura Marshall 
-#' @docType methods
-#' @rdname print-methods
-setGeneric(name = "print", def = function(x, ...){standardGeneric("print")})
-
-#' S4 generic method to show an object
-#'
-#' @export
-#' @author Laura Marshall 
-#' @docType methods
-#' @rdname show-methods
-setGeneric(name = "show", def = function(object){standardGeneric("show")})
 
 #' S4 generic method to add a hotspot to the density grid
 #'
@@ -143,7 +107,6 @@ setGeneric(name = "show", def = function(object){standardGeneric("show")})
 #' @docType methods
 #' @rdname add.hotspot-methods
 setGeneric(name = "add.hotspot", def = function(object, centre, sigma, amplitude){standardGeneric ("add.hotspot")})
-
 
 #' S4 generic method to run a simulation
 #' 
@@ -161,7 +124,6 @@ setGeneric(name = "add.hotspot", def = function(object, centre, sigma, amplitude
 #' @rdname run-methods
 setGeneric(name = "run", def = function(object, run.parallel = FALSE, max.cores = NA){standardGeneric ("run")})
 
-
 #' S4 generic method to run analyses
 #'
 #' This method carries out an analysis of distance sampling data. This method
@@ -178,4 +140,20 @@ setGeneric(name = "run", def = function(object, run.parallel = FALSE, max.cores 
 #' @rdname run.analysis-methods
 setGeneric(name = "run.analysis", def = function(object, data, ...){standardGeneric ("run.analysis")})
 
+
+if (!isGeneric("plot")){
+  setGeneric(name = "plot", def = function(x, y, ...){standardGeneric("plot")})
+}
+
+if (!isGeneric("summary")){
+  setGeneric(name = "summary", def = function(object, ...){standardGeneric("summary")})
+}
+
+if (!isGeneric("show")){
+  setGeneric(name = "show", def = function(object){standardGeneric("show")})
+}
+
+if (!isGeneric("print")){
+  setGeneric(name = "print", def = function(x, ...){standardGeneric("print")})
+}
 

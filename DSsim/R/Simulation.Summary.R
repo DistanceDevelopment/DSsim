@@ -47,7 +47,7 @@ setValidity("Simulation.Summary",
 # GENERIC METHODS
 ################################################################################
 
-#' @rdname show-methods
+#' @rdname Simulation.Summary-class
 #' @aliases show,Simulation.Summary-method                                      
 setMethod(
   f="show",   

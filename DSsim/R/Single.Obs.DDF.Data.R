@@ -2,8 +2,15 @@
 # CONSTRUCT CLASS AND DEFINE INITIALIZE AND VALIDITY
 ################################################################################
 
-##' Class "Single.Obs.DDF.Data"
-
+#' Virtual Class "Single.Obs.DDF.Data" 
+#'
+#' DDF data resulting from a single observer survey.
+#' 
+#' @name Single.Obs.DDF.Data-class
+#' @docType class
+#' @section Objects from the Class: Objects can be created by calls of the form
+#' @keywords classes
+#' @export
 setClass(Class = "Single.Obs.DDF.Data", contains = "DDF.Data")
 
 setMethod(
@@ -27,7 +34,7 @@ setValidity("Single.Obs.DDF.Data",
 # GNERIC METHOD DEFINITIONS
 ################################################################################
 
-#' @rdname plot-methods
+#' @rdname Single.Obs.DDF.Data-class
 #' @aliases plot,Single.Obs.DDF.Data-method
 setMethod(
   f="plot",

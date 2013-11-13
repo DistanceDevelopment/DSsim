@@ -3,8 +3,14 @@
 # CONSTRUCT CLASS AND DEFINE INITIALIZE AND VALIDITY
 ################################################################################
 
-#Example class used only as a user interface not within run simulation
-
+#' Virtual Class "LT.Survey.Results" 
+#'
+#' Class containing all the components relating to a single realisation of a
+#' survey.
+#' @name LT.Survey.Results-class
+#' @docType class
+#' @keywords classes
+#' @export
 setClass("LT.Survey.Results", representation(region = "Region",
                                              population = "Population",
                                              transects = "Line.Transect",
@@ -35,7 +41,7 @@ setMethod(
 # GENERIC METHODS
 ################################################################################
 
-#' @rdname plot-methods
+#' @rdname LT.Survey.Results-class
 #' @aliases plot,LT.Survey.Results-method
 setMethod(
   f="plot",

@@ -38,6 +38,14 @@
   excluded (gaps). If area is not specified it will be
   calculated.
 }
+\examples{
+coords <- gaps <- list()
+coords[[1]] <- list(data.frame(x = c(0,1000,1000,0,0), y = c(0,0,1000,1000,0)))
+gaps[[1]] <- list(data.frame(x = c(400,600,500,350,400), y = c(100,250,300,120,100)))
+
+region <- make.region(region.name = "study.area", units = "m", coords = coords, gaps = gaps)
+plot(region)
+}
 \author{
   Laura Marshall
 }

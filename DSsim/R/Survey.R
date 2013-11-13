@@ -1,6 +1,7 @@
 
 ################################################################################
 # CONSTRUCT CLASS AND DEFINE INITIALIZE AND VALIDITY
+
 #' Class "Survey" 
 #' 
 #' Class \code{"Survey"} is an S4 class containing an instance of a population

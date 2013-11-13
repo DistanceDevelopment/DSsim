@@ -80,7 +80,7 @@ setValidity("Simulation",
 # GENERIC METHODS
 ################################################################################
 
-#' @rdname summary-methods
+#' @rdname Simulation-class
 #' @aliases summary,Simulation-method
 setMethod(
   f="summary",
@@ -218,7 +218,7 @@ setMethod(
   }    
 )
 
-#' @rdname print-methods
+#' @rdname Simulation-class
 #' @aliases print,Simulation-method
 setMethod(
   f="print",
@@ -229,7 +229,7 @@ setMethod(
   }    
 )
 
-#' @rdname show-methods
+#' @rdname Simulation-class
 #' @aliases show,Simulation-method
 setMethod(
   f="show",
@@ -241,7 +241,7 @@ setMethod(
 )
 
 
-#' @rdname plot-methods
+#' @rdname Simulation-class
 #' @aliases plot,Simulation-method
 setMethod(
   f="plot",

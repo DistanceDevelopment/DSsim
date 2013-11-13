@@ -1,5 +1,6 @@
 \docType{class}
 \name{Region-class}
+\alias{plot,Region-method}
 \alias{Region-class}
 \title{Class "Region"}
 \description{
@@ -12,6 +13,36 @@
   Objects can be created by calls of the form
   \code{make.region(region.name = "region.name", shapefile
   = region.shapefile)}
+}
+
+\section{Slots}{
+  \describe{ \item{\code{region.name}}{Object of class
+  \code{"character"}; giving the name of the region.}
+  \item{\code{strata.name}}{Object of class
+  \code{"character"}; character vector giving the names of
+  the strata.} \item{\code{strata.name}}{Object of class
+  \code{"character"}; character vector giving the names of
+  the strata.} \item{\code{units}}{Object of class
+  \code{"character"}; character describing the coordinate
+  units ("km" or "m")} \item{\code{area}}{Object of class
+  \code{"numeric"}; the area of the survey region}
+  \item{\code{box}}{Object of class \code{"numeric"}; 4
+  values giving the x and y ranges of the region}
+  \item{\code{coords}}{Object of class \code{"list"}; this
+  list contains an element for each strata. Each of these
+  list elements contains a list of polygons defining the
+  region.} \item{\code{gaps}}{Object of class
+  \code{"list"};this list contains an element for each
+  strata. Each of these list elements contains a list of
+  gaps in the region} }
+}
+
+\section{Methods}{
+  \describe{ \item{\code{get.area}}{\code{signature(obj =
+  "Region")}: retrieves the area element }
+  \item{\code{plot}}{\code{signature(x = "Region", y =
+  "missing")}: plots the survey region defined by the
+  object.} }
 }
 \keyword{classes}
 

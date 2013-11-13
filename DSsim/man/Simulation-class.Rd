@@ -1,6 +1,10 @@
 \docType{class}
 \name{Simulation-class}
+\alias{plot,Simulation-method}
+\alias{print,Simulation-method}
+\alias{show,Simulation-method}
 \alias{Simulation-class}
+\alias{summary,Simulation-method}
 \title{Class "Simulation"}
 \description{
   Class \code{"Simulation"} is an S4 class containing
