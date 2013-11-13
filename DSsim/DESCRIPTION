@@ -10,16 +10,23 @@ Suggests:
     testthat,
     parallel
 Type: Package
-Title: Distance Sampling Simulation.
+Title: Distance Sampling Simulations
 Version: 1.0.0
-Date: 2013-03-05
-Author: Laura Marshall
-Maintainer: Laura Marshall <lauram@mcs.st-and.ac.uk>
+Date: 2013-10-30
+LazyLoad: yes
+Author: Laura Marshall <lhm@st-and.ac.uk>
+Maintainer: Laura Marshall <lhm@st-and.ac.uk>
 Description: Performs distance sampling simulations. It repeatedly generates
     instances of a user defined population within a given survey region,
-    generates realisations of a survey design and simulates the detection
+    generates realisations of a survey design (currently these must be
+    pre-generated using Distance software) and simulates the detection
     process. The data are then analysed so that the results can be compared for
-    accuracy and precision across all replications.
+    accuracy and precision across all replications. This will allow users to
+    select survey designs which will give them the best accuracy and precision
+    given their expectations about population distribution. Any uncertainty in
+    population distribution or population parameters can be included by running
+    the different survey designs for a number of different population
+    descriptions.
 License: GPL (>=2)
 Collate:
     'generic.functions.R'

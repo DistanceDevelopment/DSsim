@@ -11,7 +11,8 @@
 
   \item{strata.name}{the region name}
 
-  \item{units}{the units given as a character}
+  \item{units}{the units given as a character (either 'm'
+  or 'km')}
 
   \item{area}{the area of the region (optional - if not
   supplied it will be calculated for you if you supply a

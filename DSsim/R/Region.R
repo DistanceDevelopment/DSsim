@@ -30,13 +30,14 @@ setMethod(
       #if no coordinates have been supplied then it uses the shapefile
       polygons <- coords.from.shapefile(shapefile)
       coords <- polygons$coords
-      gaps <- polygons$gaps
-      boundbox <- get.bound.box(shapefile)
+      gaps <- polygons$gaps  
     }else if(length(coords) == 0 & is.null(shapefile)){
       #complains if neither the coordinates or the shapefile are supplied
       message("Error: You must provide either coordinates or a shapefile")
       return(NULL)
     }
+    #Gets the minimum bounding box
+    boundbox <- get.bound.box(coords)
     #calculates the strata areas
     if(length(area) == 0){
       area <- calc.area(coords, gaps)

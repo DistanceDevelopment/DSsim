@@ -6,7 +6,6 @@ calc.area <- function(coords, gaps){
     total.area <- sum(areas) 
     return(total.area)
   }
-  require(splancs)
   
   gross.area <- unlist(lapply(coords, list.area))
   gap.area <- unlist(lapply(gaps, list.area))

@@ -8,7 +8,7 @@
 #' 
 #' @param region.name the region name
 #' @param strata.name the region name
-#' @param units the units given as a character
+#' @param units the units given as a character (either 'm' or 'km')
 #' @param area the area of the region (optional - if not supplied it will be 
 #'   calculated for you if you supply a shapefile)
 #' @param shapefile a shapefile of the region
@@ -17,7 +17,14 @@
 #' @return object of class Region 
 #' @export
 #' @author Laura Marshall
+#' @examples
 #' 
+#' coords <- gaps <- list()
+#' coords[[1]] <- list(data.frame(x = c(0,1000,1000,0,0), y = c(0,0,1000,1000,0)))
+#' gaps[[1]] <- list(data.frame(x = c(400,600,500,350,400), y = c(100,250,300,120,100)))
+#' 
+#' region <- make.region(region.name = "study.area", units = "m", coords = coords, gaps = gaps)
+#' plot(region)
 make.region <- function(region.name, strata.name = character(0), units, area = numeric(0), shapefile = NULL, coords = list(), gaps = list()){
     region <- new(Class="Region", region.name = region.name, strata.name = strata.name, units = units, area = area, shapefile = shapefile, coords = coords, gaps = gaps)
   return(region)
@@ -53,6 +60,7 @@ make.region <- function(region.name, strata.name = character(0), units, area = n
 #' @return object of a class which inherits from class Survey.Design 
 #' @export
 #' @author Laura Marshall
+#' @examples
 #'
 make.design <- function(transect.type, design.details, region.obj, design.axis = numeric(0), spacing = numeric(0), angle = numeric(0), plus.sampling = logical(0), path = character(0)){
   region <- global.name <- deparse(substitute(region.obj))
