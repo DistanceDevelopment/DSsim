@@ -1,9 +1,13 @@
 \docType{class}
 \name{Simulation-class}
+\alias{plot}
 \alias{plot,Simulation-method}
+\alias{print}
 \alias{print,Simulation-method}
+\alias{show}
 \alias{show,Simulation-method}
 \alias{Simulation-class}
+\alias{summary}
 \alias{summary,Simulation-method}
 \title{Class "Simulation"}
 \description{
@@ -20,6 +24,69 @@
   \code{make.simulation(reps, double.observer, region.obj,
   design.obj, population.description.obj,
   detectability.obj, ddf.analyses.list)}
+}
+
+\section{Slots}{
+  \describe{ \item{\code{reps}}{Object of class
+  \code{"numeric"}; the number of times the simulation
+  should be repeated.}
+  \item{\code{single.transect.set}}{Object of class
+  \code{"logical"}; if \code{TRUE} the same set of
+  transects are used in each repetition.}
+  \item{\code{double.observer}}{Object of class
+  \code{"logical"}; whether a double observer protocol is
+  being used. Not currently implemented.}
+  \item{\code{region}}{Object of class \code{"Region"}; the
+  survey region.} \item{\code{design}}{Object of class
+  \code{"Survey.Design"}; the survey design.}
+  \item{\code{population.description}}{Object of class
+  \code{"Population.Description"}; the
+  population.description.}
+  \item{\code{detectability}}{Object of class
+  \code{"Detectability"}; a description of the
+  detectability of the population.}
+  \item{\code{ddf.analyses}}{Object of class \code{"list"};
+  a list of object of class DDF.Analysis. These are fitted
+  and the one with the minimum criteria is selected and
+  used in predicting N and D.}
+  \item{\code{dsm.analysis}}{Object of class
+  \code{"DSM.Analysis"}; Not yet implemented.}
+  \item{\code{ddf.param.ests}}{Object of class
+  \code{"array"}; stores the parameters associated with the
+  detection function.} \item{\code{results}}{Object of
+  class \code{"logical"}; stores the estimated of abundance
+  and density as well as other measures of interest.} }
+}
+
+\section{Methods}{
+  \describe{
+  \item{\code{add.hotspot}}{\code{signature=(object =
+  "Simulation")}: adds a hotspot based on a gaussian decay
+  to the density surface.}
+  \item{\code{summary}}{\code{signature=(object =
+  "Simulation")}: produces a summary of the simulation and
+  its results.}
+  \item{\code{generate.population}}{\code{signature =
+  (object = "Simulation")}: generates a single instance of
+  a population.}
+  \item{\code{generate.transects}}{\code{signature =
+  (object = "Simulation")}: generates a single set of
+  transects.}
+  \item{\code{create.survey.results}}{\code{signature =
+  (object = "Simulation")}: carries out the simulation
+  process as far as generating the distance data and
+  returns an object containing the population, transects
+  and data.} \item{\code{run.analysis}}{\code{signature =
+  c(object = "Simulation", data = "LT.Survey.Results")}:
+  returns the ddf analysis results from the models in the
+  simulation fitted to the data in the LT.Survey.Results
+  object.} \item{\code{run.analysis}}{\code{signature =
+  c(object = "Simulation", data = "DDF.Data")}: returns the
+  ddf analysis results from the models in the simulation
+  fitted to the data in the DDF.Data object.}
+  \item{\code{run}}{\code{signature = (object =
+  "Simulation")}: runs the whole simulation for the
+  specified number of repetitions.} }
 }
 \keyword{classes}
 

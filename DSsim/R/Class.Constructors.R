@@ -61,7 +61,6 @@ make.region <- function(region.name, strata.name = character(0), units, area = n
 #' @return object of a class which inherits from class Survey.Design 
 #' @export
 #' @author Laura Marshall
-#'
 make.design <- function(transect.type, design.details, region.obj, design.axis = numeric(0), spacing = numeric(0), angle = numeric(0), plus.sampling = logical(0), path = character(0)){
   region <- global.name <- deparse(substitute(region.obj))
   #if(class(region) != "character"){
@@ -231,7 +230,15 @@ make.ddf.analysis.list <- function(dsmodel, mrmodel = NULL, method, criteria){
 #' @return object of class Simulation 
 #' @export
 #' @author Laura Marshall
-#'
+#' @examples
+#' 
+#' coords <- gaps <- list()
+#' coords[[1]] <- list(data.frame(x = c(0,1000,1000,0,0), y = c(0,0,1000,1000,0)))
+#' gaps[[1]] <- list(data.frame(x = c(400,600,500,350,400), y = c(100,250,300,120,100)))
+#' 
+#' region <- make.region(region.name = "study.area", units = "m", coords = coords, gaps = gaps)
+#' plot(region)
+#' 
 make.simulation <- function(reps, single.transect.set = FALSE, double.observer = FALSE, region.obj, design.obj, population.description.obj, detectability.obj, ddf.analyses.list){
   #Make the results arrays and store in a list
   no.strata <- ifelse(length(region.obj@strata.name) > 0, length(region.obj@strata.name)+1, 1) 

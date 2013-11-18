@@ -5,8 +5,24 @@
 #'
 #' @name DDF.Analysis-class
 #' @docType class
-#' @section Objects from the Class: Objects can be created by calls of the form
-#' \code{make.ddf.analysis(dsmodel = ~cds(key = "hn", formula = ~1), criteria = "AIC")} 
+#' @section Objects from the Class: Lists of DDF.Analysis objects can 
+#' be created by calls of the form
+#' \code{make.ddf.analysis.list <- function(dsmodel, method, criteria)} 
+#' @section Slots: 
+#' \describe{
+#'  \item{\code{dsmodel}}{Object of class \code{"formula"}; describing the
+#'  detection function model.}
+#'  \item{\code{criteria}}{Object of class \code{"character"}; describes 
+#'  which model delection croteria to use ("AIC","AICc","BIC").}
+#'  \item{\code{ddf.result}}{Object of class \code{"list"}; object of S3 class
+#'  ddf.}
+#' }
+#' @section Methods:
+#' \describe{
+#'  \item{\code{run.analysis}}{\code{signature=c(object = "DDF.Analysis", 
+#'  data = "DDF.Data")}: runs the analysis described in the object on the
+#'  data provided.}
+#' }
 #' @keywords classes
 #' @export
 setClass(Class = "DDF.Analysis", representation(dsmodel = "formula",

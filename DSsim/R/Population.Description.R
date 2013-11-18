@@ -5,10 +5,35 @@
 #' example population.
 #'                                  
 #' @name Population.Description-class
-#' @aliases Population.Description-class generate.population, Population.Description-method
 #' @docType class
 #' @section Objects from the Class: Objects can be created by calls of the form
 #' \code{make.population.description(N, density.obj, region)} 
+#' @section Slots: 
+#' \describe{
+#'  \item{\code{N}}{Object of class \code{"numeric"}; number of individuals
+#'  in the population (optional).}
+#'  \item{\code{density}}{Object of class \code{"Density"}; describes the
+#'  population density}
+#'  \item{\code{region.name}}{Object of class \code{"character"}; name of
+#'  the region in which the population exists.}
+#'  \item{\code{size}}{Object of class \code{"logical"}; Indicating whether
+#'  detections will be made on cluster (TRUE) or individuals (FALSE).}
+#'  \item{\code{size.table}}{Object of class \code{"data.frame"}; This must
+#'  have 2 columns- \code{size} and \code{prob}. The first column gives the
+#'  possible cluster sizes and the second describes the probabilities
+#'  of each cluster size.}
+#'  \item{\code{gen.by.N}}{Object of class \code{"logical"}; If \code{TRUE} 
+#'  N is fixed otherwise it is generated from a Poisson distribution.}
+#'  \item{\code{D.dist}}{Object of class \code{character}; Describes the
+#'  density distribution (currently not implemented).}
+#' }
+#' @section Methods:
+#' \describe{
+#'  \item{\code{get.N}}{\code{signature=(object = "Population.Description")}:
+#'  returns the value of \code{N}}
+#'  \item{\code{generate.population}}{\code{signature=(object = "Population.Description")}: generates a single realisation of the population.}
+#' }
+
 #' @keywords classes
 #' @export
 setClass("Population.Description", representation(N           = "numeric", 

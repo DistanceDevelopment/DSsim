@@ -7,6 +7,22 @@
 #' @docType class                             
 #' @section Objects from the Class: Objects can be created by calls of the form
 #' \code{make.detectability(key.function, scale.param, perp.truncation, rad.truncation)} 
+#' @section Slots: 
+#' \describe{
+#'  \item{\code{key.function}}{Object of class \code{"character"}; a code
+#'  specifying the detection function form ("hn" = half normal, "hr" = 
+#'  hazard rate.)}
+#'  \item{\code{scale.param}}{Object of class \code{"numeric"}; The scale
+#'  parameter for the detection function.}
+#'  \item{\code{shape.param}}{Object of class \code{"numeric"}; The shape
+#'  parameter for the detection function.}
+#'  \item{\code{covariates}}{Object of class \code{"character"}; The names
+#'  of the covariates which affect detectability. Not yet implemented}
+#'  \item{\code{cov.param}}{Object of class \code{"numeric"}; The parameter
+#'  values associated with the covariates. Not yet implemented}
+#'  \item{\code{truncation}}{Object of class \code{"numeric"}; The maximum 
+#'  distance at which objects may be detected.}
+#' }
 #' @keywords classes
 #' @export
 setClass("Detectability", representation(key.function    = "character",                                        

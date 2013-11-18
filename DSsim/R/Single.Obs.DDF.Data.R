@@ -2,7 +2,7 @@
 # CONSTRUCT CLASS AND DEFINE INITIALIZE AND VALIDITY
 ################################################################################
 
-#' Virtual Class "Single.Obs.DDF.Data" 
+#' S4 Class "Single.Obs.DDF.Data" 
 #'
 #' DDF data resulting from a single observer survey.
 #' 

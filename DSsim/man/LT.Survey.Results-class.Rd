@@ -1,11 +1,39 @@
 \docType{class}
 \name{LT.Survey.Results-class}
 \alias{LT.Survey.Results-class}
+\alias{plot}
 \alias{plot,LT.Survey.Results-method}
-\title{Virtual Class "LT.Survey.Results"}
+\title{S4 Class "LT.Survey.Results"}
 \description{
   Class containing all the components relating to a single
   realisation of a survey.
+}
+\section{Slots}{
+  \describe{ \item{\code{region}}{Object of class
+  \code{"Region"}; the region representation.}
+  \item{\code{population}}{Object of class
+  \code{"Population"}; the population.}
+  \item{\code{transects}}{Object of class
+  \code{"Line.Transect"}; the transects.}
+  \item{\code{ddf.data}}{Object of class
+  \code{"Single.Obs.DDF.Data"}; The ddf data for
+  \code{ddf}.} \item{\code{obs.table}}{Object of class
+  \code{"Obs.Table"}; One of the tables for \code{dht}.}
+  \item{\code{sample.table}}{Object of class
+  \code{"Sample.Table"}; One of the tables for \code{dht}.}
+  \item{\code{region.table}}{Object of class
+  \code{"Region.Table"}; One of the tables for \code{dht}.}
+  }
+}
+
+\section{Methods}{
+  \describe{ \item{\code{plot}}{\code{signature=(object =
+  "LT.Survey.Results")}: plots the region, the location of
+  individuals in the population, the transects and the
+  successful sightings.}
+  \item{\code{get.distance.data}}{\code{signature=(object =
+  "LT.Survey.Results")}: returns the ddf data as a
+  dataframe..} }
 }
 \keyword{classes}
 

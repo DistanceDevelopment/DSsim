@@ -1,8 +1,9 @@
 \docType{class}
 \name{Single.Obs.DDF.Data-class}
+\alias{plot}
 \alias{plot,Single.Obs.DDF.Data-method}
 \alias{Single.Obs.DDF.Data-class}
-\title{Virtual Class "Single.Obs.DDF.Data"}
+\title{S4 Class "Single.Obs.DDF.Data"}
 \description{
   DDF data resulting from a single observer survey.
 }
