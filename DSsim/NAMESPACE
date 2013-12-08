@@ -1,3 +1,4 @@
+export(display.glossary)
 export(make.ddf.analysis.list)
 export(make.density)
 export(make.design)
