@@ -45,7 +45,7 @@ setMethod(
         #Create density surface from gam
         density.surface <- get.surface.gam(region, x.space, y.space, gam.model = density.gam)
       }else{
-        density.surface <- list("error type 1")    
+        density.surface <- list(data.frame(x = NULL, y = NULL, density = NULL))    
       }
     }
     #Set slots
@@ -65,8 +65,8 @@ setValidity("Density",
     #check region object exists and is of the correct class
     #check strata object exists and is of the correct class
     #check the density grid was created without problem
-    if(object@density.surface[[1]] == "error type 1"){
-      message("You must supply either a density surface, constant or density gam argument. DSM and formula are not currently suported.")
+    if(nrow(object@density.surface[[1]]) == 0){
+      message("You must supply either a valid density surface, constant or valid density gam argument. DSM and formula are not currently suported.")
       return(FALSE)
     }
     
