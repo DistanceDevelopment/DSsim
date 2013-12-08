@@ -82,3 +82,4 @@ Collate:
     'LT.Systematic.Design.R'
     'LT.Random.Design.R'
     'LT.User.Specified.Design.R'
+    'display.glossary.R'
