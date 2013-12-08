@@ -1,7 +1,6 @@
 \docType{class}
 \name{Line.Transect-class}
 \alias{Line.Transect-class}
-\alias{plot}
 \alias{plot,Line.Transect-method}
 \title{Class "Line.Transect" containing an instance of a Line Transect Survey}
 \description{

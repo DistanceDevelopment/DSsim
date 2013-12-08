@@ -1,7 +1,6 @@
 \docType{class}
 \name{Density-class}
 \alias{Density-class}
-\alias{plot}
 \alias{plot,Density-method}
 \title{Class "Density"}
 \description{

@@ -1,6 +1,5 @@
 \docType{class}
 \name{Population-class}
-\alias{plot}
 \alias{plot,Population-method}
 \alias{Population-class}
 \title{Class "Population"}

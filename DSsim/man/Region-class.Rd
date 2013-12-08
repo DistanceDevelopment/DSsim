@@ -1,6 +1,5 @@
 \docType{class}
 \name{Region-class}
-\alias{plot}
 \alias{plot,Region-method}
 \alias{Region-class}
 \title{Class "Region"}

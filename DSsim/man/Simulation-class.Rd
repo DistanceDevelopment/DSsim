@@ -1,13 +1,9 @@
 \docType{class}
 \name{Simulation-class}
-\alias{plot}
 \alias{plot,Simulation-method}
-\alias{print}
 \alias{print,Simulation-method}
-\alias{show}
 \alias{show,Simulation-method}
 \alias{Simulation-class}
-\alias{summary}
 \alias{summary,Simulation-method}
 \title{Class "Simulation"}
 \description{

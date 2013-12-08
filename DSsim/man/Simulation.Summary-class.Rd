@@ -1,6 +1,5 @@
 \docType{class}
 \name{Simulation.Summary-class}
-\alias{show}
 \alias{show,Simulation.Summary-method}
 \alias{Simulation.Summary-class}
 \title{Class "Simulation.Summary"}

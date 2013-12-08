@@ -1,7 +1,6 @@
 \docType{class}
 \name{LT.Survey.Results-class}
 \alias{LT.Survey.Results-class}
-\alias{plot}
 \alias{plot,LT.Survey.Results-method}
 \title{S4 Class "LT.Survey.Results"}
 \description{
