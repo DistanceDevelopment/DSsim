@@ -398,7 +398,7 @@ setMethod(
     criteria <- NULL
     results <- list()
     for(a in seq(along = ddf.analyses)){
-      results[[a]] <- run.analysis(ddf.analyses[[a]], ddf.dat = data)
+      results[[a]] <- run.analysis(ddf.analyses[[a]], data)
       criteria <- c(criteria, results[[a]]$criterion)
     }
     best.model <- which(criteria == min(criteria))
