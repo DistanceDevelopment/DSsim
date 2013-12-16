@@ -12,4 +12,7 @@
 \description{
   Extracts distance data from a Survey.Results object
 }
+\seealso{
+  \code{create.survey.results}
+}
 

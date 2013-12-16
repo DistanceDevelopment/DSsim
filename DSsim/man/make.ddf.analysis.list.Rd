@@ -28,10 +28,15 @@
   generated in the simulation and select the model with the
   minimum criteria value.
 }
+\examples{
+ddf.analyses <- make.ddf.analysis.list(dsmodel = list(~cds(key = "hn",
+ formula = ~1),~cds(key = "hr", formula = ~1)), method = "ds",
+ criteria = "AIC")
+}
 \author{
   Laura Marshall
 }
 \seealso{
-  \code{ddf} in \code{library(mrds)},
+  \code{ddf} in \code{library(mrds)}
 }
 

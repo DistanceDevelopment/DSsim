@@ -21,4 +21,7 @@
   Uses a Gaussian decay around a central location to add a
   hotspot to the density grid.
 }
+\seealso{
+  \code{make.density}
+}
 

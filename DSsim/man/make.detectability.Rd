@@ -31,6 +31,10 @@
   The detectability of the population is described by the
   values in this class.
 }
+\examples{
+detect <- make.detectability(key.function = "hn", scale.param = 15,
+ truncation = 30)
+}
 \author{
   Laura Marshall
 }

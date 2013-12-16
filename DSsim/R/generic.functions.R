@@ -74,11 +74,18 @@ setGeneric(name = "create.sample.table", def = function(object){standardGeneric 
 #' @param object an object of class Simulation
 #' @param dht.tables logical value indicating whether or the data tables for 
 #'   Hortvitz-Thompson estimation are required.
-#' @usage simulate.survey(object, dht.tables, ...)
+#' @usage create.survey.results(object, dht.tables, ...)
 #' @return an object of class LT.Survey.Results
 #' @export
 #' @docType methods
 #' @rdname create.survey.results-methods
+#' @examples
+#' \dontrun{
+#' survey.results <- create.survey.results(simulation, dht.table = TRUE)
+#' 
+#' plot(survey.results)
+#' }
+#' 
 setGeneric(name = "create.survey.results", def = function(object, dht.tables = FALSE, ...){standardGeneric ("create.survey.results")})
 
 #' S4 generic method to extract distance data
@@ -91,6 +98,7 @@ setGeneric(name = "create.survey.results", def = function(object, dht.tables = F
 #' @export
 #' @docType methods
 #' @rdname get.distance.data-methods
+#' @seealso \code{create.survey.results}
 setGeneric(name = "get.distance.data", def = function(object){standardGeneric ("get.distance.data")})
 
 #' S4 generic method to add a hotspot to the density grid
@@ -106,6 +114,7 @@ setGeneric(name = "get.distance.data", def = function(object){standardGeneric ("
 #' @export
 #' @docType methods
 #' @rdname add.hotspot-methods
+#' @seealso \code{make.density}
 setGeneric(name = "add.hotspot", def = function(object, centre, sigma, amplitude){standardGeneric ("add.hotspot")})
 
 #' S4 generic method to run a simulation
@@ -122,6 +131,7 @@ setGeneric(name = "add.hotspot", def = function(object, centre, sigma, amplitude
 #' @export
 #' @docType methods
 #' @rdname run-methods
+#' @seealso \code{class?Simulation}
 setGeneric(name = "run", def = function(object, run.parallel = FALSE, max.cores = NA){standardGeneric ("run")})
 
 #' S4 generic method to run analyses

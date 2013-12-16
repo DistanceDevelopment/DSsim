@@ -55,6 +55,18 @@
   Specified \tab \cr Point \tab Systematic \tab \cr Point
   \tab Random \tab \cr}
 }
+\examples{
+\dontrun{
+data(transects.shp)
+shapefile.pathway <- "C:/..."
+write.shapefile(transects.shp, shapefile.pathway)
+
+parallel.design <- make.design(transect.type = "Line",
+ design.details = c("Parallel","Systematic"), region = region,
+ design.axis = 0, spacing = 100, plus.sampling =FALSE,
+ path = shapefile.pathway)
+}
+}
 \author{
   Laura Marshall
 }

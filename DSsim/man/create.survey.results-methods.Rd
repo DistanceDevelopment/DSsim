@@ -27,4 +27,11 @@
   distance data extracted using \code{get.distance.data()}.
   You can then investigate fitting models to this data.
 }
+\examples{
+\dontrun{
+survey.results <- create.survey.results(simulation, dht.table = TRUE)
+
+plot(survey.results)
+}
+}
 

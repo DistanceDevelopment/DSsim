@@ -20,4 +20,7 @@
   specified it will default to using one less than the
   number of cores / threads on your machine.
 }
+\seealso{
+  \code{class?Simulation}
+}
 
