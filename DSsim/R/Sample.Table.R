@@ -7,9 +7,10 @@
 #' @name Sample.Table-class
 #' @docType class
 #' @section Objects from the Class: Objects can be created by calls to the 
-#' function \code{simulate.survey(simulation, dht.table = TRUE)} 
+#' function \code{create.survey.results(simulation, dht.table = TRUE)} 
 #' @keywords classes
 #' @export
+#' @seealso \code{\link{create.survey.results}}
 setClass(Class = "Sample.Table", representation(sample.table = "data.frame"))
 
 setMethod(

@@ -8,8 +8,30 @@
   description of their detectability in the form of an
   object of calss Detectability.
 }
-\section{Objects from the Class}{
-  Objects can be created by calls of the form
+\section{Slots}{
+  \describe{ \item{\code{region.obj}}{Object of class
+  \code{"character"}; the name of the region object.}
+  \item{\code{strata.names}}{Object of class
+  \code{"character"}; the names of the strata.}
+  \item{\code{N}}{Object of class \code{"numeric"}; the
+  number of individuals/clusters.} \item{\code{D}}{Object
+  of class \code{"numeric"}; the density of
+  individuals/clusters.} \item{\code{population}}{Object of
+  class \code{"data.frame"}; the locations of
+  individuals/clusters and any population covariates.}
+  \item{\code{detectability}}{Object of class
+  \code{"Detectability"}; describes how easily the
+  individuals/clusters can be detected.} }
+}
+
+\section{Methods}{
+  \describe{ \item{\code{plot}}{\code{signature=(object =
+  "Line.Transect")}: plots the locations of the
+  individuals/clusters.} }
+}
+\seealso{
+  \code{\link{make.population.description}},
+  \code{\link{make.detectability}}
 }
 \keyword{classes}
 

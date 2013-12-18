@@ -5,9 +5,6 @@
 #'
 #' @name DDF.Analysis-class
 #' @docType class
-#' @section Objects from the Class: Lists of DDF.Analysis objects can 
-#' be created by calls of the form
-#' \code{make.ddf.analysis.list <- function(dsmodel, method, criteria)} 
 #' @section Slots: 
 #' \describe{
 #'  \item{\code{dsmodel}}{Object of class \code{"formula"}; describing the
@@ -25,6 +22,7 @@
 #' }
 #' @keywords classes
 #' @export
+#' @seealso \code{\link{make.ddf.analysis.list}}
 setClass(Class = "DDF.Analysis", representation(dsmodel = "formula",
                                                 criteria = "character",
                                                 ddf.result = "list", "VIRTUAL"))

@@ -8,7 +8,7 @@
   \item{object}{an object of class Simulation or
   Population.Description}
 
-  \item{detectability}{object of class detectability
+  \item{detectability}{object of class Detectability
   (optional - only required if object is of class
   Population.Description)}
 }

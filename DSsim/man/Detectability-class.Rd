@@ -7,12 +7,6 @@
   the probablity of detecting individuals / clusters in a
   population.
 }
-\section{Objects from the Class}{
-  Objects can be created by calls of the form
-  \code{make.detectability(key.function, scale.param,
-  perp.truncation, rad.truncation)}
-}
-
 \section{Slots}{
   \describe{ \item{\code{key.function}}{Object of class
   \code{"character"}; a code specifying the detection
@@ -29,6 +23,9 @@
   yet implemented} \item{\code{truncation}}{Object of class
   \code{"numeric"}; The maximum distance at which objects
   may be detected.} }
+}
+\seealso{
+  \code{\link{make.detectability}}
 }
 \keyword{classes}
 

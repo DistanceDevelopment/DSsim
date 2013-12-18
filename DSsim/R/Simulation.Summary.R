@@ -1,14 +1,18 @@
 #' Class "Simulation.Summary" 
 #' 
 #' Class \code{"Simulation.Summary"} is an S4 class containing a summary of
-#' the simulation results 
+#' the simulation results. This is returned when \code{summary(Simulation)}
+#' is called. If it is not assigned to a variable the object will be 
+#' displayed via the \code{show} method. 
 #'
 #' @name Simulation.Summary-class
 #' @docType class
-#' @section Objects from the Class: Objects can be created by calls of the form
-#' \code{make.simulation(reps, double.observer, region.obj, design.obj, 
-#' population.description.obj, detectability.obj, ddf.analyses.list)} 
 #' @keywords classes
+#' @section Methods:
+#' \describe{
+#'  \item{\code{show}}{\code{signature=(object = "Simulation.Summary")}: prints
+#'  the contents of the object in a user friendly format.}
+#'  }
 #' @export
 setClass("Simulation.Summary", representation(region.name = "character",
                                       individuals = "list",

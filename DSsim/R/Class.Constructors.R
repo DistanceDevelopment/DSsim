@@ -35,8 +35,8 @@ make.region <- function(region.name, strata.name = character(0), units, area = n
   
 #' Creates a Survey.Design object
 #'
-#' Currently surveys are only generated within the GIS in Distance therefore
-#' if you are running a simulation in R you will need to get Distance to 
+#' Currently surveys are only generated within the GIS in Distance. If you 
+#' are running a simulation in R you will need to get Distance to 
 #' generate all the surveys as shapefiles in advance and supply the path to
 #' the directory which contains these shapefiles.
 #'
@@ -116,14 +116,10 @@ make.design <- function(transect.type, design.details, region.obj, design.axis =
 #' 
 #' The user has the option to create a grid describing the density of the 
 #' objects and pass this in giving the x and y spacings used in the creation
-#' of this grid.
-#'
-#' Alternatively the user can specify a constant density and x, y spacings
-#' and this grid will be generated automatically.
-#' 
-#' The user may also supply a mgcv gam object and x, y spacings and the 
-#' density grid will be created from these.
-#'
+#' of this grid. Alternatively the user can specify a constant density and x, 
+#' y spacings and this grid will be generated automatically. The user may 
+#' also supply a \code{mgcv gam} object and x, y spacings and the density grid will 
+#' be created from these.
 #'
 #' @param region.obj the Region object in which the density grid will be created
 #' @param density.surface a dataframe describing the density with columns
@@ -131,24 +127,18 @@ make.design <- function(transect.type, design.details, region.obj, design.axis =
 #' @param x.space the intervals in the grid in the x direction
 #' @param y.space the intervals in the grid in the y direction
 #' @param constant a value describing a constant density across the surface.
-#' @param density.gam - not yet implemented
+#' @param density.gam \code{gam} object created using \code{mgcv}
 #' @param dsm not currently implemented
 #' @param formula not currently implemented
 #' @return object of class Density 
 #' @export
 #' @author Laura Marshall     
-#' @examples                    
-#' coords <- gaps <- list()
-#' coords[[1]] <- list(data.frame(x = c(0,1000,1000,0,0), y = c(0,0,
-#'  1000,1000,0)))
-#' gaps[[1]] <- list(data.frame(x = c(400,600,500,350,400), y = c(100,
-#'  250,600,120,100)))
-#' 
-#' region <- make.region(region.name = "study.area", units = "m", 
-#'  coords = coords, gaps = gaps)
-#' 
+#' @seealso \code{\link{make.region}}  
+#' @examples                  
+#' \dontrun{
 #' pop.density <- make.density(region.obj = region, x.space = 10, 
 #'  y.space = 10, constant = 0.5) 
+#'  
 #' pop.density <- add.hotspot(pop.density, centre = c(50, 200), 
 #'  sigma = 100, amplitude = 0.1)
 #' pop.density <- add.hotspot(pop.density, centre = c(500, 700), 
@@ -158,6 +148,7 @@ make.design <- function(transect.type, design.details, region.obj, design.axis =
 #' 
 #' plot(pop.density)
 #' plot(region, add = TRUE)
+#' }
 make.density <- function(region.obj, density.surface = list(), x.space, y.space, constant = numeric(0), density.gam = NULL, dsm = NULL, formula = NULL){
   if(!is.null(constant)){
     if(length(region.obj@strata.name) > 0 & length(constant) != length(region.obj@strata.name)){
@@ -184,30 +175,12 @@ make.density <- function(region.obj, density.surface = list(), x.space, y.space,
 #' @return object of class Population.Description 
 #' @export
 #' @author Laura Marshall
+#' @seealso \code{\link{make.region}}, \code{\link{make.density}}
 #' @examples
-#' coords <- gaps <- list()
-#' coords[[1]] <- list(data.frame(x = c(0,1000,1000,0,0), y = c(0,0,
-#'  1000,1000,0)))
-#' gaps[[1]] <- list(data.frame(x = c(400,600,500,350,400), y = c(100,
-#'  250,600,120,100)))
-#' 
-#' region <- make.region(region.name = "study.area", units = "m", 
-#'  coords = coords, gaps = gaps)
-#'  
-#' pop.density <- make.density(region.obj = region, x.space = 10, 
-#'  y.space = 10, constant = 0.5) 
-#' pop.density <- add.hotspot(pop.density, centre = c(50, 200), 
-#'  sigma = 100, amplitude = 0.1)
-#' pop.density <- add.hotspot(pop.density, centre = c(500, 700), 
-#'  sigma = 900, amplitude = 0.05)
-#' pop.density <- add.hotspot(pop.density, centre = c(300, 100), 
-#'  sigma = 100, amplitude = -0.15)
-#' 
-#' plot(pop.density)
-#' plot(region, add = TRUE)
-#' 
+#' \dontrun{
 #' pop.description <- make.population.description(N = 1000, 
 #'  density.obj = pop.density, region = region, fixed.N = TRUE)
+#'  }
 make.population.description <- make.pop.description <- function(region.obj, density.obj, cluster.size.table = data.frame(NULL), size.distribution = character(0), size.param = numeric(0), N = numeric(0), fixed.N = TRUE, average.D = numeric(0)){
   if(nrow(cluster.size.table) > 0 | length(size.distribution) > 0){   
     cluster.size <- TRUE

@@ -22,6 +22,6 @@
   hotspot to the density grid.
 }
 \seealso{
-  \code{make.density}
+  \code{\link{make.density}}
 }
 

@@ -2,16 +2,22 @@
 ################################################################################
 # CONSTRUCT CLASS AND DEFINE INITIALIZE AND VALIDITY
 
-#' Class "Survey" 
+#' Virtual Class "Survey" 
 #' 
-#' Class \code{"Survey"} is an S4 class containing an instance of a population
-#' and a set of transects. 
+#' Class \code{"Survey"} is an S4 class containing an instance of a population. 
 #'
 #' @name Survey-class
 #' @docType class
-#' @section Objects from the Class: Objects which inherit from this class 
-#' are usually created internally, however, an instance is also contained in the 
-#' object returned from \code{simulate.survey(simulation)}
+#' @section Slots: 
+#' \describe{
+#'  \item{\code{population}}{Object of class \code{"Population"}; an instance of
+#'  a population.}
+#'  }
+#' @section Methods:
+#' \describe{
+#'  \item{\code{create.region.table}}{\code{signature=(object = "Survey", ...)}: 
+#'  creates a region table for \code{dht}.}
+#' }
 #' @keywords classes         
 #' @export
 setClass("Survey", representation(population = "Population", "VIRTUAL")) 

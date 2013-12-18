@@ -2,11 +2,22 @@
 # CONSTRUCT CLASS AND DEFINE INITIALIZE AND VALIDITY
 ################################################################################
 
-#' Class "Line.Transect" containing an instance of a Line Transect Survey
+#' Class "Line.Transect" contains an instance of a Line Transect Survey
 #'
-#' Class \code{"LTSurvey"} is an S4 class detailing a set of line transect 
 #' @name Line.Transect-class
 #' @docType class
+#' @section Slots: 
+#' \describe{
+#'  \item{\code{design.obj}}{Object of class \code{"character"}; the object name
+#'  of the design object which generated the transects.}
+#'  \item{\code{sampler.info}}{Object of class \code{"data.frame"}; the sampler 
+#'  end point coordinates.}
+#' }
+#' @section Methods:
+#' \describe{
+#'  \item{\code{plot}}{\code{signature=(object = "Line.Transect")}: plots the 
+#'  transects.}
+#' }
 #' @keywords classes            
 #' @export
 setClass("Line.Transect", representation(design.obj = "character", sampler.info = "data.frame"))

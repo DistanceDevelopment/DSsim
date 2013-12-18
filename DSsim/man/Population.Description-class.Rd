@@ -7,12 +7,6 @@
   containing a description of the population. It provides
   methods to generate an example population.
 }
-\section{Objects from the Class}{
-  Objects can be created by calls of the form
-  \code{make.population.description(N, density.obj,
-  region)}
-}
-
 \section{Slots}{
   \describe{ \item{\code{N}}{Object of class
   \code{"numeric"}; number of individuals in the population
@@ -42,6 +36,9 @@
   \item{\code{generate.population}}{\code{signature=(object
   = "Population.Description")}: generates a single
   realisation of the population.} }
+}
+\seealso{
+  \code{\link{make.population.description}}
 }
 \keyword{classes}
 

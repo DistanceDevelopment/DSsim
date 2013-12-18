@@ -4,15 +4,11 @@
 \alias{plot,Density-method}
 \title{Class "Density"}
 \description{
-  Class \code{"Density"} is an S4 class containing a grid
-  which described the density of individuals / clusters of
-  a population.
+  Class \code{"Density"} is an S4 class containing a list
+  of grids which describe the density of individuals /
+  clusters of a population. The list contains one grid
+  (\code{data.frame}) for each strata.
 }
-\section{Objects from the Class}{
-  Objects can be created by calls of the form
-  \code{make.density(region, x.space, y.space, constant)}
-}
-
 \section{Slots}{
   \describe{ \item{\code{region.name}}{Object of class
   \code{"character"}; the region name.}
@@ -34,6 +30,9 @@
   \item{\code{add.hotspot}}{\code{signature=(object =
   "Density")}: adds a hotspot based on a gaussian decay to
   the density surfaces.} }
+}
+\seealso{
+  \code{\link{make.density}}
 }
 \keyword{classes}
 

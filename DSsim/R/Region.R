@@ -38,6 +38,7 @@
 #' }
 #' @keywords classes
 #' @export
+#' @seealso \code{\link{make.region}}
 setClass(Class = "Region", 
          representation(region.name = "character", 
                         strata.name = "character",
@@ -103,10 +104,10 @@ setValidity("Region",
 ################################################################################
 # GENERIC METHODS
 ################################################################################
-#' Returns the are of the region
+#' Returns the area of the region
 #' 
 #' @param object object of class Region
-#' @return numeric value specifying the are of the region
+#' @return numeric value specifying the area of the region
 #' @rdname get.area-methods 
 setGeneric(name = "get.area", def = function(object){standardGeneric ("get.area")})
 

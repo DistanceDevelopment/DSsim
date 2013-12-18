@@ -8,10 +8,6 @@
 #'
 #' @name Simulation-class
 #' @docType class
-#' @section Objects from the Class: Objects can be created by calls of 
-#' the form
-#' \code{make.simulation(reps, double.observer, region.obj, design.obj, 
-#' population.description.obj, detectability.obj, ddf.analyses.list)}
 #' @section Slots: 
 #' \describe{
 #'  \item{\code{reps}}{Object of class \code{"numeric"}; the number of 
@@ -65,65 +61,7 @@
 #' @keywords classes
 #' @export
 #' @rdname Simulation-class
-#' @examples
-#' coords <- gaps <- list()
-#' coords[[1]] <- list(data.frame(x = c(0,1000,1000,0,0), y = c(0,0,
-#'  1000,1000,0)))
-#' gaps[[1]] <- list(data.frame(x = c(400,600,500,350,400), y = c(100,
-#'  250,600,120,100)))
-#' 
-#' region <- make.region(region.name = "study.area", units = "m", 
-#'  coords = coords, gaps = gaps)
-#' plot(region)
-#' 
-#' \dontrun{
-#' data(transects.shp)
-#' shapefile.pathway <- "C:/..."
-#' write.shapefile(transects.shp, shapefile.pathway) 
-#' 
-#' parallel.design <- make.design(transect.type = "Line", 
-#'  design.details = c("Parallel","Systematic"), region = region, 
-#'  design.axis = 0, spacing = 100, plus.sampling =FALSE, 
-#'  path = shapefile.pathway)
-#' }
-#' 
-#' pop.density <- make.density(region.obj = region, x.space = 10, 
-#'  y.space = 10, constant = 0.5) 
-#' pop.density <- add.hotspot(pop.density, centre = c(50, 200), 
-#'  sigma = 100, amplitude = 0.1)
-#' pop.density <- add.hotspot(pop.density, centre = c(500, 700), 
-#'  sigma = 900, amplitude = 0.05)
-#' pop.density <- add.hotspot(pop.density, centre = c(300, 100), 
-#'  sigma = 100, amplitude = -0.15)
-#' 
-#' plot(pop.density)
-#' plot(region, add = TRUE)
-#' 
-#' pop.description <- make.population.description(N = 1000, 
-#'  density.obj = pop.density, region = region, fixed.N = TRUE)
-#' 
-#' detect <- make.detectability(key.function = "hn", scale.param = 15,
-#'  truncation = 30) 
-#' 
-#' ddf.analyses <- make.ddf.analysis.list(dsmodel = list(~cds(key = "hn",
-#'  formula = ~1),~cds(key = "hr", formula = ~1)), method = "ds", 
-#'  criteria = "AIC")
-#' 
-#' \dontrun{
-#' simulation <- make.simulation(reps = 10, single.transect.set = TRUE,
-#'  region.obj = region, design.obj = parallel.design, 
-#'  population.description.obj = pop.description, 
-#'  detectability.obj = detect, ddf.analyses.list = ddf.analyses)
-#' 
-#' survey.results <- create.survey.results(simulation, dht.table = TRUE)
-#' 
-#' plot(survey.results)
-#' 
-#' my.simulation <- run(my.simulation)
-#' 
-#' summary(my.simulation)
-#' }
-#' 
+#' @seealso \code{\link{make.simulation}}
 setClass("Simulation", representation(reps = "numeric",
                                       single.transect.set = "logical",
                                       double.observer = "logical",                                        
@@ -329,17 +267,6 @@ setMethod(
 )
 
 #' @rdname Simulation-class
-#' @aliases print,Simulation-method
-setMethod(
-  f="print",
-  signature="Simulation",
-  definition=function(x, ...){
-    message("not currently implemented")
-    invisible(x)
-  }    
-)
-
-#' @rdname Simulation-class
 #' @aliases show,Simulation-method
 setMethod(
   f="show",
@@ -426,7 +353,6 @@ setMethod(
   f="run.analysis",
   signature=c("Simulation","LT.Survey.Results"),
   definition=function(object, data, dht = TRUE){
-    require(mrds)
     dist.data <- survey.results@ddf.data
     ddf.analyses <- object@ddf.analyses
     criteria <- NULL
@@ -440,8 +366,6 @@ setMethod(
       dht.results <- dht(results[[best.model]], survey.results@region.table@region.table, survey.results@sample.table@sample.table, survey.results@obs.table@obs.table)
       return(list(ddf = results[[best.model]], dht = dht.results))
     }
-    #ddf.result.list <- list(ddf.result = ddf.result)
-    #object@ddf.result <- ddf.result.list
     return(list(ddf = results[[best.model]]))
   }    
 )   
@@ -452,7 +376,6 @@ setMethod(
   f="run.analysis",
   signature=c("Simulation","DDF.Data"),
   definition=function(object, data, dht = TRUE){
-    require(mrds)
     ddf.analyses <- object@ddf.analyses
     criteria <- NULL
     results <- list()
@@ -474,58 +397,26 @@ setMethod(
   signature="Simulation",
   definition=function(object, run.parallel = FALSE, max.cores = NA){
     require(parallel)
-    require(mrds)
     #set the transect index to 1
     orig.file.index <- object@design@file.index
     object@design@file.index <- 1
     if(run.parallel){
-      nCores <- getOption("cl.cores", detectCores()) # counts the number of cores you have
+      #run in parallel
+      # counts the number of cores you have
+      nCores <- getOption("cl.cores", detectCores()) 
       if(!is.na(max.cores)){
         nCores <- min(nCores - 1, max.cores)    
       }
-      myCluster <- makeCluster(nCores) # intitialise the cluster
-      #clusterExport(myCluster)
-      #clusterExport(myCluster, "run.sim.in.parallel")
-      #clusterExport(myCluster, c("run.sim.in.parallel", "generate.population", "in.polygons"))
-      clusterEvalQ(myCluster, {require(splancs)
-                               require(DSsim)
-                               require(mrds)
-                               require(shapefiles)})
-      #clusterEvalQ(myCluster, require(DSsim))
+      # intitialise the cluster
+      myCluster <- makeCluster(nCores) 
+      clusterEvalQ(myCluster, {require(DSsim)})
       results <- parLapply(myCluster, X = as.list(1:object@reps), fun = single.simulation.loop, object = object)
       object <- accumulate.PP.results(simulation = object, results = results)
       stopCluster(myCluster)
     }else{
+      #otherwise loop
       for(i in 1:object@reps){ 
         object@results <- single.simulation.loop(i, object) 
-#        message("file index = ", object@design@file.index, ", filename = ", object@design@filenames[object@design@file.index])
-#        #generate population
-#        population <- generate.population(object)
-#        #generate transects
-#        transects <- generate.transects(object)
-#        #make survey object
-#        if(object@double.observer){
-#          message("Double observer simulations not supported at present")#move this to the checking of the simulation object
-#        }else{
-#          if(inherits(object@design, "LT.Design")){
-#            survey <- new(Class = "Single.Obs.LT.Survey", population = population, line.transect = transects, rad.truncation = object@detectability@rad.truncation, perp.truncation = object@detectability@perp.truncation)
-#          }
-#        }
-#        #simulate survey           
-#        survey.data <- simulate.survey(object = survey, dht.table = TRUE, region = object@region)
-#        ddf.data <- survey.data$ddf.data 
-#        obs.table <- survey.data$obs.table
-#        sample.table <- survey.data$sample.table
-#        region.table <- survey.data$region.table 
-#        #analyse survey
-#        ddf.results <- run.analysis(object, ddf.data)
-#        object@results$Detection <- store.ddf.results(object@results$Detection, ddf.results, i)
-#        compute.dht = TRUE
-#        if(compute.dht){
-#          dht.results <- dht(ddf.results, region.table@region.table, sample.table@sample.table, obs.table@obs.table)
-#          object@results <- store.dht.results(object@results, dht.results, i, object@population.description@size)                                           
-#        }
-#        object@design@file.index <- object@design@file.index + 1
       }
     }  
     object@results <- add.summary.results(object@results)

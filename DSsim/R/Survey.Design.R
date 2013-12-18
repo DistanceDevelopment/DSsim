@@ -11,9 +11,6 @@
 #' 
 #' @name Survey.Design-class
 #' @docType class
-#' @section Objects from the Class: Objects which inherit from the 
-#' Survey.Design class can be created by calls of the form
-#' \code{make.design(transect.type, design.details, region, design.axis, spacing, plus.sampling, path)}
 #' @section Slots: 
 #' \describe{
 #'  \item{\code{region.obj}}{Object of class \code{"character"}; The name of
@@ -36,7 +33,7 @@
 #' }
 #' @keywords classes
 #' @export
-
+#' @seealso \code{\link{make.design}}
 setClass(Class = "Survey.Design", 
          representation = representation(region.obj = "character",
                                          plus.sampling = "logical",  

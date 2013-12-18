@@ -7,7 +7,7 @@
 #' class Detectability.
 #'
 #' @param object an object of class Simulation or Population.Description
-#' @param detectability object of class detectability (optional - only
+#' @param detectability object of class Detectability (optional - only
 #'   required if object is of class Population.Description) 
 #' @usage generate.population(object, ...)
 #' @return an object of class Population
@@ -20,7 +20,7 @@ setGeneric("generate.population", function(object, ...){standardGeneric ("genera
 #'
 #' Uses the Survey.Design details to generate transects. Currenty this 
 #' involves loading a survey shapefile from the path specified in the 
-#' Survey.Design object.
+#' Survey.Design object and can only work with line transect designs.
 #'
 #' @param object an object of class Simulaiton or a class which inherits from 
 #'   Survey.Design
@@ -29,7 +29,7 @@ setGeneric("generate.population", function(object, ...){standardGeneric ("genera
 #' @param write.to.file not currently implemented
 #' @param region optional only required if object is of class Survey.Design.
 #' @usage generate.transects(object, read.from.file, write.to.file, region)
-#' @return an object of class Population
+#' @return an object of class Line.Transect
 #' @export
 #' @docType methods
 #' @rdname generate.transects-methods
@@ -37,11 +37,11 @@ setGeneric("generate.transects", function(object, read.from.file = TRUE, write.t
 
 #' S4 generic method to generate a region table
 #'
-#' Generates a region table required to estimate abundance /  density via the
-#' Hortvitz-Thompson estimator.
+#' This function is called internally to generate a region table required to
+#' estimate abundance /  density via the Hortvitz-Thompson estimator.
 #'
 #' @param object an object of a class inheriting from Survey
-#' @param object an object of class Region
+#' @param region an object of class Region
 #' @usage create.region.table(object, region)
 #' @return an object of class Region.Table
 #' @docType methods
@@ -50,12 +50,12 @@ setGeneric(name = "create.region.table", def = function(object, region){standard
 
 #' S4 generic method to generate a sample table
 #'
-#' Generates a sample table required to estimate abundance /  density via the
-#' Hortvitz-Thompson estimator.
+#' This function is called internally to generates a sample table required to
+#' estimate abundance /  density via the Hortvitz-Thompson estimator.
 #'
 #' @param object an object of a class inheriting from Survey
 #' @usage create.region.table(object, region)
-#' @return an object of class Region.Table
+#' @return an object of class Sample.Table
 #' @docType methods
 #' @rdname create.sample.table-methods
 setGeneric(name = "create.sample.table", def = function(object){standardGeneric ("create.sample.table")}) 
@@ -98,7 +98,7 @@ setGeneric(name = "create.survey.results", def = function(object, dht.tables = F
 #' @export
 #' @docType methods
 #' @rdname get.distance.data-methods
-#' @seealso \code{create.survey.results}
+#' @seealso \code{\link{create.survey.results}}
 setGeneric(name = "get.distance.data", def = function(object){standardGeneric ("get.distance.data")})
 
 #' S4 generic method to add a hotspot to the density grid
@@ -114,7 +114,7 @@ setGeneric(name = "get.distance.data", def = function(object){standardGeneric ("
 #' @export
 #' @docType methods
 #' @rdname add.hotspot-methods
-#' @seealso \code{make.density}
+#' @seealso \code{\link{make.density}}
 setGeneric(name = "add.hotspot", def = function(object, centre, sigma, amplitude){standardGeneric ("add.hotspot")})
 
 #' S4 generic method to run a simulation
@@ -131,18 +131,21 @@ setGeneric(name = "add.hotspot", def = function(object, centre, sigma, amplitude
 #' @export
 #' @docType methods
 #' @rdname run-methods
-#' @seealso \code{class?Simulation}
+#' @seealso \code{\link{make.simulation}}
 setGeneric(name = "run", def = function(object, run.parallel = FALSE, max.cores = NA){standardGeneric ("run")})
 
 #' S4 generic method to run analyses
 #'
 #' This method carries out an analysis of distance sampling data. This method
-#' is provided to allow the user to perform diagnostic of the analysis used
+#' is provided to allow the user to perform diagnostics of the analyses used
 #' in the simulation. The data argument can be obtained by a call to
-#' \code{simulate.survey(object, dht.table = TRUE)}.
+#' \code{simulate.survey(object, dht.table = TRUE)}. Note if the first object
+#' supplied is of class DDf.Analysis then the second argument must be of class
+#' DDf.Data. The data argument may be of either class for an object argument
+#' of class Simulation.
 #'
-#' @param object an object of class Simulation
-#' @param data an object of class Survey.Results
+#' @param object an object of class Simulation or DDF.Analysis
+#' @param data an object of class Survey.Results or DDF.Data
 #' @usage run.analysis(object, data, ...)
 #' @return a list containing an S3 ddf object and optionally an S3 dht object relating to the model with the miminum criteria.
 #' @export
@@ -163,7 +166,4 @@ if (!isGeneric("show")){
   setGeneric(name = "show", def = function(object){standardGeneric("show")})
 }
 
-if (!isGeneric("print")){
-  setGeneric(name = "print", def = function(x, ...){standardGeneric("print")})
-}
 

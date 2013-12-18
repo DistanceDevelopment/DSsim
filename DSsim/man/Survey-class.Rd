@@ -1,15 +1,21 @@
 \docType{class}
 \name{Survey-class}
 \alias{Survey-class}
-\title{Class "Survey"}
+\title{Virtual Class "Survey"}
 \description{
   Class \code{"Survey"} is an S4 class containing an
-  instance of a population and a set of transects.
+  instance of a population.
 }
-\section{Objects from the Class}{
-  Objects which inherit from this class are usually created
-  internally, however, an instance is also contained in the
-  object returned from \code{simulate.survey(simulation)}
+\section{Slots}{
+  \describe{ \item{\code{population}}{Object of class
+  \code{"Population"}; an instance of a population.} }
+}
+
+\section{Methods}{
+  \describe{
+  \item{\code{create.region.table}}{\code{signature=(object
+  = "Survey", ...)}: creates a region table for
+  \code{dht}.} }
 }
 \keyword{classes}
 

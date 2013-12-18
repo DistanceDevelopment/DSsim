@@ -44,5 +44,8 @@
   "missing")}: plots the survey region defined by the
   object.} }
 }
+\seealso{
+  \code{\link{make.region}}
+}
 \keyword{classes}
 

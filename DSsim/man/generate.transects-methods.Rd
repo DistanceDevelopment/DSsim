@@ -17,11 +17,12 @@
   class Survey.Design.}
 }
 \value{
-  an object of class Population
+  an object of class Line.Transect
 }
 \description{
   Uses the Survey.Design details to generate transects.
   Currenty this involves loading a survey shapefile from
-  the path specified in the Survey.Design object.
+  the path specified in the Survey.Design object and can
+  only work with line transect designs.
 }
 

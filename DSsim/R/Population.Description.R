@@ -6,8 +6,6 @@
 #'                                  
 #' @name Population.Description-class
 #' @docType class
-#' @section Objects from the Class: Objects can be created by calls of the form
-#' \code{make.population.description(N, density.obj, region)} 
 #' @section Slots: 
 #' \describe{
 #'  \item{\code{N}}{Object of class \code{"numeric"}; number of individuals
@@ -33,9 +31,9 @@
 #'  returns the value of \code{N}}
 #'  \item{\code{generate.population}}{\code{signature=(object = "Population.Description")}: generates a single realisation of the population.}
 #' }
-
 #' @keywords classes
 #' @export
+#' @seealso \code{\link{make.population.description}}
 setClass("Population.Description", representation(N           = "numeric", 
                                                   density     = "Density", 
                                                   region.name = "character",

@@ -21,6 +21,6 @@
   number of cores / threads on your machine.
 }
 \seealso{
-  \code{class?Simulation}
+  \code{\link{make.simulation}}
 }
 

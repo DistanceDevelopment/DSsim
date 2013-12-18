@@ -2,16 +2,27 @@
 # CONSTRUCT CLASS AND DEFINE INITIALIZE AND VALIDITY
 ################################################################################
 
-#' Virtual Class "LT.Design" 
+#' Virtual Class "LT.Design" extends Class "Survey.Design"
 #'
 #' Virtual Class \code{"LT.Design"} is an S4 class detailing the type of line transect 
-#' design and the co-ordinates of the end points of the transects.
+#' design. 
 #' @name LT.Design-class
 #' @docType class
-#' @section Objects from the Class: Objects can be created by calls of the form
+#' @section Slots: 
+#' \describe{
+#'  \item{\code{design.axis}}{Object of class \code{"numeric"}; the angle of 
+#'  the design axis.}
+#'  \item{\code{spacing}}{Object of class \code{"numeric"}; the spacing of
+#'  the design.} 
+#'  }
+#' @section Methods:
+#' \describe{
+#'  \item{\code{generate.transects}}{\code{signature=(object = "LT.Design", ...)}: 
+#'  loads a set of transects from a shapefile.}
+#' }
 #' @keywords classes
+#' @seealso \code{\link{make.design}}
 #' @export
-
 setClass(Class = "LT.Design", 
          representation = representation(design.axis = "numeric",
                                          spacing = "numeric", "VIRTUAL"),

@@ -5,8 +5,6 @@
 #'
 #' @name Detectability-class
 #' @docType class                             
-#' @section Objects from the Class: Objects can be created by calls of the form
-#' \code{make.detectability(key.function, scale.param, perp.truncation, rad.truncation)} 
 #' @section Slots: 
 #' \describe{
 #'  \item{\code{key.function}}{Object of class \code{"character"}; a code
@@ -25,6 +23,7 @@
 #' }
 #' @keywords classes
 #' @export
+#' @seealso \code{\link{make.detectability}}
 setClass("Detectability", representation(key.function    = "character",                                        
                                          scale.param     = "numeric",
                                          shape.param     = "numeric",

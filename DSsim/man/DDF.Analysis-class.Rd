@@ -6,12 +6,6 @@
   Class \code{"DDF.Analysis"} is an S4 class describing a
   detection function which is to be fitted to the data.
 }
-\section{Objects from the Class}{
-  Lists of DDF.Analysis objects can be created by calls of
-  the form \code{make.ddf.analysis.list <-
-  function(dsmodel, method, criteria)}
-}
-
 \section{Slots}{
   \describe{ \item{\code{dsmodel}}{Object of class
   \code{"formula"}; describing the detection function
@@ -27,6 +21,9 @@
   \item{\code{run.analysis}}{\code{signature=c(object =
   "DDF.Analysis", data = "DDF.Data")}: runs the analysis
   described in the object on the data provided.} }
+}
+\seealso{
+  \code{\link{make.ddf.analysis.list}}
 }
 \keyword{classes}
 

@@ -7,13 +7,14 @@
   \item{object}{an object of a class inheriting from
   Survey}
 
-  \item{object}{an object of class Region}
+  \item{region}{an object of class Region}
 }
 \value{
   an object of class Region.Table
 }
 \description{
-  Generates a region table required to estimate abundance /
-  density via the Hortvitz-Thompson estimator.
+  This function is called internally to generate a region
+  table required to estimate abundance / density via the
+  Hortvitz-Thompson estimator.
 }
 

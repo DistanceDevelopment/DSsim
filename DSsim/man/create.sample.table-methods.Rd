@@ -9,10 +9,11 @@
   Survey}
 }
 \value{
-  an object of class Region.Table
+  an object of class Sample.Table
 }
 \description{
-  Generates a sample table required to estimate abundance /
-  density via the Hortvitz-Thompson estimator.
+  This function is called internally to generates a sample
+  table required to estimate abundance / density via the
+  Hortvitz-Thompson estimator.
 }
 

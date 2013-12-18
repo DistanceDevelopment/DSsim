@@ -1,12 +1,11 @@
 #' Class "Density" 
 #' 
-#' Class \code{"Density"} is an S4 class containing a grid which described
-#' the density of individuals / clusters of a population.
+#' Class \code{"Density"} is an S4 class containing a list of grids which
+#' describe the density of individuals / clusters of a population. The list
+#' contains one grid (\code{data.frame}) for each strata.
 #'
 #' @name Density-class
 #' @docType class
-#' @section Objects from the Class: Objects can be created by calls of the form
-#' \code{make.density(region, x.space, y.space, constant)} 
 #' @section Slots: 
 #' \describe{
 #'  \item{\code{region.name}}{Object of class \code{"character"}; the region
@@ -29,6 +28,7 @@
 #'  surfaces.}
 #' }
 #' @keywords classes
+#' @seealso \code{\link{make.density}}
 #' @export
 setClass("Density", representation(region.name = "character", strata.name = "character", density.surface = "list", x.space = "numeric", y.space = "numeric"))
 

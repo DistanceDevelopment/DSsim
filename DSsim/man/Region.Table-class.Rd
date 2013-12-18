@@ -9,7 +9,11 @@
 }
 \section{Objects from the Class}{
   Objects can be created by calls to the function
-  \code{simulate.survey(simulation, dht.table = TRUE)}
+  \code{create.survey.results(simulation, dht.table =
+  TRUE)}
+}
+\seealso{
+  \code{\link{create.survey.results}}
 }
 \keyword{classes}
 

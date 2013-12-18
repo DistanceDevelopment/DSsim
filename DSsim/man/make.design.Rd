@@ -38,9 +38,9 @@
 }
 \description{
   Currently surveys are only generated within the GIS in
-  Distance therefore if you are running a simulation in R
-  you will need to get Distance to generate all the surveys
-  as shapefiles in advance and supply the path to the
+  Distance. If you are running a simulation in R you will
+  need to get Distance to generate all the surveys as
+  shapefiles in advance and supply the path to the
   directory which contains these shapefiles.
 }
 \details{

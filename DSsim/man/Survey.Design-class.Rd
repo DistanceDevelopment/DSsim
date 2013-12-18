@@ -8,13 +8,6 @@
   designs are implemented and transects from these designs
   must be generated using the Distance software in advance.
 }
-\section{Objects from the Class}{
-  Objects which inherit from the Survey.Design class can be
-  created by calls of the form
-  \code{make.design(transect.type, design.details, region,
-  design.axis, spacing, plus.sampling, path)}
-}
-
 \section{Slots}{
   \describe{ \item{\code{region.obj}}{Object of class
   \code{"character"}; The name of the region which the
@@ -38,6 +31,9 @@
   \item{\code{generate.transects}}{\code{signature=(object
   = "Survey.Design")}: generates (or currently loads from
   file) a set of transects.} }
+}
+\seealso{
+  \code{\link{make.design}}
 }
 \keyword{classes}
 
