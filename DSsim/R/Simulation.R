@@ -396,12 +396,12 @@ setMethod(
   f="run",
   signature="Simulation",
   definition=function(object, run.parallel = FALSE, max.cores = NA){
-    require(parallel)
     #set the transect index to 1
     orig.file.index <- object@design@file.index
     object@design@file.index <- 1
     if(run.parallel){
       #run in parallel
+      require(parallel)
       # counts the number of cores you have
       nCores <- getOption("cl.cores", detectCores()) 
       if(!is.na(max.cores)){
