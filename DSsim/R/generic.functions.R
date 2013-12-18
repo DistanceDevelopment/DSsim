@@ -125,7 +125,8 @@ setGeneric(name = "add.hotspot", def = function(object, centre, sigma, amplitude
 #'
 #' @param object an object of class Simulation
 #' @param logical option to use multiple processors
-#' @param integer maximum number of processors to use
+#' @param integer maximum number of cores to use, if not specified then
+#' one less than the number available will be used.
 #' @usage run(object, ...)
 #' @return an object of class simulation which now includes the results
 #' @export

@@ -8,7 +8,8 @@
 
   \item{logical}{option to use multiple processors}
 
-  \item{integer}{maximum number of processors to use}
+  \item{integer}{maximum number of cores to use, if not specified then
+  one less than the number available will be used.}
 }
 \value{
   an object of class simulation which now includes the
