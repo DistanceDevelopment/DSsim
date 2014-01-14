@@ -28,7 +28,7 @@ Ordinary (non-generic) functions are contained within the appropriately named .R
 DOCUMENTATION
 -------------
 
-The documentation can be generated using roxygen2 but depending on the version of roxygen2 it may be necessary to manually remove the \alias{plot}, \alias{show}, \alias{summary} and \alias{print} lines from the .Rd files for the classes. Apparently the developers version does not include these in the first place but the version currently on CRAN does. 
+The documentation can be generated using roxygen2 (Nov 2013) but depending on the version of roxygen2 it may be necessary to manually remove the \alias{plot}, \alias{show}, \alias{summary} and \alias{print} lines from the .Rd files for the classes.  
 
 The classes defined in DSsim all have their own .Rd files named “Class-class.Rd”.
 
