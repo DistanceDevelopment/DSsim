@@ -41,7 +41,8 @@
   Distance. If you are running a simulation in R you will
   need to get Distance to generate all the surveys as
   shapefiles in advance and supply the path to the
-  directory which contains these shapefiles.
+  directory which contains these shapefiles and only these 
+  shapefiles.
 }
 \details{
   The \code{design.details} argument should specify a
@@ -58,8 +59,11 @@
 \examples{
 \dontrun{
 data(transects.shp)
-shapefile.pathway <- "C:/..."
-write.shapefile(transects.shp, shapefile.pathway)
+#Edit the pathway below to point to an empty folder where the
+#transect shapefile will be saved
+shapefile.pathway <- "C:/"
+write.shapefile(transects.shp, paste(shapefile.pathway,"/transects_1", 
+  sep = ""))
 
 parallel.design <- make.design(transect.type = "Line",
  design.details = c("Parallel","Systematic"), region = region,

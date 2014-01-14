@@ -50,8 +50,11 @@ plot(region)
 
 \dontrun{
 data(transects.shp)
-shapefile.pathway <- "C:/..."
-write.shapefile(transects.shp, shapefile.pathway)
+#Edit the pathway below to point to an empty folder where the
+#transect shapefile will be saved
+shapefile.pathway <- "C:/"
+write.shapefile(transects.shp, paste(shapefile.pathway,"/transects_1", 
+  sep = ""))
 
 parallel.design <- make.design(transect.type = "Line",
  design.details = c("Parallel","Systematic"), region = region,
@@ -82,7 +85,7 @@ ddf.analyses <- make.ddf.analysis.list(dsmodel = list(~cds(key = "hn",
  criteria = "AIC")
 
 \dontrun{
-simulation <- make.simulation(reps = 10, single.transect.set = TRUE,
+my.simulation <- make.simulation(reps = 10, single.transect.set = TRUE,
  region.obj = region, design.obj = parallel.design,
  population.description.obj = pop.description,
  detectability.obj = detect, ddf.analyses.list = ddf.analyses)

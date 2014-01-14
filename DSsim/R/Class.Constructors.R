@@ -38,7 +38,7 @@ make.region <- function(region.name, strata.name = character(0), units, area = n
 #' Currently surveys are only generated within the GIS in Distance. If you 
 #' are running a simulation in R you will need to get Distance to 
 #' generate all the surveys as shapefiles in advance and supply the path to
-#' the directory which contains these shapefiles.
+#' the directory which contains these shapefiles and only these shapefiles.
 #'
 #' The \code{design.details} argument should specify a character vector of either 1
 #' or 2 elements. These options are described in the table below:
@@ -66,8 +66,11 @@ make.region <- function(region.name, strata.name = character(0), units, area = n
 #' @examples
 #' \dontrun{
 #' data(transects.shp)
+#' #Edit the pathway below to point to an empty folder where the
+#' #transect shapefile will be saved
 #' shapefile.pathway <- "C:/..."
-#' write.shapefile(transects.shp, shapefile.pathway) 
+#' write.shapefile(transects.shp, paste(shapefile.pathway,"/transects_1",
+#'  sep = ""))
 #' 
 #' parallel.design <- make.design(transect.type = "Line", 
 #'  design.details = c("Parallel","Systematic"), region = region, 
@@ -278,8 +281,11 @@ make.ddf.analysis.list <- function(dsmodel, mrmodel = NULL, method, criteria){
 #' 
 #' \dontrun{
 #' data(transects.shp)
+#' #Edit the pathway below to point to an empty folder where the
+#' #transect shapefile will be saved
 #' shapefile.pathway <- "C:/..."
-#' write.shapefile(transects.shp, shapefile.pathway) 
+#' write.shapefile(transects.shp, paste(shapefile.pathway,"/transects_1",
+#'  sep = ""))
 #' 
 #' parallel.design <- make.design(transect.type = "Line", 
 #'  design.details = c("Parallel","Systematic"), region = region, 
@@ -310,7 +316,7 @@ make.ddf.analysis.list <- function(dsmodel, mrmodel = NULL, method, criteria){
 #'  criteria = "AIC")
 #' 
 #' \dontrun{
-#' simulation <- make.simulation(reps = 10, single.transect.set = TRUE,
+#' my.simulation <- make.simulation(reps = 10, single.transect.set = TRUE,
 #'  region.obj = region, design.obj = parallel.design, 
 #'  population.description.obj = pop.description, 
 #'  detectability.obj = detect, ddf.analyses.list = ddf.analyses)
