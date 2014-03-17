@@ -90,7 +90,7 @@ my.simulation <- make.simulation(reps = 10, single.transect.set = TRUE,
  population.description.obj = pop.description,
  detectability.obj = detect, ddf.analyses.list = ddf.analyses)
 
-survey.results <- create.survey.results(simulation, dht.table = TRUE)
+survey.results <- create.survey.results(my.simulation, dht.table = TRUE)
 
 plot(survey.results)
 
