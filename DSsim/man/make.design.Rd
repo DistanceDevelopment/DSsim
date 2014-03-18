@@ -61,7 +61,7 @@
 data(transects.shp)
 #Edit the pathway below to point to an empty folder where the
 #transect shapefile will be saved
-shapefile.pathway <- "C:/"
+shapefile.pathway <- "C:/..."
 write.shapefile(transects.shp, paste(shapefile.pathway,"/transects_1", 
   sep = ""))
 
