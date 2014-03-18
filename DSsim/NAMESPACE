@@ -1,3 +1,8 @@
+import(methods)
+import(mgcv)
+import(mrds)
+import(shapefiles)
+import(splancs)
 export(display.glossary)
 export(make.ddf.analysis.list)
 export(make.density)
