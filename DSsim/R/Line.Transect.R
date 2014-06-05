@@ -25,10 +25,10 @@ setClass("Line.Transect", representation(design.obj = "character", sampler.info 
 setMethod(
   f="initialize",
   signature="Line.Transect",
-  definition=function(.Object, region, sampler.info = NULL, shapefile = NULL){
+  definition=function(.Object, region, sampler.info = NULL, shapefile = NULL, meta = NULL){
     #Input pre-processing
     if(is.null(sampler.info) & !is.null(shapefile)){      
-      sampler.info <- get.sampler.info(shapefile, region)
+      sampler.info <- get.sampler.info(shapefile, region, meta)
     }else{      
     }
     #Set slots

@@ -83,9 +83,16 @@ setMethod(
     file.index <- ifelse(is.null(index), object@file.index, index)
     #Input pre-processing
     if(read.from.file){
+      #Load the shapefle
       shapefile <- read.shapefile(paste(object@path, "/", object@filenames[file.index], sep=""))
+      #Load the meta file if it exists - describes which transects are in which strata
+      meta <- try(read.table(paste(object@path, "/Meta.txt", sep="")))
+      meta <- ifelse(class(meta) == "try-error", NULL, meta)
+      if(!is.null(meta)){
+        meta <- meta[meta[,1] == object@filenames[file.index],]
+      }
       #lt.survey <- make.line.transect(region = region, shapefile = shapefile)
-      line.transect <- new(Class = "Line.Transect", region = region, shapefile = shapefile)
+      line.transect <- new(Class = "Line.Transect", region = region, shapefile = shapefile, meta = meta)
     }else{
       message("Only pre-generated surveys are currently implemented")
       line.transect <- NULL

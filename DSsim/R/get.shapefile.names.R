@@ -7,5 +7,7 @@ get.shapefile.names <- function(path){
   all.filenames <- as.character(all.filenames)
   #find unique shapefiles 
   unique.shapefiles <- unique(all.filenames)
+  #remove meta.txt file
+  unique.shapefiles <- unique.shapefiles[unique.shapefiles != "Meta"]
   return(unique.shapefiles)
 }
