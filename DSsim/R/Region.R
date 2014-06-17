@@ -1,3 +1,5 @@
+#' @include generic.functions.R
+
 #' Class "Region" 
 #' 
 #' Class \code{"Region"} is an S4 class containing descriptions of the 

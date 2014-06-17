@@ -1,3 +1,6 @@
+#' @include generic.functions.R
+#' @include Density.R
+
 #' Class "Population.Description" 
 #' 
 #' Class \code{"Population.Description"} is an S4 class containing a 

@@ -1,3 +1,11 @@
+#' @include Region.R
+#' @include Population.R
+#' @include Line.Transect.R
+#' @include Single.Obs.DDF.Data.R
+#' @include Obs.Table.R
+#' @include Sample.Table.R
+#' @include Region.Table.R
+#' @include generic.functions.R
 
 ################################################################################
 # CONSTRUCT CLASS AND DEFINE INITIALIZE AND VALIDITY
@@ -36,6 +44,7 @@
 #' }
 #' @keywords classes
 #' @export
+#' 
 setClass("LT.Survey.Results", representation(region = "Region",
                                              population = "Population",
                                              transects = "Line.Transect",

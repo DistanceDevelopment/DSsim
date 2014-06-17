@@ -1,3 +1,5 @@
+#' @include Population.R
+#' @include generic.functions.R
 
 ################################################################################
 # CONSTRUCT CLASS AND DEFINE INITIALIZE AND VALIDITY

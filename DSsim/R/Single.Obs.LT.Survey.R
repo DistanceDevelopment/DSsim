@@ -1,3 +1,6 @@
+#' @include LT.Survey.R
+#' @include generic.function.R
+
 ################################################################################
 # CONSTRUCT CLASS AND DEFINE INITIALIZE AND VALIDITY
 ################################################################################

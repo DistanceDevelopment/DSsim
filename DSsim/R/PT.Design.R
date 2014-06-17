@@ -1,3 +1,5 @@
+#' @include Survey.Design.R
+
 # Virtual Class "PT.Design" 
 #
 # Virtual Class \code{"PT.Design"} is an S4 class detailing the type of point transect 

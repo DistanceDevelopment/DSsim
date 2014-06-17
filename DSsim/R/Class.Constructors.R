@@ -1,3 +1,14 @@
+#' @include Simulation.R
+#' @include DS.Analysis.R
+#' @include Population.Description.R
+#' @include Density.R
+#' @include LT.Systematic.Design.R
+#' @include LT.Random.Design.R
+#' @include LT.EqAngle.ZZ.Design.R
+#' @include LT.EqSpace.ZZ.Design.R
+#' @include LT.User.Specified.Design.R
+#' @include Region.R
+
 #' Creates a Region object
 #'
 #' This creates an instance of the Region class. If the user supplied a 

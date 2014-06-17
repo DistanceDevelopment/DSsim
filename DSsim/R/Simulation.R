@@ -1,3 +1,10 @@
+#' @include Detectability.R
+#' @include Population.Description.R
+#' @include Survey.Design.R
+#' @include Region.R
+#' @include DSM.Analysis.R
+#' @include generic.functions.R
+
 #' Class "Simulation" 
 #' 
 #' Class \code{"Simulation"} is an S4 class containing descriptions of the 
