@@ -1,3 +1,6 @@
+#' @include generic.functions.R
+#' @include Survey.Design.R
+
 ################################################################################
 # CONSTRUCT CLASS AND DEFINE INITIALIZE AND VALIDITY
 ################################################################################
@@ -85,9 +88,12 @@ setMethod(
     if(read.from.file){
       #Load the shapefle
       shapefile <- read.shapefile(paste(object@path, "/", object@filenames[file.index], sep=""))
+      cat("Reading shapefile: ",paste(object@path, "/", object@filenames[file.index], sep=""), fill = T)
       #Load the meta file if it exists - describes which transects are in which strata
       meta <- try(read.table(paste(object@path, "/Meta.txt", sep="")))
-      meta <- ifelse(class(meta) == "try-error", NULL, meta)
+      if(class(meta) == "try-error"){
+        meta <- NULL
+      }
       if(!is.null(meta)){
         meta <- meta[meta[,1] == object@filenames[file.index],]
       }

@@ -44,7 +44,7 @@ setMethod(
 setValidity("Line.Transect",
   function(object){
     sampler.info.names <- names(object@sampler.info)
-    required.var.names <- c("ID", "start.X", "start.Y", "end.X", "end.Y", "length", "region")
+    required.var.names <- c("ID", "start.X", "start.Y", "end.X", "end.Y", "length", "region", "d7.length")
     if(length(sampler.info.names) != length(required.var.names)){
       return("The sampler.info data.frame contains an incorect number of variables.")
     }

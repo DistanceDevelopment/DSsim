@@ -1,5 +1,5 @@
 get.sampler.info <- function(shapefile, region.obj, meta = NULL){
-  ID <- start.X <- start.Y <- end.X <- end.Y <- tot.length <- region <- NULL
+  ID <- start.X <- start.Y <- end.X <- end.Y <- tot.length <- d7.length <- region <- NULL
   for(samp in seq(along = shapefile$shp$shp)){
     #segs <- nrow(survey.shapefile$shp$shp[[samp]]$points)/2
     segs <- shapefile$shp$shp[[samp]]$num.parts
@@ -14,15 +14,23 @@ get.sampler.info <- function(shapefile, region.obj, meta = NULL){
                                          (shapefile$shp$shp[[samp]]$points$Y[2*seg] - shapefile$shp$shp[[samp]]$points$Y[2*seg-1])^2   )
     }
     tot.length <- c(tot.length, rep(temp.length, segs)) 
+    d7.length <- c(d7.length, rep(NA, segs))
     region     <- c(region, rep(region.obj@region.name, segs))
   }
   
   #xtract strata transect info from meta
-  if(meta != NULL){
+  if(!is.null(meta)){
+    meta <<- meta
+    region.info <<- region
+    ID <<- ID
+    d7.length <<- d7.length
     for(i in seq(along = ID)){
-      region[i] <- meta[,3][meta[,2] == ID[i]]
+      if(length(meta[,1][meta[,2] == ID[i]]) > 0){
+        region[i] <- meta[,3][meta[,2] == ID[i]]
+        d7.length[i] <- meta[,4][meta[,2] == ID[i]]
+      }
     }
-    sampler.info <- data.frame(ID = ID, start.X = start.X, start.Y = start.Y, end.X = end.X, end.Y = end.Y, length = tot.length, region = region)
+    sampler.info <- data.frame(ID = ID, start.X = start.X, start.Y = start.Y, end.X = end.X, end.Y = end.Y, length = tot.length, region = region, d7.length = d7.length)
   }else{
     #Get strata names for each transect - checks that both endpoints and mid point agree
     #*** Note: in plus sampling transect ends or some points will fall outside the strata polygons
@@ -44,10 +52,10 @@ get.sampler.info <- function(shapefile, region.obj, meta = NULL){
         message("Error, transect cannot be allocated to strata debug get.sampler.info (possible that part of a transect falls outwith study region)")
         return(NULL)
       }
-      sampler.info <- data.frame(ID = ID, start.X = start.X, start.Y = start.Y, end.X = end.X, end.Y = end.Y, length = tot.length, region = region.obj@strata.name[strata.id])
+      sampler.info <- data.frame(ID = ID, start.X = start.X, start.Y = start.Y, end.X = end.X, end.Y = end.Y, length = tot.length, region = region.obj@strata.name[strata.id], d7.length = d7.length)
     }else{
       #If there is only one strata all transect must be in that strata
-      sampler.info <- data.frame(ID = ID, start.X = start.X, start.Y = start.Y, end.X = end.X, end.Y = end.Y, length = tot.length, region = region)
+      sampler.info <- data.frame(ID = ID, start.X = start.X, start.Y = start.Y, end.X = end.X, end.Y = end.Y, length = tot.length, region = region, d7.length = d7.length)
     }
   }
   return(sampler.info)
