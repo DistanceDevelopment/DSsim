@@ -381,7 +381,7 @@ setMethod(
 #' @aliases run.analysis,Simulation,DDF.Data-method
 setMethod(
   f="run.analysis",
-  signature=c("Simulation","DDF.Data"),
+  signature=c("Simulation","Single.Obs.DDF.Data"),
   definition=function(object, data, dht = TRUE){
     ddf.analyses <- object@ddf.analyses
     criteria <- NULL
@@ -402,28 +402,51 @@ setMethod(
 setMethod(
   f="run",
   signature="Simulation",
+<<<<<<< HEAD
   definition=function(object, run.parallel = FALSE, max.cores = NA){
+=======
+  definition=function(object, run.parallel = FALSE, max.cores = NA, save.data = FALSE, load.data = FALSE, data.path = character(0)){
+    #Note options save.data, load.data, data.path are not implemented in simulations run in parallel.
+    require(mrds)
+    require(splancs)
+    require(parallel)
+>>>>>>> Binned-Data
     #set the transect index to 1
     orig.file.index <- object@design@file.index
     object@design@file.index <- 1
     if(run.parallel){
+<<<<<<< HEAD
       #run in parallel
       require(parallel)
+=======
+>>>>>>> Binned-Data
       # counts the number of cores you have
       nCores <- getOption("cl.cores", detectCores()) 
       if(!is.na(max.cores)){
         nCores <- min(nCores - 1, max.cores)    
       }
+<<<<<<< HEAD
       # intitialise the cluster
       myCluster <- makeCluster(nCores) 
       clusterEvalQ(myCluster, {require(DSsim)})
+=======
+      myCluster <- makeCluster(nCores) # intitialise the cluster
+      clusterEvalQ(myCluster, {require(splancs)
+                               require(DSsim)
+                               require(mrds)
+                               require(shapefiles)})
+>>>>>>> Binned-Data
       results <- parLapply(myCluster, X = as.list(1:object@reps), fun = single.simulation.loop, object = object)
       object <- accumulate.PP.results(simulation = object, results = results)
       stopCluster(myCluster)
     }else{
       #otherwise loop
       for(i in 1:object@reps){ 
+<<<<<<< HEAD
         object@results <- single.simulation.loop(i, object) 
+=======
+        object@results <- single.simulation.loop(i, object, save.data = save.data, load.data = load.data, data.path = data.path) 
+>>>>>>> Binned-Data
       }
     }  
     object@results <- add.summary.results(object@results)

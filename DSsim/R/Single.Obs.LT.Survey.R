@@ -58,7 +58,7 @@ setMethod(
     population <- object@population
     line.transect <- object@line.transect
     poss.distances <- calc.poss.detect.dists(population, line.transect, perp.truncation = object@perpendicular.truncation)
-    n.in.covered <- nrow(poss.distances)
+    n.in.covered <- poss.distances$distance
     dist.data <- simulate.detections(poss.distances, population@detectability)
     dist.data <- rename.duplicates(dist.data)
     dist.data <- dist.data[,c("object", "transect.ID", "distance", "x", "y")]    

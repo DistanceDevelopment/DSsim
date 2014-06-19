@@ -240,6 +240,8 @@ make.detectability <- function(key.function, scale.param, shape.param = numeric(
 #' @param mrmodel not yet implemented
 #' @param method only "ds" normal distance sampling currently implemented
 #' @param criteria model selection criteria (AIC, AICc, BIC) - only AIC implemented at present.
+#' @param binned.data logical whether the data should be analsed in bins
+#' @param cutpoints
 #' @return list of objects of class DDF.Analysis 
 #' @export
 #' @author Laura Marshall
@@ -249,11 +251,11 @@ make.detectability <- function(key.function, scale.param, shape.param = numeric(
 #'  formula = ~1),~cds(key = "hr", formula = ~1)), method = "ds", 
 #'  criteria = "AIC")
 #'
-make.ddf.analysis.list <- function(dsmodel, mrmodel = NULL, method, criteria){
+make.ddf.analysis.list <- function(dsmodel, mrmodel = NULL, method, criteria, truncation = numeric(0), binned.data = FALSE, cutpoints = numeric(0)){
   ddf.analyses <- list()
   if(method == "ds"){
     for(a in seq(along = dsmodel)){
-      ddf.analyses[[a]] <- new(Class = "DS.Analysis", dsmodel = dsmodel[[a]], criteria = criteria)
+      ddf.analyses[[a]] <- new(Class = "DS.Analysis", dsmodel = dsmodel[[a]], criteria = criteria, truncation = truncation, binned.data = binned.data, cutpoints = cutpoints)
     }
   }else{
     message("Double observer methods are not yet implemented")

@@ -131,9 +131,13 @@ setGeneric(name = "add.hotspot", def = function(object, centre, sigma, amplitude
 #' @return an object of class simulation which now includes the results
 #' @export
 #' @docType methods
+<<<<<<< HEAD
 #' @rdname run-methods
 #' @seealso \code{\link{make.simulation}}
 setGeneric(name = "run", def = function(object, run.parallel = FALSE, max.cores = NA){standardGeneric ("run")})
+=======
+setGeneric(name = "run", def = function(object, run.parallel = FALSE, max.cores = NA, ...){standardGeneric ("run")})
+>>>>>>> Binned-Data
 
 #' S4 generic method to run analyses
 #'
