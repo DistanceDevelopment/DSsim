@@ -19,10 +19,14 @@
   \item{criteria}{model selection criteria (AIC, AICc, BIC)
   - only AIC implemented at present.}
 
-  \item{binned.data}{logical whether the data should be
-  analsed in bins}
-
-  \item{cutpoints}{}
+  \item{\code{truncation}}{The truncation distance to be 
+  applied in the analyses.}
+  
+  \item{\code{binned.data}}{Logical value indicating 
+  Whether the data should be binned prior to analysis.}
+  
+  \item{\code{cutpoints}}{Numeric vector supplying the
+  cutpoints to be used to bin the data.}
 }
 \value{
   list of objects of class DDF.Analysis

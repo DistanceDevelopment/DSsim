@@ -1,17 +1,16 @@
-<<<<<<< HEAD
-single.simulation.loop <- function(i, object){
+
+#single.simulation.loop <- function(i, object){
+single.simulation.loop <- function(i, object, save.data = FALSE, load.data = FALSE, data.path = character(0)){
 # Input: i - integer representing the loop number
 #        object - an object of class Simulation
 #
 # Output: the updated Simulation object 
 #
-=======
-single.simulation.loop <- function(i, object, save.data = FALSE, load.data = FALSE, data.path = character(0)){
->>>>>>> Binned-Data
     #generate population
     population <- generate.population(object)
     #generate transects
     if(!object@single.transect.set){
+      #Selects which set of transects to load
       object@design@file.index <- i
     }
     transects <- generate.transects(object)
@@ -23,15 +22,15 @@ single.simulation.loop <- function(i, object, save.data = FALSE, load.data = FAL
         survey <- new(Class = "Single.Obs.LT.Survey", population = population, line.transect = transects, perp.truncation = object@detectability@truncation)
       }
     }
-<<<<<<< HEAD
-    #simulate survey
-    survey.data <- create.survey.results(object = survey, dht.tables = TRUE, region = object@region)
-    ddf.data <- survey.data$ddf.data 
-    obs.table <- survey.data$obs.table
-    sample.table <- survey.data$sample.table
-    region.table <- survey.data$region.table
-    n.in.covered <- survey.data$n.in.covered 
-=======
+#<<<<<<< HEAD
+#    #simulate survey
+#    ddf.data <- survey.data$ddf.data 
+#    survey.data <- create.survey.results(object = survey, dht.tables = TRUE, region = object@region)
+#    obs.table <- survey.data$obs.table
+#    region.table <- survey.data$region.table
+#    sample.table <- survey.data$sample.table
+#    n.in.covered <- survey.data$n.in.covered 
+#=======
     if(load.data){
       #load data
       load(paste(data.path,"dataset_",i,".robj", sep = ""))
@@ -42,7 +41,7 @@ single.simulation.loop <- function(i, object, save.data = FALSE, load.data = FAL
       n.in.covered <- dist.data$n.in.covered 
     }else{
       #simulate survey
-      survey.data <- simulate.survey(object = survey, dht.table = TRUE, region = object@region)
+      survey.data <- create.survey.results(object = survey, dht.tables = TRUE, region = object@region)
       ddf.data <- survey.data$ddf.data 
       obs.table <- survey.data$obs.table
       sample.table <- survey.data$sample.table
@@ -53,7 +52,7 @@ single.simulation.loop <- function(i, object, save.data = FALSE, load.data = FAL
         save(dist.data, file = paste("dataset_",i,".robj", sep = ""))
       }
     }
->>>>>>> Binned-Data
+#>>>>>>> Binned-Data
     #analyse survey
     ddf.results <- run.analysis(object, ddf.data)
     #Find how many animals were in the covered region

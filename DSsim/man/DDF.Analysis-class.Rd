@@ -9,9 +9,16 @@
 \section{Slots}{
   \describe{ \item{\code{dsmodel}}{Object of class
   \code{"formula"}; describing the detection function
-  model.} \item{\code{criteria}}{Object of class
+  model.} 
+  \item{\code{criteria}}{Object of class
   \code{"character"}; describes which model delection
   croteria to use ("AIC","AICc","BIC").}
+  \item{\code{truncation}}{The truncation distance to be 
+  applied in the analyses.}
+  \item{\code{binned.data}}{Logical value indicating 
+  Whether the data should be binned prior to analysis.}
+  \item{\code{cutpoints}}{Numeric vector supplying the
+  cutpoints to be used to bin the data.}
   \item{\code{ddf.result}}{Object of class \code{"list"};
   object of S3 class ddf.} }
 }

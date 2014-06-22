@@ -20,10 +20,6 @@ get.sampler.info <- function(shapefile, region.obj, meta = NULL){
   
   #xtract strata transect info from meta
   if(!is.null(meta)){
-    meta <<- meta
-    region.info <<- region
-    ID <<- ID
-    d7.length <<- d7.length
     for(i in seq(along = ID)){
       if(length(meta[,1][meta[,2] == ID[i]]) > 0){
         region[i] <- meta[,3][meta[,2] == ID[i]]

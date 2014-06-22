@@ -1,8 +1,6 @@
 #' @include generic.functions.R
 #' @include DDF.Data.R
 
-NULL
-
 #' Class "DDF.Analysis" 
 #' 
 #' Class \code{"DDF.Analysis"} is an S4 class describing a detection function
@@ -70,16 +68,16 @@ setValidity("DDF.Analysis",
 
 setMethod(
   f="run.analysis",
-<<<<<<< HEAD
+#<<<<<<< HEAD
   signature=c("DDF.Analysis","DDF.Data"),
   definition=function(object, data, dht = FALSE){
-    dist.data <- data@ddf.dat
-    ddf.result <- ddf(dsmodel = object@dsmodel, data = dist.data, method = "ds")
+    #dist.data <- data@ddf.dat
+    #ddf.result <- ddf(dsmodel = object@dsmodel, data = dist.data, method = "ds")
     #ddf.result.list <- list(ddf.result = ddf.result)
     #object@ddf.result <- ddf.result.list
-=======
-  signature="DDF.Analysis",
-  definition=function(object, ddf.dat){
+#=======
+  #signature="DDF.Analysis",
+  #definition=function(object, ddf.dat){
     dist.data <- ddf.dat@ddf.dat
     if(object@binned.data){
       #binned data
@@ -94,7 +92,7 @@ setMethod(
         ddf.result <- ddf(dsmodel = object@dsmodel, data = dist.data, method = "ds", meta.data = list(width = object@truncation))   
       }
     }
->>>>>>> Binned-Data
+#>>>>>>> Binned-Data
     return(ddf.result)
   }    
 ) 
