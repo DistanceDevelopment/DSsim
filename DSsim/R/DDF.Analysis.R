@@ -78,7 +78,7 @@ setMethod(
 #=======
   #signature="DDF.Analysis",
   #definition=function(object, ddf.dat){
-    dist.data <- ddf.dat@ddf.dat
+    dist.data <- data@ddf.dat
     if(object@binned.data){
       #binned data
       dist.data <- dist.data[dist.data$distance <= max(object@cutpoints),]

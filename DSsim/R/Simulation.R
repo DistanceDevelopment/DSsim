@@ -381,7 +381,8 @@ setMethod(
 #' @aliases run.analysis,Simulation,DDF.Data-method
 setMethod(
   f="run.analysis",
-  signature=c("Simulation","Single.Obs.DDF.Data"),
+  #signature=c("Simulation","Single.Obs.DDF.Data"),
+  signature=c("Simulation","DDF.Data"),
   definition=function(object, data, dht = TRUE){
     ddf.analyses <- object@ddf.analyses
     criteria <- NULL
