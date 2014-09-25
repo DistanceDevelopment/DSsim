@@ -1,3 +1,6 @@
+#' @include generic.functions.R
+NULL
+
 #' Class "Density" 
 #' 
 #' Class \code{"Density"} is an S4 class containing a list of grids which
@@ -65,8 +68,20 @@ setValidity("Density",
     #check region object exists and is of the correct class
     #check strata object exists and is of the correct class
     #check the density grid was created without problem
-    if(nrow(object@density.surface[[1]]) == 0){
-      message("You must supply either a valid density surface, constant or valid density gam argument. DSM and formula are not currently suported.")
+    some.strata.with.grids = FALSE
+    some.strata.with.no.grids = FALSE
+    for i in seq(along = object@density.surface){
+      if(nrow(object@density.surface[[1]]) > 0){  
+        some.strata.with.grids = TRUE
+      }else{
+        some.strata.with.no.grids = TRUE  
+      }  
+    }
+    if(some.strata.with.grids & some.strata.with.no.grids){
+      message("The grid spacing needs to be smaller, not all strata have points in them")
+      return(FALSE)
+    }else if(!some.strata.with.grids)
+      message("There has been a problem generating the density grid. You must supply either a valid density surface, constant or valid density gam argument. DSM and formula are not currently suported.")
       return(FALSE)
     }
     
@@ -103,25 +118,51 @@ setValidity("Density",
 # OTHER GENERIC METHODS
 ################################################################################ 
 
+# @rdname add.hotspot-methods
+# @aliases add.hotspot,Density-method
+setMethod("add.hotspot","Density",
+          function(object, centre, sigma, amplitude){
+            density.surface <- object@density.surface    
+            for(strat in seq(along = density.surface)){
+              #Find distances from centre to each point on the density surface
+              strata.surface <- density.surface[[strat]]
+              dists <- sqrt((strata.surface$x-centre[1])^2 + (strata.surface$y-centre[2])^2) 
+              #Calculate radial decay
+              additive.values <- (exp(-dists^2/(2*sigma^2)))*amplitude
+              #Add to surface
+              strata.surface$density <- strata.surface$density+additive.values
+              density.surface[[strat]] <- strata.surface
+            }
+            object@density.surface <- density.surface
+            return(object)         
+          }
+)
+
+
+
 #' @rdname Density-class
 #' @aliases plot,Density-method
 setMethod("plot","Density",
   function(x, y, add = FALSE, plot.units = character(0), ...){
     density.surface <- x@density.surface
-    densities <- NULL
-    x.vals <- NULL
-    y.vals <- NULL
+    #Get all the x, y and density values across strata
+    densities <- x.vals <- y.vals <- NULL
     for(strat in seq(along = density.surface)){
       densities <- c(densities, density.surface[[strat]]$density)
       x.vals <- c(x.vals, density.surface[[strat]]$x)
       y.vals <- c(y.vals, density.surface[[strat]]$y)
     }
+    #Find the range of densities
     zlim <- range(densities) 
+    #If the range < 1
     if(zlim[2] - zlim[1] < 1){
+      #Multiply them by (1/minimum density)*10
       multiplier <- (1/zlim[1])*10
     }else{
+      #otherwise no scaling
       multiplier <- 1
     }
+    #Create the colour lookup
     zlim <- range(densities*multiplier)
     zlen <- zlim[2] - zlim[1] + 1
     colorlut <- heat.colors(zlen) 
@@ -154,6 +195,7 @@ setMethod("plot","Density",
         axis(2, at = yticks, labels = yticks)
       }
     }
+    #Add the points for each strata
     for(strat in seq(along = density.surface)){
       col <- colorlut[density.surface[[strat]]$density*multiplier-zlim[1]+1]
       points(density.surface[[strat]]$x, density.surface[[strat]]$y, col = col, pch = 20)
@@ -161,25 +203,10 @@ setMethod("plot","Density",
   }
 )
 
-#' @rdname add.hotspot-methods
-#' @aliases add.hotspot,Density-method
-setMethod("add.hotspot","Density",
-  function(object, centre, sigma, amplitude){
-    density.surface <- object@density.surface    
-    for(strat in seq(along = density.surface)){
-      #Find distances from centre to each point on the density surface
-      strata.surface <- density.surface[[strat]]
-      dists <- sqrt((strata.surface$x-centre[1])^2 + (strata.surface$y-centre[2])^2) 
-      #Calculate radial decay
-      additive.values <- (exp(-dists^2/(2*sigma^2)))*amplitude
-      #Add to surface
-      strata.surface$density <- strata.surface$density+additive.values
-      density.surface[[strat]] <- strata.surface
-    }
-    object@density.surface <- density.surface
-    return(object)         
-  }
-)
+
+
+
+
 
 
 
