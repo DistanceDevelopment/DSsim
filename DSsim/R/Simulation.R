@@ -14,6 +14,7 @@
 #' populations, simulating the survey and completing the analyses. 
 #'
 #' @name Simulation-class
+#' @title S4 Class "Simulation"
 #' @docType class
 #' @section Slots: 
 #' \describe{
@@ -312,7 +313,7 @@ setMethod(
 setMethod(
   f="generate.transects",
   signature="Simulation",
-  definition=function(object, read.from.file = TRUE, write.to.file = FALSE){
+  definition=function(object, read.from.file = TRUE, write.to.file = FALSE, region = NULL){
     region <- object@region
     transect <- generate.transects(object@design, region = region)
     return(transect)
@@ -360,20 +361,21 @@ setMethod(
   f="run.analysis",
   signature=c("Simulation","LT.Survey.Results"),
   definition=function(object, data, dht = TRUE){
-    dist.data <- survey.results@ddf.data
-    ddf.analyses <- object@ddf.analyses
-    criteria <- NULL
-    results <- list()
-    for(a in seq(along = ddf.analyses)){
-      results[[a]] <- run.analysis(ddf.analyses[[a]], ddf.dat = dist.data)
-      criteria <- c(criteria, results[[a]]$criterion)
+    #dist.data <- survey.results@ddf.data
+    best.model <- run.analysis(object, survey.results@ddf.data)
+    #ddf.analyses <- object@ddf.analyses
+    #results <- list()
+    #for(a in seq(along = ddf.analyses)){
+    #criteria <- NULL
+    #  results[[a]] <- run.analysis(ddf.analyses[[a]], ddf.dat = dist.data)
+    #  criteria <- c(criteria, results[[a]]$criterion)
+    #}
+    #best.model <- which(criteria == min(criteria))
+    if(dht & !is.null(best.model)){
+      dht.results <- dht(best.model, survey.results@region.table@region.table, survey.results@sample.table@sample.table, survey.results@obs.table@obs.table)
+      return(list(ddf = best.model, dht = dht.results))
     }
-    best.model <- which(criteria == min(criteria))
-    if(dht){
-      dht.results <- dht(results[[best.model]], survey.results@region.table@region.table, survey.results@sample.table@sample.table, survey.results@obs.table@obs.table)
-      return(list(ddf = results[[best.model]], dht = dht.results))
-    }
-    return(list(ddf = results[[best.model]]))
+    return(list(ddf = best.model))
   }    
 )   
     
@@ -389,10 +391,19 @@ setMethod(
     results <- list()
     for(a in seq(along = ddf.analyses)){
       results[[a]] <- run.analysis(ddf.analyses[[a]], data)
-      criteria <- c(criteria, results[[a]]$criterion)
+      if(!is.na(results[[a]])){
+        criteria <- c(criteria, results[[a]]$criterion)  
+      }else{
+        criteria <- c(criteria, NA) 
+      }
     }
-    best.model <- which(criteria == min(criteria))
-    return(results[[best.model]])
+    #check that at least one model worked
+    if(length(which(!is.na(criteria))) > 0){
+      best.model <- which(criteria == min(na.omit(criteria)))
+      return(results[[best.model]])
+    }else{
+      return(NULL)
+    }
   }    
 )
 
