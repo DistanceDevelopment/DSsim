@@ -17,6 +17,7 @@
 #' survey.
 #' 
 #' @name LT.Survey.Results-class
+#' @title S4 Class "LT.Survey.Results"
 #' @docType class
 #' @section Slots: 
 #' \describe{

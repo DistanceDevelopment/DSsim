@@ -4,6 +4,7 @@
 #' correct format for mrds.
 #'
 #' @name DDF.Data-class
+#' @title S4 Class "DDF.Data"
 #' @docType class
 #' @section Slots: 
 #' \describe{

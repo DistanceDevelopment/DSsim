@@ -10,6 +10,7 @@
 #' Virtual Class \code{"LT.Survey"} is an S4 class containing a population
 #' and a set of transects.
 #' @name LT.Survey-class
+#' @title S4 Class "LT.Survey"
 #' @section Slots: 
 #' \describe{
 #'  \item{\code{line.transect}}{Object of class \code{"Line.Transect"}; the 

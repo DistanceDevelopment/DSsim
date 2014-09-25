@@ -11,6 +11,7 @@
 #' and a set of transects. 
 #'
 #' @name Single.Obs.LT.Survey-class
+#' @title S4 Class "Single.Obs.LT.Survey"
 #' @docType class
 #' @keywords classes         
 #' @export

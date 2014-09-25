@@ -4,6 +4,7 @@
 #' of detecting individuals / clusters in a population.
 #'
 #' @name Detectability-class
+#' @title S4 Class "Detectability"
 #' @docType class                             
 #' @section Slots: 
 #' \describe{

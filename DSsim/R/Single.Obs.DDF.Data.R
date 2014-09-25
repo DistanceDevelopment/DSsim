@@ -9,6 +9,7 @@
 #' DDF data resulting from a single observer survey.
 #' 
 #' @name Single.Obs.DDF.Data-class
+#' @title S4 Class "Single.Obs.DDF.Data"
 #' @docType class
 #' @section Objects from the Class: Objects can be created by calls of the form
 #' @keywords classes

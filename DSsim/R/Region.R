@@ -7,6 +7,7 @@
 #' coords slot and any gaps are described as polygons in the gaps slot.
 #'
 #' @name Region-class
+#' @title S4 Class "Region"
 #' @docType class
 #' @section Objects from the Class: Objects can be created by calls of the form
 #' \code{make.region(region.name = "region.name", shapefile = region.shapefile)} 

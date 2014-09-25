@@ -6,6 +6,7 @@
 #' displayed via the \code{show} method. 
 #'
 #' @name Simulation.Summary-class
+#' @title S4 Class "Simulation.Summary"
 #' @docType class
 #' @keywords classes
 #' @section Methods:

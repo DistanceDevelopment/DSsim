@@ -10,6 +10,7 @@
 #' advance.
 #' 
 #' @name Survey.Design-class
+#' @title S4 Class "Survey.Design"
 #' @docType class
 #' @section Slots: 
 #' \describe{

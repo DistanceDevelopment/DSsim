@@ -1,13 +1,14 @@
-#' @include Simulation.R
-#' @include DS.Analysis.R
-#' @include Population.Description.R
-#' @include Density.R
-#' @include LT.Systematic.Design.R
-#' @include LT.Random.Design.R
-#' @include LT.EqAngle.ZZ.Design.R
-#' @include LT.EqSpace.ZZ.Design.R
-#' @include LT.User.Specified.Design.R
-#' @include Region.R
+# @include Simulation.R
+# @include DS.Analysis.R
+# @include Population.Description.R
+# @include Density.R
+# @include LT.Systematic.Design.R
+# @include LT.Random.Design.R
+# @include LT.EqAngle.ZZ.Design.R
+# @include LT.EqSpace.ZZ.Design.R
+# @include LT.User.Specified.Design.R
+# @include Region.R
+
 
 #' Creates a Region object
 #'
@@ -238,10 +239,11 @@ make.detectability <- function(key.function, scale.param, shape.param = numeric(
 #'
 #' @param dsmodel list of distance sampling model formula specifying the detection function (see \code{?ddf} for further details)
 #' @param mrmodel not yet implemented
-#' @param method only "ds" normal distance sampling currently implemented
-#' @param criteria model selection criteria (AIC, AICc, BIC) - only AIC implemented at present.
+#' @param method character only "ds" normal distance sampling currently implemented
+#' @param criteria character model selection criteria (AIC, AICc, BIC) - only AIC implemented at present.
+#' @param truncation numeric truncation distance for analyses
 #' @param binned.data logical whether the data should be analsed in bins
-#' @param cutpoints
+#' @param cutpoints gives the cutpoints of the binned data
 #' @return list of objects of class DDF.Analysis 
 #' @export
 #' @author Laura Marshall

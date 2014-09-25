@@ -10,6 +10,7 @@
 #' Virtual Class \code{"LT.Design"} is an S4 class detailing the type of line transect 
 #' design. 
 #' @name LT.Design-class
+#' @title S4 Class "LT.Design"
 #' @docType class
 #' @section Slots: 
 #' \describe{

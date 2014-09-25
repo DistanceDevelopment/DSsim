@@ -70,7 +70,7 @@ setValidity("Density",
     #check the density grid was created without problem
     some.strata.with.grids = FALSE
     some.strata.with.no.grids = FALSE
-    for i in seq(along = object@density.surface){
+    for(i in seq(along = object@density.surface)){
       if(nrow(object@density.surface[[1]]) > 0){  
         some.strata.with.grids = TRUE
       }else{
@@ -80,11 +80,10 @@ setValidity("Density",
     if(some.strata.with.grids & some.strata.with.no.grids){
       message("The grid spacing needs to be smaller, not all strata have points in them")
       return(FALSE)
-    }else if(!some.strata.with.grids)
+    }else if(!some.strata.with.grids){
       message("There has been a problem generating the density grid. You must supply either a valid density surface, constant or valid density gam argument. DSM and formula are not currently suported.")
       return(FALSE)
     }
-    
     return(TRUE)
   }
 )

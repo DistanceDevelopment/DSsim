@@ -8,6 +8,7 @@
 #' example population.
 #'                                  
 #' @name Population.Description-class
+#' @title S4 Class "Population.Description"
 #' @docType class
 #' @section Slots: 
 #' \describe{

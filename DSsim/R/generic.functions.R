@@ -9,6 +9,10 @@
 #' @param object an object of class Simulation or Population.Description
 #' @param detectability object of class Detectability (optional - only
 #'   required if object is of class Population.Description) 
+#' @param region.obj the region object for the population (optional - only
+#'   required if object is of class Population.Description)
+#' @param ... when this is called on an object of class Population.Description
+#' the additional arguments detectability and region.obj should also be supplied
 #' @usage generate.population(object, ...)
 #' @return an object of class Population
 #' @export
@@ -22,12 +26,16 @@ setGeneric("generate.population", function(object, ...){standardGeneric ("genera
 #' involves loading a survey shapefile from the path specified in the 
 #' Survey.Design object and can only work with line transect designs.
 #'
-#' @param object an object of class Simulaiton or a class which inherits from 
+#' @param object an object of class Simulation or a class which inherits from 
 #'   Survey.Design
 #' @param read.from.file if the transect details should be read in from file 
 #'   (currently must be TRUE)
 #' @param write.to.file not currently implemented
 #' @param region optional only required if object is of class Survey.Design.
+#' @param index specifies which set of transect should be loaded
+#' @param ... optional argument index if an object of class Survey.Design is 
+#' supplied allowing the user to access / plot different sets of transects
+#' listed in the filenames slot. 
 #' @return an object of class Line.Transect
 #' @export
 #' @docType methods
@@ -53,7 +61,7 @@ setGeneric(name = "create.region.table", def = function(object, region){standard
 #' estimate abundance /  density via the Hortvitz-Thompson estimator.
 #'
 #' @param object an object of a class inheriting from Survey
-#' @usage create.region.table(object, region)
+#' @usage create.sample.table(object)
 #' @return an object of class Sample.Table
 #' @docType methods
 #' @rdname create.sample.table-methods
@@ -71,8 +79,9 @@ setGeneric(name = "create.sample.table", def = function(object){standardGeneric 
 #' fitting models to this data.
 #'
 #' @param object an object of class Simulation
-#' @param dht.tables logical value indicating whether or the data tables for 
-#'   Hortvitz-Thompson estimation are required.
+#' @param dht.tables logical value indicating whether or the data 
+#' tables for Hortvitz-Thompson estimation are required.
+#' @param ... allows a region object to be passed in
 #' @usage create.survey.results(object, dht.tables, ...)
 #' @return an object of class LT.Survey.Results
 #' @export
@@ -126,6 +135,12 @@ setGeneric(name = "add.hotspot", def = function(object, centre, sigma, amplitude
 #' @param run.parallel logical option to use multiple processors
 #' @param max.cores integer maximum number of cores to use, if not specified then
 #' one less than the number available will be used.
+#' @param save.data logical allows the datasets from the simulation to be 
+#' saved to file
+#' @param load.data logical allows the datasets to be loaded from file rather than
+#' simulated afresh.
+#' @param data.path character file path to the data files.
+#' @param ... allows the three previous optional arguments to be specified
 #' @return an object of class simulation which now includes the results
 #' @export
 #' @docType methods
@@ -145,6 +160,8 @@ setGeneric(name = "run", def = function(object, run.parallel = FALSE, max.cores 
 #'
 #' @param object an object of class Simulation or DDF.Analysis
 #' @param data an object of class Survey.Results or DDF.Data
+#' @param ... optional arguments including the following:
+#' @param dht logical whether density should be estimated after fitting the model
 #' @usage run.analysis(object, data, ...)
 #' @return a list containing an S3 ddf object and optionally an S3 dht object relating to the model with the miminum criteria.
 #' @export

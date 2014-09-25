@@ -5,6 +5,7 @@
 #' density and abundance.
 #'
 #' @name Region.Table-class
+#' @title S4 Class "Region.Table"
 #' @docType class
 #' @section Objects from the Class: Objects can be created by calls to the 
 #' function \code{create.survey.results(simulation, dht.table = TRUE)} 
