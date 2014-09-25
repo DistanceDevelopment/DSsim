@@ -21,7 +21,7 @@ get.bound.box <- function(coords){
   ymax <- coords[[1]][[1]]$y[1]
   
   for(strata in seq(along = coords)){
-    for(poly in seq(along = coords[strata])){
+    for(poly in seq(along = coords[[strata]])){
       x.coords <- coords[[strata]][[poly]]$x
       y.coords <- coords[[strata]][[poly]]$y
       xmin <- min(xmin, x.coords)
