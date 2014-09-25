@@ -28,7 +28,6 @@ setGeneric("generate.population", function(object, ...){standardGeneric ("genera
 #'   (currently must be TRUE)
 #' @param write.to.file not currently implemented
 #' @param region optional only required if object is of class Survey.Design.
-#' @usage generate.transects(object, read.from.file, write.to.file, region)
 #' @return an object of class Line.Transect
 #' @export
 #' @docType methods
@@ -124,10 +123,9 @@ setGeneric(name = "add.hotspot", def = function(object, centre, sigma, amplitude
 #' one less than the number of cores / threads on your machine.
 #'
 #' @param object an object of class Simulation
-#' @param logical option to use multiple processors
-#' @param integer maximum number of cores to use, if not specified then
+#' @param run.parallel logical option to use multiple processors
+#' @param max.cores integer maximum number of cores to use, if not specified then
 #' one less than the number available will be used.
-#' @usage run(object, ...)
 #' @return an object of class simulation which now includes the results
 #' @export
 #' @docType methods
