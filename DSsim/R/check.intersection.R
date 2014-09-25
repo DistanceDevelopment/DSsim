@@ -27,9 +27,9 @@ check.intersection <- function(transect, point, display.diagnostics = FALSE){
   delta.X <- transect[["p.dist"]]*sin(the.angle)
   #find x-coord at point of intersection
   new.x.coord <- point[["x"]]+delta.X
-  #calculate Opp (i.e. deltaX)
+  #calculate Opp (i.e. deltaY)
   delta.Y <- transect[["p.dist"]]*cos(the.angle)
-  #find x-coord at point of intersection
+  #find y-coord at point of intersection
   new.y.coord <- point[["y"]]+delta.Y
   #check new x-coord is in the right direction
   #c = y - mx
