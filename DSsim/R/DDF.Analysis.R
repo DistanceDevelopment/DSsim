@@ -44,7 +44,7 @@ setClass(Class = "DDF.Analysis", representation(dsmodel = "formula",
 setMethod(
   f="initialize",
   signature="DDF.Analysis",
-  definition=function(.Object, dsmodel, criteria, truncation, binned.data, cutpoints){
+  definition=function(.Object, dsmodel = call(), criteria, truncation, binned.data, cutpoints){
     .Object@dsmodel <- dsmodel
     .Object@criteria <- criteria
     .Object@truncation <- truncation
@@ -83,7 +83,8 @@ setMethod(
       #binned data
       dist.data <- dist.data[dist.data$distance <= max(object@cutpoints),]
       dist.data <- create.bins(dist.data, cutpoints = object@cutpoints)
-      ddf.result <- try(ddf(dsmodel = object@dsmodel, data = dist.data, method = "ds", meta.data = list(binned = TRUE, breaks = object@cutpoints, width = max(object@cutpoints))))
+      #ddf.result <- try(ddf(dsmodel = object@dsmodel, data = dist.data, method = "ds", meta.data = list(binned = TRUE, breaks = object@cutpoints, width = max(object@cutpoints))))
+      ddf.result <- try(eval(parse(text = paste("ddf(dsmodel = ~", as.character(object@dsmodel)[2] ,", data = dist.data, method = 'ds', meta.data = list(width = ", max(object@cutpoints), ", binned = TRUE, breaks = ", object@cutpoints ,"))", sep = ""))), silent = TRUE)
       if(class(ddf.result) == "try-error"){
         cat(ddf.result[1])
         call <- paste(object@dsmodel)[2]
@@ -95,9 +96,11 @@ setMethod(
       #NEED TO ADD TRY STATEMENTS HERE!
       #exact distances
       if(length(object@truncation) == 0){
-        ddf.result <- try(ddf(dsmodel = object@dsmodel, data = dist.data, method = "ds"), silent = TRUE)   
+        #ddf.result <- try(ddf(dsmodel = object@dsmodel, data = dist.data, method = "ds"), silent = TRUE)  
+        ddf.result <- try(eval(parse(text = paste("ddf(dsmodel = ~", as.character(object@dsmodel)[2] ,", data = dist.data, method = 'ds')", sep = ""))), silent = TRUE)
       }else{
-        ddf.result <- try(ddf(dsmodel = object@dsmodel, data = dist.data, method = "ds", meta.data = list(width = object@truncation)), silent = TRUE)  
+        #ddf.result <- try(ddf(dsmodel = object@dsmodel, data = dist.data, method = "ds", meta.data = list(width = object@truncation)), silent = TRUE)  
+        ddf.result <- try(eval(parse(text = paste("ddf(dsmodel = ~", as.character(object@dsmodel)[2] ,", data = dist.data, method = 'ds', meta.data = list(width = ", object@truncation,"))", sep = ""))), silent = TRUE)
       }
       if(class(ddf.result) == "try-error"){
         ddf.result <- NULL
