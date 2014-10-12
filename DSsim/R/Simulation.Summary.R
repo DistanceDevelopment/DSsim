@@ -16,6 +16,8 @@
 #'  }
 #' @export
 setClass("Simulation.Summary", representation(region.name = "character",
+                                      total.reps = "numeric",
+                                      failures = "numeric",
                                       individuals = "list",
                                       clusters = "list",
                                       expected.size = "data.frame", 
@@ -27,9 +29,11 @@ setClass("Simulation.Summary", representation(region.name = "character",
 setMethod(
   f="initialize",   
   signature="Simulation.Summary",
-  definition=function(.Object, region.name, individuals, clusters = list(), expected.size = data.frame(NULL), detection, include.glossary = FALSE){
+  definition=function(.Object, region.name, total.reps, failures, individuals, clusters = list(), expected.size = data.frame(NULL), detection, include.glossary = FALSE){
     #Set slots
     .Object@region.name   <- region.name
+    .Object@total.reps    <- total.reps
+    .Object@failures      <- failures
     .Object@individuals   <- individuals    
     .Object@clusters      <- clusters
     .Object@expected.size <- expected.size
@@ -60,6 +64,8 @@ setMethod(
   definition=function(object){  
     #Display summaries
     cat("\nRegion: ", object@region.name) 
+    cat("\nNo. Repetitions: ", object@total.reps)
+    cat("\nNo. Failures: ", object@failures)
     cat("\n\nSummary for Individuals")      
     cat("\n\nSummary Statistics\n\n")
     print(object@individuals$summary)

@@ -141,7 +141,7 @@ setValidity("Simulation",
 setMethod(
   f="summary",
   signature="Simulation",
-  definition=function(object, ..., na.rm = FALSE){
+  definition=function(object, ...){
     x <- object
     reps <- dim(x@results$individuals$N)[3]-2
     #Calculate true values
@@ -262,13 +262,14 @@ setMethod(
                             sd.estimate.Pa = x@results$Detection[,"Pa","sd"],
                             mean.ESW = x@results$Detection[,"ESW","mean"],  
                             sd.ESW = x@results$Detection[,"ESW","sd"])
-    
+    #Find how many iterations failed
+    no.fails <- length(which(is.na(object@results$Detection[1,1,1:object@reps])))
     #print(individual.N.est)  
     individuals <- list(summary = individual.summary, N = individual.N, D = individual.D)
     if(!is.null(x@results$clusters)){
-      summary.x <- new(Class = "Simulation.Summary", region.name = x@region@region.name, individuals = individuals, clusters = clusters, expected.size = expected.size, detection = detection)
+      summary.x <- new(Class = "Simulation.Summary", region.name = x@region@region.name, total.reps = object@reps, failures = no.fails, individuals = individuals, clusters = clusters, expected.size = expected.size, detection = detection)
     }else{  
-      summary.x <- new(Class = "Simulation.Summary", region.name = x@region@region.name, individuals = individuals, detection = detection)
+      summary.x <- new(Class = "Simulation.Summary", region.name = x@region@region.name, total.reps = object@reps, failures = no.fails, individuals = individuals, detection = detection)
     } 
     return(summary.x)
   }    
@@ -362,17 +363,11 @@ setMethod(
   signature=c("Simulation","LT.Survey.Results"),
   definition=function(object, data, dht = TRUE){
     #dist.data <- survey.results@ddf.data
-    best.model <- run.analysis(object, survey.results@ddf.data)
-    #ddf.analyses <- object@ddf.analyses
-    #results <- list()
-    #for(a in seq(along = ddf.analyses)){
-    #criteria <- NULL
-    #  results[[a]] <- run.analysis(ddf.analyses[[a]], ddf.dat = dist.data)
-    #  criteria <- c(criteria, results[[a]]$criterion)
-    #}
-    #best.model <- which(criteria == min(criteria))
+    best.model <- run.analysis(object, data@ddf.data)
+    #If ddf has converged and dht it TRUE
     if(dht & !is.null(best.model)){
-      dht.results <- dht(best.model, survey.results@region.table@region.table, survey.results@sample.table@sample.table, survey.results@obs.table@obs.table)
+      #Calculate density/abundance
+      dht.results <- dht(best.model, data@region.table@region.table, data@sample.table@sample.table, data@obs.table@obs.table)
       return(list(ddf = best.model, dht = dht.results))
     }
     return(list(ddf = best.model))
@@ -391,7 +386,7 @@ setMethod(
     results <- list()
     for(a in seq(along = ddf.analyses)){
       results[[a]] <- run.analysis(ddf.analyses[[a]], data)
-      if(!is.na(results[[a]])){
+      if(!is.null(results[[a]])){
         criteria <- c(criteria, results[[a]]$criterion)  
       }else{
         criteria <- c(criteria, NA) 
@@ -414,51 +409,29 @@ setMethod(
 setMethod(
   f="run",
   signature="Simulation",
-#<<<<<<< HEAD
-#  definition=function(object, run.parallel = FALSE, max.cores = NA){
-#=======
   definition=function(object, run.parallel = FALSE, max.cores = NA, save.data = FALSE, load.data = FALSE, data.path = character(0)){
     #Note options save.data, load.data, data.path are not implemented in simulations run in parallel.
-#    require(mrds)
-#    require(splancs)
-#    require(parallel)
-#>>>>>>> Binned-Data
     #set the transect index to 1
     orig.file.index <- object@design@file.index
     object@design@file.index <- 1
     if(run.parallel){
-#<<<<<<< HEAD
       #run in parallel
       require(parallel)
-#=======
-#>>>>>>> Binned-Data
       # counts the number of cores you have
       nCores <- getOption("cl.cores", detectCores()) 
       if(!is.na(max.cores)){
         nCores <- min(nCores - 1, max.cores)    
       }
-#<<<<<<< HEAD
       # intitialise the cluster
       myCluster <- makeCluster(nCores) 
       clusterEvalQ(myCluster, {require(DSsim)})
-#=======
-#      myCluster <- makeCluster(nCores) # intitialise the cluster
-#      clusterEvalQ(myCluster, {require(splancs)
-#                               require(DSsim)
-#                               require(mrds)
-#                               require(shapefiles)})
-#>>>>>>> Binned-Data
-      results <- parLapply(myCluster, X = as.list(1:object@reps), fun = single.simulation.loop, object = object)
+      results <- parLapply(myCluster, X = as.list(1:object@reps), fun = single.simulation.loop, object = object, save.data = save.data, load.data = load.data, data.path = data.path)
       object <- accumulate.PP.results(simulation = object, results = results)
       stopCluster(myCluster)
     }else{
       #otherwise loop
       for(i in 1:object@reps){ 
-#<<<<<<< HEAD
-#        object@results <- single.simulation.loop(i, object) 
-#=======
         object@results <- single.simulation.loop(i, object, save.data = save.data, load.data = load.data, data.path = data.path) 
-#>>>>>>> Binned-Data
       }
     }  
     object@results <- add.summary.results(object@results)
