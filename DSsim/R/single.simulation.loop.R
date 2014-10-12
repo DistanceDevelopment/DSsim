@@ -52,8 +52,13 @@ single.simulation.loop <- function(i, object, save.data, load.data, data.path = 
     }else{
       n.in.covered <- length(n.in.covered)
     }
-    #analyse survey
-    ddf.results <- run.analysis(object, ddf.data)
+    #analyse survey if there are data to analyse
+    if(nrow(ddf.data@ddf.dat) >= 20){
+      ddf.results <- run.analysis(object, ddf.data)
+    }else{
+      message("Warning there are too few data points (<20) to be analysed, skipping this iteration.")
+      ddf.results <- NULL
+    }
     #Check at least one model worked
     if(!is.null(ddf.results)){
       #Store ddf results
