@@ -76,16 +76,8 @@ setValidity("DDF.Analysis",
 
 setMethod(
   f="run.analysis",
-#<<<<<<< HEAD
   signature=c("DDF.Analysis","DDF.Data"),
   definition=function(object, data, dht = FALSE){
-    #dist.data <- data@ddf.dat
-    #ddf.result <- ddf(dsmodel = object@dsmodel, data = dist.data, method = "ds")
-    #ddf.result.list <- list(ddf.result = ddf.result)
-    #object@ddf.result <- ddf.result.list
-#=======
-  #signature="DDF.Analysis",
-  #definition=function(object, ddf.dat){
     dist.data <- data@ddf.dat
     if(object@binned.data){
       #binned data
@@ -97,18 +89,20 @@ setMethod(
         call <- paste(object@dsmodel)[2]
         cutpoints <- paste(object@cutpoints, collapse = ',')
         cat(paste("ddf(dsmodel = ~",call,", data = dist.data, method = \"ds\", meta.data = list(binned = TRUE, breaks = ",cutpoints,"))))"), sep = "")
-        ddf.result <- NA
+        ddf.result <- NULL
       }
     }else{
       #NEED TO ADD TRY STATEMENTS HERE!
       #exact distances
       if(length(object@truncation) == 0){
-        ddf.result <- ddf(dsmodel = object@dsmodel, data = dist.data, method = "ds")   
+        ddf.result <- try(ddf(dsmodel = object@dsmodel, data = dist.data, method = "ds"), silent = TRUE)   
       }else{
-        ddf.result <- ddf(dsmodel = object@dsmodel, data = dist.data, method = "ds", meta.data = list(width = object@truncation))   
+        ddf.result <- try(ddf(dsmodel = object@dsmodel, data = dist.data, method = "ds", meta.data = list(width = object@truncation)), silent = TRUE)  
+      }
+      if(class(ddf.result) == "try-error"){
+        ddf.result <- NULL
       }
     }
-#>>>>>>> Binned-Data
     return(ddf.result)
   }    
 ) 
