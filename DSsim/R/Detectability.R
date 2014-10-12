@@ -68,7 +68,7 @@ setValidity("Detectability",
         return("Invalid shape parameter. Must be greater than or equal to zero.")
       }  
     }
-    if(length(object@scale.param) > 1 & length(object@shape.param) > 1 & length(object@scale.param) != length(object@shape.param)))){
+    if(length(object@scale.param) > 1 & length(object@shape.param) > 1 & length(object@scale.param) != length(object@shape.param)){
       return("The same number of values must be provided for both the shape and scale parameters or only one value supplied for either the shape or scale parameter.")
     }
     return(TRUE)
