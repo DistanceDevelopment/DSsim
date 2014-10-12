@@ -55,8 +55,21 @@ setValidity("Detectability",
     if(!object@key.function%in%c("hr","hn")){
       return("Unsupported key function")
     }
-    if(object@scale.param <= 0){
-      return("Invalid scale parameter. Must be greater than zero.")
+    if(object@key.function == "hr" & length(object@shape.param) == 0){
+      return("You have selected the hazard rate model but not supplied a shape parameter.")
+    }
+    for(i in seq(along = object@scale.param)){
+      if(object@scale.param[i] <= 0){
+        return("Invalid scale parameter. Must be greater than zero.")
+      }  
+    }
+    for(i in seq(along = object@shape.param)){
+      if(object@shape.param[i] < 0){
+        return("Invalid shape parameter. Must be greater than or equal to zero.")
+      }  
+    }
+    if(length(object@scale.param) > 1 & length(object@shape.param) > 1 & length(object@scale.param) != length(object@shape.param)))){
+      return("The same number of values must be provided for both the shape and scale parameters or only one value supplied for either the shape or scale parameter.")
     }
     return(TRUE)
   }
