@@ -89,9 +89,9 @@ setMethod(
     if(read.from.file){
       #Load the shapefle
       shapefile <- read.shapefile(paste(object@path, "/", object@filenames[file.index], sep=""))
-      cat("Reading shapefile: ",paste(object@path, "/", object@filenames[file.index], sep=""), fill = T)
+      #cat("Reading shapefile: ",paste(object@path, "/", object@filenames[file.index], sep=""), fill = T)
       #Load the meta file if it exists - describes which transects are in which strata
-      meta <- try(read.table(paste(object@path, "/Meta.txt", sep="")), silent = TRUE)
+      meta <- suppressWarnings(try(read.table(paste(object@path, "/Meta.txt", sep="")), silent = TRUE))
       if(class(meta) == "try-error"){
         meta <- NULL
       }
