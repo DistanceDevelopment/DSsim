@@ -102,7 +102,7 @@ setMethod(
         #ddf.result <- try(ddf(dsmodel = object@dsmodel, data = dist.data, method = "ds", meta.data = list(width = object@truncation)), silent = TRUE)  
         ddf.result <- try(eval(parse(text = paste("ddf(dsmodel = ~", as.character(object@dsmodel)[2] ,", data = dist.data, method = 'ds', meta.data = list(width = ", object@truncation,"))", sep = ""))), silent = TRUE)
       }
-      if(class(ddf.result) == "try-error"){
+      if(class(ddf.result)[1] == "try-error"){
         ddf.result <- NULL
       }
     }
