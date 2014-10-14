@@ -386,7 +386,7 @@ setMethod(
     results <- list()
     for(a in seq(along = ddf.analyses)){
       results[[a]] <- run.analysis(ddf.analyses[[a]], data)
-      if(!is.null(results[[a]])){
+      if(!is.na(results[[a]])){
         criteria <- c(criteria, results[[a]]$criterion)  
       }else{
         criteria <- c(criteria, NA) 
