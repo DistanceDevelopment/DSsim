@@ -86,11 +86,13 @@ setMethod(
       #ddf.result <- try(ddf(dsmodel = object@dsmodel, data = dist.data, method = "ds", meta.data = list(binned = TRUE, breaks = object@cutpoints, width = max(object@cutpoints))))
       ddf.result <- try(eval(parse(text = paste("ddf(dsmodel = ~", as.character(object@dsmodel)[2] ,", data = dist.data, method = 'ds', meta.data = list(width = ", max(object@cutpoints), ", binned = TRUE, breaks = ", object@cutpoints ,"))", sep = ""))), silent = TRUE)
       if(class(ddf.result) == "try-error"){
-        cat(ddf.result[1])
+        #cat(ddf.result[1])
         call <- paste(object@dsmodel)[2]
         cutpoints <- paste(object@cutpoints, collapse = ',')
-        cat(paste("ddf(dsmodel = ~",call,", data = dist.data, method = \"ds\", meta.data = list(binned = TRUE, breaks = ",cutpoints,"))))"), sep = "")
-        ddf.result <- NULL
+        #cat(paste("ddf(dsmodel = ~",call,", data = dist.data, method = \"ds\", meta.data = list(binned = TRUE, breaks = ",cutpoints,"))))"), sep = "")
+        ddf.result <- NA
+      }else if(ddf.result$ds$converge != 0){
+        ddf.result <- NA
       }
     }else{
       #NEED TO ADD TRY STATEMENTS HERE!
@@ -103,6 +105,8 @@ setMethod(
         ddf.result <- try(eval(parse(text = paste("ddf(dsmodel = ~", as.character(object@dsmodel)[2] ,", data = dist.data, method = 'ds', meta.data = list(width = ", object@truncation,"))", sep = ""))), silent = TRUE)
       }
       if(class(ddf.result)[1] == "try-error"){
+        ddf.result <- NA
+      }else if(ddf.result$ds$converge != 0){
         ddf.result <- NA
       }
     }
