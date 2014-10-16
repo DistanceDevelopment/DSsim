@@ -253,7 +253,7 @@ make.detectability <- function(key.function, scale.param, shape.param = numeric(
 #'  formula = ~1),~cds(key = "hr", formula = ~1)), method = "ds", 
 #'  criteria = "AIC")
 #'
-make.ddf.analysis.list <- function(dsmodel, mrmodel = NULL, method, criteria, truncation = numeric(0), binned.data = FALSE, cutpoints = numeric(0)){
+make.ddf.analysis.list <- function(dsmodel, mrmodel = NULL, method, criteria = "AIC", truncation = numeric(0), binned.data = FALSE, cutpoints = numeric(0)){
   ddf.analyses <- list()
   if(method == "ds"){
     for(a in seq(along = dsmodel)){
