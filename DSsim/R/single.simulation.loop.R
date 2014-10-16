@@ -43,7 +43,7 @@ single.simulation.loop <- function(i, object, save.data, load.data, data.path = 
       n.in.covered <- survey.data$n.in.covered 
       if(save.data){
         dist.data <- list(ddf = ddf.data, obs.table = obs.table, sample.table = sample.table, region.table = region.table, n.in.covered = n.in.covered)  
-        save(dist.data, file = paste("dataset_",i,".robj", sep = ""))
+        save(dist.data, file = paste(data.path,"dataset_",i,".robj", sep = ""))
       }
     }
     #Find how many animals were in the covered region
