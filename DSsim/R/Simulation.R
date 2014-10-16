@@ -185,8 +185,9 @@ setMethod(
         zero.n[i, strat] <- ifelse(x@results$individuals$summary[strat, "n", i] == 0, TRUE, FALSE)
       }
     }
-    percent.capture <- (apply(capture, 2, sum)/nrow(capture))*100
-    percent.capture.D <- (apply(capture.D, 2, sum)/nrow(capture.D))*100    
+    #Calculates the percentage of times the true value is whithin the confidence intervals
+    percent.capture <- (apply(capture, 2, sum, na.rm = TRUE)/nrow(na.omit(capture)))*100
+    percent.capture.D <- (apply(capture.D, 2, sum, na.rm = TRUE)/nrow(na.omit(capture)))*100    
     zero.n <- apply(zero.n, 2, sum)
     individual.summary <- data.frame(mean.Cover.Area = x@results$individuals$summary[,"CoveredArea","mean"], 
                                      mean.Effort = x@results$individuals$summary[,"Effort","mean"],
@@ -223,8 +224,8 @@ setMethod(
           zero.n[i, strat] <- ifelse(x@results$clusters$summary[strat, "n", i] == 0, TRUE, FALSE)
         }
       }
-      percent.capture <- (apply(capture, 2, sum)/nrow(capture))*100
-      percent.capture.D <- (apply(capture.D, 2, sum)/nrow(capture.D))*100    
+      percent.capture <- (apply(capture, 2, sum, na.rn = TRUE)/nrow(na.omit(capture)))*100
+      percent.capture.D <- (apply(capture.D, 2, sum, na.rm = TRUE)/nrow(na.omit(capture.D)))*100  
       zero.n <- apply(zero.n, 2, sum)
       cluster.summary <- data.frame(mean.Cover.Area = x@results$clusters$summary[,"CoveredArea","mean"], 
                                        mean.Effort = x@results$clusters$summary[,"Effort","mean"],
