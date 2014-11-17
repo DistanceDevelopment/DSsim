@@ -166,7 +166,7 @@ setMethod(
     }else{
       true.N.clusters <- N
       #calculate expected cluster size
-      size.table <- simulation@population.description@size.table
+      size.table <- x@population.description@size.table
       true.expected.s <- sum(size.table$size*size.table$prob)
       #calculate expected number of individuals
       true.N.individuals <- true.N.clusters*true.expected.s
@@ -413,11 +413,13 @@ setMethod(
   definition=function(object, run.parallel = FALSE, max.cores = NA, save.data = FALSE, load.data = FALSE, data.path = character(0)){
     #Note options save.data, load.data, data.path are not implemented in simulations run in parallel.
     #check the data.path ends in "/"
-    temp.path <- strsplit(data.path, split = "")
-    if(temp.path[length(temp.path)] != "/"){
-      data.path <- paste(data.path, "/", sep = "")
+    if(length(data.path) > 0){
+      temp.path <- strsplit(data.path, split = "")
+      if(temp.path[length(temp.path)] != "/"){
+        data.path <- paste(data.path, "/", sep = "")
+      }
+      rm(temp.path)  
     }
-    rm(temp.path)
     #set the transect index to 1
     orig.file.index <- object@design@file.index
     object@design@file.index <- 1
