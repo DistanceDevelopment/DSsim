@@ -11,7 +11,7 @@ Suggests:
 Type: Package
 Title: Distance Sampling Simulations
 Version: 1.0.2
-Date: 2014-06-19
+Date: 2014-11-17
 LazyLoad: yes
 Author: Laura Marshall <lhm@st-and.ac.uk>
 Maintainer: Laura Marshall <lhm@st-and.ac.uk>
@@ -85,4 +85,5 @@ Collate:
     'hn.detect.R'
     'hr.detect.R'
     'in.polygons.R'
+    'check.shapefile.R'
 
