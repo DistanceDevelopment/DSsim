@@ -23,10 +23,12 @@ get.sampler.info <- function(shapefile, region.obj, meta = NULL){
     for(i in seq(along = ID)){
       if(length(meta[,1][meta[,2] == ID[i]]) > 0){
         region[i] <- meta[,3][meta[,2] == ID[i]]
-        d7.length[i] <- meta[,4][meta[,2] == ID[i]]
+        #d7.length[i] <- meta[,4][meta[,2] == ID[i]]
       }
     }
-    sampler.info <- data.frame(ID = ID, start.X = start.X, start.Y = start.Y, end.X = end.X, end.Y = end.Y, length = tot.length, region = region, d7.length = d7.length)
+    #This should be coded into VB at some point
+    region.names <- region.obj@strata.name[as.numeric(region)]
+    sampler.info <- data.frame(ID = ID, start.X = start.X, start.Y = start.Y, end.X = end.X, end.Y = end.Y, length = tot.length, region = region.names, d7.length = d7.length)
   }else{
     #Get strata names for each transect - checks that both endpoints and mid point agree
     #*** Note: in plus sampling transect ends or some points will fall outside the strata polygons
