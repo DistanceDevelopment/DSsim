@@ -141,7 +141,10 @@ setValidity("Simulation",
 setMethod(
   f="summary",
   signature="Simulation",
-  definition=function(object, ...){
+  definition=function(object, description.summary= TRUE, ...){
+    if(description.summary){
+      description.summary()
+    }
     x <- object
     reps <- dim(x@results$individuals$N)[3]-2
     #Calculate true values
