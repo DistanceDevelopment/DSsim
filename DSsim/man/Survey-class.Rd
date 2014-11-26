@@ -2,9 +2,9 @@
 \docType{class}
 \name{Survey-class}
 \alias{Survey-class}
-\title{S4 Class "Survey"}
+\title{Virtual Class "Survey"}
 \description{
-S4 Class "Survey"
+Class \code{"Survey"} is an S4 class containing an instance of a population.
 }
 \section{Slots}{
 

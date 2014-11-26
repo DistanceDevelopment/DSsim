@@ -61,7 +61,8 @@ S4 Class "Region"
 }
 \section{Objects from the Class}{
  Objects can be created by calls of the form
-\code{make.region(region.name = "region.name", shapefile = region.shapefile)}
+\code{make.region(region.name = "region.name",}
+\code{  shapefile = region.shapefile)}
 }
 
 \section{Slots}{

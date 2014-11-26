@@ -47,13 +47,13 @@ S4 Class "Simulation"
  \item{\code{detectability}}{Object of class \code{"Detectability"}; a
  description of the detectability of the population.}
  \item{\code{ddf.analyses}}{Object of class \code{"list"}; a list of
- object of class DDF.Analysis. These are fitted and the one with the
+ objects of class DDF.Analysis. These are fitted and the one with the
  minimum criteria is selected and used in predicting N and D.}
  \item{\code{dsm.analysis}}{Object of class \code{"DSM.Analysis"}; Not
  yet implemented.}
  \item{\code{ddf.param.ests}}{Object of class \code{"array"}; stores the
  parameters associated with the detection function.}
- \item{\code{results}}{Object of class \code{"logical"}; stores
+ \item{\code{results}}{A \code{"list"}" of \code{"arrays"}; stores
  the estimated of abundance and density as well as other measures
  of interest.}
  }

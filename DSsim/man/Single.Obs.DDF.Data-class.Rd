@@ -50,8 +50,5 @@
 \description{
 S4 Class "Single.Obs.DDF.Data"
 }
-\section{Objects from the Class}{
- Objects can be created by calls of the form
-}
 \keyword{classes}
 
