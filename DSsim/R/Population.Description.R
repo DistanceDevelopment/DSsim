@@ -75,6 +75,9 @@ setMethod(
 )
 setValidity("Population.Description",
   function(object){
+    if(length(object@N) > 0 & sum(object@N) <= 0){
+      return("You must provide a positive, non-zero abundance")
+    }
     if(object@size){
       if(sum(object@size.table$prob) != 1){
         return("Probabilities in cluster size table must sum to 1")
