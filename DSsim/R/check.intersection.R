@@ -35,19 +35,20 @@ check.intersection <- function(transect, point, display.diagnostics = FALSE){
   #c = y - mx
   transect.c <- transect[["start.Y"]] - transect.m*transect[["start.X"]]
   if(abs((transect.m*new.x.coord + transect.c)-new.y.coord) > 1.0e-3 &  abs((transect.m*new.x.coord + transect.c)-new.y.coord) < delta.Y/2){
-    message("Warning: error tolerance not big enough in check intersection")
+    message("Warning: error tolerance not big enough to check intersection")
   }
-  if(delta.Y/2 < 1.0e-3){
-    message("Warning very small delta.Y")
-  }
+  #Thorougly tested this function now so removing this warning (see inst folder for tests)
+#   if(delta.Y/2 < 1.0e-3){
+#     message("Warning very small delta.Y")
+#   }
   if(abs((transect.m*new.x.coord + transect.c)-new.y.coord) > min(1.0e-3, delta.Y/2)){     
     new.x.coord <- new.x.coord <- point[["x"]]-delta.X
     new.y.coord <- new.y.coord <- point[["y"]]-delta.Y 
-  } 
+  }
   if(display.diagnostics){      
     lines(c(point[["x"]], new.x.coord), c(point[["y"]], new.y.coord), col = 3, lty = 1) 
     new.m <- (new.y.coord-point[["y"]])/(new.x.coord-point[["x"]])
-    message("Gradient.check: m between points = ", round(new.m, 3), ", perpenndicular m = ",round(perpendicular.m,3))   
+    message("Gradient.check: m between points = ", round(new.m, 3), ", perpendicular m = ",round(perpendicular.m,3))   
   }
   #check to see if it  within the x-range of the transect
   if(transect[["start.X"]] < transect[["end.X"]]){
