@@ -139,7 +139,7 @@ setMethod(
     }
     #Set up plot
     if(length(plot.units) == 0){
-      plot.units <- region@units
+      plot.units <- x@units
     }
     if(!add){      
       xlabel <- paste("X-coords (",plot.units[1],")", sep = "")
@@ -148,12 +148,12 @@ setMethod(
       xticks <- axTicks(1)
       yticks <- axTicks(2)
       #Set up axes
-      if(plot.units != region@units){
+      if(plot.units != x@units){
         #convert units
-        if(region@units == "m" & plot.units == "km"){ 
+        if(x@units == "m" & plot.units == "km"){ 
           axis(1, at = xticks, labels = xticks/1000)
           axis(2, at = yticks, labels = yticks/1000)
-        }else if(region@units == "km" & plot.units == "m"){
+        }else if(x@units == "km" & plot.units == "m"){
           axis(1, at = xticks, labels = xticks*1000)
           axis(2, at = yticks, labels = yticks*1000)
         }else{
