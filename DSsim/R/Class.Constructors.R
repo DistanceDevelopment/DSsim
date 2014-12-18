@@ -317,7 +317,7 @@ make.ddf.analysis.list <- function(dsmodel, mrmodel = NULL, method, criteria = "
 #' pop.density <- add.hotspot(pop.density, centre = c(300, 100), 
 #'  sigma = 100, amplitude = -0.15)
 #' 
-#' plot(pop.density)
+#' plot(pop.density, region)
 #' plot(region, add = TRUE)
 #' 
 #' pop.description <- make.population.description(N = 1000, 
