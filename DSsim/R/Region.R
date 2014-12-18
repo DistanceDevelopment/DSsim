@@ -93,11 +93,23 @@ setMethod(
 )
 setValidity("Region",
   function(object){
+    if(length(object@strata.name) > 0){
+      strata.name <- object@strata.name
+      #check that they are all unique
+      for(i in seq(along = strata.name)){
+        temp <- strata.name[-i]
+        for(j in seq(along = temp)){
+          if(strata.name[i] == temp[j]){
+            return("Strata names must be unique")
+          }
+        }
+      }
+    }
     if(length(which(object@area < 0)) > 0){
-      return("negative area")
+      return("Cannot have negative areas")
     }    
     if(length(object@coords) != length(object@gaps)){
-      return("mismatch in coords and gaps length for strata")
+      return("mismatch in coords and gaps list lengths for strata")
     }
     #print(paste("length of coords: ",length(object@coords)))
     #print(object@strata.name) 

@@ -141,7 +141,7 @@ setValidity("Simulation",
 setMethod(
   f="summary",
   signature="Simulation",
-  definition=function(object, description.summary= TRUE, ...){
+  definition=function(object, description.summary = TRUE, ...){
     if(description.summary){
       description.summary()
     }
