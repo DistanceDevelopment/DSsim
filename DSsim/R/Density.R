@@ -148,7 +148,7 @@ setMethod("add.hotspot","Density",
 #' @rdname Density-class
 #' @aliases plot,Density-method
 setMethod("plot","Density",
-  function(x, y = NULL, add = FALSE, plot.units = character(0), ...){
+  function(x, y, add = FALSE, plot.units = character(0), ...){
     density.surface <- x@density.surface
     #Get all the x, y and density values across strata
     densities <- x.vals <- y.vals <- NULL

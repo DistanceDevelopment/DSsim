@@ -46,7 +46,7 @@ add.summary.results <- function(results){
         results$clusters$summary[strat,,"mean"] <- results$clusters$summary[strat,,1]
         results$clusters$summary[strat,,"sd"] <- rep(NA, length(results$clusters$summary[strat,,1]))
         results$clusters$N[strat,,"mean"] <- results$clusters$N[strat,,1]
-        results$clusters$N[strat,,"sd"] <- rep(NA, lenght(results$clusters$N[strat,,1]))
+        results$clusters$N[strat,,"sd"] <- rep(NA, length(results$clusters$N[strat,,1]))
         results$clusters$D[strat,,"mean"] <- results$clusters$D[strat,,1]
         results$clusters$D[strat,,"sd"] <- rep(NA, length(results$clusters$D[strat,,1])) 
         results$expected.size[strat,,"mean"] <- results$expected.size[strat,,1]
