@@ -24,6 +24,8 @@ NULL
 #'  \item{\code{y.space}}{Object of class \code{"numeric"}; The spacing 
 #'  between gridpoints described in the density data.frames in the 
 #'  y-direction.}
+#'  \item{\code{units}}{Object of class \code{"numeric"}; The units of the
+#'  grid points.}
 #' }
 #' @section Methods:
 #' \describe{
@@ -33,7 +35,7 @@ NULL
 #' @keywords classes
 #' @seealso \code{\link{make.density}}
 #' @export
-setClass("Density", representation(region.name = "character", strata.name = "character", density.surface = "list", x.space = "numeric", y.space = "numeric"))
+setClass("Density", representation(region.name = "character", strata.name = "character", density.surface = "list", x.space = "numeric", y.space = "numeric", units = "character"))
 
 setMethod(
   f="initialize",
@@ -57,6 +59,7 @@ setMethod(
     .Object@density.surface <- density.surface
     .Object@x.space <- x.space
     .Object@y.space <- y.space
+    .Object@units <- region@units
     #Check object is valid
     validObject(.Object)
     # return object
@@ -145,8 +148,7 @@ setMethod("add.hotspot","Density",
 #' @rdname Density-class
 #' @aliases plot,Density-method
 setMethod("plot","Density",
-  function(x, y, add = FALSE, plot.units = character(0), ...){
-    region <- y
+  function(x, y = NULL, add = FALSE, plot.units = character(0), ...){
     density.surface <- x@density.surface
     #Get all the x, y and density values across strata
     densities <- x.vals <- y.vals <- NULL
@@ -172,7 +174,7 @@ setMethod("plot","Density",
     colorlut <- colorlut[length(colorlut):1]
     #Set up plot
     if(length(plot.units) == 0){
-      plot.units <- region@units
+      plot.units <- x@units
     }
     if(!add){
       xlabel <- paste("X-coords (",plot.units[1],")", sep = "")
@@ -181,16 +183,16 @@ setMethod("plot","Density",
       xticks <- axTicks(1)
       yticks <- axTicks(2)
       #Set up axes
-      if(plot.units != region@units){
+      if(plot.units != x@units){
         #convert units
-        if(region@units == "m" & plot.units == "km"){ 
+        if(x@units == "m" & plot.units == "km"){ 
           axis(1, at = xticks, labels = xticks/1000)
           axis(2, at = yticks, labels = yticks/1000)
-        }else if(region@units == "km" & plot.units == "m"){
+        }else if(x@units == "km" & plot.units == "m"){
           axis(1, at = xticks, labels = xticks*1000)
           axis(2, at = yticks, labels = yticks*1000)
         }else{
-          message("These units are not currently supported.")
+          message("The requested conversion of units is not currently supported.")
         }
       }else{
         #no unit conversion needed

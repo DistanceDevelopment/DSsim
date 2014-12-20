@@ -169,7 +169,7 @@ setMethod(
           axis(1, at = xticks, labels = xticks*1000)
           axis(2, at = yticks, labels = yticks*1000)
         }else{
-          message("These units are not currently supported.")
+          message("The requested conversion of units is not currently supported.")
         }
       }else{
         #no unit conversion needed

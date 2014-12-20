@@ -76,6 +76,8 @@ contains one grid (\code{data.frame}) for each strata.
  \item{\code{y.space}}{Object of class \code{"numeric"}; The spacing
  between gridpoints described in the density data.frames in the
  y-direction.}
+ \item{\code{units}}{Object of class \code{"numeric"}; The units of the
+ grid points.}
 }
 }
 
