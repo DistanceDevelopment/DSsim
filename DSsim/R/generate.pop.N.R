@@ -22,6 +22,9 @@ generate.pop.N <- function(population.description, region.obj){
       #Find the first N animals inside the region
       grid.locations <- grid.locations[grid.locations$in.region,]
       grid.locations <- grid.locations[!grid.locations$in.gaps,]
+      if(nrow(grid.location) < N[strat]){
+        message("Warning: DSsim is unable to generate sufficient sample size. We recommend you check to make sure the spacing of the density grid is appropriate, it may need reducing.")
+      }
       grid.locations <- grid.locations[1:N[strat],]
       if(first){
         all.grid.locations <- grid.locations

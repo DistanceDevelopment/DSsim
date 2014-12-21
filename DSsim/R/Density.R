@@ -77,7 +77,7 @@ setValidity("Density",
       density.sum <- sum(object@density.surface[[i]]$density)
       #check there are some cells with non-zero density
       if(density.sum == 0){
-        return("All strata must have some cells with non-zero density") 
+        return("All strata must have some cells with non-zero density. Check that you have correctly specified your density grid. Large grid spacing may also generate this error.") 
       }
       if(nrow(object@density.surface[[1]]) > 0){  
         some.strata.with.grids <- TRUE
