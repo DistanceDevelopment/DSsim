@@ -22,12 +22,16 @@ check.intersection <- function(transect, point, display.diagnostics = FALSE){
   #the gradient of the second line is perpendicular to the transect
   perpendicular.m <- -1/transect.m
   #calculate the angle the triangle has at the point of intersection
+  #the triangle is drawn by taking a vertical line from the point until
+  #the end point has the same y value as the intersection of the perpendicular
+  #line with the transect. Now draw a horizontal line to the transect to complete
+  #the triangle.
   the.angle <- atan(1/perpendicular.m)
   #calculate Opp (i.e. deltaX)
   delta.X <- transect[["p.dist"]]*sin(the.angle)
   #find x-coord at point of intersection
   new.x.coord <- point[["x"]]+delta.X
-  #calculate Opp (i.e. deltaY)
+  #calculate Adj? (i.e. deltaY)
   delta.Y <- transect[["p.dist"]]*cos(the.angle)
   #find y-coord at point of intersection
   new.y.coord <- point[["y"]]+delta.Y
