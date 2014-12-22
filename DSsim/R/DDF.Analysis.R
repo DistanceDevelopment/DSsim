@@ -84,7 +84,9 @@ setMethod(
       dist.data <- dist.data[dist.data$distance <= max(object@cutpoints),]
       dist.data <- create.bins(dist.data, cutpoints = object@cutpoints)
       #ddf.result <- try(ddf(dsmodel = object@dsmodel, data = dist.data, method = "ds", meta.data = list(binned = TRUE, breaks = object@cutpoints, width = max(object@cutpoints))))
+      options(show.error.messages = FALSE)
       ddf.result <- try(eval(parse(text = paste("ddf(dsmodel = ~", as.character(object@dsmodel)[2] ,", data = dist.data, method = 'ds', meta.data = list(width = ", max(object@cutpoints), ", binned = TRUE, breaks = ", object@cutpoints ,"))", sep = ""))), silent = TRUE)
+      options(show.error.messages = TRUE)
       if(class(ddf.result) == "try-error"){
         #cat(ddf.result[1])
         call <- paste(object@dsmodel)[2]
@@ -99,10 +101,14 @@ setMethod(
       #exact distances
       if(length(object@truncation) == 0){
         #ddf.result <- try(ddf(dsmodel = object@dsmodel, data = dist.data, method = "ds"), silent = TRUE)  
+        options(show.error.messages = FALSE)
         ddf.result <- try(eval(parse(text = paste("ddf(dsmodel = ~", as.character(object@dsmodel)[2] ,", data = dist.data, method = 'ds')", sep = ""))), silent = TRUE)
+        options(show.error.messages = TRUE)
       }else{
         #ddf.result <- try(ddf(dsmodel = object@dsmodel, data = dist.data, method = "ds", meta.data = list(width = object@truncation)), silent = TRUE)  
+        options(show.error.messages = FALSE)
         ddf.result <- try(eval(parse(text = paste("ddf(dsmodel = ~", as.character(object@dsmodel)[2] ,", data = dist.data, method = 'ds', meta.data = list(width = ", object@truncation,"))", sep = ""))), silent = TRUE)
+        options(show.error.messages = TRUE)
       }
       if(class(ddf.result)[1] == "try-error"){
         ddf.result <- NA
