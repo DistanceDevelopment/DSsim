@@ -68,8 +68,7 @@ setMethod(
       gaps <- polygons$gaps  
     }else if(length(coords) == 0 & is.null(shapefile)){
       #complains if neither the coordinates or the shapefile are supplied
-      message("Error: You must provide either coordinates or a shapefile")
-      return(NULL)
+      stop("You must provide either coordinates or a shapefile", call. = FALSE)
     }
     #Gets the minimum bounding box
     boundbox <- get.bound.box(coords)
@@ -86,7 +85,10 @@ setMethod(
     .Object@coords      <- coords
     .Object@gaps        <- gaps
     #Check object is valid
-    validObject(.Object)
+    valid <- try(validObject(.Object), silent = TRUE)
+    if(class(valid) == "try-error"){
+      stop(attr(valid, "condition")$message, call. = FALSE)
+    }
     # return object
     return(.Object) 
   }
@@ -105,11 +107,11 @@ setValidity("Region",
         }
       }
     }
-    if(length(which(object@area < 0)) > 0){
-      return("Cannot have negative areas")
+    if(length(which(object@area <= 0)) > 0){
+      return("All areas must be greater than 0")
     }    
     if(length(object@coords) != length(object@gaps)){
-      return("mismatch in coords and gaps list lengths for strata")
+      return("The lengths of the coords and gaps lists differ, these must be the same and equal to the number of strata")
     }
     #print(paste("length of coords: ",length(object@coords)))
     #print(object@strata.name) 
