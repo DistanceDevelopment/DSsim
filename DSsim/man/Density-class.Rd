@@ -7,7 +7,7 @@
 \alias{plot,Density-method}
 \title{Class "Density"}
 \usage{
-\S4method{plot}{Density,ANY}(x, y, add = FALSE, plot.units = character(0),
+\S4method{plot}{Density,ANY}(x, y, add = FALSE, plot.units = character(0), contours = TRUE, old.stype = FALSE,
   ...)
 }
 \arguments{
@@ -19,10 +19,14 @@
     if \code{x} is an appropriate structure.}
     
 \item{add}{when implemented allows multiple object to be added
-    over the top of the existing plot}
+    over the top of the existing plot.}
   
 \item{plot.units}{allows the plot to have different units than 
-    the region or density object ('m' or 'km')}
+    the region or density object ('m' or 'km').}
+    
+\item{contours}{allows the user to add contours to the plot.}
+    
+\item{old.stype}{user can still request old style (point) plots.}
 
 \item{...}{Arguments to be passed to methods, such as
     \link{graphical parameters} (see \code{\link{par}}).

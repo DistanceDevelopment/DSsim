@@ -162,8 +162,14 @@ make.design <- function(transect.type, design.details, region.obj, design.axis =
 #' pop.density <- add.hotspot(pop.density, centre = c(300, 100), 
 #'  sigma = 100, amplitude = -0.15)
 #' 
+#' #New plot features
 #' plot(pop.density)
 #' plot(region, add = TRUE)
+#' 
+#' #Old style plotting
+#' plot(pop.density, contours = FALSE, old.style = TRUE)
+#' plot(region, add = TRUE)
+#' 
 #' }
 make.density <- function(region.obj, density.surface = list(), x.space, y.space, constant = numeric(0), density.gam = NULL, dsm = NULL, formula = NULL){
   if(!is.null(constant)){
