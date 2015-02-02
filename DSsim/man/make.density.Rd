@@ -9,8 +9,9 @@ make.density(region.obj, density.surface = list(), x.space, y.space,
 \arguments{
 \item{region.obj}{the Region object in which the density grid will be created}
 
-\item{density.surface}{a dataframe describing the density with columns
-x, y,  and density.}
+\item{density.surface}Object of class \code{list}; list of 
+data.frames with the columns x, y and density. There must be one 
+data.frame for each strata.}
 
 \item{x.space}{the intervals in the grid in the x direction}
 

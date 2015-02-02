@@ -137,8 +137,9 @@ make.design <- function(transect.type, design.details, region.obj, design.axis =
 #' be created from these.
 #'
 #' @param region.obj the Region object in which the density grid will be created
-#' @param density.surface a dataframe describing the density with columns
-#'   x, y,  and density.
+#' @param density.surface Object of class \code{list}; list of 
+#'  data.frames with the columns x, y and density. There must be one 
+#'  data.frame for each strata.
 #' @param x.space the intervals in the grid in the x direction
 #' @param y.space the intervals in the grid in the y direction
 #' @param constant a value describing a constant density across the surface.
