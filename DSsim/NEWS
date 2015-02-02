@@ -1,3 +1,14 @@
+DSsim 1.0.3
+
+Notes
+
+  * Please note that currently objects in a population may only be detected from the nearest transect. This can sometimes results in edge-like effects if transects are located close together, e.g. with parallel random designs.
+  * Please note that the heat colour have now been inverted by default to be more consistent with normal use. Red is now low and white is high.
+
+New Features
+
+  *Better plotting of density surfaces - now displays a grid with contours by default. There is still the option to plot the previous style (points) now with contours option.
+
 DSsim 1.0.2
 -----------
 
