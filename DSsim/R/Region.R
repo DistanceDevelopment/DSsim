@@ -146,9 +146,10 @@ setMethod(
 setMethod(
   f="plot",
   signature="Region",
-  definition=function(x, y, type = "l", add = FALSE, plot.units = character(0),...){
-    plot.list <- function(list.coords, type, col = 1){
-      lapply(list.coords, FUN = lines, type = type, col = col)
+  definition=function(x, y, add = FALSE, plot.units = character(0), region.col = NULL, gap.col = NULL, ...){
+    plot.list <- function(list.coords, border = 1, fill.col = NULL){
+      #lapply(list.coords, FUN = lines, type = type, col = col)
+      lapply(list.coords, FUN = polygon, border = border, col = fill.col)
       invisible(list.coords)                          
     }
     #Set up plot
@@ -179,8 +180,8 @@ setMethod(
         axis(2, at = yticks, labels = yticks)
       }
     }
-    lapply(x@coords, FUN = plot.list, type = type)
-    lapply(x@gaps, FUN = plot.list, type = type, col = 1)
+    lapply(x@coords, FUN = plot.list, fill.col = region.col)
+    lapply(x@gaps, FUN = plot.list, fill.col = gap.col)
     invisible(x)
   }    
 ) 
