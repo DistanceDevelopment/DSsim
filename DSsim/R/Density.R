@@ -148,7 +148,7 @@ setMethod("add.hotspot","Density",
 #' @rdname Density-class
 #' @aliases plot,Density-method
 setMethod("plot","Density",
-  function(x, y, add = FALSE, plot.units = character(0), contours = TRUE, old.style = FALSE, ...){
+  function(x, y, add = FALSE, plot.units = character(0), contours = TRUE, old.style = FALSE, density.col = heat.colors(12), ...){
     density.surface <- x@density.surface
     #Get all the x, y and density values across strata
     densities <- x.vals <- y.vals <- NULL
@@ -167,10 +167,9 @@ setMethod("plot","Density",
     
     if(contours | !old.style){
       #Sort the x and y values
-      cat("cal contours")
       x.vals <- sort(unique(x.vals))
       y.vals <- sort(unique(y.vals))
-      z.matrix <- matrix(rep(NA, length(x.vals)*length(y.vals)), ncol = length(x.vals))
+      z.matrix <- matrix(rep(NA, length(x.vals)*length(y.vals)), ncol = length(y.vals))
       #Fill in the z matrix
       for(ix in seq(along = x.vals)){
         for(iy in seq(along = y.vals)){
@@ -185,7 +184,7 @@ setMethod("plot","Density",
     #If a contour plot is requested
     if(!old.style){
       #Create the image
-      image(x.vals, y.vals, z.matrix, yaxt = "n", xaxt = "n", xlab = xlabel, ylab = ylabel, main = x@region.name)
+      image(x.vals, y.vals, z.matrix, yaxt = "n", xaxt = "n", xlab = xlabel, ylab = ylabel, main = x@region.name, col = density.col)
       if(contours){
         contour(x.vals, y.vals, z.matrix, add = TRUE, ...)  
       }
