@@ -1,4 +1,5 @@
 DSsim 1.0.3
+-----------
 
 Notes
 
@@ -8,6 +9,7 @@ Notes
 New Features
 
   *Better plotting of density surfaces - now displays a grid with contours by default. There is still the option to plot the previous style (points) now with contours option.
+  *There is now the plot option to fill the region polygons and gaps in the polygons with a specified colour. 
 
 DSsim 1.0.2
 -----------
