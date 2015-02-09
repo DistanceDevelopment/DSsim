@@ -147,8 +147,14 @@ setMethod("add.hotspot","Density",
 
 #' @rdname Density-class
 #' @aliases plot,Density-method
-setMethod("plot","Density",
-  function(x, y, add = FALSE, plot.units = character(0), contours = TRUE, old.style = FALSE, density.col = heat.colors(12), ...){
+setMethod(
+  f = "plot",
+  signature = "Density",
+  definition = function(x, y, add = FALSE, plot.units = character(0), contours = TRUE, style = "points", density.col = heat.colors(12)[12:1], ...){
+    #Check a valid style has been requested
+    if(!style %in% c("points", "blocks")){
+      stop("You have requested an unsupported plot style", call. = FALSE)
+    }
     density.surface <- x@density.surface
     #Get all the x, y and density values across strata
     densities <- x.vals <- y.vals <- NULL
@@ -165,7 +171,7 @@ setMethod("plot","Density",
     xlabel <- paste("X-coords (",plot.units[1],")", sep = "")
     ylabel <- paste("Y-coords (",plot.units[1],")", sep = "")
     
-    if(contours | !old.style){
+    if(contours | style == "blocks"){
       #Sort the x and y values
       x.vals <- sort(unique(x.vals))
       y.vals <- sort(unique(y.vals))
@@ -177,12 +183,24 @@ setMethod("plot","Density",
           index <- which(full.density.grid$x == x.vals[ix] & full.density.grid$y == y.vals[iy])
           #use the first one incase there is over lap with strata buffers
           #Could do with being made prettier!
+          #Could average them?
           z.matrix[ix,iy] <- full.density.grid$density[index[1]]
         }
       }  
     }
+    #Check to see if the units of the z-matrix need converting
+    if(plot.units != x@units){
+      #convert units
+      if(x@units == "m" & plot.units == "km"){ 
+        z.matrix <- z.matrix * 1000000
+      }else if(x@units == "km" & plot.units == "m"){
+        z.matrix <- z.matrix/1000000
+      }else{
+        message("The requested conversion of units is not currently supported.")
+      }
+    }
     #If a contour plot is requested
-    if(!old.style){
+    if(style == "blocks"){
       #Create the image
       image(x.vals, y.vals, z.matrix, yaxt = "n", xaxt = "n", xlab = xlabel, ylab = ylabel, main = x@region.name, col = density.col)
       if(contours){
@@ -190,29 +208,38 @@ setMethod("plot","Density",
       }
     #OLD STLYE PLOTTING
     }else{
-      #Find the range of densities
-      zlim <- range(densities) 
-      #If the range < 1
-      if(zlim[2] - zlim[1] < 1){
-        #Multiply them by (1/minimum density)*10
-        multiplier <- (1/zlim[1])*10
-      }else{
-        #otherwise no scaling
-        multiplier <- 1
-      }
-      #Create the colour lookup
-      zlim <- range(densities*multiplier)
-      zlen <- zlim[2] - zlim[1] + 1
-      colorlut <- heat.colors(zlen) 
-      colorlut <- colorlut[length(colorlut):1]
+#       #If the range < 1
+#       if(zlim[2] - zlim[1] < 1){
+#         #Multiply them by (1/minimum density)*10
+#         multiplier <- (1/zlim[1])*10
+#       }else{
+#         #otherwise no scaling
+#         multiplier <- 1
+#       }
+#       #Create the colour lookup
+#       zlim <- range(densities*multiplier)
+#       zlen <- zlim[2] - zlim[1] + 1
+#       colorlut <- heat.colors(zlen) 
+#       colorlut <- colorlut[length(colorlut):1]
       #Set up plot
       if(!add){
-        plot(range(x.vals), range(y.vals), col = "white", xlab = xlabel, ylab = ylabel, main = x@region.name, yaxt = "n", xaxt = "n", ...)
-        }
+        plot(range(x.vals), range(y.vals), col = "white", xlab = xlabel, ylab = ylabel, main = x@region.name, yaxt = "n", xaxt = "n")
+      }
       #Add the points for each strata
       for(strat in seq(along = density.surface)){
-        col <- colorlut[density.surface[[strat]]$density*multiplier-zlim[1]+1]
-        points(density.surface[[strat]]$x, density.surface[[strat]]$y, col = col, pch = 20)
+        #col <- colorlut[density.surface[[strat]]$density*multiplier-zlim[1]+1]
+        strat.density <- density.surface[[strat]]$density
+        #Find the range of densities
+        zlim <- range(strat.density) 
+        #Find the break points
+        breaks <- seq(zlim[1], zlim[2], length = length(density.col)+1)
+        #Set up a vector for the colours
+        colours <- rep(NA, length = length(strat.density))
+        #Fill in colours
+        for(i in seq(along = density.col)){
+          colours <- ifelse(strat.density >= breaks[i] & strat.density <= breaks[i+1], density.col[i], colours)
+        }
+        points(density.surface[[strat]]$x, density.surface[[strat]]$y, col = colours, pch = 20)
       }
       if(contours){
         contour(x.vals, y.vals, z.matrix, add = TRUE, ...)  
