@@ -6,8 +6,8 @@
 \alias{plot,Region-method}
 \title{S4 Class "Region"}
 \usage{
-\S4method{plot}{Region,ANY}(x, y, type = "l", add = FALSE,
-  plot.units = character(0), ...)
+\S4method{plot}{Region,ANY}(x, y, add = FALSE, plot.units = character(0),
+  region.col = NULL, gap.col = NULL, ...)
 }
 \arguments{
 \item{x}{the coordinates of points in the plot. Alternatively, a
@@ -17,13 +17,16 @@
 \item{y}{the y coordinates of points in the plot, \emph{optional}
     if \code{x} is an appropriate structure.}
     
-\item{type}{supplies the type for the Population plot method}
-
 \item{add}{when implemented allows multiple object to be added
     over the top of the existing plot}
   
 \item{plot.units}{allows the plot to have different units than 
     the region or density object ('m' or 'km')}
+    
+\item{region.col}{Specifies a fill colour for the survey region.}
+
+\item{gap.col}{Specifies a fill colour for the gaps in the survey
+region.}
 
 \item{...}{Arguments to be passed to methods, such as
     \link{graphical parameters} (see \code{\link{par}}).

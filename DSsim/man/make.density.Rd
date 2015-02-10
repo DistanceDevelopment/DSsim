@@ -9,7 +9,7 @@ make.density(region.obj, density.surface = list(), x.space, y.space,
 \arguments{
 \item{region.obj}{the Region object in which the density grid will be created}
 
-\item{density.surface}Object of class \code{list}; list of 
+\item{density.surface}{Object of class \code{list}; list of 
 data.frames with the columns x, y and density. There must be one 
 data.frame for each strata.}
 

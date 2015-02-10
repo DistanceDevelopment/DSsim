@@ -7,7 +7,7 @@
 \alias{plot,Density-method}
 \title{Class "Density"}
 \usage{
-\S4method{plot}{Density,ANY}(x, y, add = FALSE, plot.units = character(0), contours = TRUE, old.stype = FALSE,
+\S4method{plot}{Density,ANY}(x, y, add = FALSE, plot.units = character(0), contours = TRUE, style = "points", density.col = heat.colors(12),
   ...)
 }
 \arguments{
@@ -26,10 +26,12 @@
     
 \item{contours}{allows the user to add contours to the plot.}
     
-\item{old.stype}{user can still request old style (point) plots.}
+\item{style}{character argument, either "points" or "blocks".}
+
+\item{density.col}{A vector of colours which will be used to represent different densities.}
 
 \item{...}{Arguments to be passed to methods, such as
-    \link{graphical parameters} (see \code{\link{par}}).
+    \link{contour} (see \code{\link{contour}}).
     Many methods will accept the following arguments:
     \describe{
     \item{\code{type}}{what type of plot should be drawn.  Possible types are
