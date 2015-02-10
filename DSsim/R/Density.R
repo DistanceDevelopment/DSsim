@@ -150,7 +150,7 @@ setMethod("add.hotspot","Density",
 setMethod(
   f = "plot",
   signature = "Density",
-  definition = function(x, y, add = FALSE, plot.units = character(0), contours = TRUE, style = "points", density.col = heat.colors(12)[12:1], ...){
+  definition = function(x, y, add = FALSE, plot.units = character(0), contours = TRUE, style = "points", density.col = heat.colors(12), ...){
     #Check a valid style has been requested
     if(!style %in% c("points", "blocks")){
       stop("You have requested an unsupported plot style", call. = FALSE)
