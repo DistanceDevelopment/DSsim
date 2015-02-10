@@ -111,12 +111,12 @@ setValidity("Region",
       return("All areas must be greater than 0")
     }    
     if(length(object@coords) != length(object@gaps)){
-      return("The lengths of the coords and gaps lists differ, these must be the same and equal to the number of strata")
+      return("The lengths of the coords and gaps lists differ, these must be the same and equal to the number of strata.")
     }
     #print(paste("length of coords: ",length(object@coords)))
     #print(object@strata.name) 
     if(length(object@coords) > 1 & length(object@coords) != length(object@strata.name)){
-      return("Number of strata names differs to number of strata in the shapefile")
+      return("Number of strata names differs to number of strata in the shapefile.")
     }
     return(TRUE)
   }
