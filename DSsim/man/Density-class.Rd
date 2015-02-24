@@ -7,8 +7,8 @@
 \alias{plot,Density-method}
 \title{Class "Density"}
 \usage{
-\S4method{plot}{Density,ANY}(x, y, add = FALSE, plot.units = character(0), contours = TRUE, style = "points", density.col = heat.colors(12),
-  ...)
+\S4method{plot}{Density,ANY}(x, y, add = FALSE, plot.units = character(0), 
+contours = TRUE, style = "points", density.col = heat.colors(12), ...)
 }
 \arguments{
 \item{x}{the coordinates of points in the plot. Alternatively, a

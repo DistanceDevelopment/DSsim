@@ -188,13 +188,21 @@ setMethod(
         }
       }  
     }
+    #If all z values are equal turn contours off
+    if(nrow(unique(z.matrix)) == 1 & nrow(unique(t(z.matrix))) == 1){
+      contours = FALSE
+    }
     #Check to see if the units of the z-matrix need converting
     if(plot.units != x@units){
       #convert units
       if(x@units == "m" & plot.units == "km"){ 
-        z.matrix <- z.matrix * 1000000
+        if(contours){
+          z.matrix <- z.matrix * 1000000  
+        }
       }else if(x@units == "km" & plot.units == "m"){
-        z.matrix <- z.matrix/1000000
+        if(contours){
+          z.matrix <- z.matrix/1000000
+        }
       }else{
         warning("The requested conversion of units is not currently supported, this option will be ignored.", call. = FALSE, immediate. = TRUE)
       }
