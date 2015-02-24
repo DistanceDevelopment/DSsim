@@ -45,6 +45,11 @@ setMethod(
   f="initialize",
   signature="DDF.Analysis",
   definition=function(.Object, dsmodel = call(), criteria, truncation, binned.data, cutpoints){
+    if(criteria %in% c("aic", "AIC")){
+    }else{
+      warning("This selection criteria is not currently supported, it will be changed to AIC", call. = FALSE, immediate. = TRUE)
+      criteria = "AIC"
+    }
     .Object@dsmodel <- dsmodel
     .Object@criteria <- criteria
     .Object@truncation <- truncation
@@ -59,12 +64,7 @@ setMethod(
 
 setValidity("DDF.Analysis",
   function(object){
-    if(object@criteria %in% c("aic", "AIC")){
-      return(TRUE)
-    }else{
-      message("This selection criteria is not supported")
-      return(FALSE)
-    }
+    return(TRUE)
   }
 )
 
@@ -87,7 +87,7 @@ setMethod(
       options(show.error.messages = FALSE)
       ddf.result <- try(eval(parse(text = paste("ddf(dsmodel = ~", as.character(object@dsmodel)[2] ,", data = dist.data, method = 'ds', meta.data = list(width = ", max(object@cutpoints), ", binned = TRUE, breaks = ", object@cutpoints ,"))", sep = ""))), silent = TRUE)
       options(show.error.messages = TRUE)
-      if(class(ddf.result) == "try-error"){
+      if(any(class(ddf.result) == "try-error")){
         #cat(ddf.result[1])
         call <- paste(object@dsmodel)[2]
         cutpoints <- paste(object@cutpoints, collapse = ',')

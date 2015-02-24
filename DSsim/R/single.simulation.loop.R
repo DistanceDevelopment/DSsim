@@ -16,12 +16,8 @@ single.simulation.loop <- function(i, object, save.data, load.data, data.path = 
       }
       transects <- generate.transects(object)
       #make survey object
-      if(object@double.observer){
-        message("Double observer simulations not supported at present")#move this to the checking of the simulation object
-      }else{
-        if(inherits(object@design, "LT.Design")){
-          survey <- new(Class = "Single.Obs.LT.Survey", population = population, line.transect = transects, perp.truncation = object@detectability@truncation)
-        }
+      if(inherits(object@design, "LT.Design")){
+        survey <- new(Class = "Single.Obs.LT.Survey", population = population, line.transect = transects, perp.truncation = object@detectability@truncation)
       }
     }
     if(load.data){
@@ -56,7 +52,7 @@ single.simulation.loop <- function(i, object, save.data, load.data, data.path = 
     if(nrow(ddf.data@ddf.dat) >= 20){
       ddf.results <- run.analysis(object, ddf.data)
     }else{
-      message("Warning there are too few data points (<20) to be analysed, skipping this iteration.")
+      warning("There are too few data points (<20) to be analysed, skipping this iteration.", call. = FALSE, immediate. = TRUE)
       ddf.results <- NULL
     }
     #Check at least one model worked

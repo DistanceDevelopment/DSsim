@@ -196,7 +196,7 @@ setMethod(
       }else if(x@units == "km" & plot.units == "m"){
         z.matrix <- z.matrix/1000000
       }else{
-        message("The requested conversion of units is not currently supported.")
+        warning("The requested conversion of units is not currently supported, this option will be ignored.", call. = FALSE, immediate. = TRUE)
       }
     }
     #If a contour plot is requested
@@ -258,7 +258,7 @@ setMethod(
         axis(1, at = xticks, labels = xticks*1000)
         axis(2, at = yticks, labels = yticks*1000)
       }else{
-        message("The requested conversion of units is not currently supported.")
+        warning("The requested conversion of units is not currently supported, this option will be ignored.", call. = FALSE, immediate. = TRUE)
       }
     }else{
       #no unit conversion needed

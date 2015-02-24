@@ -52,7 +52,7 @@ setMethod(
     #Input pre-processing
     if(!gen.by.N){
       ave.density <- NULL
-      message("Calculating average density for each strata.")
+      #message("Calculating average density for each strata.")
       for(strat in seq(along = density@density.surface)){        
         ave.density[strat] <- get.ave.density(density.surface = density@density.surface[[strat]], coords = region.obj@coords[[strat]], gaps = region.obj@gaps[[strat]], x.space = density@x.space, y.space = density@y.space)
         #ave.density[strat] <- mean(object@density@density.surface[[strat]]$density)
@@ -122,7 +122,7 @@ setMethod(
   definition=function(object, detectability, region.obj = NULL){
     #If the user has not passed in the region object
     if(class(region.obj) != "Region"){
-      message("Warning: obtaining region object from the global workspace") 
+      warning("Obtaining region object from the global workspace", call. = TRUE, immediate. = TRUE) 
       region.obj <- get(object@region.name)
     }  
     #If the population has fixed N

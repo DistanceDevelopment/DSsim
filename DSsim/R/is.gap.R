@@ -5,7 +5,7 @@ is.gap <- function(poly, poly.list){
     if(length(true.vals) == length(pts.check)){
       return(TRUE)
     }else if(length(true.vals) == length(pts.check)-1){
-      message("Warning two of the shapefiles have a shared boundary point.")
+      warning("Two of the polygons have a shared boundary point.", call. = FALSE, immediate. = TRUE)
       return(TRUE)
     }else if(length(true.vals) > 0){
       print(poly)

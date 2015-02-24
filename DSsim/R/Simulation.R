@@ -106,7 +106,7 @@ setMethod(
 setValidity("Simulation",
   function(object){
     if(object@double.observer){
-      message("Double observer simulations not supported at present")
+      warning("Double observer simulations not supported at present", call. = TRUE, immediate. = TRUE)
       return(FALSE)
     }
     design <- object@design

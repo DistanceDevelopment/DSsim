@@ -61,8 +61,8 @@ setMethod(
 setValidity("LT.Design",
   function(object){
     if(length(object@path) > 1){
-      message("You must only specify one path. All transect shapefiles must be in the same folder.")
-      return(FALSE)
+      return("You must only specify one path. All transect shapefiles must be in the same folder.")
+      #return(FALSE)
     }
     return(TRUE)
   }
@@ -100,9 +100,11 @@ setMethod(
       }
       #lt.survey <- make.line.transect(region = region, shapefile = shapefile)
       line.transect <- new(Class = "Line.Transect", region = region, shapefile = shapefile, meta = meta)
+      #if(any(class(line.transect) == "try-error")){
+      #  return(NULL)
+      #}
     }else{
-      message("Only pre-generated surveys are currently implemented")
-      line.transect <- NULL
+      stop("Only pre-generated surveys are currently implemented", call. = FALSE)
     }
     return(line.transect)
   }    

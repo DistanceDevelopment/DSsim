@@ -47,8 +47,8 @@ get.sampler.info <- function(shapefile, region.obj, meta = NULL){
         strata.id <- ifelse(strata.temp == 3, strat, strata.id)   
       }
       if(length(which(is.na(strata.id))) > 0){
-        message("Error, transect cannot be allocated to strata debug get.sampler.info (possible that part of a transect falls outwith study region)")
-        return(NULL)
+       warning("Transect cannot be allocated to strata debug get.sampler.info (possible that part of a transect falls outwith study region)", call. = FALSE, immediate. = TRUE)
+      return(NULL)
       }
       sampler.info <- data.frame(ID = ID, start.X = start.X, start.Y = start.Y, end.X = end.X, end.Y = end.Y, length = tot.length, region = region.obj@strata.name[strata.id], d7.length = d7.length)
     }else{
