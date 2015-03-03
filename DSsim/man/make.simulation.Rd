@@ -55,7 +55,6 @@ parallel.design <- make.design(transect.type = "Line",
  design.details = c("Parallel","Systematic"), region = region,
  design.axis = 0, spacing = 100, plus.sampling =FALSE,
  path = shapefile.pathway)
-}
 
 pop.density <- make.density(region.obj = region, x.space = 10,
  y.space = 10, constant = 0.5)
@@ -79,7 +78,6 @@ ddf.analyses <- make.ddf.analysis.list(dsmodel = list(~cds(key = "hn",
  formula = ~1),~cds(key = "hr", formula = ~1)), method = "ds",
  criteria = "AIC")
 
-\dontrun{
 my.simulation <- make.simulation(reps = 10, single.transect.set = TRUE,
  region.obj = region, design.obj = parallel.design,
  population.description.obj = pop.description,
