@@ -52,7 +52,7 @@ setMethod(
 
 setValidity("Detectability",
   function(object){
-    if(!object@key.function%in%c("hr","hn")){
+    if(!object@key.function%in%c("hr","hn","uf")){
       return("Unsupported key function")
     }
     if(object@key.function == "hr" & length(object@shape.param) == 0){
@@ -61,7 +61,9 @@ setValidity("Detectability",
     for(i in seq(along = object@scale.param)){
       if(object@scale.param[i] <= 0){
         return("Invalid scale parameter. Must be greater than zero.")
-      }  
+      }else if(object@key.function == "uf" & object@scale.param > 1){
+        return("Invalid scale parameter. Must be greater than zero and less than 1 for the uniform distribution.")
+      } 
     }
     for(i in seq(along = object@shape.param)){
       if(object@shape.param[i] < 0){
