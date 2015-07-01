@@ -1,8 +1,4 @@
 #' @include Detectability.R
-#' 
-################################################################################
-# CONSTRUCT CLASS AND DEFINE INITIALIZE AND VALIDITY
-################################################################################
 
 #' Class "Population" 
 #' 
@@ -11,20 +7,16 @@
 #'
 #' @name Population-class
 #' @title S4 Class "Population"
-#' @docType class
-#' @section Slots: 
-#' \describe{
-#'  \item{\code{region.obj}}{Object of class \code{"character"}; the name of the region
-#'  object.}
-#'  \item{\code{strata.names}}{Object of class \code{"character"}; the names of the 
-#'  strata.}
-#'  \item{\code{N}}{Object of class \code{"numeric"}; the number of individuals/clusters.}
-#'  \item{\code{D}}{Object of class \code{"numeric"}; the density of individuals/clusters.}
-#'  \item{\code{population}}{Object of class \code{"data.frame"}; the locations of 
-#'  individuals/clusters and any population covariates.}
-#'  \item{\code{detectability}}{Object of class \code{"Detectability"}; describes how
-#'  easily the individuals/clusters can be detected.}
-#' }
+#' @slot region.obj Object of class \code{"character"}; the name of the region
+#'  object.
+#' @slot strata.names Object of class \code{"character"}; the names of the 
+#'  strata.
+#' @slot N Object of class \code{"numeric"}; the number of individuals/clusters.
+#' @slot D Object of class \code{"numeric"}; the density of individuals/clusters.
+#' @slot population  Object of class \code{"data.frame"}; the locations of 
+#'  individuals/clusters and any population covariates.
+#' @slot detectability  Object of class \code{"Detectability"}; describes how
+#'  easily the individuals/clusters can be detected.
 #' @section Methods:
 #' \describe{
 #'  \item{\code{plot}}{\code{signature=(object = "Line.Transect")}: plots the locations
@@ -62,11 +54,10 @@ setValidity("Population",
     return(TRUE)
   }
 )
-################################################################################
-# GENERIC METHODS
-################################################################################
+
+# GENERIC METHODS DEFINITIONS --------------------------------------------
+
 #' @rdname Population-class
-#' @aliases plot,Population-method
 setMethod(
   f="plot",
   signature="Population",

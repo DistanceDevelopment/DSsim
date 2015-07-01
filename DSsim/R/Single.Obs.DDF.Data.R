@@ -1,8 +1,4 @@
-#' @include DDf.Data.R
-
-################################################################################
-# CONSTRUCT CLASS AND DEFINE INITIALIZE AND VALIDITY
-################################################################################
+#' @include DDF.Data.R
 
 #' S4 Class "Single.Obs.DDF.Data" 
 #'
@@ -10,7 +6,6 @@
 #' 
 #' @name Single.Obs.DDF.Data-class
 #' @title S4 Class "Single.Obs.DDF.Data"
-#' @docType class
 #' @keywords classes
 #' @export
 setClass(Class = "Single.Obs.DDF.Data", contains = "DDF.Data")
@@ -32,12 +27,9 @@ setValidity("Single.Obs.DDF.Data",
   }
 )
 
-################################################################################
-# GNERIC METHOD DEFINITIONS
-################################################################################
+# GENERIC METHODS DEFINITIONS --------------------------------------------
 
 #' @rdname Single.Obs.DDF.Data-class
-#' @aliases plot,Single.Obs.DDF.Data-method
 setMethod(
   f="plot",
   signature="Single.Obs.DDF.Data",

@@ -1,4 +1,5 @@
-get.surface.constant <- function(region, x.space, y.space, constant, jit){  
+get.surface.constant <- function(region, x.space, y.space, constant, jit){ 
+#Creates a density surface with a constant value across the whole survey region
   #Create a rectangular grid over the entire region
   no.x.ints <- ceiling((region@box[["xmax"]]-region@box[["xmin"]])/x.space)
   no.y.ints <- ceiling((region@box[["ymax"]]-region@box[["ymin"]])/y.space)

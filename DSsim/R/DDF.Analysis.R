@@ -9,22 +9,18 @@
 #'
 #' @name DDF.Analysis-class
 #' @title S4 Class "DDF.Analysis"
-#' @docType class
-#' @section Slots: 
-#' \describe{
-#'  \item{\code{dsmodel}}{Object of class \code{"formula"}; describing the
-#'  detection function model.}
-#'  \item{\code{criteria}}{Object of class \code{"character"}; describes 
-#'  which model selection criteria to use ("AIC","AICc","BIC").}
-#'  \item{\code{truncation}}{Object of class \code{"character"}; Specifies 
-#'  the truncation distance for the analyses.}
-#'  \item{\code{binned.data}}{Object of class \code{"character"}; logical 
-#'  value specifying if the data should be binned for analysis.}
-#'  \item{\code{cutpoints}}{Object of class \code{"character"}; gives the 
-#'  cutpoints of the bins for binned data analysis.}
-#'  \item{\code{ddf.result}}{Object of class \code{"list"}; object of S3 class
-#'  ddf.}
-#' }
+#' @slot dsmodel Object of class \code{"formula"}; describing the
+#'  detection function model.
+#' @slot criteria Object of class \code{"character"}; describes 
+#'  which model selection criteria to use ("AIC","AICc","BIC").
+#' @slot truncation Object of class \code{"character"}; Specifies 
+#'  the truncation distance for the analyses.
+#' @slot binned.data Object of class \code{"character"}; logical 
+#'  value specifying if the data should be binned for analysis.
+#' @slot cutpoints Object of class \code{"character"}; gives the 
+#'  cutpoints of the bins for binned data analysis.
+#' @slot ddf.results Object of class \code{"list"}; object of S3 class
+#'  ddf.
 #' @section Methods:
 #' \describe{
 #'  \item{\code{run.analysis}}{\code{signature=c(object = "DDF.Analysis", 
@@ -68,12 +64,9 @@ setValidity("DDF.Analysis",
   }
 )
 
-################################################################################
-# GENERIC METHODS
-################################################################################  
-
-
-
+# GENERIC METHODS DEFINITIONS --------------------------------------------
+ 
+#' @rdname run.analysis-methods
 setMethod(
   f="run.analysis",
   signature=c("DDF.Analysis","DDF.Data"),
@@ -83,35 +76,40 @@ setMethod(
       #binned data
       dist.data <- dist.data[dist.data$distance <= max(object@cutpoints),]
       dist.data <- create.bins(dist.data, cutpoints = object@cutpoints)
-      #ddf.result <- try(ddf(dsmodel = object@dsmodel, data = dist.data, method = "ds", meta.data = list(binned = TRUE, breaks = object@cutpoints, width = max(object@cutpoints))))
+      #Make sure error messages are surpressed
       options(show.error.messages = FALSE)
+      #Try to fit ddf model
       ddf.result <- try(eval(parse(text = paste("ddf(dsmodel = ~", as.character(object@dsmodel)[2] ,", data = dist.data, method = 'ds', meta.data = list(width = ", max(object@cutpoints), ", binned = TRUE, breaks = ", object@cutpoints ,"))", sep = ""))), silent = TRUE)
       options(show.error.messages = TRUE)
+      #Check if it was successful
       if(any(class(ddf.result) == "try-error")){
-        #cat(ddf.result[1])
+        #If not
         call <- paste(object@dsmodel)[2]
         cutpoints <- paste(object@cutpoints, collapse = ',')
-        #cat(paste("ddf(dsmodel = ~",call,", data = dist.data, method = \"ds\", meta.data = list(binned = TRUE, breaks = ",cutpoints,"))))"), sep = "")
         ddf.result <- NA
       }else if(ddf.result$ds$converge != 0){
+        #If it didn't converge
         ddf.result <- NA
       }
     }else{
-      #NEED TO ADD TRY STATEMENTS HERE!
       #exact distances
       if(length(object@truncation) == 0){
-        #ddf.result <- try(ddf(dsmodel = object@dsmodel, data = dist.data, method = "ds"), silent = TRUE)  
+        #If there is no truncation distance specified
+        #Make sure error messages are surpressed
         options(show.error.messages = FALSE)
+        #Try to fit ddf model
         ddf.result <- try(eval(parse(text = paste("ddf(dsmodel = ~", as.character(object@dsmodel)[2] ,", data = dist.data, method = 'ds')", sep = ""))), silent = TRUE)
         options(show.error.messages = TRUE)
       }else{
-        #ddf.result <- try(ddf(dsmodel = object@dsmodel, data = dist.data, method = "ds", meta.data = list(width = object@truncation)), silent = TRUE)  
+        #If there is a truncation distance 
         options(show.error.messages = FALSE)
         ddf.result <- try(eval(parse(text = paste("ddf(dsmodel = ~", as.character(object@dsmodel)[2] ,", data = dist.data, method = 'ds', meta.data = list(width = ", object@truncation,"))", sep = ""))), silent = TRUE)
         options(show.error.messages = TRUE)
       }
+      #check if there was an error
       if(class(ddf.result)[1] == "try-error"){
         ddf.result <- NA
+      #if it did not converge
       }else if(ddf.result$ds$converge != 0){
         ddf.result <- NA
       }

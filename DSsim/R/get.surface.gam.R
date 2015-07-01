@@ -1,5 +1,5 @@
 get.surface.gam <- function(region, x.space, y.space, gam.model){
-  
+#Creates a density surface grid based on predictions from a gam object  
   #Create a rectangular grid over the entire region
   no.x.ints <- ceiling((region@box[["xmax"]]-region@box[["xmin"]])/x.space)
   no.y.ints <- ceiling((region@box[["ymax"]]-region@box[["ymin"]])/y.space)

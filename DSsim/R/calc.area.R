@@ -1,4 +1,5 @@
 calc.area <- function(coords, gaps){
+#Function to calculate the are of a study region
   list.area <- function(coords.list){
     matrix.coords <- lapply(coords.list, as.matrix)
     areas <- lapply(matrix.coords, areapl)
@@ -6,19 +7,9 @@ calc.area <- function(coords, gaps){
     total.area <- sum(areas) 
     return(total.area)
   }
-  
   gross.area <- unlist(lapply(coords, list.area))
   gap.area <- unlist(lapply(gaps, list.area))
-  
-#  temp.coords <- lapply(coords, as.matrix)
-#  gross.area <- lapply(temp.coords, areapl)
-#  gross.area <- as.numeric(gross.area)
-#  gross.area <- sum(gross.area)
-#  temp.gaps <- lapply(gaps, as.matrix)
-#  gap.area <- lapply(temp.gaps, areapl)
-#  gap.area <- as.numeric(gap.area)
-#  gap.area <- sum(gap.area)
-  
+  #Subtract the gaps
   net.area <- gross.area - gap.area
   return(net.area)
 }

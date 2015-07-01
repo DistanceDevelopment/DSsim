@@ -7,9 +7,9 @@ is.gap <- function(poly, poly.list){
       #}else if(length(true.vals) == length(pts.check)-1){
       #  warning("Two of the polygons have a shared boundary point.", call. = FALSE, immediate. = TRUE)
       #  return(TRUE)
-    }else if(length(true.vals) > 0{
-      print(cbind(poly,pts.check))
-      stop(paste("Some of the polygons in the shapefile are intersecting.",sep = ""), call. = FALSE)    
+    }else if(length(true.vals) > 0){
+      #print(cbind(poly,pts.check))
+      stop(paste("Some of the polygons in the shapefile are intersecting.",sep = ""), call. = FALSE)
     }else{
       return(FALSE)
     }

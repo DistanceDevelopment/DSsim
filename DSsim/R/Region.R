@@ -8,30 +8,26 @@
 #'
 #' @name Region-class
 #' @title S4 Class "Region"
-#' @docType class
 #' @section Objects from the Class: Objects can be created by calls of the form
 #' \code{make.region(region.name = "region.name", shapefile = region.shapefile)} 
-#' @section Slots: 
-#' \describe{
-#'  \item{\code{region.name}}{Object of class \code{"character"}; giving the 
-#'  name of the region.}
-#'  \item{\code{strata.name}}{Object of class \code{"character"}; character 
-#'  vector giving the names of the strata.}
-#'  \item{\code{strata.name}}{Object of class \code{"character"}; character 
-#'  vector giving the names of the strata.}
-#'  \item{\code{units}}{Object of class \code{"character"}; character describing
-#'  the coordinate units ("km" or "m")}
-#'  \item{\code{area}}{Object of class \code{"numeric"}; the area of the survey
-#'  region}
-#'  \item{\code{box}}{Object of class \code{"numeric"}; 4 values giving the x and
-#'  y ranges of the region}
-#'  \item{\code{coords}}{Object of class \code{"list"}; this list contains an
-#'  element for each strata. Each of these list elements contains a list of polygons
-#'  defining the region.}
-#'  \item{\code{gaps}}{Object of class \code{"list"};this list contains an
-#'  element for each strata. Each of these list elements contains a list of gaps
-#'  in the region}
-#' }
+#' @slot region.name Object of class \code{"character"}; giving the 
+#'  name of the region.
+#' @slot strata.name Object of class \code{"character"}; character 
+#'  vector giving the names of the strata.
+#' @slot strata.name Object of class \code{"character"}; character 
+#'  vector giving the names of the strata.
+#' @slot units Object of class \code{"character"}; character describing
+#'  the coordinate units ("km" or "m")
+#' @slot area Object of class \code{"numeric"}; the area of the survey
+#'  region
+#' @slot box Object of class \code{"numeric"}; 4 values giving the x and
+#'  y ranges of the region
+#' @slot coords Object of class \code{"list"}; this list contains an
+#'  element for each strata. Each of these list elements contains a list of 
+#'  polygons defining the region.
+#' @slot gaps Object of class \code{"list"};this list contains an
+#'  element for each strata. Each of these list elements contains a list of 
+#'  gaps in the region
 #' @section Methods:
 #' \describe{
 #'  \item{\code{get.area}}{\code{signature(obj = "Region")}: retrieves the area 
@@ -113,17 +109,15 @@ setValidity("Region",
     if(length(object@coords) != length(object@gaps)){
       return("The lengths of the coords and gaps lists differ, these must be the same and equal to the number of strata.")
     }
-    #print(paste("length of coords: ",length(object@coords)))
-    #print(object@strata.name) 
     if(length(object@coords) > 1 & length(object@coords) != length(object@strata.name)){
       return("Number of strata names differs to number of strata in the shapefile.")
     }
     return(TRUE)
   }
 )
-################################################################################
-# GENERIC METHODS
-################################################################################
+
+# GENERIC METHODS DEFINITIONS --------------------------------------------
+
 #' Returns the area of the region
 #' 
 #' @param object object of class Region
@@ -132,7 +126,6 @@ setValidity("Region",
 setGeneric(name = "get.area", def = function(object){standardGeneric ("get.area")})
 
 #' @rdname get.area-methods
-#' @aliases get.area,Region-method
 setMethod(
   f="get.area",
   signature="Region",
@@ -142,7 +135,6 @@ setMethod(
 )
 
 #' @rdname Region-class
-#' @aliases plot,Region-method
 setMethod(
   f="plot",
   signature="Region",

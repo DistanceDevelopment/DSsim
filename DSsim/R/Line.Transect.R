@@ -1,19 +1,11 @@
-################################################################################
-# CONSTRUCT CLASS AND DEFINE INITIALIZE AND VALIDITY
-################################################################################
-
 #' Class "Line.Transect" contains an instance of a Line Transect Survey
 #'
 #' @name Line.Transect-class
 #' @title S4 Class "Line.Transect"
-#' @docType class
-#' @section Slots: 
-#' \describe{
-#'  \item{\code{design.obj}}{Object of class \code{"character"}; the object name
-#'  of the design object which generated the transects.}
-#'  \item{\code{sampler.info}}{Object of class \code{"data.frame"}; the sampler 
-#'  end point coordinates.}
-#' }
+#' @slot design.obj Object of class \code{"character"}; the object name
+#' of the design object which generated the transects.
+#' @slot sampler.info Object of class \code{"data.frame"}; the sampler 
+#' end point coordinates.
 #' @section Methods:
 #' \describe{
 #'  \item{\code{plot}}{\code{signature=(object = "Line.Transect")}: plots the 
@@ -58,13 +50,9 @@ setValidity("Line.Transect",
   }
 )
 
-
-################################################################################
-# GENERIC METHODS
-################################################################################
+# GENERIC METHODS DEFINITIONS --------------------------------------------
 
 #' @rdname Line.Transect-class
-#' @aliases plot,Line.Transect-method
 setMethod(
   f="plot",
   signature="Line.Transect",

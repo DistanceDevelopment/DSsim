@@ -5,23 +5,20 @@
 #'
 #' @name Detectability-class
 #' @title S4 Class "Detectability"
-#' @docType class                             
-#' @section Slots: 
-#' \describe{
-#'  \item{\code{key.function}}{Object of class \code{"character"}; a code
-#'  specifying the detection function form ("hn" = half normal, "hr" = 
-#'  hazard rate.)}
-#'  \item{\code{scale.param}}{Object of class \code{"numeric"}; The scale
-#'  parameter for the detection function.}
-#'  \item{\code{shape.param}}{Object of class \code{"numeric"}; The shape
-#'  parameter for the detection function.}
-#'  \item{\code{covariates}}{Object of class \code{"character"}; The names
-#'  of the covariates which affect detectability. Not yet implemented}
-#'  \item{\code{cov.param}}{Object of class \code{"numeric"}; The parameter
-#'  values associated with the covariates. Not yet implemented}
-#'  \item{\code{truncation}}{Object of class \code{"numeric"}; The maximum 
-#'  distance at which objects may be detected.}
-#' }
+#' @docType class  
+#' @slot key.function Object of class \code{"character"}; a code
+#' specifying the detection function form ("hn" = half normal, "hr" = 
+#' hazard rate.)
+#' @slot scale.param Object of class \code{"numeric"}; The scale
+#' parameter for the detection function.
+#' @slot shape.param Object of class \code{"numeric"}; The shape
+#' parameter for the detection function.
+#' @slot covariates Object of class \code{"character"}; The names
+#' of the covariates which affect detectability. Not yet implemented
+#' @slot cov.param Object of class \code{"numeric"}; The parameter
+#' values associated with the covariates. Not yet implemented
+#' @slot truncation Object of class \code{"numeric"}; The maximum 
+#' distance at which objects may be detected.
 #' @keywords classes
 #' @export
 #' @seealso \code{\link{make.detectability}}
@@ -76,9 +73,8 @@ setValidity("Detectability",
     return(TRUE)
   }
 )
-################################################################################
-# GENERIC METHODS
-################################################################################
+
+# GENERIC METHODS DEFINITIONS --------------------------------------------
 
 
 

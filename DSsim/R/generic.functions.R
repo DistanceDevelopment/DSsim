@@ -13,10 +13,8 @@
 #'   required if object is of class Population.Description)
 #' @param ... when this is called on an object of class Population.Description
 #' the additional arguments detectability and region.obj should also be supplied
-#' @usage generate.population(object, ...)
 #' @return an object of class Population
 #' @export
-#' @docType methods
 #' @rdname generate.population-methods
 setGeneric("generate.population", function(object, ...){standardGeneric ("generate.population")})
 
@@ -38,7 +36,6 @@ setGeneric("generate.population", function(object, ...){standardGeneric ("genera
 #' listed in the filenames slot. 
 #' @return an object of class Line.Transect
 #' @export
-#' @docType methods
 #' @rdname generate.transects-methods
 setGeneric("generate.transects", function(object, read.from.file = TRUE, write.to.file = FALSE, region = NULL, ...){standardGeneric ("generate.transects")})
 
@@ -49,9 +46,7 @@ setGeneric("generate.transects", function(object, read.from.file = TRUE, write.t
 #'
 #' @param object an object of a class inheriting from Survey
 #' @param region an object of class Region
-#' @usage create.region.table(object, region)
 #' @return an object of class Region.Table
-#' @docType methods
 #' @rdname create.region.table-methods
 setGeneric(name = "create.region.table", def = function(object, region){standardGeneric ("create.region.table")})
 
@@ -61,9 +56,7 @@ setGeneric(name = "create.region.table", def = function(object, region){standard
 #' estimate abundance /  density via the Hortvitz-Thompson estimator.
 #'
 #' @param object an object of a class inheriting from Survey
-#' @usage create.sample.table(object)
 #' @return an object of class Sample.Table
-#' @docType methods
 #' @rdname create.sample.table-methods
 setGeneric(name = "create.sample.table", def = function(object){standardGeneric ("create.sample.table")}) 
 
@@ -82,10 +75,8 @@ setGeneric(name = "create.sample.table", def = function(object){standardGeneric 
 #' @param dht.tables logical value indicating whether or the data 
 #' tables for Hortvitz-Thompson estimation are required.
 #' @param ... allows a region object to be passed in
-#' @usage create.survey.results(object, dht.tables, ...)
 #' @return an object of class LT.Survey.Results
 #' @export
-#' @docType methods
 #' @rdname create.survey.results-methods
 #' @examples
 #' \dontrun{
@@ -101,10 +92,8 @@ setGeneric(name = "create.survey.results", def = function(object, dht.tables = F
 #' Extracts distance data from a Survey.Results object
 #'
 #' @param object an object of class LT.Survey.Results
-#' @usage get.distance.data(object)
 #' @return a data.frame describing the distance data
 #' @export
-#' @docType methods
 #' @rdname get.distance.data-methods
 #' @seealso \code{\link{create.survey.results}}
 setGeneric(name = "get.distance.data", def = function(object){standardGeneric ("get.distance.data")})
@@ -120,7 +109,6 @@ setGeneric(name = "get.distance.data", def = function(object){standardGeneric ("
 #' @param amplitude the height of the hotspot at its centre
 #' @return the updated Density or Simulation object
 #' @export
-#' @docType methods
 #' @rdname add.hotspot-methods
 #' @seealso \code{\link{make.density}}
 setGeneric(name = "add.hotspot", def = function(object, centre, sigma, amplitude){standardGeneric ("add.hotspot")})
@@ -143,7 +131,6 @@ setGeneric(name = "add.hotspot", def = function(object, centre, sigma, amplitude
 #' @param ... allows the three previous optional arguments to be specified
 #' @return an object of class simulation which now includes the results
 #' @export
-#' @docType methods
 #' @rdname run-methods
 #' @seealso \code{\link{make.simulation}}
 setGeneric(name = "run", def = function(object, run.parallel = FALSE, max.cores = NA, ...){standardGeneric ("run")})
@@ -162,10 +149,8 @@ setGeneric(name = "run", def = function(object, run.parallel = FALSE, max.cores 
 #' @param data an object of class Survey.Results or DDF.Data
 #' @param ... optional arguments including the following:
 #' @param dht logical whether density should be estimated after fitting the model
-#' @usage run.analysis(object, data, ...)
 #' @return a list containing an S3 ddf object and optionally an S3 dht object relating to the model with the miminum criteria.
 #' @export
-#' @docType methods
 #' @rdname run.analysis-methods
 setGeneric(name = "run.analysis", def = function(object, data, ...){standardGeneric ("run.analysis")})
 

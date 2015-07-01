@@ -1,4 +1,5 @@
 get.ave.density <- function(density.surface, coords, gaps, x.space, y.space){
+#Calculates the average density across the study region
   grid.cell.weighting <- function(centre, coords, gaps, x.space, y.space){
     #Get 4 corner points
     corners <- data.frame(x = (centre[["x"]]+c(x.space, x.space, -x.space, -x.space)), y = (centre[["y"]]+c(y.space, -y.space, y.space, -y.space)))
@@ -28,11 +29,4 @@ get.ave.density <- function(density.surface, coords, gaps, x.space, y.space){
   #calculate average density
   ave.density <- sum(weighting*density.surface[,"density"])/sum(weighting)
   return(ave.density)
-#  zlim <- range(weighting*100)
-#  zlen <- zlim[2] - zlim[1] + 1
-#  colorlut <- heat.colors(zlen) 
-#  colorlut <- colorlut[length(colorlut):1]
-#  col <- colorlut[weighting*100-zlim[1]+1]
-#  plot(region)
-#  points(density.surface$x, density.surface$y, col = col, pch = 20) 
 }

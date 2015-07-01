@@ -1,23 +1,21 @@
-# @include Simulation.R
-# @include DS.Analysis.R
-# @include Population.Description.R
-# @include Density.R
-# @include LT.Systematic.Design.R
-# @include LT.Random.Design.R
-# @include LT.EqAngle.ZZ.Design.R
-# @include LT.EqSpace.ZZ.Design.R
-# @include LT.User.Specified.Design.R
-# @include Region.R
+#' @include Simulation.R
+#' @include DS.Analysis.R
+#' @include Population.Description.R
+#' @include Density.R
+#' @include LT.Systematic.Design.R
+#' @include LT.Random.Design.R
+#' @include LT.EqAngle.ZZ.Design.R
+#' @include LT.EqSpace.ZZ.Design.R
+#' @include LT.User.Specified.Design.R
+#' @include Region.R
 
 
-#' Creates a Region object
-#'
-#' This creates an instance of the Region class. If the user supplied a 
+#' @title Creates a Region object
+#' @description This creates an instance of the Region class. If the user supplied a 
 #' shapefile all information will be extracted from here. Otherwise the user
 #' needs to specify a list of polygons describing the areas of interest 
 #' (coords) and optionally a list of polygons describing the areas to 
 #' be excluded (gaps). If area is not specified it will be calculated.
-#' 
 #' @param region.name the region name
 #' @param strata.name the region name
 #' @param units the units given as a character (either 'm' or 'km')
@@ -45,9 +43,8 @@ make.region <- function(region.name, strata.name = character(0), units, area = n
   return(region)
 }
   
-#' Creates a Survey.Design object
-#'
-#' Currently surveys are only generated within the GIS in Distance. If you 
+#' @title  Creates a Survey.Design object
+#' @description Currently surveys are only generated within the GIS in Distance. If you 
 #' are running a simulation in R you will need to get Distance to 
 #' generate all the surveys as shapefiles in advance and supply the path to
 #' the directory which contains these shapefiles and only these shapefiles.
@@ -127,8 +124,8 @@ make.design <- function(transect.type, design.details, region.obj, design.axis =
   return(design)
 }
 
-#' Creates a Density object
-#' 
+#' @title Creates a Density object
+#' @description 
 #' The user has the option to create a grid describing the density of the 
 #' objects and pass this in giving the x and y spacings used in the creation
 #' of this grid. Alternatively the user can specify a constant density and x, 
@@ -181,8 +178,8 @@ make.density <- function(region.obj, density.surface = list(), x.space, y.space,
  return(density)
 }
 
-#' Creates a Population.Description object
-#' 
+#' @title Creates a Population.Description object
+#' @description 
 #' Creates an object which describes a population. The values in this object 
 #' will be used to create instances of the population
 #'
@@ -213,8 +210,8 @@ make.population.description <- make.pop.description <- function(region.obj, dens
   return(pop.description)
 }
 
-#' Creates a Detectablility object
-#' 
+#' @title Creates a Detectablility object
+#' @description 
 #' The detectability of the population is described by the values in this 
 #' class.
 #'
@@ -237,8 +234,8 @@ make.detectability <- function(key.function, scale.param, shape.param = numeric(
   return(detectability)
 }
 
-#' Creates a list of DDF.Analysis objects
-#' 
+#' @title Creates a list of DDF.Analysis objects
+#' @description 
 #' This method creates a list of DDF.Analysis objects each of which describes 
 #' a model to fit to the distance data. The simulation will fit each of these 
 #' models to the data generated in the simulation and select the model with 
@@ -272,8 +269,8 @@ make.ddf.analysis.list <- function(dsmodel, mrmodel = NULL, method, criteria = "
   return(ddf.analyses)
 }
 
-#' Creates a Simulation object
-#' 
+#' @title Creates a Simulation object
+#' @description 
 #' This creates a simulation object which groups together all the objects 
 #' needed to complete the simulation. 
 #'

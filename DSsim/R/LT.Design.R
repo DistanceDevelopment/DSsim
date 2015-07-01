@@ -1,33 +1,25 @@
 #' @include generic.functions.R
 #' @include Survey.Design.R
 
-################################################################################
-# CONSTRUCT CLASS AND DEFINE INITIALIZE AND VALIDITY
-################################################################################
-
 #' Virtual Class "LT.Design" extends Class "Survey.Design"
 #'
-#' Virtual Class \code{"LT.Design"} is an S4 class detailing the type of line transect 
-#' design. 
+#' Virtual Class \code{"LT.Design"} is an S4 class detailing the type of 
+#' line transect design.
 #' @name LT.Design-class
 #' @title S4 Class "LT.Design"
-#' @docType class
-#' @section Slots: 
-#' \describe{
-#'  \item{\code{design.axis}}{Object of class \code{"numeric"}; the angle of 
-#'  the design axis.}
-#'  \item{\code{spacing}}{Object of class \code{"numeric"}; the spacing of
-#'  the design.} 
-#'  }
+#' @slot design.axis Object of class \code{"numeric"}; the angle of
+#'  the design axis.
+#' @slot spacing Object of class \code{"numeric"}; the spacing of
+#'  the design.
 #' @section Methods:
 #' \describe{
-#'  \item{\code{generate.transects}}{\code{signature=(object = "LT.Design", ...)}: 
+#'  \item{\code{generate.transects}}{\code{signature=(object = "LT.Design", ...)}:
 #'  loads a set of transects from a shapefile.}
 #' }
 #' @keywords classes
 #' @seealso \code{\link{make.design}}
 #' @export
-setClass(Class = "LT.Design", 
+setClass(Class = "LT.Design",
          representation = representation(design.axis = "numeric",
                                          spacing = "numeric", "VIRTUAL"),
          contains = "Survey.Design"
@@ -41,20 +33,20 @@ setMethod(
     file.index <- numeric(0)
     if(length(path) > 0){
       filenames  <- get.shapefile.names(path)
-      file.index <- 1  
+      file.index <- 1
     }
     #Set slots
     .Object@region.obj    <- region
     .Object@plus.sampling <- plus.sampling
     .Object@spacing       <- spacing
-    .Object@design.axis   <- design.axis  
+    .Object@design.axis   <- design.axis
     .Object@path          <- path
     .Object@filenames     <- filenames
     .Object@file.index    <- file.index
     #Check object is valid
     validObject(.Object)
     # return object
-    return(.Object) 
+    return(.Object)
   }
 )
 
@@ -68,14 +60,9 @@ setValidity("LT.Design",
   }
 )
 
-
-################################################################################
-# GENERIC METHODS
-################################################################################
-
+# GENERIC METHODS DEFINITIONS --------------------------------------------
 
 #' @rdname generate.transects-methods
-#' @aliases generate.transects,LT.Design-method
 setMethod(
   f="generate.transects",
   signature="LT.Design",
@@ -89,7 +76,6 @@ setMethod(
     if(read.from.file){
       #Load the shapefle
       shapefile <- read.shapefile(paste(object@path, "/", object@filenames[file.index], sep=""))
-      #cat("Reading shapefile: ",paste(object@path, "/", object@filenames[file.index], sep=""), fill = T)
       #Load the meta file if it exists - describes which transects are in which strata
       meta <- suppressWarnings(try(read.table(paste(object@path, "/Meta.txt", sep="")), silent = TRUE))
       if(class(meta) == "try-error"){
@@ -98,19 +84,17 @@ setMethod(
       if(!is.null(meta)){
         meta <- meta[meta[,1] == object@filenames[file.index],]
       }
-      #lt.survey <- make.line.transect(region = region, shapefile = shapefile)
       line.transect <- new(Class = "Line.Transect", region = region, shapefile = shapefile, meta = meta)
-      #if(any(class(line.transect) == "try-error")){
-      #  return(NULL)
-      #}
     }else{
       stop("Only pre-generated surveys are currently implemented", call. = FALSE)
     }
     return(line.transect)
-  }    
-) 
+  }
+)
 
 
- 
+
+
+
 
 

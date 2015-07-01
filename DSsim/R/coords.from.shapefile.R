@@ -1,4 +1,7 @@
 coords.from.shapefile <- function(shapefile){ 
+#This function extracts the coordinates from a shapefile
+#returning them as two lists: one of outer polygons one of
+#gaps
   main.polygons <- list()
   gaps <- list()
   for(strat in seq(along = shapefile$shp$shp)){

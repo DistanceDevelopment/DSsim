@@ -6,7 +6,7 @@
 #'
 #' @name Sample.Table-class
 #' @title S4 Class "Sample.Table"
-#' @docType class
+#' @slot sample.slot data.frame which is the sample table for dht
 #' @section Objects from the Class: Objects can be created by calls to the 
 #' function \code{create.survey.results(simulation, dht.table = TRUE)} 
 #' @keywords classes

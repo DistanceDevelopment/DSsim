@@ -1,5 +1,7 @@
-#generate.pop.D <- function(test, population.description, region.obj){
+
 generate.pop.D <- function(population.description, region.obj){
+#this function generates a population based on the values in the 
+#Density object grid (not from a fixed population size)
   density.obj <- population.description@density
   first <- TRUE
   for(strat in seq(along = density.obj@density.surface)){
@@ -38,20 +40,4 @@ generate.pop.D <- function(population.description, region.obj){
   return(all.grid.locations)  
 }
 
-#TESTING
-#test <- matrix(rep(1,999), ncol = 1)
-#system.time(test.results <- apply(X = test, MARGIN = 1, FUN = generate.pop.D, population.description = object, region.obj = region.obj))["elapsed"]
-#elapsed 
-#  32.51
-#  26.81
-#  26.78
-#  26.77
-#mean(test.results)
-#[1] 580.4775
-#[1] 578.4825
-#[1] 580.9199
-#[1] 579.1862
-#[1] 580.5475
-#sum(object@N) 
-#[1] 580.3324
 

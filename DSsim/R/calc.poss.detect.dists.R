@@ -16,13 +16,7 @@ calc.poss.detect.dists <- function(population, survey, perp.truncation, plot = F
     all.perp.dists  <- hyp*sin(delta.angle)   
     #check to see if the perpendicular line intersects the transect or not
     intersects.transects <- apply(cbind(transects[,c("start.X", "start.Y", "end.X", "end.Y", "length")], p.dist = all.perp.dists), 1, FUN = check.intersection, point = data.frame(x = x.coord, y = y.coord), display.diagnostics = FALSE)
-    #find the distances to the end points
-    #dist.to.start <- sqrt((transects$start.X - x.coord)^2 + (transects$start.Y - y.coord)^2)
-    #dist.to.end <- sqrt((transects$end.X - x.coord)^2 + (transects$end.Y - y.coord)^2)
-    #check if it is available from the transect end points
-    #i.e. not available on the perpendicular and within the radial truncation distance
-    #available.from.start <- ifelse(!intersects.transects & dist.to.start <= rad.truncation, TRUE, FALSE)
-    #available.from.end <- ifelse(!intersects.transects & dist.to.end <= rad.truncation, TRUE, FALSE)   
+    #if they are within the range of the transect
     perp.dists <- ifelse(intersects.transects & all.perp.dists < perp.truncation, TRUE, FALSE)
     detect.dists <- data.frame(object = rep(individuals[i,"object"], length(transects$ID)), transect.ID = transects$ID, distance = all.perp.dists, available = perp.dists)
     #add on to larger dataframe

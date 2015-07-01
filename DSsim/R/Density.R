@@ -1,32 +1,23 @@
  #' @include generic.functions.R
-NULL
 
-#' Class "Density" 
-#' 
-#' Class \code{"Density"} is an S4 class containing a list of grids which
+
+#' @title  Class "Density" 
+#' @description  Class \code{"Density"} is an S4 class containing a list of grids which
 #' describe the density of individuals / clusters of a population. The list
 #' contains one grid (\code{data.frame}) for each strata.
-#'
 #' @name Density-class
 #' @docType class
-#' @section Slots: 
-#' \describe{
-#'  \item{\code{region.name}}{Object of class \code{"character"}; the region
-#'  name.}
-#'  \item{\code{strata.name}}{Object of class \code{"character"}; the strata
-#'  names}
-#'  \item{\code{density.surface}}{Object of class \code{"list"}; list of 
-#'  data.frames with the columns x, y and density. There must be one 
-#'  data.frame for each strata.}
-#'  \item{\code{x.space}}{Object of class \code{"numeric"}; The spacing 
-#'  between gridpoints described in the density data.frames in the 
-#'  x-direction.}
-#'  \item{\code{y.space}}{Object of class \code{"numeric"}; The spacing 
-#'  between gridpoints described in the density data.frames in the 
-#'  y-direction.}
-#'  \item{\code{units}}{Object of class \code{"numeric"}; The units of the
-#'  grid points.}
-#' }
+#' @slot region.name Object of class \code{"character"}; the region name.
+#' @slot strata.name Object of class \code{"character"}; the strata names
+#' @slot density.surface Object of class \code{"list"}; list of data.frames
+#' with the columns x, y and density. There must be one data.frame for each
+#' strata.
+#' @slot x.space Object of class \code{"numeric"}; The spacing between
+#' gridpoints described in the density data.frames in the x-direction.
+#' @slot y.space Object of class \code{"numeric"}; The spacing between
+#' gridpoints described in the density data.frames in the y-direction.
+#' @slot units Object of class \code{"numeric"}; The units of the grid 
+#' points.
 #' @section Methods:
 #' \describe{
 #'  \item{\code{add.hotspot}}{\code{signature=(object = "Density")}: adds a hotspot based on a gaussian decay to the density
@@ -93,38 +84,10 @@ setValidity("Density",
     return(TRUE)
   }
 )
-################################################################################
-# ACCESSOR GENERIC METHODS
-################################################################################ 
-#setGeneric("get.region.name", function(object){standardGeneric ("get.region.name")})
-#setGeneric("set.region.name", function(object, new.slot.value){standardGeneric ("set.region.name")})
-#setGeneric("get.strata.name", function(object){standardGeneric ("get.strata.name")})
-#setGeneric("set.strata.name", function(object, new.slot.value){standardGeneric ("set.strata.name")})
-#setGeneric("get.density.surface", function(object){standardGeneric ("get.density.surface")})
-#setGeneric("set.density.surface", function(object, new.slot.value){standardGeneric ("set.density.surface")})
-#setGeneric("get.x.space", function(object){standardGeneric ("get.x.space")})
-#setGeneric("set.x.space", function(object, new.slot.value){standardGeneric ("set.x.space")})
-#setGeneric("get.y.space", function(object){standardGeneric ("get.y.space")})
-#setGeneric("set.y.space", function(object, new.slot.value){standardGeneric ("set.y.space")})
-#
-#setMethod("get.density.surface","Density",
-#  function(object){
-#    return(object@density.surface)
-#  }
-#)
-#setMethod("set.density.surface","Density",
-#  function(object, new.slot.value){
-#    object@slot
-#    return(object)
-#  }
-#)
 
-################################################################################
-# OTHER GENERIC METHODS
-################################################################################ 
+# GENERIC METHODS DEFINITIONS --------------------------------------------
 
-# @rdname add.hotspot-methods
-# @aliases add.hotspot,Density-method
+#' @rdname add.hotspot-methods
 setMethod("add.hotspot","Density",
           function(object, centre, sigma, amplitude){
             density.surface <- object@density.surface    
@@ -144,9 +107,7 @@ setMethod("add.hotspot","Density",
 )
 
 
-
 #' @rdname Density-class
-#' @aliases plot,Density-method
 setMethod(
   f = "plot",
   signature = "Density",
@@ -165,9 +126,11 @@ setMethod(
       x.vals <- c(x.vals, density.surface[[strat]]$x)
       y.vals <- c(y.vals, density.surface[[strat]]$y)
     }
+    #define plot.units if it was not specified
     if(length(plot.units) == 0){
       plot.units <- x@units
     }
+    #Create plot axes labels
     xlabel <- paste("X-coords (",plot.units[1],")", sep = "")
     ylabel <- paste("Y-coords (",plot.units[1],")", sep = "")
     
@@ -182,8 +145,6 @@ setMethod(
           #find densities
           index <- which(full.density.grid$x == x.vals[ix] & full.density.grid$y == y.vals[iy])
           #use the first one incase there is over lap with strata buffers
-          #Could do with being made prettier!
-          #Could average them?
           z.matrix[ix,iy] <- full.density.grid$density[index[1]]
         }
       }  

@@ -1,34 +1,30 @@
 #' @include generic.functions.R
 #' @include Density.R
 
-#' Class "Population.Description" 
-#' 
-#' Class \code{"Population.Description"} is an S4 class containing a 
+#' Class "Population.Description"
+#'
+#' Class \code{"Population.Description"} is an S4 class containing a
 #' description of the population. It provides methods to generate an
 #' example population.
-#'                                  
+#'
 #' @name Population.Description-class
 #' @title S4 Class "Population.Description"
-#' @docType class
-#' @section Slots: 
-#' \describe{
-#'  \item{\code{N}}{Object of class \code{"numeric"}; number of individuals
-#'  in the population (optional).}
-#'  \item{\code{density}}{Object of class \code{"Density"}; describes the
-#'  population density}
-#'  \item{\code{region.name}}{Object of class \code{"character"}; name of
-#'  the region in which the population exists.}
-#'  \item{\code{size}}{Object of class \code{"logical"}; Indicating whether
-#'  detections will be made on cluster (TRUE) or individuals (FALSE).}
-#'  \item{\code{size.table}}{Object of class \code{"data.frame"}; This must
-#'  have 2 columns- \code{size} and \code{prob}. The first column gives the
-#'  possible cluster sizes and the second describes the probabilities
-#'  of each cluster size.}
-#'  \item{\code{gen.by.N}}{Object of class \code{"logical"}; If \code{TRUE} 
-#'  N is fixed otherwise it is generated from a Poisson distribution.}
-#'  \item{\code{D.dist}}{Object of class \code{character}; Describes the
-#'  density distribution (currently not implemented).}
-#' }
+#' @slot N Object of class \code{"numeric"}; number of individuals
+#' in the population (optional).
+#' @slot density Object of class \code{"Density"}; describes the
+#' population density
+#' @slot region.name Object of class \code{"character"}; name of
+#' the region in which the population exists.
+#' @slot size Object of class \code{"logical"}; Indicating whether
+#' detections will be made on cluster (TRUE) or individuals (FALSE).
+#' @slot size.table Object of class \code{"data.frame"}; This must
+#' have 2 columns- \code{size} and \code{prob}. The first column gives the
+#' possible cluster sizes and the second describes the probabilities
+#' of each cluster size.
+#' @slot gen.by.N Object of class \code{"logical"}; If \code{TRUE}
+#' N is fixed otherwise it is generated from a Poisson distribution.
+#' @slot D.dist Object of class \code{character}; Describes the
+#' density distribution (currently not implemented).
 #' @section Methods:
 #' \describe{
 #'  \item{\code{get.N}}{\code{signature=(object = "Population.Description")}:
@@ -38,8 +34,8 @@
 #' @keywords classes
 #' @export
 #' @seealso \code{\link{make.population.description}}
-setClass("Population.Description", representation(N           = "numeric", 
-                                                  density     = "Density", 
+setClass("Population.Description", representation(N           = "numeric",
+                                                  density     = "Density",
                                                   region.name = "character",
                                                   size        = "logical",
                                                   size.table  = "data.frame",
@@ -52,10 +48,9 @@ setMethod(
     #Input pre-processing
     if(!gen.by.N){
       ave.density <- NULL
-      #message("Calculating average density for each strata.")
-      for(strat in seq(along = density@density.surface)){        
+      #Calculate average density for each strata.
+      for(strat in seq(along = density@density.surface)){
         ave.density[strat] <- get.ave.density(density.surface = density@density.surface[[strat]], coords = region.obj@coords[[strat]], gaps = region.obj@gaps[[strat]], x.space = density@x.space, y.space = density@y.space)
-        #ave.density[strat] <- mean(object@density@density.surface[[strat]]$density)
       }
       N <- region.obj@area*ave.density
     }
@@ -70,7 +65,7 @@ setMethod(
     #Check object is valid
     validObject(.Object)
     # return object
-    return(.Object) 
+    return(.Object)
   }
 )
 setValidity("Population.Description",
@@ -89,59 +84,53 @@ setValidity("Population.Description",
     return(TRUE)
   }
 )
-################################################################################
-# GENERIC METHODS
-################################################################################
 
+# GENERIC METHODS DEFINITIONS --------------------------------------------
 
 #' S4 generic method to return N
-#' 
+#'
 #' Returns the population size
 #'
 #' @param object an object of class Population.Description
 #' @return numeric value of the population size
 #' @export
-#' @docType methods
 #' @rdname get.N-methods
 setGeneric("get.N",function(object){standardGeneric ("get.N")})
 
 #' @rdname get.N-methods
-#' @aliases get.N,Population.Description-method
 setMethod("get.N","Population.Description",
   function(object){
     return(object@N)
   }
 )
 
-
 #' @rdname generate.population-methods
-#' @aliases generate.population,Population.Description-method
 setMethod(
   f="generate.population",
   signature="Population.Description",
   definition=function(object, detectability, region.obj = NULL){
     #If the user has not passed in the region object
     if(class(region.obj) != "Region"){
-      warning("Obtaining region object from the global workspace", call. = TRUE, immediate. = TRUE) 
+      warning("Obtaining region object from the global workspace", call. = TRUE, immediate. = TRUE)
       region.obj <- get(object@region.name)
-    }  
+    }
     #If the population has fixed N
     if(object@gen.by.N){
-      all.grid.locations <- generate.pop.N(object, region.obj)  
+      all.grid.locations <- generate.pop.N(object, region.obj)
     }else{
       all.grid.locations <- generate.pop.D(object, region.obj)
-      
-    } 
-    N <- nrow(all.grid.locations)   
+
+    }
+    N <- nrow(all.grid.locations)
     #create population object
     population.dataframe <- data.frame(object = 1:nrow(all.grid.locations), x = all.grid.locations$x.coord, y = all.grid.locations$y.coord)
     if(object@size){
       cluster.size <- sample(object@size.table$size, nrow(population.dataframe), replace = TRUE, prob = object@size.table$prob)
       population.dataframe$size <- cluster.size
     }
-    population <- new(Class = "Population", region = object@region.name, strata.names = region.obj@region.name, N = N, D = N/region.obj@area, population = population.dataframe, detectability = detectability) 
-    return(population)  
-  }    
-) 
+    population <- new(Class = "Population", region = object@region.name, strata.names = region.obj@region.name, N = N, D = N/region.obj@area, population = population.dataframe, detectability = detectability)
+    return(population)
+  }
+)
 
 

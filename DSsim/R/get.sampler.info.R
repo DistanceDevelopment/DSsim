@@ -1,4 +1,6 @@
 get.sampler.info <- function(shapefile, region.obj, meta = NULL){
+#Extracts the transect corrdinates and other information from the survey
+#shapefiles
   ID <- start.X <- start.Y <- end.X <- end.Y <- tot.length <- d7.length <- region <- NULL
   for(samp in seq(along = shapefile$shp$shp)){
     #segs <- nrow(survey.shapefile$shp$shp[[samp]]$points)/2

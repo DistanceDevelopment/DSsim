@@ -15,9 +15,9 @@ Date: 2015-03-03
 LazyLoad: yes
 Author: Laura Marshall <lhm@st-and.ac.uk>
 Maintainer: Laura Marshall <lhm@st-and.ac.uk>
-Description: Performs distance sampling simulations. It repeatedly 
-    generates instances of a user defined population within a given survey 
-    region, generates realisations of a survey design (currently these must 
+Description: Performs distance sampling simulations. It repeatedly
+    generates instances of a user defined population within a given survey
+    region, generates realisations of a survey design (currently these must
     be pre-generated using Distance software) and simulates the detection
     process. The data are then analysed so that the results can be compared for
     accuracy and precision across all replications. This will allow users to
@@ -25,66 +25,65 @@ Description: Performs distance sampling simulations. It repeatedly
     given their expectations about population distribution. Any uncertainty in
     population distribution or population parameters can be included by running
     the different survey designs for a number of different population
-    descriptions. An example simulation can be found in the help file 
+    descriptions. An example simulation can be found in the help file
     for make.simulation.
 License: GPL (>=2)
 Collate:
     'generic.functions.R'
+    'Survey.Design.R'
     'Region.R'
     'Density.R'
-    'Detectability.R'
     'Population.Description.R'
-    'Population.R'
-    'Line.Transect.R'
     'DDF.Data.R'
     'Single.Obs.DDF.Data.R'
-    'DDF.Analysis.R'
-    'DS.Analysis.R'
+    'Sample.Table.R'
+    'Region.Table.R'
+    'Detectability.R'
+    'Population.R'
+    'Obs.Table.R'
+    'Line.Transect.R'
+    'LT.Survey.Results.R'
     'DSM.Analysis.R'
-    'Survey.Design.R'
+    'Simulation.R'
     'LT.Design.R'
-    'PT.Design.R'
+    'LT.User.Specified.Design.R'
     'LT.Systematic.Design.R'
     'LT.Random.Design.R'
     'LT.EqSpace.ZZ.Design.R'
     'LT.EqAngle.ZZ.Design.R'
-    'LT.User.Specified.Design.R'
+    'DDF.Analysis.R'
+    'DS.Analysis.R'
+    'Class.Constructors.R'
     'Survey.R'
     'LT.Survey.R'
-    'Single.Obs.LT.Survey.R'
-    'Region.Table.R'
-    'Sample.Table.R'
-    'Obs.Table.R'
-    'LT.Survey.Results.R'
-    'Simulation.R'
+    'PT.Design.R'
     'Simulation.Summary.R'
-    'Class.Constructors.R'
-    'simulate.detections.R'
-    'rename.duplicates.R'
-    'coords.from.shapefile.R'
-    'is.gap.R'
-    'store.ddf.results.R'
-    'store.dht.results.R'
-    'add.summary.results.R'
-    'get.surface.constant.R'
-    'get.ave.density.R'
-    'get.surface.gam.R'
-    'generate.pop.D.R'
-    'generate.pop.N.R'
-    'calc.area.R'
-    'get.bound.box.R'
-    'get.shapefile.names.R'
-    'get.sampler.info.R'
-    'single.simulation.loop.R'
+    'Single.Obs.LT.Survey.R'
     'accumulate.PP.results.R'
     'add.dist.error.R'
-    'create.bins.R'
+    'add.summary.results.R'
+    'calc.area.R'
     'calc.poss.detect.dists.R'
     'check.intersection.R'
+    'check.shapefile.R'
+    'coords.from.shapefile.R'
+    'create.bins.R'
+    'description.summary.R'
+    'generate.pop.D.R'
+    'generate.pop.N.R'
+    'get.ave.density.R'
+    'get.bound.box.R'
+    'get.sampler.info.R'
+    'get.shapefile.names.R'
+    'get.surface.constant.R'
+    'get.surface.gam.R'
     'hn.detect.R'
     'hr.detect.R'
-    'uf.detect.R'
     'in.polygons.R'
-    'check.shapefile.R'
-    'description.summary.R'
-
+    'is.gap.R'
+    'rename.duplicates.R'
+    'simulate.detections.R'
+    'single.simulation.loop.R'
+    'store.ddf.results.R'
+    'store.dht.results.R'
+    'uf.detect.R'
