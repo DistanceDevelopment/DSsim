@@ -7,7 +7,13 @@ Notes
 
 New Features
 
-  *Uniform probability of detection in population detectability.
+  * Uniform probability of detection in population detectability.
+  * Now accepts all types of suitable ESRI shapefiles
+  
+Bug Fixes
+
+  * Gaps are now allowed to share a common boundary point with the strata /
+  survey region boundary.
 
 DSsim 1.0.3
 -----------
