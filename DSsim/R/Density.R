@@ -18,11 +18,6 @@
 #' gridpoints described in the density data.frames in the y-direction.
 #' @slot units Object of class \code{"numeric"}; The units of the grid 
 #' points.
-#' @section Methods:
-#' \describe{
-#'  \item{\code{add.hotspot}}{\code{signature=(object = "Density")}: adds a hotspot based on a gaussian decay to the density
-#'  surfaces.}
-#' }
 #' @keywords classes
 #' @seealso \code{\link{make.density}}
 #' @export
@@ -107,7 +102,7 @@ setMethod("add.hotspot","Density",
 )
 
 
-#' @rdname Density-class
+# @rdname Density-class
 setMethod(
   f = "plot",
   signature = "Density",

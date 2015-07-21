@@ -1,3 +1,10 @@
+#' @import methods 
+#' @import mgcv 
+#' @import mrds
+#' @import shapefiles
+#' @import splancs
+NULL
+
 #' S4 generic method to generate an instance of a population
 #'
 #' Uses the population description and detectability details to generate an 

@@ -3,17 +3,7 @@
 \docType{class}
 \name{Simulation-class}
 \alias{Simulation-class}
-\alias{plot,Simulation-method}
-\alias{show,Simulation-method}
-\alias{summary,Simulation-method}
 \title{S4 Class "Simulation"}
-\usage{
-\S4method{summary}{Simulation}(object, description.summary = TRUE, ...)
-
-\S4method{show}{Simulation}(object)
-
-\S4method{plot}{Simulation}(x, y, ...)
-}
 \description{
 S4 Class "Simulation"
 }

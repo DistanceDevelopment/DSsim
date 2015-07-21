@@ -57,7 +57,7 @@ setValidity("Population",
 
 # GENERIC METHODS DEFINITIONS --------------------------------------------
 
-#' @rdname Population-class
+# @rdname Population-class
 setMethod(
   f="plot",
   signature="Population",

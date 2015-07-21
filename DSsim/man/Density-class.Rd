@@ -3,12 +3,7 @@
 \docType{class}
 \name{Density-class}
 \alias{Density-class}
-\alias{plot,Density-method}
 \title{Class "Density"}
-\usage{
-\S4method{plot}{Density}(x, y, add = FALSE, plot.units = character(0),
-  contours = TRUE, style = "points", density.col = heat.colors(12), ...)
-}
 \description{
 Class \code{"Density"} is an S4 class containing a list of grids which
 describe the density of individuals / clusters of a population. The list
@@ -34,13 +29,6 @@ gridpoints described in the density data.frames in the y-direction.}
 \item{\code{units}}{Object of class \code{"numeric"}; The units of the grid
 points.}
 }}
-\section{Methods}{
-
-\describe{
- \item{\code{add.hotspot}}{\code{signature=(object = "Density")}: adds a hotspot based on a gaussian decay to the density
- surfaces.}
-}
-}
 \seealso{
 \code{\link{make.density}}
 }

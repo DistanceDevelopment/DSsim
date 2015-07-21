@@ -56,8 +56,7 @@ setValidity("Simulation.Summary",
 # GENERIC METHODS
 ################################################################################
 
-#' @rdname Simulation.Summary-class
-#' @aliases show,Simulation.Summary-method                                      
+# @rdname Simulation.Summary-class
 setMethod(
   f="show",   
   signature="Simulation.Summary",

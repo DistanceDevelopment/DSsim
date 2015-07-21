@@ -25,7 +25,7 @@ value specifying if the data should be binned for analysis.}
 \item{\code{cutpoints}}{Object of class \code{"character"}; gives the
 cutpoints of the bins for binned data analysis.}
 
-\item{\code{ddf.results}}{Object of class \code{"list"}; object of S3 class
+\item{\code{ddf.result}}{Object of class \code{"list"}; object of S3 class
 ddf.}
 }}
 \section{Methods}{

@@ -3,11 +3,7 @@
 \docType{class}
 \name{Single.Obs.DDF.Data-class}
 \alias{Single.Obs.DDF.Data-class}
-\alias{plot,Single.Obs.DDF.Data-method}
 \title{S4 Class "Single.Obs.DDF.Data"}
-\usage{
-\S4method{plot}{Single.Obs.DDF.Data}(x, y, ...)
-}
 \description{
 S4 Class "Single.Obs.DDF.Data"
 }

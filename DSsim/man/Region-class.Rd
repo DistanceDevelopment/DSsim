@@ -3,12 +3,7 @@
 \docType{class}
 \name{Region-class}
 \alias{Region-class}
-\alias{plot,Region-method}
 \title{S4 Class "Region"}
-\usage{
-\S4method{plot}{Region}(x, y, add = FALSE, plot.units = character(0),
-  region.col = NULL, gap.col = NULL, ...)
-}
 \description{
 S4 Class "Region"
 }

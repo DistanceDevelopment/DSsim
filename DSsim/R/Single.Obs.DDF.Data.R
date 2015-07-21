@@ -29,7 +29,7 @@ setValidity("Single.Obs.DDF.Data",
 
 # GENERIC METHODS DEFINITIONS --------------------------------------------
 
-#' @rdname Single.Obs.DDF.Data-class
+# @rdname Single.Obs.DDF.Data-class
 setMethod(
   f="plot",
   signature="Single.Obs.DDF.Data",

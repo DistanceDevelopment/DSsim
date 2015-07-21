@@ -19,7 +19,7 @@
 #'  value specifying if the data should be binned for analysis.
 #' @slot cutpoints Object of class \code{"character"}; gives the 
 #'  cutpoints of the bins for binned data analysis.
-#' @slot ddf.results Object of class \code{"list"}; object of S3 class
+#' @slot ddf.result Object of class \code{"list"}; object of S3 class
 #'  ddf.
 #' @section Methods:
 #' \describe{

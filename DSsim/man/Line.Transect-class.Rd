@@ -3,11 +3,7 @@
 \docType{class}
 \name{Line.Transect-class}
 \alias{Line.Transect-class}
-\alias{plot,Line.Transect-method}
 \title{S4 Class "Line.Transect"}
-\usage{
-\S4method{plot}{Line.Transect}(x, y, transect.ID = numeric(0), col = 1, ...)
-}
 \description{
 Class "Line.Transect" contains an instance of a Line Transect Survey
 }

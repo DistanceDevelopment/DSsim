@@ -126,7 +126,7 @@ setValidity("Simulation",
 
 # GENERIC METHODS DEFINITIONS --------------------------------------------
 
-#' @rdname Simulation-class
+# @rdname Simulation-class
 setMethod(
   f="summary",
   signature="Simulation",
@@ -268,7 +268,7 @@ setMethod(
   }
 )
 
-#' @rdname Simulation-class
+# @rdname Simulation-class
 setMethod(
   f="show",
   signature="Simulation",
@@ -279,7 +279,7 @@ setMethod(
 )
 
 
-#' @rdname Simulation-class
+# @rdname Simulation-class
 setMethod(
   f="plot",
   signature="Simulation",

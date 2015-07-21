@@ -3,11 +3,7 @@
 \docType{class}
 \name{LT.Survey.Results-class}
 \alias{LT.Survey.Results-class}
-\alias{plot,LT.Survey.Results-method}
 \title{S4 Class "LT.Survey.Results"}
-\usage{
-\S4method{plot}{LT.Survey.Results}(x, y, ...)
-}
 \description{
 S4 Class "LT.Survey.Results"
 }

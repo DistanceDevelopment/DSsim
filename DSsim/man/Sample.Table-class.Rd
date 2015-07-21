@@ -15,7 +15,7 @@ density and abundance.
 \section{Slots}{
 
 \describe{
-\item{\code{sample.slot}}{data.frame which is the sample table for dht}
+\item{\code{sample.table}}{data.frame which is the sample table for dht}
 }}
 \section{Objects from the Class}{
  Objects can be created by calls to the

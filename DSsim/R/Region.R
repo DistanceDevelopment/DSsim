@@ -134,7 +134,7 @@ setMethod(
   }
 )
 
-#' @rdname Region-class
+# @rdname Region-class
 setMethod(
   f="plot",
   signature="Region",

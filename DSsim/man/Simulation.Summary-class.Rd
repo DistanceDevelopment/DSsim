@@ -3,11 +3,7 @@
 \docType{class}
 \name{Simulation.Summary-class}
 \alias{Simulation.Summary-class}
-\alias{show,Simulation.Summary-method}
 \title{S4 Class "Simulation.Summary"}
-\usage{
-\S4method{show}{Simulation.Summary}(object)
-}
 \description{
 Class "Simulation.Summary"
 }

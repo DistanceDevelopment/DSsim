@@ -67,7 +67,7 @@ setMethod(
 
 # GENERIC METHODS DEFINITIONS --------------------------------------------
 
-#' @rdname LT.Survey.Results-class
+# @rdname LT.Survey.Results-class
 setMethod(
   f="plot",
   signature="LT.Survey.Results",

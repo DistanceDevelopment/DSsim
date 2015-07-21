@@ -3,11 +3,7 @@
 \docType{class}
 \name{Population-class}
 \alias{Population-class}
-\alias{plot,Population-method}
 \title{S4 Class "Population"}
-\usage{
-\S4method{plot}{Population}(x, y, type = "p")
-}
 \description{
 S4 Class "Population"
 }
