@@ -103,6 +103,8 @@ setMethod("add.hotspot","Density",
 
 
 # @rdname Density-class
+#' @importFrom grDevices heat.colors
+#' @importFrom graphics image contour plot points axTicks axis 
 setMethod(
   f = "plot",
   signature = "Density",

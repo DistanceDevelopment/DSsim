@@ -1,4 +1,4 @@
-
+#' @importFrom stats rpois runif
 generate.pop.D <- function(population.description, region.obj){
 #this function generates a population based on the values in the 
 #Density object grid (not from a fixed population size)

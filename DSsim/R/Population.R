@@ -58,6 +58,7 @@ setValidity("Population",
 # GENERIC METHODS DEFINITIONS --------------------------------------------
 
 # @rdname Population-class
+#' @importFrom graphics points
 setMethod(
   f="plot",
   signature="Population",

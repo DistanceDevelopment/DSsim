@@ -127,6 +127,7 @@ setValidity("Simulation",
 # GENERIC METHODS DEFINITIONS --------------------------------------------
 
 # @rdname Simulation-class
+#' @importFrom stats na.omit
 setMethod(
   f="summary",
   signature="Simulation",
@@ -361,9 +362,9 @@ setMethod(
 )
 
 #' @rdname run.analysis-methods
+#' @importFrom stats na.omit
 setMethod(
   f="run.analysis",
-  #signature=c("Simulation","Single.Obs.DDF.Data"),
   signature=c("Simulation","DDF.Data"),
   definition=function(object, data, dht = TRUE){
     ddf.analyses <- object@ddf.analyses
@@ -390,6 +391,7 @@ setMethod(
 
 
 #' @rdname run-methods
+#' @importFrom parallel detectCores makeCluster clusterEvalQ parLapply stopCluster
 setMethod(
   f="run",
   signature="Simulation",

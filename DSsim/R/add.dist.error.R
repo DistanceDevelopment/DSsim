@@ -1,3 +1,4 @@
+#' @importFrom stats rnorm rlnorm rbeta
 add.dist.error <- function(no.files, path, cv = NULL, distribution, beta.params = NULL){
   for(i in 1:no.files){
     load(paste(path,"dataset_",i,".robj", sep = ""))

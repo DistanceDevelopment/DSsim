@@ -135,6 +135,7 @@ setMethod(
 )
 
 # @rdname Region-class
+#' @importFrom graphics polygon plot axTicks axis
 setMethod(
   f="plot",
   signature="Region",

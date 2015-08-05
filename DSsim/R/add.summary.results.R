@@ -1,3 +1,4 @@
+#' @importFrom stats na.omit sd
 add.summary.results <- function(results){
   strata.names <- dimnames(results$individuals$summary)[[1]]
   reps <- length(dimnames(results$individuals$summary)[[3]])-2

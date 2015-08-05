@@ -1,3 +1,4 @@
+#' @importFrom stats rbinom
 simulate.detections <- function(poss.distances, detectability){
   #calculate.probability of detection
   probs <- switch(detectability@key.function,

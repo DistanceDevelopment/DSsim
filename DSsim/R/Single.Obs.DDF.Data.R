@@ -30,6 +30,7 @@ setValidity("Single.Obs.DDF.Data",
 # GENERIC METHODS DEFINITIONS --------------------------------------------
 
 # @rdname Single.Obs.DDF.Data-class
+#' @importFrom graphics points
 setMethod(
   f="plot",
   signature="Single.Obs.DDF.Data",

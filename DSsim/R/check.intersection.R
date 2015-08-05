@@ -1,3 +1,4 @@
+#' @importFrom graphics lines
 check.intersection <- function(transect, point, display.diagnostics = FALSE){
   #find the gradient of the transect m=deltaY/deltaX
   transect.m <- (transect[["end.Y"]]-transect[["start.Y"]])/(transect[["end.X"]]-transect[["start.X"]]) 

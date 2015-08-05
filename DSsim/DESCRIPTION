@@ -15,8 +15,8 @@ Date: 2015-07-07
 LazyLoad: yes
 Author: Laura Marshall <lhm@st-and.ac.uk>
 Maintainer: Laura Marshall <lhm@st-and.ac.uk>
-Description: Note this is a beta version of 1.0.4 developed for Distance 7 
-    Beta 1 and not for release on CRAN. 
+Description: Note this is a beta version of 1.0.4 developed for Distance 7
+    Beta 1 and not for release on CRAN.
     Performs distance sampling simulations. It repeatedly
     generates instances of a user defined population within a given survey
     region, generates realisations of a survey design (currently these must

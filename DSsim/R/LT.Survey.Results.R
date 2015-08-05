@@ -68,6 +68,7 @@ setMethod(
 # GENERIC METHODS DEFINITIONS --------------------------------------------
 
 # @rdname LT.Survey.Results-class
+#' @importFrom graphics plot
 setMethod(
   f="plot",
   signature="LT.Survey.Results",

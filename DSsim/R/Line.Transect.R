@@ -53,6 +53,7 @@ setValidity("Line.Transect",
 # GENERIC METHODS DEFINITIONS --------------------------------------------
 
 # @rdname Line.Transect-class
+#' @importFrom graphics lines
 setMethod(
   f="plot",
   signature="Line.Transect",
