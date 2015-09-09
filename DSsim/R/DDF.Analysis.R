@@ -19,6 +19,10 @@
 #'  value specifying if the data should be binned for analysis.
 #' @slot cutpoints Object of class \code{"character"}; gives the 
 #'  cutpoints of the bins for binned data analysis.
+#' @slot analysis.strata Dataframe with two columns ("design.id" and 
+#' "analysis.id"). The former gives the strata names as defined in the
+#' design (i.e. the region object) the second specifies how they should 
+#' be grouped (into less strata) for the analyses
 #' @slot ddf.result Object of class \code{"list"}; object of S3 class
 #'  ddf.
 #' @section Methods:
@@ -35,12 +39,13 @@ setClass(Class = "DDF.Analysis", representation(dsmodel = "formula",
                                                 truncation = "numeric",
                                                 binned.data = "logical",
                                                 cutpoints = "numeric",
+                                                analysis.strata = "data.frame",
                                                 ddf.result = "list", "VIRTUAL"))
                                                 
 setMethod(
   f="initialize",
   signature="DDF.Analysis",
-  definition=function(.Object, dsmodel = call(), criteria, truncation, binned.data, cutpoints){
+  definition=function(.Object, dsmodel = call(), criteria, analysis.strata, truncation, binned.data, cutpoints){
     if(criteria %in% c("aic", "AIC")){
     }else{
       warning("This selection criteria is not currently supported, it will be changed to AIC", call. = FALSE, immediate. = TRUE)
@@ -51,6 +56,9 @@ setMethod(
     .Object@truncation <- truncation
     .Object@binned.data <- binned.data
     .Object@cutpoints <- cutpoints
+    .Object@analysis.strata <- analysis.strata
+    .Object@analysis.strata$design.id <- as.character(.Object@analysis.strata$design.id)
+    .Object@analysis.strata$analysis.id <- as.character(.Object@analysis.strata$analysis.id)
     #Check object is valid
     validObject(.Object)
     # return object

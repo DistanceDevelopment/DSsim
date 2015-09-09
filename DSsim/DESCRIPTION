@@ -10,8 +10,8 @@ Suggests:
     parallel
 Type: Package
 Title: Distance Sampling Simulations
-Version: 1.0.3-2
-Date: 2015-07-07
+Version: 1.0.3-3
+Date: 2015-08-20
 LazyLoad: yes
 Author: Laura Marshall <lhm@st-and.ac.uk>
 Maintainer: Laura Marshall <lhm@st-and.ac.uk>
@@ -83,9 +83,11 @@ Collate:
     'hr.detect.R'
     'in.polygons.R'
     'is.gap.R'
+    'modify.strata.for.analysis.R'
     'rename.duplicates.R'
     'simulate.detections.R'
     'single.simulation.loop.R'
     'store.ddf.results.R'
     'store.dht.results.R'
     'uf.detect.R'
+

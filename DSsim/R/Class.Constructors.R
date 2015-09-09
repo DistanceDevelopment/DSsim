@@ -245,6 +245,10 @@ make.detectability <- function(key.function, scale.param, shape.param = numeric(
 #' @param mrmodel not yet implemented
 #' @param method character only "ds" normal distance sampling currently implemented
 #' @param criteria character model selection criteria (AIC, AICc, BIC) - only AIC implemented at present.
+#' @param analysis.strata Dataframe with two columns ("design.id" and 
+#' "analysis.id"). The former gives the strata names as defined in the
+#' design (i.e. the region object) the second specifies how they should 
+#' be grouped (into less strata) for the analyses
 #' @param truncation numeric truncation distance for analyses
 #' @param binned.data logical whether the data should be analsed in bins
 #' @param cutpoints gives the cutpoints of the binned data
@@ -257,11 +261,11 @@ make.detectability <- function(key.function, scale.param, shape.param = numeric(
 #'  formula = ~1),~cds(key = "hr", formula = ~1)), method = "ds", 
 #'  criteria = "AIC")
 #'
-make.ddf.analysis.list <- function(dsmodel, mrmodel = NULL, method, criteria = "AIC", truncation = numeric(0), binned.data = FALSE, cutpoints = numeric(0)){
+make.ddf.analysis.list <- function(dsmodel, mrmodel = NULL, method, criteria = "AIC", analysis.strata = NULL, truncation = numeric(0), binned.data = FALSE, cutpoints = numeric(0)){
   ddf.analyses <- list()
   if(method == "ds"){
     for(a in seq(along = dsmodel)){
-      ddf.analyses[[a]] <- new(Class = "DS.Analysis", dsmodel = dsmodel[[a]], criteria = criteria, truncation = truncation, binned.data = binned.data, cutpoints = cutpoints)
+      ddf.analyses[[a]] <- new(Class = "DS.Analysis", dsmodel = dsmodel[[a]], criteria = criteria, analysis.strata, truncation = truncation, binned.data = binned.data, cutpoints = cutpoints)
     }
   }else{
     stop("Double observer methods are not yet implemented", call. = FALSE)
@@ -349,8 +353,20 @@ make.ddf.analysis.list <- function(dsmodel, mrmodel = NULL, method, criteria = "
 make.simulation <- function(reps, single.transect.set = FALSE, double.observer = FALSE, region.obj, design.obj, population.description.obj, detectability.obj, ddf.analyses.list){
   #Make the results arrays and store in a list
   no.strata <- ifelse(length(region.obj@strata.name) > 0, length(region.obj@strata.name)+1, 1) 
+  #Check to see if the strata are grouped in the analyses
+  new.strata.names <- NULL
+  if(!is.null(ddf.analyses.list[[1]]@analysis.strata)){
+    new.strata.names <- unique(ddf.analyses.list[[1]]@analysis.strata$analysis.id)  
+  }else{
+    new.strata.names <- NULL
+  }
   if(length(region.obj@strata.name) > 0){
-    strata.name <- c(sort(region.obj@strata.name), "Total")
+    if(!is.null(new.strata.names)){
+      strata.name <- c(sort(new.strata.names), "Total")
+      no.strata <- length(strata.name)
+    }else{
+      strata.name <- c(sort(region.obj@strata.name), "Total")  
+    }
   }else{
     strata.name <- region.obj@region.name
   }

@@ -1,4 +1,4 @@
-#' @include Detectability.R
+ #' @include Detectability.R
 #' @include Population.Description.R
 #' @include Survey.Design.R
 #' @include Region.R
@@ -135,31 +135,55 @@ setMethod(
     if(description.summary){
       description.summary()
     }
-    x <- object
-    reps <- dim(x@results$individuals$N)[3]-2
+    reps <- dim(object@results$individuals$N)[3]-2
     #Calculate true values
-    strata.names <- x@region@strata.name
+    strata.names <- object@region@strata.name
     strata.order <- NULL
-    for(strat in seq(along = strata.names)){
-      strata.order <- c(strata.order, which(strata.names == dimnames(x@results$individuals$N)[[1]][strat]))
-    }
-    #? same as strata.order <- order(strata.names)?
-    N <- x@population.description@N
-    if(length(strata.names) > 0){
-      N <- N[strata.order]
+    #Deal with any grouping of strata
+    analysis.strata <- object@ddf.analyses[[1]]@analysis.strata
+    if(!is.null(analysis.strata)){
+      #get strata names
+      sub.strata.names <- strata.names
+      strata.names <- unique(analysis.strata$analysis.id)
+      #sum areas of sub strata
+      areas <- N <- rep(NA, length(strata.names))
+      for(strat in seq(along = strata.names)){
+        #Get sub strata names
+        sub.strata <- analysis.strata$design.id[which(analysis.strata$analysis.id == strata.names[strat])]
+        #Find their index
+        index <- which(sub.strata.names %in% sub.strata)
+        areas[strat] <- sum(object@region@area[index]) 
+        N[strat] <- sum(object@population.description@N[index])
+      }
+      #Add on totals
+      areas <- c(areas, sum(areas))
       N <- c(N, sum(N))
-      areas <- c(x@region@area[strata.order], sum(x@region@area))
-      strata.names <- c(strata.names[strata.order], "Pooled")
+    #Otherwise process areas and Population size as normal
     }else{
-      areas <- x@region@area
+      #Re ordering in the same way as the results tables (think dht arranges them)
+      for(strat in seq(along = strata.names)){
+        strata.order <- c(strata.order, which(strata.names == dimnames(object@results$individuals$N)[[1]][strat]))
+      }
+      N <- object@population.description@N
+      if(length(strata.names) > 0){
+        N <- N[strata.order]
+        N <- c(N, sum(N))
+        areas <- c(object@region@area[strata.order], sum(object@region@area))
+        strata.names <- c(strata.names[strata.order], "Pooled")
+        
+      }else{
+        areas <- object@region@area
+      }
     }
-    if(is.null(x@results$clusters)){
+    if(is.null(object@results$clusters)){
+      #If there are no clusters
       true.N.individuals <- N
       true.D.individuals <- true.N.individuals/areas
     }else{
+      #If there are clusters
       true.N.clusters <- N
       #calculate expected cluster size
-      size.table <- x@population.description@size.table
+      size.table <- object@population.description@size.table
       true.expected.s <- sum(size.table$size*size.table$prob)
       #calculate expected number of individuals
       true.N.individuals <- true.N.clusters*true.expected.s
@@ -173,97 +197,97 @@ setMethod(
     zero.n <- array(NA, dim = c(reps, length(true.N.individuals)))
     for(strat in seq(along = true.N.individuals)){
       for(i in 1:reps){
-        capture[i, strat] <- ifelse(x@results$individuals$N[strat, "lcl", i] < true.N.individuals[strat] & x@results$individuals$N[strat, "ucl", i] > true.N.individuals[strat], TRUE, FALSE)
-        capture.D[i, strat] <- ifelse(x@results$individuals$D[strat, "lcl", i] < true.D.individuals[strat] & x@results$individuals$D[strat, "ucl", i] > true.D.individuals[strat], TRUE, FALSE)
-        zero.n[i, strat] <- ifelse(x@results$individuals$summary[strat, "n", i] == 0, TRUE, FALSE)
+        capture[i, strat] <- ifelse(object@results$individuals$N[strat, "lcl", i] < true.N.individuals[strat] & object@results$individuals$N[strat, "ucl", i] > true.N.individuals[strat], TRUE, FALSE)
+        capture.D[i, strat] <- ifelse(object@results$individuals$D[strat, "lcl", i] < true.D.individuals[strat] & object@results$individuals$D[strat, "ucl", i] > true.D.individuals[strat], TRUE, FALSE)
+        zero.n[i, strat] <- ifelse(object@results$individuals$summary[strat, "n", i] == 0, TRUE, FALSE)
       }
     }
     #Calculates the percentage of times the true value is whithin the confidence intervals
     percent.capture <- (apply(capture, 2, sum, na.rm = TRUE)/nrow(na.omit(capture)))*100
     percent.capture.D <- (apply(capture.D, 2, sum, na.rm = TRUE)/nrow(na.omit(capture)))*100
     zero.n <- apply(zero.n, 2, sum)
-    individual.summary <- data.frame(mean.Cover.Area = x@results$individuals$summary[,"CoveredArea","mean"],
-                                     mean.Effort = x@results$individuals$summary[,"Effort","mean"],
-                                     mean.n = x@results$individuals$summary[,"n","mean"],
+    individual.summary <- data.frame(mean.Cover.Area = object@results$individuals$summary[,"CoveredArea","mean"],
+                                     mean.Effort = object@results$individuals$summary[,"Effort","mean"],
+                                     mean.n = object@results$individuals$summary[,"n","mean"],
                                      no.zero.n = zero.n,
-                                     mean.ER = x@results$individuals$summary[,"ER","mean"],
-                                     mean.se.ER = x@results$individuals$summary[,"se.ER","mean"],
-                                     sd.mean.ER = x@results$individuals$summary[,"ER","sd"])
+                                     mean.ER = object@results$individuals$summary[,"ER","mean"],
+                                     mean.se.ER = object@results$individuals$summary[,"se.ER","mean"],
+                                     sd.mean.ER = object@results$individuals$summary[,"ER","sd"])
     individual.N <- data.frame(Truth = true.N.individuals,
-                                   mean.Estimate = x@results$individuals$N[,"Estimate","mean"],
-                                   percent.bias = (x@results$individuals$N[,"Estimate","mean"] - true.N.individuals)/true.N.individuals*100,
-                                   #lcl = x@results$individuals$N[,"lcl","mean"],
-                                   #ucl = x@results$individuals$N[,"ucl","mean"],
+                                   mean.Estimate = object@results$individuals$N[,"Estimate","mean"],
+                                   percent.bias = (object@results$individuals$N[,"Estimate","mean"] - true.N.individuals)/true.N.individuals*100,
+                                   #lcl = object@results$individuals$N[,"lcl","mean"],
+                                   #ucl = object@results$individuals$N[,"ucl","mean"],
                                    CI.coverage.prob = percent.capture/100,
-                                   mean.se = x@results$individuals$N[,"se","mean"],
-                                   sd.of.means = x@results$individuals$N[,"Estimate","sd"])
+                                   mean.se = object@results$individuals$N[,"se","mean"],
+                                   sd.of.means = object@results$individuals$N[,"Estimate","sd"])
     individual.D <- data.frame(Truth = true.D.individuals,
-                                   mean.Estimate = x@results$individuals$D[,"Estimate","mean"],
-                                   percent.bias = (x@results$individuals$D[,"Estimate","mean"] - true.D.individuals)/true.D.individuals*100,
-                                   #lcl = x@results$individuals$N[,"lcl","mean"],
-                                   #ucl = x@results$individuals$N[,"ucl","mean"],
+                                   mean.Estimate = object@results$individuals$D[,"Estimate","mean"],
+                                   percent.bias = (object@results$individuals$D[,"Estimate","mean"] - true.D.individuals)/true.D.individuals*100,
+                                   #lcl = object@results$individuals$N[,"lcl","mean"],
+                                   #ucl = object@results$individuals$N[,"ucl","mean"],
                                    CI.coverage.prob = percent.capture.D/100,
-                                   mean.se = x@results$individuals$D[,"se","mean"],
-                                   sd.of.means = x@results$individuals$D[,"Estimate","sd"])
+                                   mean.se = object@results$individuals$D[,"se","mean"],
+                                   sd.of.means = object@results$individuals$D[,"Estimate","sd"])
 
-    if(!is.null(x@results$clusters)){
+    if(!is.null(object@results$clusters)){
       capture <- array(NA, dim = c(reps, length(true.N.individuals)))
       capture.D <- array(NA, dim = c(reps, length(true.D.individuals)))
       zero.n <- array(NA, dim = c(reps, length(true.N.individuals)))
       for(strat in seq(along = true.N.clusters)){
         for(i in 1:reps){
-          capture[i, strat] <- ifelse(x@results$clusters$N[strat, "lcl", i] < true.N.clusters[strat] & x@results$clusters$N[strat, "ucl", i] > true.N.clusters[strat], TRUE, FALSE)
-          capture.D[i, strat] <- ifelse(x@results$clusters$D[strat, "lcl", i] < true.D.clusters[strat] & x@results$clusters$D[strat, "ucl", i] > true.D.clusters[strat], TRUE, FALSE)
-          zero.n[i, strat] <- ifelse(x@results$clusters$summary[strat, "n", i] == 0, TRUE, FALSE)
+          capture[i, strat] <- ifelse(object@results$clusters$N[strat, "lcl", i] < true.N.clusters[strat] & object@results$clusters$N[strat, "ucl", i] > true.N.clusters[strat], TRUE, FALSE)
+          capture.D[i, strat] <- ifelse(object@results$clusters$D[strat, "lcl", i] < true.D.clusters[strat] & object@results$clusters$D[strat, "ucl", i] > true.D.clusters[strat], TRUE, FALSE)
+          zero.n[i, strat] <- ifelse(object@results$clusters$summary[strat, "n", i] == 0, TRUE, FALSE)
         }
       }
       percent.capture <- (apply(capture, 2, sum, na.rn = TRUE)/nrow(na.omit(capture)))*100
       percent.capture.D <- (apply(capture.D, 2, sum, na.rm = TRUE)/nrow(na.omit(capture.D)))*100
       zero.n <- apply(zero.n, 2, sum)
-      cluster.summary <- data.frame(mean.Cover.Area = x@results$clusters$summary[,"CoveredArea","mean"],
-                                       mean.Effort = x@results$clusters$summary[,"Effort","mean"],
-                                       mean.n = x@results$clusters$summary[,"n","mean"],
+      cluster.summary <- data.frame(mean.Cover.Area = object@results$clusters$summary[,"CoveredArea","mean"],
+                                       mean.Effort = object@results$clusters$summary[,"Effort","mean"],
+                                       mean.n = object@results$clusters$summary[,"n","mean"],
                                        no.zero.n = zero.n,
-                                       mean.k = x@results$clusters$summary[,"k","mean"],
-                                       mean.ER = x@results$clusters$summary[,"ER","mean"],
-                                       mean.se.ER = x@results$clusters$summary[,"se.ER","mean"],
-                                       sd.mean.ER = x@results$clusters$summary[,"ER","sd"])
+                                       mean.k = object@results$clusters$summary[,"k","mean"],
+                                       mean.ER = object@results$clusters$summary[,"ER","mean"],
+                                       mean.se.ER = object@results$clusters$summary[,"se.ER","mean"],
+                                       sd.mean.ER = object@results$clusters$summary[,"ER","sd"])
       cluster.N <- data.frame(Truth = true.N.clusters,
-                                     mean.Estimate = x@results$clusters$N[,"Estimate","mean"],
-                                     percent.bias = (x@results$clusters$N[,"Estimate","mean"] - true.N.clusters)/true.N.clusters*100,
-                                     #lcl = x@results$clusters$N[,"lcl","mean"],
-                                     #ucl = x@results$clusters$N[,"ucl","mean"],
+                                     mean.Estimate = object@results$clusters$N[,"Estimate","mean"],
+                                     percent.bias = (object@results$clusters$N[,"Estimate","mean"] - true.N.clusters)/true.N.clusters*100,
+                                     #lcl = object@results$clusters$N[,"lcl","mean"],
+                                     #ucl = object@results$clusters$N[,"ucl","mean"],
                                      CI.coverage.prob = percent.capture/100,
-                                     mean.se = x@results$clusters$N[,"se","mean"],
-                                     sd.of.means = x@results$clusters$N[,"Estimate","sd"])
+                                     mean.se = object@results$clusters$N[,"se","mean"],
+                                     sd.of.means = object@results$clusters$N[,"Estimate","sd"])
       cluster.D <- data.frame(Truth = true.D.clusters,
-                                     mean.Estimate = x@results$clusters$D[,"Estimate","mean"],
-                                     percent.bias = abs(x@results$clusters$D[,"Estimate","mean"] - true.D.clusters)/true.D.clusters*100,
-                                     #lcl = x@results$clusters$N[,"lcl","mean"],
-                                     #ucl = x@results$clusters$N[,"ucl","mean"],
+                                     mean.Estimate = object@results$clusters$D[,"Estimate","mean"],
+                                     percent.bias = abs(object@results$clusters$D[,"Estimate","mean"] - true.D.clusters)/true.D.clusters*100,
+                                     #lcl = object@results$clusters$N[,"lcl","mean"],
+                                     #ucl = object@results$clusters$N[,"ucl","mean"],
                                      CI.coverage.prob = percent.capture.D/100,
-                                     mean.se = x@results$clusters$D[,"se","mean"],
-                                     sd.of.means = x@results$clusters$D[,"Estimate","sd"])
+                                     mean.se = object@results$clusters$D[,"se","mean"],
+                                     sd.of.means = object@results$clusters$D[,"Estimate","sd"])
       expected.size <- data.frame(Truth = true.expected.s,
-                                  mean.Expected.S = x@results$expected.size[,"Expected.S","mean"],
-                                  percent.bias = abs(true.expected.s - x@results$expected.size[,"Expected.S","mean"])/true.expected.s*100,
-                                  mean.se.ExpS = x@results$expected.size[,"se.Expected.S","mean"],
-                                  sd.mean.ExpS = x@results$expected.size[,"Expected.S","sd"])
+                                  mean.Expected.S = object@results$expected.size[,"Expected.S","mean"],
+                                  percent.bias = abs(true.expected.s - object@results$expected.size[,"Expected.S","mean"])/true.expected.s*100,
+                                  mean.se.ExpS = object@results$expected.size[,"se.Expected.S","mean"],
+                                  sd.mean.ExpS = object@results$expected.size[,"Expected.S","sd"])
       clusters <- list(summary = cluster.summary, N = cluster.N, D = cluster.D)
     }
-    detection <- data.frame(mean.observed.Pa = x@results$Detection[,"True.Pa","mean"],
-                            mean.estimate.Pa = x@results$Detection[,"Pa","mean"],
-                            sd.estimate.Pa = x@results$Detection[,"Pa","sd"],
-                            mean.ESW = x@results$Detection[,"ESW","mean"],
-                            sd.ESW = x@results$Detection[,"ESW","sd"])
+    detection <- data.frame(mean.observed.Pa = object@results$Detection[,"True.Pa","mean"],
+                            mean.estimate.Pa = object@results$Detection[,"Pa","mean"],
+                            sd.estimate.Pa = object@results$Detection[,"Pa","sd"],
+                            mean.ESW = object@results$Detection[,"ESW","mean"],
+                            sd.ESW = object@results$Detection[,"ESW","sd"])
     #Find how many iterations failed
     no.fails <- length(which(is.na(object@results$Detection[1,1,1:object@reps])))
     #print(individual.N.est)
     individuals <- list(summary = individual.summary, N = individual.N, D = individual.D)
-    if(!is.null(x@results$clusters)){
-      summary.x <- new(Class = "Simulation.Summary", region.name = x@region@region.name, total.reps = object@reps, failures = no.fails, individuals = individuals, clusters = clusters, expected.size = expected.size, detection = detection)
+    if(!is.null(object@results$clusters)){
+      summary.x <- new(Class = "Simulation.Summary", region.name = object@region@region.name, total.reps = object@reps, failures = no.fails, individuals = individuals, clusters = clusters, expected.size = expected.size, detection = detection)
     }else{
-      summary.x <- new(Class = "Simulation.Summary", region.name = x@region@region.name, total.reps = object@reps, failures = no.fails, individuals = individuals, detection = detection)
+      summary.x <- new(Class = "Simulation.Summary", region.name = object@region@region.name, total.reps = object@reps, failures = no.fails, individuals = individuals, detection = detection)
     }
     return(summary.x)
   }

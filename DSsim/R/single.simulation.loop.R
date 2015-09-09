@@ -59,6 +59,14 @@ single.simulation.loop <- function(i, object, save.data, load.data, data.path = 
     if(!is.null(ddf.results)){
       #Store ddf results
       object@results$Detection <- store.ddf.results(object@results$Detection, ddf.results, i, n.in.covered)
+      #Check to see if the stratification is to be modified for analysis
+      analysis.strata <- object@ddf.analyses[[1]]@analysis.strata
+      if(!is.null(analysis.strata)){
+        new.tables <- modify.strata.for.analysis(analysis.strata, obs.table, sample.table, region.table) 
+        obs.table <- new.tables$obs.table
+        sample.table <- new.tables$sample.table
+        region.table <- new.tables$region.table
+      }
       #Compute density / abundance estimates
       compute.dht = TRUE
       if(compute.dht){

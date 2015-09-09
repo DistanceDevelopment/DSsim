@@ -5,7 +5,8 @@
 \title{Creates a list of DDF.Analysis objects}
 \usage{
 make.ddf.analysis.list(dsmodel, mrmodel = NULL, method, criteria = "AIC",
-  truncation = numeric(0), binned.data = FALSE, cutpoints = numeric(0))
+  analysis.strata = NULL, truncation = numeric(0), binned.data = FALSE,
+  cutpoints = numeric(0))
 }
 \arguments{
 \item{dsmodel}{list of distance sampling model formula specifying the detection function (see \code{?ddf} for further details)}
@@ -15,6 +16,11 @@ make.ddf.analysis.list(dsmodel, mrmodel = NULL, method, criteria = "AIC",
 \item{method}{character only "ds" normal distance sampling currently implemented}
 
 \item{criteria}{character model selection criteria (AIC, AICc, BIC) - only AIC implemented at present.}
+
+\item{analysis.strata}{Dataframe with two columns ("design.id" and
+"analysis.id"). The former gives the strata names as defined in the
+design (i.e. the region object) the second specifies how they should
+be grouped (into less strata) for the analyses}
 
 \item{truncation}{numeric truncation distance for analyses}
 

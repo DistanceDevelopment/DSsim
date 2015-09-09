@@ -25,6 +25,11 @@ value specifying if the data should be binned for analysis.}
 \item{\code{cutpoints}}{Object of class \code{"character"}; gives the
 cutpoints of the bins for binned data analysis.}
 
+\item{\code{analysis.strata}}{Dataframe with two columns ("design.id" and
+"analysis.id"). The former gives the strata names as defined in the
+design (i.e. the region object) the second specifies how they should
+be grouped (into less strata) for the analyses}
+
 \item{\code{ddf.result}}{Object of class \code{"list"}; object of S3 class
 ddf.}
 }}
