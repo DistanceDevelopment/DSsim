@@ -261,7 +261,7 @@ make.detectability <- function(key.function, scale.param, shape.param = numeric(
 #'  formula = ~1),~cds(key = "hr", formula = ~1)), method = "ds", 
 #'  criteria = "AIC")
 #'
-make.ddf.analysis.list <- function(dsmodel, mrmodel = NULL, method, criteria = "AIC", analysis.strata = NULL, truncation = numeric(0), binned.data = FALSE, cutpoints = numeric(0)){
+make.ddf.analysis.list <- function(dsmodel, mrmodel = NULL, method, criteria = "AIC", analysis.strata = data.frame(), truncation = numeric(0), binned.data = FALSE, cutpoints = numeric(0)){
   ddf.analyses <- list()
   if(method == "ds"){
     for(a in seq(along = dsmodel)){
@@ -355,7 +355,7 @@ make.simulation <- function(reps, single.transect.set = FALSE, double.observer =
   no.strata <- ifelse(length(region.obj@strata.name) > 0, length(region.obj@strata.name)+1, 1) 
   #Check to see if the strata are grouped in the analyses
   new.strata.names <- NULL
-  if(!is.null(ddf.analyses.list[[1]]@analysis.strata)){
+  if(nrow(ddf.analyses.list[[1]]@analysis.strata) > 0){
     new.strata.names <- unique(ddf.analyses.list[[1]]@analysis.strata$analysis.id)  
   }else{
     new.strata.names <- NULL

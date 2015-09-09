@@ -57,6 +57,7 @@ setMethod(
     .Object@binned.data <- binned.data
     .Object@cutpoints <- cutpoints
     .Object@analysis.strata <- analysis.strata
+    #make sure they are characters not factors
     .Object@analysis.strata$design.id <- as.character(.Object@analysis.strata$design.id)
     .Object@analysis.strata$analysis.id <- as.character(.Object@analysis.strata$analysis.id)
     #Check object is valid

@@ -141,7 +141,7 @@ setMethod(
     strata.order <- NULL
     #Deal with any grouping of strata
     analysis.strata <- object@ddf.analyses[[1]]@analysis.strata
-    if(!is.null(analysis.strata)){
+    if(nrow(analysis.strata) > 0){
       #get strata names
       sub.strata.names <- strata.names
       strata.names <- unique(analysis.strata$analysis.id)
