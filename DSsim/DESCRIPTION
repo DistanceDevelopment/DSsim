@@ -10,8 +10,8 @@ Suggests:
     parallel
 Type: Package
 Title: Distance Sampling Simulations
-Version: 1.0.3-3
-Date: 2015-08-20
+Version: 1.0.4
+Date: 2015-09-10
 LazyLoad: yes
 Author: Laura Marshall <lhm@st-and.ac.uk>
 Maintainer: Laura Marshall <lhm@st-and.ac.uk>
@@ -90,4 +90,3 @@ Collate:
     'store.ddf.results.R'
     'store.dht.results.R'
     'uf.detect.R'
-
