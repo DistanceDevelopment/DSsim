@@ -73,10 +73,10 @@ setMethod(
   f="plot",
   signature="LT.Survey.Results",
   definition=function(x, y, ...){
-    plot(x@region)
-    plot(x@transects)
-    plot(x@population)
-    plot(x@ddf.data)
+    plot(x@region, ...)
+    plot(x@transects, ...)
+    plot(x@population, ...)
+    plot(x@ddf.data, ...)
     invisible(x)
   }
 )
