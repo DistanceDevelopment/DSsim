@@ -7,8 +7,9 @@ Notes
 
 New Features
 
-  * Uniform probability of detection in population detectability.
+  * Uniform probability of detection in population detectability
   * Now accepts all types of suitable ESRI shapefiles
+  * make.ddf.analysis.list now can optionally take in a data.frame which describes how strata should be grouped for analysis. See ?make.ddf.analysis.list
   
 Bug Fixes
 
