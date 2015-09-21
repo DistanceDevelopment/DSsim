@@ -432,9 +432,7 @@ setMethod(
     #set the transect index to 1
     orig.file.index <- object@design@file.index
     object@design@file.index <- 1
-    if(run.parallel){
-      #run in parallel
-      require(parallel)
+    if(run.parallel & requireNamespace(parallel, quietly = TRUE)){
       # counts the number of cores you have
       nCores <- getOption("cl.cores", detectCores())
       if(!is.na(max.cores)){
@@ -447,6 +445,10 @@ setMethod(
       object <- accumulate.PP.results(simulation = object, results = results)
       stopCluster(myCluster)
     }else{
+      #Check that it wasn't trying to run parallel
+      if(run.parallel){
+        warning("Could not run in parallel, library(parallel) is not installed.")
+      }
       #otherwise loop
       for(i in 1:object@reps){
         object@results <- single.simulation.loop(i, object, save.data = save.data, load.data = load.data, data.path = data.path)
