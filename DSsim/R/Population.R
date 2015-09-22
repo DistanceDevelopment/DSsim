@@ -71,8 +71,8 @@ setValidity("Population",
 setMethod(
   f="plot",
   signature="Population",
-  definition=function(x, y, type = "p"){
-    points(x@population$x, x@population$y, col = 2, pch = 20) 
+  definition=function(x, y, ...){
+    points(x@population$x, x@population$y, col = 2, pch = 20, ...) 
     invisible(x)
   }    
 ) 
