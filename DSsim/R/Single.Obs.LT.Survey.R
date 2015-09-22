@@ -9,8 +9,6 @@
 #' @name Single.Obs.LT.Survey-class
 #' @title S4 Class "Single.Obs.LT.Survey"
 #' @keywords classes         
-#' @export
-
 setClass(Class = "Single.Obs.LT.Survey",
          contains = "LT.Survey"
 )
@@ -38,6 +36,7 @@ setValidity("Single.Obs.LT.Survey",
 # GENERIC METHODS DEFINITIONS --------------------------------------------
 
 #' @rdname create.survey.results-methods
+#' @export
 setMethod(
   f="create.survey.results",
   signature="Single.Obs.LT.Survey",

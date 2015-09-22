@@ -14,7 +14,6 @@
 #'  \item{\code{show}}{\code{signature=(object = "Simulation.Summary")}: prints
 #'  the contents of the object in a user friendly format.}
 #'  }
-#' @export
 setClass("Simulation.Summary", representation(region.name = "character",
                                       total.reps = "numeric",
                                       failures = "numeric",

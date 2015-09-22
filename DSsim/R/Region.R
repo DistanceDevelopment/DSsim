@@ -36,7 +36,6 @@
 #'  the survey region defined by the object.}
 #' }
 #' @keywords classes
-#' @export
 #' @seealso \code{\link{make.region}}
 setClass(Class = "Region", 
          representation(region.name = "character", 

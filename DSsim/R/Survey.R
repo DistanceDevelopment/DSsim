@@ -15,7 +15,6 @@
 #'  creates a region table for \code{dht}.}
 #' }
 #' @keywords classes
-#' @export
 setClass("Survey", representation(population = "Population", "VIRTUAL"))
 
 # GENERIC METHODS DEFINITIONS --------------------------------------------

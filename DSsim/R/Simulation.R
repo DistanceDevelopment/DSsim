@@ -1,4 +1,4 @@
- #' @include Detectability.R
+#' @include Detectability.R
 #' @include Population.Description.R
 #' @include Survey.Design.R
 #' @include Region.R
@@ -66,7 +66,6 @@
 #'  the whole simulation for the specified number of repetitions.}
 #' }
 #' @keywords classes
-#' @export
 #' @rdname Simulation-class
 #' @seealso \code{\link{make.simulation}}
 setClass("Simulation", representation(reps = "numeric",
@@ -331,6 +330,7 @@ setMethod(
 #)
 
 #' @rdname generate.population-methods
+#' @export
 setMethod(
   f="generate.population",
   signature="Simulation",
@@ -341,6 +341,7 @@ setMethod(
 )
 
 #' @rdname generate.transects-methods
+#' @export
 setMethod(
   f="generate.transects",
   signature="Simulation",
@@ -352,6 +353,7 @@ setMethod(
 )
 
 #' @rdname create.survey.results-methods
+#' @export
 setMethod(
   f="create.survey.results",
   signature="Simulation",
@@ -385,6 +387,7 @@ setMethod(
 
 
 #' @rdname run.analysis-methods
+#' @export
 setMethod(
   f="run.analysis",
   signature=c("Simulation","LT.Survey.Results"),
@@ -403,6 +406,7 @@ setMethod(
 
 #' @rdname run.analysis-methods
 #' @importFrom stats na.omit
+#' @export
 setMethod(
   f="run.analysis",
   signature=c("Simulation","DDF.Data"),
@@ -432,6 +436,7 @@ setMethod(
 
 #' @rdname run-methods
 #' @importFrom parallel detectCores makeCluster clusterEvalQ parLapply stopCluster
+#' @export
 setMethod(
   f="run",
   signature="Simulation",
@@ -448,7 +453,7 @@ setMethod(
     #set the transect index to 1
     orig.file.index <- object@design@file.index
     object@design@file.index <- 1
-    if(run.parallel & requireNamespace(parallel, quietly = TRUE)){
+    if(run.parallel & requireNamespace('parallel', quietly = TRUE)){
       # counts the number of cores you have
       nCores <- getOption("cl.cores", detectCores())
       if(!is.na(max.cores)){
@@ -456,7 +461,9 @@ setMethod(
       }
       # intitialise the cluster
       myCluster <- makeCluster(nCores)
-      clusterEvalQ(myCluster, {require(DSsim)})
+      clusterEvalQ(myCluster, {
+        require(DSsim)
+      })
       results <- parLapply(myCluster, X = as.list(1:object@reps), fun = single.simulation.loop, object = object, save.data = save.data, load.data = load.data, data.path = data.path)
       object <- accumulate.PP.results(simulation = object, results = results)
       stopCluster(myCluster)

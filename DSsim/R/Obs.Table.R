@@ -10,7 +10,6 @@
 #' @section Objects from the Class: Objects can be created by calls to the 
 #' function \code{create.survey.results(simulation, dht.table = TRUE)} 
 #' @keywords classes
-#' @export
 #' @seealso \code{\link{create.survey.results}}
 setClass(Class = "Obs.Table", representation(obs.table = "data.frame"))
 

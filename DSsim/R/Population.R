@@ -23,7 +23,6 @@
 #'  of the individuals/clusters.}
 #' }
 #' @keywords classes
-#' @export
 #' @seealso \code{\link{make.population.description}}, \code{\link{make.detectability}}
 setClass("Population", representation(region.obj   = "character",
                                       strata.names = "character", 
@@ -68,6 +67,7 @@ setValidity("Population",
 #' @param ... other general plot parameters 
 #' @rdname plot.Population-methods
 #' @importFrom graphics points
+#' @exportMethod 
 setMethod(
   f="plot",
   signature="Population",

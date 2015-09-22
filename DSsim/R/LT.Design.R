@@ -64,6 +64,7 @@ setValidity("LT.Design",
 
 #' @rdname generate.transects-methods
 #' @importFrom utils read.table
+#' @export
 setMethod(
   f="generate.transects",
   signature="LT.Design",

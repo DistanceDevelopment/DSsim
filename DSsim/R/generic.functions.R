@@ -162,16 +162,16 @@ setGeneric(name = "run", def = function(object, run.parallel = FALSE, max.cores 
 setGeneric(name = "run.analysis", def = function(object, data, ...){standardGeneric ("run.analysis")})
 
 
-#if (!isGeneric("plot")){
-#  setGeneric(name = "plot", def = function(x, y, ...){standardGeneric("plot")})
-#}
+if (!isGeneric("plot")){
+  setGeneric(name = "plot", def = function(x, y, ...){standardGeneric("plot")})
+}
 
-#if (!isGeneric("summary")){
-#  setGeneric(name = "summary", def = function(object, ...){standardGeneric("summary")})
-#}
+if (!isGeneric("summary")){
+  setGeneric(name = "summary", def = function(object, ...){standardGeneric("summary")})
+}
 
-#if (!isGeneric("show")){
-#  setGeneric(name = "show", def = function(object){standardGeneric("show")})
-#}
+if (!isGeneric("show")){
+  setGeneric(name = "show", def = function(object){standardGeneric("show")})
+}
 
 

@@ -7,7 +7,6 @@
 #' @name Single.Obs.DDF.Data-class
 #' @title S4 Class "Single.Obs.DDF.Data"
 #' @keywords classes
-#' @export
 setClass(Class = "Single.Obs.DDF.Data", contains = "DDF.Data")
 
 setMethod(
@@ -29,13 +28,4 @@ setValidity("Single.Obs.DDF.Data",
 
 # GENERIC METHODS DEFINITIONS --------------------------------------------
 
-# @rdname Single.Obs.DDF.Data-class
-#' @importFrom graphics points
-setMethod(
-  f="plot",
-  signature="Single.Obs.DDF.Data",
-  definition=function(x, y, ...){
-    points(x@ddf.dat$x, x@ddf.dat$y, col = 5, pch = 20, cex = 1.5) 
-    invisible(x)
-  }    
-)
+

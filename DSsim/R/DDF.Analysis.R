@@ -76,6 +76,7 @@ setValidity("DDF.Analysis",
 # GENERIC METHODS DEFINITIONS --------------------------------------------
  
 #' @rdname run.analysis-methods
+#' @export
 setMethod(
   f="run.analysis",
   signature=c("DDF.Analysis","DDF.Data"),

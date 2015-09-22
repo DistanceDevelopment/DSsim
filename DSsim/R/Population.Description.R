@@ -98,6 +98,7 @@ setValidity("Population.Description",
 setGeneric("get.N",function(object){standardGeneric ("get.N")})
 
 #' @rdname get.N-methods
+#' @export
 setMethod("get.N","Population.Description",
   function(object){
     return(object@N)
@@ -105,6 +106,7 @@ setMethod("get.N","Population.Description",
 )
 
 #' @rdname generate.population-methods
+#' @export
 setMethod(
   f="generate.population",
   signature="Population.Description",
