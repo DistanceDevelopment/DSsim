@@ -1,10 +1,10 @@
 Package: DSsim
 Depends:
     graphics,
-    shapefiles,
     splancs,
     mrds,
     mgcv,
+    shapefiles,
     methods
 Suggests:
     testthat,
