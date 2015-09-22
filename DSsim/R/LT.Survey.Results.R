@@ -67,8 +67,17 @@ setMethod(
 
 # GENERIC METHODS DEFINITIONS --------------------------------------------
 
-# @rdname LT.Survey.Results-class
-#' @importFrom graphics plot
+#' Plot
+#' 
+#' Plots an S4 object of class 'LT.Survey.Results'. Plots the
+#' region, the transects, the population and colour codes the 
+#' detections
+#' 
+#' @param x object of class LT.Survey.Results
+#' @param y not used
+#' @param ... other general plot parameters 
+#' @rdname plot.LT.Survey.Results-methods
+#' @exportMethod
 setMethod(
   f="plot",
   signature="LT.Survey.Results",

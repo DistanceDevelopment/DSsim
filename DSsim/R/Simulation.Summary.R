@@ -56,7 +56,13 @@ setValidity("Simulation.Summary",
 # GENERIC METHODS
 ################################################################################
 
-# @rdname Simulation.Summary-class
+#' show
+#' 
+#' Displays the simulation summary
+#' 
+#' @param object object of class Simulation.Summary
+#' @rdname show.Simulation.Summary-methods
+#' @export
 setMethod(
   f="show",   
   signature="Simulation.Summary",

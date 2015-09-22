@@ -120,7 +120,7 @@ setValidity("Region",
 
 #' Returns the area of the region
 #' 
-#' @param object object of class Region
+#' @param object object of class \code{Region}
 #' @return numeric value specifying the area of the region
 #' @rdname get.area-methods 
 setGeneric(name = "get.area", def = function(object){standardGeneric ("get.area")})
@@ -134,8 +134,22 @@ setMethod(
   }
 )
 
-# @rdname Region-class
+#' Plot
+#' 
+#' Plots an S4 object of class 'Region'
+#' 
+#' @param x object of class Region
+#' @param y not used
+#' @param add logical indicating whether it should be added to 
+#'  existing plot
+#' @param plot.units allows for units to be converted between m
+#'  and km
+#' @param region.col fill colour for the region
+#' @param gap.col fill colour for the gaps
+#' @param ... other general plot parameters 
+#' @rdname plot.Region-methods
 #' @importFrom graphics polygon plot axTicks axis
+#' @exportMethod 
 setMethod(
   f="plot",
   signature="Region",

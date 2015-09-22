@@ -126,8 +126,17 @@ setValidity("Simulation",
 
 # GENERIC METHODS DEFINITIONS --------------------------------------------
 
-# @rdname Simulation-class
+#' summary
+#' 
+#' Provides a summary of the simulation results.
+#' 
+#' @param object object of class Simulation
+#' @param description.summary logical indicating whether an
+#'  explanation of the summary should be included
+#' @param ... not implemented
+#' @rdname summary.Simulation-methods
 #' @importFrom stats na.omit
+#' @export
 setMethod(
   f="summary",
   signature="Simulation",
@@ -293,7 +302,13 @@ setMethod(
   }
 )
 
-# @rdname Simulation-class
+#' show
+#' 
+#' Not currently implemented
+#' 
+#' @param object object of class Simulation
+#' @rdname show.Simulation-methods
+#' @export
 setMethod(
   f="show",
   signature="Simulation",
@@ -305,14 +320,15 @@ setMethod(
 
 
 # @rdname Simulation-class
-setMethod(
-  f="plot",
-  signature="Simulation",
-  definition=function(x, ...){
-    message("not currently implemented")
-    invisible(x)
-  }
-)
+# @export
+#setMethod(
+#  f="plot",
+#  signature="Simulation",
+#  definition=function(x, ...){
+#    message("not currently implemented")
+#    invisible(x)
+#  }
+#)
 
 #' @rdname generate.population-methods
 setMethod(

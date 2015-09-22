@@ -11,7 +11,7 @@ get.area(object)
 \S4method{get.area}{Region}(object)
 }
 \arguments{
-\item{object}{object of class Region}
+\item{object}{object of class \code{Region}}
 }
 \value{
 numeric value specifying the area of the region

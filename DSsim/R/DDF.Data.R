@@ -12,3 +12,16 @@
 setClass(Class = "DDF.Data", representation(ddf.dat = "data.frame", "VIRTUAL"))
 
 
+#' Plot
+#' 
+#' Plots an S4 object of class 'DDF.Data'. Requires that the
+#' associated region has already been plotted. This function adds 
+#' the locations of the individuals/clusters in the population who
+#' were detected.
+#' 
+#' @param x object of class DDF.Data
+#' @param y not used
+#' @param ... other general plot parameters 
+#' @rdname plot.DDF.Data-methods
+#' @importFrom graphics points
+#' @exportMethod 

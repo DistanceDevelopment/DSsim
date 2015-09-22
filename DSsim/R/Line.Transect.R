@@ -52,8 +52,21 @@ setValidity("Line.Transect",
 
 # GENERIC METHODS DEFINITIONS --------------------------------------------
 
-# @rdname Line.Transect-class
+#' Plot
+#' 
+#' Plots an S4 object of class 'Line.Transect'. Requires that the
+#' associated region has already been plotted. This function adds 
+#' the transect lines.
+#' 
+#' @param x object of class Line.Transect
+#' @param y not used
+#' @param transect.ID allows individual or groups of transects 
+#' to be added
+#' @param col colour of the lines
+#' @param ... other general plot parameters e.g. lwd
+#' @rdname plot.Line.Transect-methods
 #' @importFrom graphics lines
+#' @exportMethod 
 setMethod(
   f="plot",
   signature="Line.Transect",

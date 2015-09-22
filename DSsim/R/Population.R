@@ -57,7 +57,16 @@ setValidity("Population",
 
 # GENERIC METHODS DEFINITIONS --------------------------------------------
 
-# @rdname Population-class
+#' Plot
+#' 
+#' Plots an S4 object of class 'Population'. Requires that the
+#' associated region has already been plotted. This function adds 
+#' the locations of the individuals/clusters in the population.
+#' 
+#' @param x object of class Population
+#' @param y not used
+#' @param ... other general plot parameters 
+#' @rdname plot.Population-methods
 #' @importFrom graphics points
 setMethod(
   f="plot",

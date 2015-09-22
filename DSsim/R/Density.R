@@ -83,6 +83,7 @@ setValidity("Density",
 # GENERIC METHODS DEFINITIONS --------------------------------------------
 
 #' @rdname add.hotspot-methods
+#' @export
 setMethod("add.hotspot","Density",
           function(object, centre, sigma, amplitude){
             density.surface <- object@density.surface    
@@ -102,9 +103,27 @@ setMethod("add.hotspot","Density",
 )
 
 
-# @rdname Density-class
-#' @importFrom grDevices heat.colors
-#' @importFrom graphics image contour plot points axTicks axis 
+#' Plot
+#' 
+#' Plots an S4 object of class 'Density'
+#' 
+#' @param x object of class Density
+#' @param y not used
+#' @param add logical indicating whether it should be added to 
+#'  existing plot
+#' @param plot.units allows for units to be converted between m
+#'  and km
+#' @param contours logical indicating whether contours should be 
+#'  added
+#' @param style character "points" or "blocks". Points displays
+#'  a coloured point at the centre of each grid cell where as 
+#'  blocks colours the entire cell.
+#' @param density.col the colours used to indicate density level
+#' @param ... other general plot parameters
+#' @rdname plot.Density-methods
+#' @importFrom grDevices heat.colors rainbow terrain.colors topo.colors cm.colors
+#' @importFrom graphics image contour plot points axTicks axis
+#' @exportMethod  
 setMethod(
   f = "plot",
   signature = "Density",
