@@ -1,8 +1,8 @@
 #' @include DDF.Data.R
 
-#' S4 Class "Single.Obs.DDF.Data" 
+#' @title S4 Class "Single.Obs.DDF.Data" 
 #'
-#' DDF data resulting from a single observer survey.
+#' @description DDF data resulting from a single observer survey.
 #' 
 #' @name Single.Obs.DDF.Data-class
 #' @title S4 Class "Single.Obs.DDF.Data"

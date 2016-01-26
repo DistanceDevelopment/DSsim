@@ -1,8 +1,8 @@
 #' @include Detectability.R
 
-#' Class "Population" 
+#' @title Class "Population" 
 #' 
-#' Contains an instance of a population including a description of their detectability
+#' @description Contains an instance of a population including a description of their detectability
 #' in the form of an object of calss Detectability.
 #'
 #' @name Population-class

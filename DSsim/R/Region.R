@@ -1,8 +1,8 @@
 #' @include generic.functions.R
 
-#' Class "Region" 
+#' @title  Class "Region" 
 #' 
-#' Class \code{"Region"} is an S4 class containing descriptions of the 
+#' @description Class \code{"Region"} is an S4 class containing descriptions of the 
 #' study area. The polygons describing the region are found in the 
 #' coords slot and any gaps are described as polygons in the gaps slot.
 #'

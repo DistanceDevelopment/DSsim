@@ -7,9 +7,9 @@
 #' @include Region.Table.R
 #' @include generic.functions.R
 
-#' S4 Class "LT.Survey.Results"
+#' @title S4 Class "LT.Survey.Results"
 #'
-#' Class containing all the components relating to a single realisation of a
+#' @description Class containing all the components relating to a single realisation of a
 #' survey.
 #'
 #' @name LT.Survey.Results-class

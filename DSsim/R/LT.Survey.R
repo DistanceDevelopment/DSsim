@@ -1,8 +1,8 @@
 #' @include Survey.R
 
-#' Virtual Class "LT.Survey" extends class "Survey"
+#' @title Virtual Class "LT.Survey" extends class "Survey"
 #'
-#' Virtual Class \code{"LT.Survey"} is an S4 class containing a population
+#' @description Virtual Class \code{"LT.Survey"} is an S4 class containing a population
 #' and a set of transects.
 #' @name LT.Survey-class
 #' @title S4 Class "LT.Survey"

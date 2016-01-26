@@ -12,7 +12,7 @@ Suggests:
 Type: Package
 Title: Distance Sampling Simulations
 Version: 1.0.4
-Date: 2015-09-18
+Date: 2015-09-25
 LazyLoad: yes
 Author: Laura Marshall <lhm@st-and.ac.uk>
 Maintainer: Laura Marshall <lhm@st-and.ac.uk>
@@ -31,33 +31,35 @@ Description: Performs distance sampling simulations. It repeatedly
 License: GPL (>=2)
 Collate:
     'generic.functions.R'
-    'Survey.Design.R'
     'Region.R'
+    'Survey.Design.R'
+    'LT.Design.R'
+    'LT.User.Specified.Design.R'
+    'LT.EqSpace.ZZ.Design.R'
+    'LT.EqAngle.ZZ.Design.R'
+    'LT.Random.Design.R'
+    'LT.Systematic.Design.R'
     'Density.R'
     'Population.Description.R'
     'DDF.Data.R'
-    'Single.Obs.DDF.Data.R'
-    'Sample.Table.R'
+    'DDF.Analysis.R'
+    'DS.Analysis.R'
     'Region.Table.R'
+    'Sample.Table.R'
+    'Obs.Table.R'
+    'Single.Obs.DDF.Data.R'
+    'Line.Transect.R'
     'Detectability.R'
     'Population.R'
-    'Obs.Table.R'
-    'Line.Transect.R'
     'LT.Survey.Results.R'
     'DSM.Analysis.R'
     'Simulation.R'
-    'LT.Design.R'
-    'LT.User.Specified.Design.R'
-    'LT.Systematic.Design.R'
-    'LT.Random.Design.R'
-    'LT.EqSpace.ZZ.Design.R'
-    'LT.EqAngle.ZZ.Design.R'
-    'DDF.Analysis.R'
-    'DS.Analysis.R'
     'Class.Constructors.R'
+    'Design.Summary.R'
     'Survey.R'
     'LT.Survey.R'
     'PT.Design.R'
+    'Population.Summary.R'
     'Simulation.Summary.R'
     'Single.Obs.LT.Survey.R'
     'accumulate.PP.results.R'
@@ -89,3 +91,4 @@ Collate:
     'store.ddf.results.R'
     'store.dht.results.R'
     'uf.detect.R'
+RoxygenNote: 5.0.1

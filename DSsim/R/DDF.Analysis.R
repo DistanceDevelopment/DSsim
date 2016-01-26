@@ -2,9 +2,9 @@
 #' @include DDF.Data.R
 
 
-#' Class "DDF.Analysis" 
+#' @title Class "DDF.Analysis" 
 #' 
-#' Class \code{"DDF.Analysis"} is an S4 class describing a detection function
+#' @description Class \code{"DDF.Analysis"} is an S4 class describing a detection function
 #' which is to be fitted to the data.
 #'
 #' @name DDF.Analysis-class

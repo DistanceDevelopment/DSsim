@@ -1,9 +1,9 @@
 #' @include generic.functions.R
 #' @include Density.R
 
-#' Class "Population.Description"
+#' @title Class "Population.Description"
 #'
-#' Class \code{"Population.Description"} is an S4 class containing a
+#' @description Class \code{"Population.Description"} is an S4 class containing a
 #' description of the population. It provides methods to generate an
 #' example population.
 #'

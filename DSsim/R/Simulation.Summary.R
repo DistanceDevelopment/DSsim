@@ -1,6 +1,6 @@
-#' Class "Simulation.Summary" 
+#' @title Class "Simulation.Summary" 
 #' 
-#' Class \code{"Simulation.Summary"} is an S4 class containing a summary of
+#' @description Class \code{"Simulation.Summary"} is an S4 class containing a summary of
 #' the simulation results. This is returned when \code{summary(Simulation)}
 #' is called. If it is not assigned to a variable the object will be 
 #' displayed via the \code{show} method. 

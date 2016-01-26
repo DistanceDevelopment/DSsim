@@ -7,9 +7,9 @@
 #' @include LT.Survey.Results.R
 #' @include DDF.Data.R
 
-#' Class "Simulation"
+#' @title Class "Simulation"
 #'
-#' Class \code{"Simulation"} is an S4 class containing descriptions of the
+#' @description Class \code{"Simulation"} is an S4 class containing descriptions of the
 #' region, population, survey design and analyses the user wishes to investigate.
 #' Once the simulation has been run the N.D.Estimates will contain multiple
 #' estimates of abundance and density obtained by repeatedly generating

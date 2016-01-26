@@ -1,9 +1,9 @@
 #' @include generic.functions.R
 #' @include Survey.Design.R
 
-#' Virtual Class "LT.Design" extends Class "Survey.Design"
+#' @title Virtual Class "LT.Design" extends Class "Survey.Design"
 #'
-#' Virtual Class \code{"LT.Design"} is an S4 class detailing the type of 
+#' @description Virtual Class \code{"LT.Design"} is an S4 class detailing the type of 
 #' line transect design.
 #' @name LT.Design-class
 #' @title S4 Class "LT.Design"

@@ -1,9 +1,9 @@
 #' @include Population.R
 #' @include generic.functions.R
 
-#' Virtual Class "Survey"
+#' @title Virtual Class "Survey"
 #'
-#' Class \code{"Survey"} is an S4 class containing an instance of a population.
+#' @description Class \code{"Survey"} is an S4 class containing an instance of a population.
 #'
 #' @name Survey-class
 #' @title S4 Class "Survey"
