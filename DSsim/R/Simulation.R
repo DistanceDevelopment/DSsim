@@ -292,10 +292,23 @@ setMethod(
     no.fails <- length(which(is.na(object@results$Detection[1,1,1:object@reps])))
     #print(individual.N.est)
     individuals <- list(summary = individual.summary, N = individual.N, D = individual.D)
+    #Create detectabilty summary
+    detectability.summary <- list(key.function = object@detectability@key.function, scale.param = object@detectability@scale.param, shape.param = object@detectability@shape.param, truncation = object@detectability@truncation)
+    #Create analysis summary
+    analysis.summary <- list(dsmodels = list(), criteria = object@ddf.analyses[[1]]@criteria, truncation = object@ddf.analyses[[1]]@truncation)
+    if(object@ddf.analyses[[1]]@binned.data){
+      analysis.summary$cutpoints <- object@ddf.analyses[[1]]@cutpoints
+    }
+    if(nrow(analysis.strata) > 0){
+      analysis.summary$analysis.strata <- object@ddf.analyses[[1]]@analysis.strata
+    }
+    for(i in seq(along = object@ddf.analyses)){
+      analysis.summary$dsmodels[[i]] <- object@ddf.analyses[[i]]@dsmodel
+    }
     if(!is.null(object@results$clusters)){
-      summary.x <- new(Class = "Simulation.Summary", region.name = object@region@region.name, total.reps = object@reps, failures = no.fails, individuals = individuals, clusters = clusters, expected.size = expected.size, detection = detection)
+      summary.x <- new(Class = "Simulation.Summary", region.name = object@region@region.name, total.reps = object@reps, failures = no.fails, individuals = individuals, clusters = clusters, expected.size = expected.size, detection = detection, detectability.summary = detectability.summary, analysis.summary = analysis.summary)
     }else{
-      summary.x <- new(Class = "Simulation.Summary", region.name = object@region@region.name, total.reps = object@reps, failures = no.fails, individuals = individuals, detection = detection)
+      summary.x <- new(Class = "Simulation.Summary", region.name = object@region@region.name, total.reps = object@reps, failures = no.fails, individuals = individuals, detection = detection, detectability.summary = detectability.summary, analysis.summary = analysis.summary)
     }
     return(summary.x)
   }
