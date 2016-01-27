@@ -296,6 +296,23 @@ setMethod(
     detectability.summary <- list(key.function = object@detectability@key.function, scale.param = object@detectability@scale.param, shape.param = object@detectability@shape.param, truncation = object@detectability@truncation)
     #Create analysis summary
     analysis.summary <- list(dsmodels = list(), criteria = object@ddf.analyses[[1]]@criteria, truncation = object@ddf.analyses[[1]]@truncation)
+    #Create design summary
+    design.type <- switch(class(object@design),
+      LT.Systematic.Design = "Systematic Parallel Line Transect",
+      LT.EqAngle.ZZ.Design = "Equal Angle Zigzag Line Transect",
+      LT.EqSpace.ZZ.Design = "Equal Spaced Zigzag Line Transect",
+      LT.Random.Design = "Random Parallel Line Transect",
+      LT.User.Specified.Design = "Subjective Line Transect")
+    slots <- slotNames(object@design)
+    design.parameters <- list()
+    for(i in seq(along = slots)){
+      if(slots[i] %in% c("design.axis", "spacing", "plus.sampling")){
+        design.parameters[[slots[i]]] <- slot(object@design, slots[i])  
+      }
+    }
+    design.summary <- new(Class = "Design.Summary", design.type = design.type, design.parameters = design.parameters)
+    #Create population summary
+    
     if(object@ddf.analyses[[1]]@binned.data){
       analysis.summary$cutpoints <- object@ddf.analyses[[1]]@cutpoints
     }
@@ -306,9 +323,9 @@ setMethod(
       analysis.summary$dsmodels[[i]] <- object@ddf.analyses[[i]]@dsmodel
     }
     if(!is.null(object@results$clusters)){
-      summary.x <- new(Class = "Simulation.Summary", region.name = object@region@region.name, total.reps = object@reps, failures = no.fails, individuals = individuals, clusters = clusters, expected.size = expected.size, detection = detection, detectability.summary = detectability.summary, analysis.summary = analysis.summary)
+      summary.x <- new(Class = "Simulation.Summary", region.name = object@region@region.name, total.reps = object@reps, failures = no.fails, individuals = individuals, clusters = clusters, expected.size = expected.size, detection = detection, design.summary = design.summary, detectability.summary = detectability.summary, analysis.summary = analysis.summary)
     }else{
-      summary.x <- new(Class = "Simulation.Summary", region.name = object@region@region.name, total.reps = object@reps, failures = no.fails, individuals = individuals, detection = detection, detectability.summary = detectability.summary, analysis.summary = analysis.summary)
+      summary.x <- new(Class = "Simulation.Summary", region.name = object@region@region.name, total.reps = object@reps, failures = no.fails, individuals = individuals, detection = detection, design.summary = design.summary, detectability.summary = detectability.summary, analysis.summary = analysis.summary)
     }
     return(summary.x)
   }

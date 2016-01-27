@@ -21,6 +21,7 @@ setClass("Simulation.Summary", representation(region.name = "character",
                                       clusters = "list",
                                       expected.size = "data.frame", 
                                       detection = "data.frame",
+                                      design.summary = "Design.Summary",
                                       detectability.summary = "list",
                                       analysis.summary = "list",
                                       include.glossary = "logical"))
@@ -30,7 +31,7 @@ setClass("Simulation.Summary", representation(region.name = "character",
 setMethod(
   f="initialize",   
   signature="Simulation.Summary",
-  definition=function(.Object, region.name, total.reps, failures, individuals, clusters = list(), expected.size = data.frame(NULL), detection, detectability.summary = list(), analysis.summary = list(), include.glossary = FALSE){
+  definition=function(.Object, region.name, total.reps, failures, individuals, clusters = list(), expected.size = data.frame(NULL), detection, design.summary = list(), detectability.summary = list(), analysis.summary = list(), include.glossary = FALSE){
     #Set slots
     .Object@region.name   <- region.name
     .Object@total.reps    <- total.reps
@@ -39,6 +40,7 @@ setMethod(
     .Object@clusters      <- clusters
     .Object@expected.size <- expected.size
     .Object@detection     <- detection
+    .Object@design.summary <- design.summary
     .Object@detectability.summary <- detectability.summary
     .Object@analysis.summary <- analysis.summary
     .Object@include.glossary <- include.glossary
@@ -73,9 +75,9 @@ setMethod(
     #Display summaries
     cat("\nRegion: ", object@region.name) 
     cat("\nNo. Repetitions: ", object@total.reps)
-    cat("\nNo. Failures: ", object@failures)
-    #cat("\n\nDesign Summary:")
-    cat("\n\nPopulation Detectability Summary:", fill = TRUE)
+    cat("\nNo. Failures: ", object@failures, fill = TRUE)
+    show(object@design.summary)
+    cat("\nPopulation Detectability Summary:", fill = TRUE)
     for(i in seq(along = object@detectability.summary)){
       if(length(object@detectability.summary[[i]]) > 0){
         cat("   ",names(object@detectability.summary)[i], " = ", object@detectability.summary[[i]], fill = TRUE)  
