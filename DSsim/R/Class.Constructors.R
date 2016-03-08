@@ -20,7 +20,7 @@
 #' @param strata.name the region name
 #' @param units the units given as a character (either 'm' or 'km')
 #' @param area the area of the region (optional - if not supplied it will be 
-#'   calculated for you if you supply a shapefile)
+#'   calculated for you)
 #' @param shapefile a shapefile of the region
 #' @param coords list of polygons describing the areas of interest
 #' @param gaps list of polygons describing the areas to be excluded

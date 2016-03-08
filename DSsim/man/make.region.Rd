@@ -15,7 +15,7 @@ make.region(region.name, strata.name = character(0), units,
 \item{units}{the units given as a character (either 'm' or 'km')}
 
 \item{area}{the area of the region (optional - if not supplied it will be 
-calculated for you if you supply a shapefile)}
+calculated for you)}
 
 \item{shapefile}{a shapefile of the region}
 
