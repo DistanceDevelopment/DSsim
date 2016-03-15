@@ -4,9 +4,63 @@ author: "Kieran Richards"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{Vignette Test}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+```{r setup, echo=FALSE, message=FALSE, warning=FALSE}
+library(DSsim)
+```
 
-Hello. I'm a vignette.
+#DSsim : Distance Sampling Simulation
+Distance sampling is a methodology which is often used to estimate the size of an animal population.  Unfortunately the surveys involved can often be time consuming and expensive.  DSsim provides the opportunity to simulate survey designs and spot potential problems early.
+
+##An Overview
+There are a number of important functions in DSsim which are documented here.
+
+##make.region
+This function is used to create a region object.  Region objects describe the shampe and dimensions of the region as well as any gaps in the region.
+
+
+###The Arguments of the function
+
+*region.name*
+    : This argument is required and specifies the name of the region
+
+*strata.name*
+    : This argument is used to specify the name of the stratum and is used when a region consists of multiple strata
+
+*units*
+    : The units used for the distances in the region, usually "m" or "km"
+
+*area*
+    : The area of the region, if this is omitted then it will be calculated
+
+*shapefile*
+    : A shapefile detailing the region
+
+*coords*
+    : If a shapefile is not given then coords must be; 
+      A list of polygons which describes the shape of the region
+
+*gaps*
+    : If a shapefile is not given then coords must be;
+      A list of polygons which describes the shape of the region
+
+
+###An Example
+```{r}
+#Firstly create lists to contain the polygon information for coords and gaps
+coords <- gaps <- list()
+#Fill the lists, making sure to "close" each polygon by setting the last coordinate pair equal to the first
+coords[[1]] <- list(data.frame(x = c(0,1000,1000,0,0), y = c(0,0,
+ 1000,1000,0)))
+gaps[[1]] <- list(data.frame(x = c(400,600,500,350,400), y = c(100,
+ 250,600,120,100)))
+#Call make.region and store the result to a variable
+region <- make.region(region.name = "study.area", units = "m", 
+ coords = coords, gaps = gaps)
+#Plot the region
+plot(region)
+```
+
