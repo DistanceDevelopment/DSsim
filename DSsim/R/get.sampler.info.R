@@ -24,7 +24,8 @@ get.sampler.info <- function(shapefile, region.obj, meta = NULL){
   if(length(region.obj@strata.name) > 0){
     if(!is.null(shapefile$dbf$dbf$Stratum)){
       #If there is information in the shapefile use that  
-      ID <- shapefile$dbf$dbf$Stratum[ID]
+      strata.ID <- shapefile$dbf$dbf$Stratum[ID]
+      strata.names <- region.obj@strata.name[strata.ID]
     }else if(!is.null(meta)){
       #Otherwise if there is information in the file meta.txt use that
       for(i in seq(along = ID)){
@@ -34,8 +35,7 @@ get.sampler.info <- function(shapefile, region.obj, meta = NULL){
         }
       }
       #This should be coded into VB at some point
-      region.names <- region.obj@strata.name[as.numeric(region)]
-      sampler.info <- data.frame(ID = ID, start.X = start.X, start.Y = start.Y, end.X = end.X, end.Y = end.Y, length = tot.length, region = region.names, d7.length = d7.length)
+      strata.names <- region.obj@strata.name[as.numeric(region)]
     }else{
       #As a last resort...
       #Get strata names for each transect - checks that both endpoints and mid point agree
@@ -57,8 +57,9 @@ get.sampler.info <- function(shapefile, region.obj, meta = NULL){
        warning("Transect cannot be allocated to strata debug get.sampler.info (possible that part of a transect falls outwith study region)", call. = FALSE, immediate. = TRUE)
       return(NULL)
       }
-      sampler.info <- data.frame(ID = ID, start.X = start.X, start.Y = start.Y, end.X = end.X, end.Y = end.Y, length = tot.length, region = region.obj@strata.name[strata.id], d7.length = d7.length)
+      strata.names <- region.obj@strata.name[strata.id]
     }
+    sampler.info <- data.frame(ID = ID, start.X = start.X, start.Y = start.Y, end.X = end.X, end.Y = end.Y, length = tot.length, region = strata.names, d7.length = d7.length)
   }else{
     #If there is only one strata all transect must be in that strata
     sampler.info <- data.frame(ID = ID, start.X = start.X, start.Y = start.Y, end.X = end.X, end.Y = end.Y, length = tot.length, region = region, d7.length = d7.length)
