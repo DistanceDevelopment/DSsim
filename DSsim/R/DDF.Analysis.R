@@ -46,9 +46,9 @@ setMethod(
   f="initialize",
   signature="DDF.Analysis",
   definition=function(.Object, dsmodel = call(), criteria, analysis.strata, truncation, binned.data, cutpoints){
-    if(criteria %in% c("aic", "AIC")){
+    if(criteria %in% c("aic", "AIC", "bic", "BIC", "AICc")){
     }else{
-      warning("This selection criteria is not currently supported, it will be changed to AIC", call. = FALSE, immediate. = TRUE)
+      warning("This selection criteria is not currently supported (please select from 'AIC', 'BIC' or 'AICc'), the simulation is automatically changing it to AIC for this call", call. = FALSE, immediate. = TRUE)
       criteria = "AIC"
     }
     .Object@dsmodel <- dsmodel

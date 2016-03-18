@@ -447,7 +447,18 @@ setMethod(
     for(a in seq(along = ddf.analyses)){
       results[[a]] <- run.analysis(ddf.analyses[[a]], data)
       if(!is.na(results[[a]][1])){
-        criteria <- c(criteria, results[[a]]$criterion)
+        #Get information to calculate selection criteria
+        lnl <- results[[a]]$lnl 
+        k <- length(results[[a]]$par)
+        n <- nrow(results[[a]]$data)
+        criterion <- object@ddf.analyses[[1]]@criteria
+        selection.criterion.value <- switch(criterion,
+                                            AIC  = 2*k-2*lnl,
+                                            aic  = 2*k-2*lnl,
+                                            AICc = 2*k-2*lnl+(2*k*(k+1))/(n-k-1),
+                                            BIC  = k*log(n)-2*lnl,
+                                            bic  = k*log(n)-2*lnl)
+        criteria <- c(criteria, selection.criterion.value)
       }else{
         criteria <- c(criteria, NA)
       }
