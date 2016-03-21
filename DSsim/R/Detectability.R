@@ -58,7 +58,7 @@ setValidity("Detectability",
     for(i in seq(along = object@scale.param)){
       if(object@scale.param[i] <= 0){
         return("Invalid scale parameter. Must be greater than zero.")
-      }else if(object@key.function == "uf" & object@scale.param > 1){
+      }else if(object@key.function == "uf" & object@scale.param[i] > 1){
         return("Invalid scale parameter. Must be greater than zero and less than 1 for the uniform distribution.")
       } 
     }
