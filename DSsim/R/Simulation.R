@@ -292,6 +292,8 @@ setMethod(
     no.fails <- length(which(is.na(object@results$Detection[1,1,1:object@reps])))
     #print(individual.N.est)
     individuals <- list(summary = individual.summary, N = individual.N, D = individual.D)
+    #Model selection table
+    tab.model.selection <- table(object@results$Detection[,"SelectedModel",1:object@reps])
     #Create detectabilty summary
     detectability.summary <- list(key.function = object@detectability@key.function, scale.param = object@detectability@scale.param, shape.param = object@detectability@shape.param, truncation = object@detectability@truncation)
     #Create analysis summary
@@ -323,9 +325,9 @@ setMethod(
       analysis.summary$dsmodels[[i]] <- object@ddf.analyses[[i]]@dsmodel
     }
     if(!is.null(object@results$clusters)){
-      summary.x <- new(Class = "Simulation.Summary", region.name = object@region@region.name, total.reps = object@reps, failures = no.fails, individuals = individuals, clusters = clusters, expected.size = expected.size, detection = detection, design.summary = design.summary, detectability.summary = detectability.summary, analysis.summary = analysis.summary)
+      summary.x <- new(Class = "Simulation.Summary", region.name = object@region@region.name, total.reps = object@reps, failures = no.fails, individuals = individuals, clusters = clusters, expected.size = expected.size, detection = detection, model.selection = tab.model.selection, design.summary = design.summary, detectability.summary = detectability.summary, analysis.summary = analysis.summary)
     }else{
-      summary.x <- new(Class = "Simulation.Summary", region.name = object@region@region.name, total.reps = object@reps, failures = no.fails, individuals = individuals, detection = detection, design.summary = design.summary, detectability.summary = detectability.summary, analysis.summary = analysis.summary)
+      summary.x <- new(Class = "Simulation.Summary", region.name = object@region@region.name, total.reps = object@reps, failures = no.fails, individuals = individuals, detection = detection, model.selection = tab.model.selection, design.summary = design.summary, detectability.summary = detectability.summary, analysis.summary = analysis.summary)
     }
     return(summary.x)
   }
@@ -464,9 +466,19 @@ setMethod(
       }
     }
     #check that at least one model worked
-    if(length(which(!is.na(criteria))) > 0){
-      best.model <- which(criteria == min(na.omit(criteria)))
-      return(results[[best.model]])
+    no.successful.models <- length(which(!is.na(criteria)))
+    if(no.successful.models > 0){
+      best.model.index <- which(criteria == min(na.omit(criteria)))
+      best.model <- results[[best.model.index]]
+      best.model$model.index <- best.model.index
+      #If there is more than one sucessful model find the delta criteria to the 
+      #second best model.
+      if(no.successful.models > 1){
+        sorted.criteria <- sort(criteria, na.last = NA)
+        delta.criteria <- sorted.criteria[2] - sorted.criteria[1]
+        best.model$delta.criteria <- delta.criteria
+      }
+      return(best.model)
     }else{
       return(NULL)
     }

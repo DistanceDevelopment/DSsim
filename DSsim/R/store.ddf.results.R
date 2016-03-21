@@ -1,4 +1,4 @@
-store.ddf.results <- function(detection.results, ddf.results, i, N.in.covered){
+store.ddf.results <- function(detection.results, ddf.results, i, N.in.covered, analyses){
   Nhat <- ddf.results$Nhat
   n <- length(ddf.results$fitted)
   True.Pa <- n/N.in.covered
@@ -9,6 +9,11 @@ store.ddf.results <- function(detection.results, ddf.results, i, N.in.covered){
   detection.results[1, "Pa", i] <- Ave.Pa
   detection.results[1, "ESW", i] <- ESW
   detection.results[1, "f(0)", i] <- f0
+  #Find which model was selected
+  detection.results[1, "SelectedModel", i] <- ddf.results$model.index
+  if(!is.null(ddf.results$delta.criteria)){
+    detection.results[1, "DeltaCriteria", i] <- ddf.results$delta.criteria
+  }
   return(detection.results)
 }
 

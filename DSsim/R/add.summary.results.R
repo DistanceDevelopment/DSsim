@@ -14,8 +14,8 @@ add.summary.results <- function(results){
       results$individuals$D[strat,,"mean"] <- apply(results$individuals$D[strat,,1:reps], 1, FUN = mean, na.rm = TRUE)
       results$individuals$D[strat,,"sd"] <- apply(results$individuals$D[strat,,1:reps], 1, FUN = sd, na.rm = TRUE) 
     }
-    results$Detection[1,,"mean"] <- apply(results$Detection[1,,1:reps], 1, FUN = mean, na.rm = TRUE)
-    results$Detection[1,,"sd"] <- apply(results$Detection[1,,1:reps], 1, FUN = sd, na.rm = TRUE)
+    results$Detection[1, c(1:4,6),"mean"] <- apply(results$Detection[1,c(1:4,6),1:reps], 1, FUN = mean, na.rm = TRUE)
+    results$Detection[1,c(1:4,6),"sd"] <- apply(results$Detection[1,c(1:4,6),1:reps], 1, FUN = sd, na.rm = TRUE)
     #Summarise results for clusters if they exists
     if(!is.null(results$clusters)){
       for(strat in seq(along = strata.names)){

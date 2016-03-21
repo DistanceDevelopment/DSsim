@@ -21,6 +21,7 @@ setClass("Simulation.Summary", representation(region.name = "character",
                                       clusters = "list",
                                       expected.size = "data.frame", 
                                       detection = "data.frame",
+                                      model.selection = "table",
                                       design.summary = "Design.Summary",
                                       detectability.summary = "list",
                                       analysis.summary = "list",
@@ -31,16 +32,17 @@ setClass("Simulation.Summary", representation(region.name = "character",
 setMethod(
   f="initialize",   
   signature="Simulation.Summary",
-  definition=function(.Object, region.name, total.reps, failures, individuals, clusters = list(), expected.size = data.frame(NULL), detection, design.summary = list(), detectability.summary = list(), analysis.summary = list(), include.glossary = FALSE){
+  definition=function(.Object, region.name, total.reps, failures, individuals, clusters = list(), expected.size = data.frame(NULL), detection, model.selection, design.summary = list(), detectability.summary = list(), analysis.summary = list(), include.glossary = FALSE){
     #Set slots
-    .Object@region.name   <- region.name
-    .Object@total.reps    <- total.reps
-    .Object@failures      <- failures
-    .Object@individuals   <- individuals    
-    .Object@clusters      <- clusters
-    .Object@expected.size <- expected.size
-    .Object@detection     <- detection
-    .Object@design.summary <- design.summary
+    .Object@region.name     <- region.name
+    .Object@total.reps      <- total.reps
+    .Object@failures        <- failures
+    .Object@individuals     <- individuals    
+    .Object@clusters        <- clusters
+    .Object@expected.size   <- expected.size
+    .Object@detection       <- detection
+    .Object@model.selection <- model.selection
+    .Object@design.summary  <- design.summary
     .Object@detectability.summary <- detectability.summary
     .Object@analysis.summary <- analysis.summary
     .Object@include.glossary <- include.glossary
@@ -88,7 +90,8 @@ setMethod(
       if(i == 1){
         cat("\n   Candidate Models:", fill = TRUE)
         for(j in seq(along = object@analysis.summary[[1]])){
-          cat("      Model ", j, ": ", as.character(object@analysis.summary[[1]][[j]]), fill = TRUE)
+          no.times.selected <- object@model.selection[names(object@model.selection) == as.character(j)]
+          cat("      Model ", j, ": ", as.character(object@analysis.summary[[1]][[j]]), " was selected ", no.times.selected, " time(s).", fill = TRUE)
         }
       }else{
         cat("  ",names(object@analysis.summary)[i], " = ", object@analysis.summary[[i]], fill = TRUE)
