@@ -78,13 +78,22 @@ setMethod(
     if(read.from.file){
       #Load the shapefle
       shapefile <- read.shapefile(paste(object@path, "/", object@filenames[file.index], sep=""))
-      #Load the meta file if it exists - describes which transects are in which strata
-      meta <- suppressWarnings(try(read.table(paste(object@path, "/Meta.txt", sep="")), silent = TRUE))
-      if(class(meta) == "try-error"){
-        meta <- NULL
-      }
-      if(!is.null(meta)){
-        meta <- meta[meta[,1] == object@filenames[file.index],]
+      #Check the shapefile is the correct type
+      if(!shapefile$shp$header$shape.type %in% c(3,13,23)){
+        warning("Survey transect shapefile of wrong shapefile type (not lines) cannot load survey.", call. = FALSE, immediate. = TRUE)
+        dd <- data.frame(Id=c(1,1),X=c(1,1),Y=c(1,1))
+        dd.table <- data.frame(Id=c(1),Name=c("1"))
+        shapefile <- convert.to.shapefile(dd, dd.table, "Id", 3)
+        meta <- data.frame(V1 = as.factor(object@filenames[file.index]), V2 = 1, V3 = 1)
+      }else{
+        #Load the meta file if it exists - describes which transects are in which strata
+        meta <- suppressWarnings(try(read.table(paste(object@path, "/Meta.txt", sep="")), silent = TRUE))
+        if(class(meta) == "try-error"){
+          meta <- NULL
+        }
+        if(!is.null(meta)){
+          meta <- meta[meta[,1] == object@filenames[file.index],]
+        }  
       }
       line.transect <- new(Class = "Line.Transect", region = region, shapefile = shapefile, meta = meta)
     }else{

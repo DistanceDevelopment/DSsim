@@ -2,6 +2,10 @@
 check.intersection <- function(transect, point, display.diagnostics = FALSE){
   #find the gradient of the transect m=deltaY/deltaX
   transect.m <- (transect[["end.Y"]]-transect[["start.Y"]])/(transect[["end.X"]]-transect[["start.X"]]) 
+  #If can't be calculated (e.g. start and end points the same)
+  if(is.nan(transect.m)){
+    return(FALSE)
+  }
   #special cases when the transect is horizontal or vertical!
   if(transect.m == 0){
     if(transect[["start.X"]] < transect[["end.X"]]){
