@@ -91,6 +91,9 @@ setMethod(
         cat("\n   Candidate Models:", fill = TRUE)
         for(j in seq(along = object@analysis.summary[[1]])){
           no.times.selected <- object@model.selection[names(object@model.selection) == as.character(j)]
+          if(length(no.times.selected) == 0){
+            no.times.selected <- 0
+          }
           cat("      Model ", j, ": ", as.character(object@analysis.summary[[1]][[j]]), " was selected ", no.times.selected, " time(s).", fill = TRUE)
         }
       }else{
