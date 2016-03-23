@@ -149,7 +149,10 @@ setMethod(
     #Create plot axes labels
     xlabel <- paste("X-coords (",plot.units[1],")", sep = "")
     ylabel <- paste("Y-coords (",plot.units[1],")", sep = "")
-    
+    #If all z values are equal turn contours off
+    if(length(unique(densities)) == 1){
+      contours = FALSE
+    }
     if(contours | style == "blocks"){
       #Sort the x and y values
       x.vals <- sort(unique(x.vals))
@@ -164,10 +167,6 @@ setMethod(
           z.matrix[ix,iy] <- full.density.grid$density[index[1]]
         }
       }  
-    }
-    #If all z values are equal turn contours off
-    if(nrow(unique(z.matrix)) == 1 & nrow(unique(t(z.matrix))) == 1){
-      contours = FALSE
     }
     #Check to see if the units of the z-matrix need converting
     if(plot.units != x@units){
