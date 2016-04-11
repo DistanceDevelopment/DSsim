@@ -63,7 +63,7 @@ setMethod(
       gaps <- polygons$gaps  
     }else if(length(coords) == 0 & is.null(shapefile)){
       #complains if neither the coordinates or the shapefile are supplied
-      stop("You must provide either coordinates or a shapefile", call. = FALSE)
+      stop("You must provide either coordinates or a shapefile.", call. = FALSE)
     }
     #Gets the minimum bounding box
     boundbox <- get.bound.box(coords)
