@@ -11,7 +11,7 @@ test_that("Can create object or return correct error messages", {
   expect_that(region <- make.region(region.name = "Region", 
                                     strata.name = c("strata"), 
                                     units = "m", coords = coords),
-              throws_error("The lengths of the coords and gaps lists differ, these must be the same and equal to the number of strata.\n"))
+              throws_error("invalid class “Region” object: The lengths of the coords and gaps lists differ, these must be the same and equal to the number of strata."))
   
   expect_that(region <- make.region(region.name = "Region", 
                                     strata.name = c("strata"), 
