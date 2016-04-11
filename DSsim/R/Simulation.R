@@ -428,9 +428,14 @@ setMethod(
 setMethod(
   f="run.analysis",
   signature=c("Simulation","Survey.Results"),
-  definition=function(object, data, dht = TRUE){
+  definition=function(object, data, dht = FALSE){
     #dist.data <- survey.results@ddf.data
     best.model <- run.analysis(object, data@ddf.data)
+    #If dht is true but tables have not been provided
+    if(dht & nrow(data@region.table@region.table) == 0){
+      warning("dht tables have not been provided please re-run create.survey.results with dht.tables = TRUE if you would like density/abundance estimates in addition to ddf results.", immediate. = TRUE, call. = FALSE)
+      dht = FALSE
+    }
     #If ddf has converged and dht it TRUE
     if(dht & !is.null(best.model)){
       #Calculate density/abundance
@@ -447,7 +452,7 @@ setMethod(
 setMethod(
   f="run.analysis",
   signature=c("Simulation","DDF.Data"),
-  definition=function(object, data, dht = TRUE){
+  definition=function(object, data, dht = FALSE){
     ddf.analyses <- object@ddf.analyses
     criteria <- NULL
     results <- list()
