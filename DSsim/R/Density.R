@@ -209,14 +209,15 @@ setMethod(
       if(!add){
         plot(range(x.vals), range(y.vals), col = "white", xlab = xlabel, ylab = ylabel, main = x@region.name, yaxt = "n", xaxt = "n")
       }
+      #Find the range of densities
+      #zlim <- range(strat.density) 
+      zlim <- range(densities) 
+      #Find the break points
+      breaks <- seq(zlim[1], zlim[2], length = length(density.col)+1)
       #Add the points for each strata
       for(strat in seq(along = density.surface)){
         #col <- colorlut[density.surface[[strat]]$density*multiplier-zlim[1]+1]
         strat.density <- density.surface[[strat]]$density
-        #Find the range of densities
-        zlim <- range(strat.density) 
-        #Find the break points
-        breaks <- seq(zlim[1], zlim[2], length = length(density.col)+1)
         #Set up a vector for the colours
         colours <- rep(NA, length = length(strat.density))
         #Fill in colours
