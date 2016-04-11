@@ -1,7 +1,7 @@
-#' @include LT.Survey.R
+#' @include PT.Survey.R
 #' @include generic.functions.R
 
-#' @title Class "Single.Obs.LT.Survey" 
+#' @title Class "Single.Obs.PT.Survey" 
 #' 
 #' @description An S4 class containing an instance of a population
 #' and a set of transects. 
@@ -9,25 +9,25 @@
 #' @name Single.Obs.LT.Survey-class
 #' @title S4 Class "Single.Obs.LT.Survey"
 #' @keywords classes         
-setClass(Class = "Single.Obs.LT.Survey",
-         contains = "LT.Survey"
+setClass(Class = "Single.Obs.PT.Survey",
+         contains = "PT.Survey"
 )
 
 setMethod(
   f="initialize",
-  signature="Single.Obs.LT.Survey",
-  definition=function(.Object, population, line.transect, perp.truncation){
+  signature="Single.Obs.PT.Survey",
+  definition=function(.Object, population, point.transect, rad.truncation){
     #Input pre-processing
     .Object@population    <- population
-    .Object@line.transect <- line.transect
-    .Object@perpendicular.truncation <- perp.truncation
+    .Object@transect <- point.transect
+    .Object@radial.truncation <- rad.truncation
     #Check object is valid
     validObject(.Object)
     # return object
     return(.Object) 
   }
 )
-setValidity("Single.Obs.LT.Survey",
+setValidity("Single.Obs.PT.Survey",
   function(object){
     return(TRUE)
   }
@@ -39,11 +39,11 @@ setValidity("Single.Obs.LT.Survey",
 #' @export
 setMethod(
   f="create.survey.results",
-  signature="Single.Obs.LT.Survey",
+  signature="Single.Obs.PT.Survey",
   definition=function(object, dht.tables = FALSE, ...){
     population <- object@population
-    line.transect <- object@line.transect
-    poss.distances <- calc.poss.detect.dists.lines(population, line.transect, perp.truncation = object@perpendicular.truncation)
+    point.transect <- object@transect
+    poss.distances <- calc.poss.detect.dists.points(population, point.transect, rad.truncation = object@radial.truncation)
     n.in.covered <- poss.distances$distance
     dist.data <- simulate.detections(poss.distances, population@detectability)
     dist.data <- rename.duplicates(dist.data)

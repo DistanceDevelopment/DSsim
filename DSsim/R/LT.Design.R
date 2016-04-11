@@ -7,10 +7,6 @@
 #' line transect design.
 #' @name LT.Design-class
 #' @title S4 Class "LT.Design"
-#' @slot design.axis Object of class \code{"numeric"}; the angle of
-#'  the design axis.
-#' @slot spacing Object of class \code{"numeric"}; the spacing of
-#'  the design.
 #' @section Methods:
 #' \describe{
 #'  \item{\code{generate.transects}}{\code{signature=(object = "LT.Design", ...)}:
@@ -20,44 +16,8 @@
 #' @seealso \code{\link{make.design}}
 #' @export
 setClass(Class = "LT.Design",
-         representation = representation(design.axis = "numeric",
-                                         spacing = "numeric", "VIRTUAL"),
+         representation = representation("VIRTUAL"),
          contains = "Survey.Design"
-)
-
-setMethod(
-  f="initialize",
-  signature="LT.Design",
-  definition=function(.Object, region, spacing, design.axis, plus.sampling, path = character(0), ...){
-    filenames <- character(0)
-    file.index <- numeric(0)
-    if(length(path) > 0){
-      filenames  <- get.shapefile.names(path)
-      file.index <- 1
-    }
-    #Set slots
-    .Object@region.obj    <- region
-    .Object@plus.sampling <- plus.sampling
-    .Object@spacing       <- spacing
-    .Object@design.axis   <- design.axis
-    .Object@path          <- path
-    .Object@filenames     <- filenames
-    .Object@file.index    <- file.index
-    #Check object is valid
-    validObject(.Object)
-    # return object
-    return(.Object)
-  }
-)
-
-setValidity("LT.Design",
-  function(object){
-    if(length(object@path) > 1){
-      return("You must only specify one path. All transect shapefiles must be in the same folder.")
-      #return(FALSE)
-    }
-    return(TRUE)
-  }
 )
 
 # GENERIC METHODS DEFINITIONS --------------------------------------------

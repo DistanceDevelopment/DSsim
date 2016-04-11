@@ -117,6 +117,16 @@ make.design <- function(transect.type, design.details, region.obj, design.axis =
         }
       }
     }
+  }else if(transect.type %in% c("Point", "point", "Point Transect", "point transect")){
+    if(length(design.details) > 1){
+      warning("Only one design details option required for point transects, subsequent options will be ignored.")
+    }
+    if(design.details[1] %in% c("Systematic", "systematic")){
+      design <- new(Class = "PT.Systematic.Design", region = region, design.axis = design.axis, spacing = spacing, plus.sampling = plus.sampling, path = path)  
+    }
+    if(design.details[1] %in% c("Random", "random")){
+      design <- new(Class = "PT.Random.Design", region = region, design.axis = design.axis, spacing = spacing, plus.sampling = plus.sampling, path = path)
+    }
   }
   if(is.null(design)){
     stop("Apologies, this design type is not supported at present. You should use the line transect user specified design options.", call. = FALSE)

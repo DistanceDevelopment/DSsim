@@ -1,11 +1,9 @@
+#' @include Transect.R
+
 #' Class "Line.Transect" contains an instance of a Line Transect Survey
 #'
 #' @name Line.Transect-class
 #' @title S4 Class "Line.Transect"
-#' @slot design.obj Object of class \code{"character"}; the object name
-#' of the design object which generated the transects.
-#' @slot sampler.info Object of class \code{"data.frame"}; the sampler 
-#' end point coordinates.
 #' @section Methods:
 #' \describe{
 #'  \item{\code{plot}}{\code{signature=(object = "Line.Transect")}: plots the 
@@ -13,7 +11,7 @@
 #' }
 #' @keywords classes            
 #' @export
-setClass("Line.Transect", representation(design.obj = "character", sampler.info = "data.frame"))
+setClass("Line.Transect", contains = "Transect")
 
 setMethod(
   f="initialize",
@@ -21,7 +19,7 @@ setMethod(
   definition=function(.Object, region, sampler.info = NULL, shapefile = NULL, meta = NULL){
     #Input pre-processing
     if(is.null(sampler.info) & !is.null(shapefile)){      
-      sampler.info <- get.sampler.info(shapefile, region, meta)
+      sampler.info <- get.line.sampler.info(shapefile, region, meta)
     }else{      
     }
     #Set slots

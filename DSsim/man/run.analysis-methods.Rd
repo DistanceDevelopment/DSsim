@@ -5,15 +5,15 @@
 \alias{run.analysis}
 \alias{run.analysis,DDF.Analysis,DDF.Data-method}
 \alias{run.analysis,Simulation,DDF.Data-method}
-\alias{run.analysis,Simulation,LT.Survey.Results-method}
+\alias{run.analysis,Simulation,Survey.Results-method}
 \title{S4 generic method to run analyses}
 \usage{
 run.analysis(object, data, ...)
 
-\S4method{run.analysis}{DDF.Analysis,DDF.Data}(object, data, dht = FALSE)
+\S4method{run.analysis}{DDF.Analysis,DDF.Data}(object, data, dht = FALSE,
+  point = FALSE)
 
-\S4method{run.analysis}{Simulation,LT.Survey.Results}(object, data,
-  dht = TRUE)
+\S4method{run.analysis}{Simulation,Survey.Results}(object, data, dht = TRUE)
 
 \S4method{run.analysis}{Simulation,DDF.Data}(object, data, dht = TRUE)
 }

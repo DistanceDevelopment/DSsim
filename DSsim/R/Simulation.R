@@ -5,6 +5,7 @@
 #' @include DSM.Analysis.R
 #' @include generic.functions.R
 #' @include LT.Survey.Results.R
+#' @include Survey.Results.R
 #' @include DDF.Data.R
 
 #' @title Class "Simulation"
@@ -143,7 +144,7 @@ setMethod(
     if(description.summary){
       description.summary()
     }
-    reps <- dim(object@results$individuals$N)[3]-2
+    reps <- object@reps
     #Calculate true values
     strata.names <- object@region@strata.name
     strata.order <- NULL
@@ -304,7 +305,9 @@ setMethod(
       LT.EqAngle.ZZ.Design = "Equal Angle Zigzag Line Transect",
       LT.EqSpace.ZZ.Design = "Equal Spaced Zigzag Line Transect",
       LT.Random.Design = "Random Parallel Line Transect",
-      LT.User.Specified.Design = "Subjective Line Transect")
+      LT.User.Specified.Design = "Subjective Line Transect",
+      PT.Systematic.Design = "Systematic Point Transect",
+      PT.Random.Design = "Random Point Transect")
     slots <- slotNames(object@design)
     design.parameters <- list()
     for(i in seq(along = slots)){
@@ -398,6 +401,8 @@ setMethod(
     }else{
       if(inherits(object@design, "LT.Design")){
         survey <- new(Class = "Single.Obs.LT.Survey", population = population, line.transect = transects, perp.truncation = object@detectability@truncation)
+      }else if(inherits(object@design, "PT.Design")){
+        survey <- new(Class = "Single.Obs.PT.Survey", population = population, point.transect = transects, rad.truncation = object@detectability@truncation)
       }
     }
     survey.data <- create.survey.results(object = survey, dht.tables = dht.tables, region = object@region)
@@ -406,12 +411,12 @@ setMethod(
       obs.table <- survey.data$obs.table
       sample.table <- survey.data$sample.table
       region.table <- survey.data$region.table
-      survey.results <- new(Class = "LT.Survey.Results", region = object@region, population = population, transects = transects, ddf.data = ddf.data, obs.table = obs.table, sample.table = sample.table, region.table = region.table)
+      survey.results <- new(Class = "Survey.Results", region = object@region, population = population, transects = transects, ddf.data = ddf.data, obs.table = obs.table, sample.table = sample.table, region.table = region.table)
     }else{
       obs.table <- new(Class = "Obs.Table")
       sample.table <- new(Class = "Sample.Table")
       region.table <- new(Class = "Region.Table")
-      survey.results <- new(Class = "LT.Survey.Results", region = object@region, population = population, transects = transects, ddf.data = ddf.data, obs.table = obs.table, sample.table = sample.table, region.table = region.table)
+      survey.results <- new(Class = "Survey.Results", region = object@region, population = population, transects = transects, ddf.data = ddf.data, obs.table = obs.table, sample.table = sample.table, region.table = region.table)
     }
     return(survey.results)
   }
@@ -422,7 +427,7 @@ setMethod(
 #' @export
 setMethod(
   f="run.analysis",
-  signature=c("Simulation","LT.Survey.Results"),
+  signature=c("Simulation","Survey.Results"),
   definition=function(object, data, dht = TRUE){
     #dist.data <- survey.results@ddf.data
     best.model <- run.analysis(object, data@ddf.data)
@@ -446,8 +451,9 @@ setMethod(
     ddf.analyses <- object@ddf.analyses
     criteria <- NULL
     results <- list()
+    point <- inherits(object@design, "PT.Design")
     for(a in seq(along = ddf.analyses)){
-      results[[a]] <- run.analysis(ddf.analyses[[a]], data)
+      results[[a]] <- run.analysis(ddf.analyses[[a]], data, point = point)
       if(!is.na(results[[a]][1])){
         #Get information to calculate selection criteria
         lnl <- results[[a]]$lnl 

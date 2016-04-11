@@ -1,3 +1,4 @@
+#' @include generic.functions.R
 #' @include Region.R
 #' @include Population.R
 #' @include Line.Transect.R
@@ -5,7 +6,6 @@
 #' @include Obs.Table.R
 #' @include Sample.Table.R
 #' @include Region.Table.R
-#' @include generic.functions.R
 
 #' @title S4 Class "LT.Survey.Results"
 #'
@@ -86,9 +86,9 @@ setMethod(
     #plot(x@population, ...)
     #plot(x@ddf.data, ...)
     #Temporary fix while until the issue is investigated more
-    lt.results <- x
-    temp.func(lt.results)
-    invisible(lt.results)
+    results <- x
+    temp.func(results)
+    invisible(results)
   }
 )
 
@@ -98,9 +98,9 @@ setMethod(
 #
 # @param lt.results
 # @export
-temp.func <- function(lt.results){
+temp.func <- function(results){
   #PLOT REGION
-  x <- lt.results@region
+  x <- results@region
   add = FALSE
   plot.units = character(0)
   region.col = NULL
@@ -141,24 +141,38 @@ temp.func <- function(lt.results){
   lapply(x@coords, FUN = plot.list, fill.col = region.col)
   lapply(x@gaps, FUN = plot.list, fill.col = gap.col)
   #PLOT TRANSECTS
-  x <- lt.results@transects
+  x <- results@transects
   transect.ID = numeric(0) 
   col = 1
-  plot.transect <- function(sampler.info, col){
-    lines(x = c(sampler.info[["start.X"]],sampler.info[["end.X"]]), y = c(sampler.info[["start.Y"]],sampler.info[["end.Y"]]), col = col)
-    invisible(sampler.info)  
+  if(class(x) == "Line.Transect"){
+    plot.transect <- function(sampler.info, col){
+      lines(x = c(sampler.info[["start.X"]],sampler.info[["end.X"]]), y = c(sampler.info[["start.Y"]],sampler.info[["end.Y"]]), col = col)
+      invisible(sampler.info)  
+    }
+    sampler.info <- x@sampler.info
+    sampler.info$ID <- as.numeric(sampler.info$ID)
+    if(length(transect.ID) == 0){
+      transect.ID <- unique(sampler.info$ID)
+    }
+    apply(as.matrix(sampler.info[sampler.info$ID%in%transect.ID,]), 1, FUN = plot.transect, col = col)  
+  }else if(class(x) == "Point.Transect"){
+    plot.transect <- function(sampler.info, col){
+      points(x = sampler.info[["X"]], y = sampler.info[["Y"]], col = col)
+      invisible(sampler.info)  
+    }
+    sampler.info <- x@sampler.info
+    sampler.info$ID <- as.numeric(sampler.info$ID)
+    if(length(transect.ID) == 0){
+      transect.ID <- unique(sampler.info$ID)
+    }
+    apply(as.matrix(sampler.info[sampler.info$ID%in%transect.ID,]), 1, FUN = plot.transect, col = col)
+    invisible()
   }
-  sampler.info <- x@sampler.info
-  sampler.info$ID <- as.numeric(sampler.info$ID)
-  if(length(transect.ID) == 0){
-    transect.ID <- unique(sampler.info$ID)
-  }
-  apply(as.matrix(sampler.info[sampler.info$ID%in%transect.ID,]), 1, FUN = plot.transect, col = col)
   #PLOT POPULATION
-  x <- lt.results@population
+  x <- results@population
   points(x@population$x, x@population$y, col = 2, pch = 20)
   #PLOT DETECTIONS
-  x <- lt.results@ddf.data
+  x <- results@ddf.data
   points(x@ddf.dat$x, x@ddf.dat$y, col = 5, pch = 20, cex = 1.5)
 }
 

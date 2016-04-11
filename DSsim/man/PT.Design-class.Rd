@@ -3,13 +3,20 @@
 \docType{class}
 \name{PT.Design-class}
 \alias{PT.Design-class}
-\title{Virtual Class "PT.Design" - NOT YET IMPLEMENTED}
+\title{Virtual Class "PT.Design" extends Class "Survey.Design"}
 \description{
-Virtual Class \code{"PT.Design"} is an S4 class detailing the type of point
-transect design and the co-ordinates of the end points of the transects.
+Virtual Class \code{"PT.Design"} is an S4 class detailing the type of 
+line transect design.
 }
-\section{Objects from the Class}{
- Objects can be created by calls of the form
+\section{Methods}{
+
+\describe{
+ \item{\code{generate.transects}}{\code{signature=(object = "PT.Design", ...)}:
+ loads a set of transects from a shapefile.}
+}
+}
+\seealso{
+\code{\link{make.design}}
 }
 \keyword{classes}
 

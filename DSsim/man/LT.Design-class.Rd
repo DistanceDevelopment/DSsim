@@ -8,15 +8,6 @@
 Virtual Class \code{"LT.Design"} is an S4 class detailing the type of 
 line transect design.
 }
-\section{Slots}{
-
-\describe{
-\item{\code{design.axis}}{Object of class \code{"numeric"}; the angle of
-the design axis.}
-
-\item{\code{spacing}}{Object of class \code{"numeric"}; the spacing of
-the design.}
-}}
 \section{Methods}{
 
 \describe{

@@ -1,5 +1,5 @@
 #' @importFrom graphics points
-calc.poss.detect.dists <- function(population, survey, perp.truncation, plot = FALSE){
+calc.poss.detect.dists.lines <- function(population, survey, perp.truncation, plot = FALSE){
   transects <- survey@sampler.info
   individuals <- population@population
   #find all perpendicular distances at which animals may be detected 

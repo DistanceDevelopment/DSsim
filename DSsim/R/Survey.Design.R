@@ -7,6 +7,10 @@
 #' 
 #' @name Survey.Design-class
 #' @title S4 Class "Survey.Design"
+#' @slot design.axis Object of class \code{"numeric"}; the angle of
+#'  the design axis.
+#' @slot spacing Object of class \code{"numeric"}; the spacing of
+#'  the design.
 #' @slot region.obj Object of class \code{"character"}; The name of
 #'  the region which the survey design has been made for.
 #' @slot plus.sampling Object of class \code{"logical"}; Whether 
@@ -22,12 +26,49 @@
 #' @export
 #' @seealso \code{\link{make.design}}
 setClass(Class = "Survey.Design", 
-         representation = representation(region.obj = "character",
+         representation = representation(design.axis = "numeric",
+                                         spacing = "numeric",
+                                         region.obj = "character",
                                          plus.sampling = "logical",  
                                          path = "character",
                                          filenames = "character",
                                          file.index = "numeric", "VIRTUAL")
 )
+
+setMethod(
+  f="initialize",
+  signature="Survey.Design",
+  definition=function(.Object, region, spacing, design.axis, plus.sampling, path = character(0), ...){
+    filenames <- character(0)
+    file.index <- numeric(0)
+    if(length(path) > 0){
+      filenames  <- get.shapefile.names(path)
+      file.index <- 1
+    }
+    #Set slots
+    .Object@region.obj    <- region
+    .Object@plus.sampling <- plus.sampling
+    .Object@spacing       <- spacing
+    .Object@design.axis   <- design.axis
+    .Object@path          <- path
+    .Object@filenames     <- filenames
+    .Object@file.index    <- file.index
+    #Check object is valid
+    validObject(.Object)
+    # return object
+    return(.Object)
+  }
+)
+
+setValidity("Survey.Design",
+            function(object){
+              if(length(object@path) > 1){
+                return("You must only specify one path. All transect shapefiles must be in the same folder.")
+              }
+              return(TRUE)
+            }
+)
+
 
 # GENERIC METHODS DEFINITIONS --------------------------------------------
 

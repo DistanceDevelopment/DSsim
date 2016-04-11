@@ -13,8 +13,8 @@ Suggests:
     rmarkdown
 Type: Package
 Title: Distance Sampling Simulations
-Version: 1.0.4
-Date: 2015-09-25
+Version: 1.0.5
+Date: 2016-04-09
 LazyLoad: yes
 Author: Laura Marshall <lhm@st-and.ac.uk>
 Maintainer: Laura Marshall <lhm@st-and.ac.uk>
@@ -50,10 +50,12 @@ Collate:
     'Sample.Table.R'
     'Obs.Table.R'
     'Single.Obs.DDF.Data.R'
+    'Transect.R'
     'Line.Transect.R'
     'Detectability.R'
     'Population.R'
     'LT.Survey.Results.R'
+    'Survey.Results.R'
     'DSM.Analysis.R'
     'Simulation.R'
     'Class.Constructors.R'
@@ -61,14 +63,20 @@ Collate:
     'Survey.R'
     'LT.Survey.R'
     'PT.Design.R'
+    'PT.Random.Design.R'
+    'Point.Transect.R'
+    'PT.Survey.R'
+    'PT.Systematic.Design.R'
     'Population.Summary.R'
     'Simulation.Summary.R'
     'Single.Obs.LT.Survey.R'
+    'Single.Obs.PT.Survey.R'
     'accumulate.PP.results.R'
     'add.dist.error.R'
     'add.summary.results.R'
     'calc.area.R'
-    'calc.poss.detect.dists.R'
+    'calc.poss.detect.dists.lines.R'
+    'calc.poss.detect.dists.points.R'
     'check.intersection.R'
     'check.shapefile.R'
     'coords.from.shapefile.R'
@@ -78,7 +86,8 @@ Collate:
     'generate.pop.N.R'
     'get.ave.density.R'
     'get.bound.box.R'
-    'get.sampler.info.R'
+    'get.line.sampler.info.R'
+    'get.point.sampler.info.R'
     'get.shapefile.names.R'
     'get.surface.constant.R'
     'get.surface.gam.R'

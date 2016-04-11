@@ -18,6 +18,8 @@ single.simulation.loop <- function(i, object, save.data, load.data, data.path = 
       #make survey object
       if(inherits(object@design, "LT.Design")){
         survey <- new(Class = "Single.Obs.LT.Survey", population = population, line.transect = transects, perp.truncation = object@detectability@truncation)
+      }else if(inherits(object@design, "PT.Design")){
+        survey <- new(Class = "Single.Obs.PT.Survey", population = population, point.transect = transects, rad.truncation = object@detectability@truncation)
       }
     }
     if(load.data){

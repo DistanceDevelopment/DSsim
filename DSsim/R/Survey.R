@@ -9,13 +9,17 @@
 #' @title S4 Class "Survey"
 #' @slot population Object of class \code{"Population"}; an instance of
 #' a population.
+#' #' @slot transect Object of class \code{"Transect"}; the
+#'  transects.
 #' @section Methods:
 #' \describe{
 #'  \item{\code{create.region.table}}{\code{signature=(object = "Survey", ...)}:
 #'  creates a region table for \code{dht}.}
+#'  \item{\code{create.sample.table}}{\code{signature=(object = "Survey", ...)}:
+#'  creates a sample table for \code{dht}.}
 #' }
 #' @keywords classes
-setClass("Survey", representation(population = "Population", "VIRTUAL"))
+setClass("Survey", representation(population = "Population", transect = "Transect", "VIRTUAL"))
 
 # GENERIC METHODS DEFINITIONS --------------------------------------------
 
@@ -40,9 +44,19 @@ setMethod(
   f="create.sample.table",
   signature="Survey",
   definition=function(object){
-    transect.obj <- object@line.transect
+    transect.obj <- try(object@transect, silent = TRUE)
+    #Check for backwards compatability
+    if(class(transect.obj) == "try-error"){
+      transect.obj <- object@line.transect
+    }
     transect.info <- transect.obj@sampler.info
-    sample.table <- data.frame(Sample.Label = transect.info$ID, Region.Label = transect.info$region, Effort = transect.info$length)
+    if(length(transect.info$length) > 0){
+      #Recorded differently in point and line transects
+      #To be depricated at some point
+      sample.table <- data.frame(Sample.Label = transect.info$ID, Region.Label = transect.info$region, Effort = transect.info$length)
+    }else{
+      sample.table <- data.frame(Sample.Label = transect.info$ID, Region.Label = transect.info$region, Effort = transect.info$effort)
+    }
     sample.table <- unique(sample.table)
     sample.table.obj <- new(Class = "Sample.Table", data = sample.table)
     return(sample.table.obj)
