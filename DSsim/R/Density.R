@@ -21,7 +21,12 @@
 #' @keywords classes
 #' @seealso \code{\link{make.density}}
 #' @export
-setClass("Density", representation(region.name = "character", strata.name = "character", density.surface = "list", x.space = "numeric", y.space = "numeric", units = "character"))
+setClass("Density", representation(region.name = "character", 
+                                   strata.name = "character", 
+                                   density.surface = "list", 
+                                   x.space = "numeric", 
+                                   y.space = "numeric", 
+                                   units = "character"))
 
 setMethod(
   f="initialize",

@@ -1,8 +1,8 @@
-hr.detect <- function(perp.dists, detectability){
+hr.detect <- function(dists, detectability){
 #returns the probability of detection based on a hazard-rate detection function
   #if multiple scale and shape parameters are supplied then resample for
   #detection function.
-  x <- perp.dists
+  x <- dists
   no.params <- max(length(detectability@scale.param), length(detectability@shape.param))
   if(no.params > 1){
     index <- sample(1:no.params, length(x), replace = TRUE)

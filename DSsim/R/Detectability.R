@@ -22,7 +22,7 @@
 #' @keywords classes
 #' @export
 #' @seealso \code{\link{make.detectability}}
-setClass("Detectability", representation(key.function    = "character",                        
+setClass("Detectability", representation(key.function    = "character",                 
                                          scale.param     = "numeric",
                                          shape.param     = "numeric",
                                          covariates      = "character",
