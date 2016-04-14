@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="author" content="Kieran Richards" />
+
+<meta name="date" content="2016-04-14" />
+
+<title>Vignette</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+
+<link href="data:text/css;charset=utf-8,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23header%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%20code%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+
+
+
+<div class="fluid-row" id="header">
+
+
+<h1 class="title">Vignette</h1>
+<h4 class="author"><em>Kieran Richards</em></h4>
+<h4 class="date"><em>2016-04-14</em></h4>
+
+</div>
+
+
+<div id="an-overview-of-dssim-distance-sampling-simulation" class="section level1">
+<h1>An Overview of DSsim : Distance Sampling Simulation</h1>
+<p>Distance sampling is a methodology which is often used to estimate the size of an animal population. Unfortunately the surveys involved are often be time consuming and expensive. <em>DSsim</em> provides the opportunity to simulate survey designs and spot potential problems early. The functions in <em>DSsim</em> are made available by running this command:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(DSsim)</code></pre></div>
+<p>There are several important functions that can be used when solving a problem with <em>DSsim</em>. These are <em>make.region</em>, <em>make.density</em>, <em>make.population.description</em>, <em>make.detectability</em>, <em>make.design</em>, <em>make.ddf.analysis.list</em> and <em>make.simulation</em>. All of these are required to successfully build and run a simulation with <em>DSsim</em> and each is described in detail here.</p>
+</div>
+<div id="the-functions" class="section level1">
+<h1>The Functions</h1>
+<div id="make.region" class="section level2">
+<h2><em>make.region</em></h2>
+<p>This function is used to create a region object. Region objects describe the shape and dimensions of the region as well as any gaps in the region. There are two ways of using <em>make.region</em> to create a region object. The first is by passing a list of coordinates to the <em>coords</em> and <em>gaps</em> arguments and is shown in our example. The second is by passing a previously constructed shapefile to the <em>shapefile</em> argument.</p>
+<div id="the-arguments-of-the-make.region" class="section level3">
+<h3>The Arguments of the <em>make.region</em></h3>
+<p><em>region.name</em> : This argument is required and specifies the name of the region</p>
+<p><em>strata.name</em> : This argument is used to specify the name of the stratum and is used when a region consists of multiple strata</p>
+<p><em>units</em> : The units used for the distances in the region given as a character, usually “m” or “km”</p>
+<p><em>area</em> : The area of the region, if this is omitted then it will be calculated</p>
+<p><em>shapefile</em> : A shapefile detailing the region</p>
+<p><em>coords</em> : If a shapefile is not given then coords must be; a list of polygons which describes the shape of the region</p>
+<p><em>gaps</em> : If a shapefile is not given then coords must be; a list of polygons which describes the shape of the region</p>
+</div>
+<div id="an-example" class="section level3">
+<h3>An Example</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#Firstly create lists to contain the polygon information for coords and gaps</span>
+coords &lt;-<span class="st"> </span>gaps &lt;-<span class="st"> </span><span class="kw">list</span>()
+<span class="co">#Fill the lists, making sure to &quot;close&quot; each polygon by setting the last coordinate pair equal to the first</span>
+coords[[<span class="dv">1</span>]] &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="kw">data.frame</span>(<span class="dt">x =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">1000</span>,<span class="dv">1000</span>,<span class="dv">0</span>,<span class="dv">0</span>), <span class="dt">y =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">0</span>,
+ <span class="dv">1000</span>,<span class="dv">1000</span>,<span class="dv">0</span>)))
+gaps[[<span class="dv">1</span>]] &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="kw">data.frame</span>(<span class="dt">x =</span> <span class="kw">c</span>(<span class="dv">400</span>,<span class="dv">600</span>,<span class="dv">500</span>,<span class="dv">350</span>,<span class="dv">400</span>), <span class="dt">y =</span> <span class="kw">c</span>(<span class="dv">100</span>,
+ <span class="dv">250</span>,<span class="dv">600</span>,<span class="dv">120</span>,<span class="dv">100</span>)))
+<span class="co">#Call make.region and store the result to a variable</span>
+region &lt;-<span class="st"> </span><span class="kw">make.region</span>(<span class="dt">region.name =</span> <span class="st">&quot;study.area&quot;</span>, <span class="dt">units =</span> <span class="st">&quot;m&quot;</span>, 
+ <span class="dt">coords =</span> coords, <span class="dt">gaps =</span> gaps)
+<span class="co">#Plot the region</span>
+<span class="kw">plot</span>(region)</code></pre></div>
+<p><img src="data:image/png;base64,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" /></p>
+<p>As you can see the output is a rectangle with corners at the points given in <em>coords</em> and a polygon removed with corners at the coordinates given in <em>gaps</em>.</p>
+</div>
+</div>
+<div id="make.density" class="section level2">
+<h2><em>make.density</em></h2>
+<p><em>make.density</em> is used to create density objects. Density objects describe how a population is distributed across a region. There are three ways in which <em>make.density</em> can be used to create a density object. The first is by supplying a <em>density.surface</em> which is a list of data.frames with columns <em>x</em>,<em>y</em>, and <em>density</em>. The second is by passing a value for the <em>constant</em> argument which will produce a density object with the same density everywhere and the last is by providing a <em>mgcv gam</em> object which will be used to produce the grid. Additionally, the density object may be edited by using the <em>add.hotspot</em> method to add Gaussian hills to the object.</p>
+<div id="the-arguments-of-make.density" class="section level3">
+<h3>The arguments of <em>make.density</em></h3>
+<p><em>region.obj</em> : This argument is required and specifies the Region object in which the density grid will be created</p>
+<p><em>density.surface</em> : A list of data.frames with columns <em>x</em>,<em>y</em>, and <em>density</em>, there must be one data.frame per strata</p>
+<p><em>x.space</em> : This argument is required and specifies the intervals in the grid in the x direction</p>
+<p><em>y.space</em> : This argument is required and specifies the intervals in the grid in the y direction</p>
+<p><em>constant</em> : Provides a value for a constant density across the region</p>
+<p><em>density.gam</em> : A <em>gam</em> object created using <em>mgcv</em></p>
+</div>
+<div id="the-arguments-of-add.hotspot" class="section level3">
+<h3>The arguments of <em>add.hotspot</em></h3>
+<p><em>object</em> : A density or simulation object</p>
+<p><em>centre</em> : An x,y-coordinate giving the centre of the hotspot</p>
+<p><em>sigma</em> : A value giving the scale parameter for a Gaussian decay</p>
+<p><em>amplitude</em> : The height of the hotspot at its centre</p>
+</div>
+</div>
+<div id="an-example-using-constant-density" class="section level2">
+<h2>An Example Using Constant Density</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#Create the density object and store it to a variable</span>
+density =<span class="st"> </span><span class="kw">make.density</span>(<span class="dt">region.obj =</span> region, <span class="dt">x.space =</span> <span class="dv">10</span>, <span class="dt">y.space =</span> <span class="dv">10</span>, <span class="dt">constant =</span> <span class="fl">0.5</span>)
+<span class="co">#Add some hotspots</span>
+density =<span class="st"> </span><span class="kw">add.hotspot</span>(<span class="dt">object =</span> density, <span class="dt">centre =</span> <span class="kw">c</span>(<span class="dv">50</span>,<span class="dv">200</span>), <span class="dt">sigma =</span> <span class="dv">100</span>, <span class="dt">amplitude =</span> <span class="fl">0.1</span>)
+density =<span class="st"> </span><span class="kw">add.hotspot</span>(<span class="dt">object =</span> density, <span class="dt">centre =</span> <span class="kw">c</span>(<span class="dv">500</span>,<span class="dv">700</span>), <span class="dt">sigma =</span> <span class="dv">900</span>, <span class="dt">amplitude =</span> <span class="fl">0.05</span>)
+density =<span class="st"> </span><span class="kw">add.hotspot</span>(<span class="dt">object =</span> density, <span class="dt">centre =</span> <span class="kw">c</span>(<span class="dv">300</span>,<span class="dv">100</span>), <span class="dt">sigma =</span> <span class="dv">100</span>, <span class="dt">amplitude =</span> -<span class="fl">0.15</span>)</code></pre></div>
+</div>
+<div id="an-example-using-a-density-surface" class="section level2">
+<h2>An Example Using a Density Surface</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#Create the density object using a density surface and store it to a variable</span>
+density =<span class="st"> </span><span class="kw">make.density</span>(<span class="dt">region.obj =</span> region, <span class="dt">density.surface =</span> surface, <span class="dt">x.space =</span> <span class="dv">10</span>, <span class="dt">y.space =</span> <span class="dv">10</span>)
+
+<span class="co">#Plot the region density</span>
+<span class="kw">plot</span>(density)</code></pre></div>
+<p><img src="data:image/png;base64,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" /></p>
+<p>The surface used in the second example was obtained by extracting the density.surface attribute of the density object created in the first example however any list of a data.frame with columns <em>x</em>,<em>y</em>, and <em>density</em> could have been used. The plot shows that there are Gaussian decays at the points (50,200), (500,700) and (300,100) where the hotspots were added.</p>
+</div>
+<div id="make.population.description" class="section level2">
+<h2><em>make.population.description</em></h2>
+<p><em>make.population.description</em> is used to create a descriptor of the population. The object created by <em>make.population.description</em> will be used to generate the population.</p>
+<p><em>clusters?</em></p>
+<div id="the-arguments-of-make.population.description" class="section level3">
+<h3>The arguments of <em>make.population.description</em></h3>
+<p><em>region.obj</em> : This argument is required and specifies the region object which describes the shape of the region in which the population is located</p>
+<p><em>density.obj</em> : This argument is also required and specifies the density object which describes how the population should be distributed in the region</p>
+<p><em>cluster.size.table</em> : <strong>?</strong> Not required.</p>
+<p><em>N</em> : The number of individuals/clusters in the region</p>
+<p><em>fixed.N</em> : A TRUE/FALSE value which defaults to TRUE. If TRUE the population is generated from N, otherwise it is generated from the density description</p>
+</div>
+<div id="an-example-1" class="section level3">
+<h3>An Example</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">description =<span class="st"> </span><span class="kw">make.population.description</span>(<span class="dt">N=</span><span class="dv">1000</span>, <span class="dt">density.obj =</span> density, <span class="dt">region.obj =</span> region, <span class="dt">fixed.N =</span> <span class="ot">TRUE</span>)</code></pre></div>
+</div>
+</div>
+<div id="make.detectability" class="section level2">
+<h2><em>make.detectability</em></h2>
+<p><strong>Can also be uniform, “uf”</strong></p>
+<p><em>make.detectability</em> creates a detectability function which describes the probability of detecting an individual from the population given its perpendicular distance from the transect. <em>make.detectability</em> can either create a detectability function using a half normal distribution or a hazard rate distribution.</p>
+<div id="the-arguments-of-make.detectability" class="section level3">
+<h3>The arguments of <em>make.detectability</em></h3>
+<p><em>key.function</em> : specifies shape of the detection function (either half-normal “hn” or hazard rate “hr”)</p>
+<p><em>scale.param</em> : parameter value</p>
+<p><em>shape.param</em> : parameter value</p>
+<p><em>truncation</em> : the maximum perpendicular distance at which objects may be from a transect and still be detectable.</p>
+</div>
+<div id="an-example-2" class="section level3">
+<h3>An Example</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">detect =<span class="st"> </span><span class="kw">make.detectability</span>(<span class="dt">key.function =</span> <span class="st">&quot;hn&quot;</span>, <span class="dt">scale.param =</span> <span class="dv">15</span>, <span class="dt">truncation =</span> <span class="dv">30</span>)</code></pre></div>
+</div>
+</div>
+<div id="make.design" class="section level2">
+<h2><em>make.design</em></h2>
+<p>Currently surveys can only be generated using the <strong>Distance</strong> software. If you are running a simulation in R you will need to use <strong>Distance</strong> to generate all the surveys as shapefiles and tell R which directory contains these shapefiles in the path argument.</p>
+<p><strong>Note</strong>: This directory must contain only the shapefiles that you wish to use and nothing else</p>
+<p>The <em>design.details</em> argument should specify the details of the design and the options are given in the following table:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="center">Transect Type</th>
+<th align="center">Design Details</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">Line</td>
+<td align="center">Parallel, Systematic</td>
+</tr>
+<tr class="even">
+<td align="center">Line</td>
+<td align="center">Parallel, Random</td>
+</tr>
+<tr class="odd">
+<td align="center">Line</td>
+<td align="center">Zigzag, Equal Angle</td>
+</tr>
+<tr class="even">
+<td align="center">Line</td>
+<td align="center">Zigzag, Equal Spaced</td>
+</tr>
+<tr class="odd">
+<td align="center">Line</td>
+<td align="center">User Specified</td>
+</tr>
+<tr class="even">
+<td align="center">Point</td>
+<td align="center">Systematic</td>
+</tr>
+<tr class="odd">
+<td align="center">Point</td>
+<td align="center">Random</td>
+</tr>
+</tbody>
+</table>
+<div id="the-arguments-of-make.design" class="section level3">
+<h3>The arguments of ?<em>make.design</em></h3>
+<p><em>transect.type</em> : Required and must be from the above table</p>
+<p><em>design.details</em> : Required and must be from the above table</p>
+<p><em>region.obj</em> : Specifies the region in which the survey is to be carried out</p>
+<p><em>design.axis</em> : User may provide the angle of the design axis but not currently used</p>
+<p><em>spacing</em> : User may provide the systematic design spacing but but not currently used</p>
+<p><em>angle</em> : User may provide the design angle (only relevant in equal angle zigzag designs) but not currently used</p>
+<p><em>plus.sampling</em> : TRUE/FALSE; if TRUE a plus sampling protocol is used but not currently used</p>
+<p><em>path</em> : The location of the directory which contains the shapefiles</p>
+</div>
+<div id="an-example-3" class="section level3">
+<h3>An Example</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">parallel.design =<span class="st"> </span><span class="kw">make.design</span>(<span class="dt">transect.type =</span> <span class="st">&quot;Line&quot;</span>, <span class="dt">design.details =</span> <span class="kw">c</span>(<span class="st">&quot;Parallel&quot;</span>, <span class="st">&quot;Systematic&quot;</span>), <span class="dt">region =</span> region, <span class="dt">design.axis =</span> <span class="dv">0</span>, <span class="dt">spacing =</span> <span class="dv">100</span>, <span class="dt">plus.sampling =</span> <span class="ot">FALSE</span>, <span class="dt">path =</span> <span class="st">&quot;C:/...&quot;</span>)</code></pre></div>
+</div>
+</div>
+<div id="make.ddf.analysis.list" class="section level2">
+<h2><em>make.ddf.analysis.list</em></h2>
+<p><em>make.ddf.analysis.list</em> is used to create a list of models which the simulation will fit to the data generated by the simulation. The model with the minimum criteria value will be selected when the simulation is run.</p>
+<div id="the-arguments-of-make.ddf.analysis.list" class="section level3">
+<h3>The arguments of <em>make.ddf.analysis.list</em></h3>
+<p><em>dsmodel</em> : A list of distance sampling model formula specifying the detection function (see ?ddf for further details)</p>
+<p><em>method</em> : currently only “ds” normal distance sampling has been implemented</p>
+<p><em>criteria</em> : Specifies the model selection criteria; can be AIC, AICc or BIC</p>
+<p><em>analysis.strata</em> : Dataframe with two columns (“design.id” and “analysis.id”). The former gives the strata names as defined in the design (i.e. the region object) the second specifies how they should be grouped (into less strata) for the analyses</p>
+<p><em>truncation</em> : Specifies the truncation distance for the analysis of the models</p>
+<p><em>binned.data</em> : A TRUE/FALSE value. If TRUE the data will be analysed in bins</p>
+<p><em>cutpoints</em> : Specifies the cutpoints for binning the data</p>
+</div>
+<div id="an-example-4" class="section level3">
+<h3>An Example</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ddf.analyses =<span class="st"> </span><span class="kw">make.ddf.analysis.list</span>(<span class="dt">dsmodel =</span> <span class="kw">list</span>(~<span class="kw">cds</span>(<span class="dt">key =</span> <span class="st">&quot;hn&quot;</span>, <span class="dt">formula =</span> ~<span class="dv">1</span>), ~<span class="kw">cds</span>(<span class="dt">key =</span> <span class="st">&quot;hr&quot;</span>, <span class="dt">formula =</span> ~<span class="dv">1</span>)), <span class="dt">method =</span> <span class="st">&quot;ds&quot;</span>, <span class="dt">criteria =</span> <span class="st">&quot;AIC&quot;</span>)</code></pre></div>
+</div>
+</div>
+<div id="make.simulation" class="section level2">
+<h2><em>make.simulation</em></h2>
+<p><em>make.simulation</em> is used to bundle together all the objects that are required to run the simulation.</p>
+<div id="the-arguments-of-make.simulation" class="section level3">
+<h3>The arguments of <em>make.simulation</em></h3>
+<p><em>reps</em> : The number of times the simulation should be repeated</p>
+<p><em>single.transect.set</em> : TRUE/FALSE value; if TRUE the same set of transects will be used throughout the simulations. Defaults to FALSE</p>
+<p><em>region.obj</em> : A region object that has been made with <em>make.region</em></p>
+<p><em>design.obj</em> : A design object which has been made with <em>make.design</em></p>
+<p><em>population.description.obj</em> : A population description object which has been made with <em>make.population.description</em></p>
+<p><em>detectability.obj</em> : A detectability object which has been made with <em>make.detectability</em></p>
+<p><em>ddf.analyses.list</em> : A list of DDF Analysis objects which has been made with <em>make.ddf.analysis.list</em></p>
+</div>
+<div id="an-example-5" class="section level3">
+<h3>An Example</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">simulation =<span class="st"> </span><span class="kw">make.simulation</span>(<span class="dt">reps =</span> <span class="dv">10</span>, <span class="dt">region.obj =</span> region, <span class="dt">design.obj =</span> parallel.design, <span class="dt">population.description.obj =</span> description, <span class="dt">detectability.obj =</span> detect, <span class="dt">ddf.analyses.list =</span> ddf.analyses)</code></pre></div>
+</div>
+</div>
+<div id="running-the-simulation" class="section level2">
+<h2>Running the simulation</h2>
+<p>Now that the simulation has been made it needs to run. This can take a long time, especially if reps is a large number.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">simulation.results =<span class="st"> </span><span class="kw">run</span>(simulation)</code></pre></div>
+<p>The results can then be viewed in a summary table</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(simulation.results)</code></pre></div>
+</div>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

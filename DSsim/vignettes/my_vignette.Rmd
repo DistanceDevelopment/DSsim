@@ -158,12 +158,13 @@ description = make.population.description(N=1000, density.obj = density, region.
 ```
 
 ##_make.detectability_
+
 _make.detectability_ creates a detectability function which describes the probability of detecting an individual from the population given its perpendicular distance from the transect.  _make.detectability_ can either create a detectability function using a half normal distribution or a hazard rate distribution.
 
 ###The arguments of _make.detectability_
 
 _key.function_
-    : specifies shape of the detection function (either half-normal "hn" or hazard rate "hr")
+    : specifies shape of the detection function (either half-normal "hn" or hazard rate "hr" or uniform "uf")
 
 _scale.param_
     : parameter value
@@ -196,7 +197,7 @@ The _design.details_ argument should specify the details of the design and the o
 |Point        |Systematic          |
 |Point        |Random              |
 
-###The arguments of ?_make.design_
+###The arguments of _make.design_
 
 _transect.type_
     : Required and must be from the above table
@@ -223,7 +224,7 @@ _path_
     : The location of the directory which contains the shapefiles
 
 ###An Example
-```{r, eval=FALSE}
+```{r eval=FALSE}
 parallel.design = make.design(transect.type = "Line", design.details = c("Parallel", "Systematic"), region = region, design.axis = 0, spacing = 100, plus.sampling = FALSE, path = "C:/...")
 ```
 ##_make.ddf.analysis.list_
@@ -257,4 +258,46 @@ _cutpoints_
 ddf.analyses = make.ddf.analysis.list(dsmodel = list(~cds(key = "hn", formula = ~1), ~cds(key = "hr", formula = ~1)), method = "ds", criteria = "AIC")
 ```
 
-##
+##_make.simulation_
+_make.simulation_ is used to bundle together all the objects that are required to run the simulation.
+
+###The arguments of _make.simulation_
+
+_reps_
+    : The number of times the simulation should be repeated
+
+_single.transect.set_
+    : TRUE/FALSE value; if TRUE the same set of transects will be used throughout the simulations. Defaults to FALSE
+
+_region.obj_
+    : A region object that has been made with _make.region_
+
+_design.obj_
+    : A design object which has been made with _make.design_
+
+_population.description.obj_
+    : A population description object which has been made with _make.population.description_
+
+_detectability.obj_
+    : A detectability object which has been made with _make.detectability_
+
+_ddf.analyses.list_
+    : A list of DDF Analysis objects which has been made with _make.ddf.analysis.list_
+
+###An Example
+```{r eval=FALSE}
+simulation = make.simulation(reps = 10, region.obj = region, design.obj = parallel.design, population.description.obj = description, detectability.obj = detect, ddf.analyses.list = ddf.analyses)
+```
+
+##Running the simulation
+Now that the simulation has been made it needs to run.  This can take a long time, especially if reps is a large number.
+
+```{r eval=FALSE}
+simulation.results = run(simulation)
+```
+
+The results can then be viewed in a summary table
+
+```{r eval=FALSE}
+summary(simulation.results)
+```
