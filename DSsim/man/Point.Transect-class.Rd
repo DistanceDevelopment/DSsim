@@ -10,8 +10,7 @@
 \item{\code{design.obj}}{Object of class \code{"character"}; the object name
 of the design object which generated the transects.}
 
-\item{\code{sampler.info}}{Object of class \code{"data.frame"}; the sampler 
-end point coordinates.}
+\item{\code{sampler.info}}{Object of class \code{"data.frame"}; the sampler point coordinates.}
 }}
 \section{Methods}{
 

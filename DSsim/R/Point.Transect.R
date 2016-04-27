@@ -6,8 +6,7 @@
 #' @title S4 Class "Point.Transect"
 #' @slot design.obj Object of class \code{"character"}; the object name
 #' of the design object which generated the transects.
-#' @slot sampler.info Object of class \code{"data.frame"}; the sampler 
-#' end point coordinates.
+#' @slot sampler.info Object of class \code{"data.frame"}; the sampler point coordinates.
 #' @section Methods:
 #' \describe{
 #'  \item{\code{plot}}{\code{signature=(object = "Point.Transect")}: plots the 
@@ -73,17 +72,17 @@ setMethod(
   f="plot",
   signature="Point.Transect",
   definition=function(x, y, transect.ID = numeric(0), col = 1, ...){
-    plot.transect <- function(sampler.info, col, ...){
-      points(x = sampler.info[["X"]], y = sampler.info[["Y"]], col = col, ...)
-      invisible(sampler.info)  
-    }
     sampler.info <- x@sampler.info
-    sampler.info$ID <- as.numeric(sampler.info$ID)
-    if(length(transect.ID) == 0){
-      transect.ID <- unique(sampler.info$ID)
+    if(is.null(sampler.info$ac.simple)){
+      points(sampler.info$X, sampler.info$Y, col = col, ...)
+    }else{
+      simple <- sampler.info[sampler.info$ac.simple,]
+      adv.detectors <- sampler.info[!sampler.info$ac.simple,]
+      points(adv.detectors$X, adv.detectors$Y, pch = 20, col = 5)
+      points(adv.detectors$X, adv.detectors$Y, pch = 1, col = 3)
+      points(simple[,1], simple[,2], pch = 20, col = 4)
     }
-    apply(as.matrix(sampler.info[sampler.info$ID%in%transect.ID,]), 1, FUN = plot.transect, col = col, ...)
-    invisible()
+    invisible(x)
   }
 )
 
