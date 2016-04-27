@@ -13,9 +13,9 @@ run.analysis(object, data, ...)
 \S4method{run.analysis}{DDF.Analysis,DDF.Data}(object, data, dht = FALSE,
   point = FALSE)
 
-\S4method{run.analysis}{Simulation,Survey.Results}(object, data, dht = TRUE)
+\S4method{run.analysis}{Simulation,Survey.Results}(object, data, dht = FALSE)
 
-\S4method{run.analysis}{Simulation,DDF.Data}(object, data, dht = TRUE)
+\S4method{run.analysis}{Simulation,DDF.Data}(object, data, dht = FALSE)
 }
 \arguments{
 \item{object}{an object of class Simulation or DDF.Analysis}
