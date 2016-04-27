@@ -1,4 +1,4 @@
-store.ddf.results <- function(detection.results, ddf.results, i, N.in.covered, analyses){
+store.ddf.results <- function(detection.results, ddf.results, i, N.in.covered){
   Nhat <- ddf.results$Nhat
   n <- length(ddf.results$fitted)
   True.Pa <- n/N.in.covered
