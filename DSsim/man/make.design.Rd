@@ -5,7 +5,8 @@
 \title{Creates a Survey.Design object}
 \usage{
 make.design(transect.type, design.details, region.obj,
-  design.axis = numeric(0), spacing = numeric(0), angle = numeric(0),
+  design.axis = numeric(0), spacing = numeric(0),
+  nested.space = numeric(0), angle = numeric(0),
   plus.sampling = logical(0), path = character(0))
 }
 \arguments{
