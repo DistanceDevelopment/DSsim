@@ -39,7 +39,7 @@ setValidity("PT.Nested.Design",
               if(length(nested.space) == 0){
                 return("You must supply a value for nested.space. This should be an integer value.")
               }else{
-                if(!as.integer(nested.space) == nested.space){
+                if(any(!as.integer(nested.space) == nested.space)){
                   return("The nested space value should be an integer specifying how many point in the main grid are between each nested point.")
                 }
               }
@@ -146,7 +146,7 @@ setMethod(
       }
     }
     #Add effort and rename
-    sampler.info <- data.frame(X = transects$x, Y = transects$y, strata = transects$strata, ac.simple = transects$ac.simple, effort = rep(1, nrow(transects)))
+    sampler.info <- data.frame(ID = 1:nrow(transects), X = transects$x, Y = transects$y, region = transects$strata, ac.simple = transects$ac.simple, effort = rep(1, nrow(transects)))
     point.transect <- new(Class = "Point.Transect", region = region, sampler.info = sampler.info)
     return(point.transect)
   }

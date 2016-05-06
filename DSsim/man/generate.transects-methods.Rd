@@ -17,7 +17,7 @@ generate.transects(object, read.from.file = TRUE, write.to.file = FALSE,
 
 \S4method{generate.transects}{PT.Nested.Design}(object,
   read.from.file = FALSE, write.to.file = FALSE, region = NULL,
-  index = NULL)
+  index = NULL, silent = FALSE)
 
 \S4method{generate.transects}{LT.Design}(object, read.from.file = TRUE,
   write.to.file = FALSE, region = NULL, index = NULL)

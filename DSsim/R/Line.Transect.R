@@ -16,7 +16,7 @@ setClass("Line.Transect", contains = "Transect")
 setMethod(
   f="initialize",
   signature="Line.Transect",
-  definition=function(.Object, region, sampler.info = NULL, shapefile = NULL, meta = NULL){
+  definition=function(.Object, region = NULL, sampler.info = NULL, shapefile = NULL, meta = NULL){
     #Input pre-processing
     if(is.null(sampler.info) & !is.null(shapefile)){      
       sampler.info <- get.line.sampler.info(shapefile, region, meta)

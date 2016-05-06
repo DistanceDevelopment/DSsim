@@ -35,15 +35,12 @@ setMethod(
   }
 )
 
-setValidity("Line.Transect",
+setValidity("Point.Transect",
             function(object){
               sampler.info.names <- names(object@sampler.info)
-              required.var.names <- c("ID", "X", "Y", "region")
-              if(length(sampler.info.names) != length(required.var.names)){
-                return("The sampler.info data.frame contains an incorect number of variables.")
-              }
-              for(i in seq(along = sampler.info.names)){
-                if(!sampler.info.names[i]%in%required.var.names){
+              required.var.names <- c("ID", "X", "Y", "region", "effort")
+              for(i in seq(along = required.var.names)){
+                if(!(required.var.names[i] %in% sampler.info.names)){
                   return("The variable names provided for the sampler.info data.frame do not match those which are required.")
                 }
               }
@@ -80,7 +77,7 @@ setMethod(
       adv.detectors <- sampler.info[!sampler.info$ac.simple,]
       points(adv.detectors$X, adv.detectors$Y, pch = 20, col = 5)
       points(adv.detectors$X, adv.detectors$Y, pch = 1, col = 3)
-      points(simple[,1], simple[,2], pch = 20, col = 4)
+      points(simple$X, simple$Y, pch = 20, col = 4)
     }
     invisible(x)
   }

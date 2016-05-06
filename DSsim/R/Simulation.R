@@ -117,8 +117,10 @@ setValidity("Simulation",
         return(FALSE)
       }
     }else if(!transects.from.file){
-      message("The generation of transects is not currently implemented in R")
-      return(FALSE)
+      if(!(class(object@design) %in% c("PT.Nested.Design"))){
+        message("The generation of transects is only implemented in R for nested point transect designs")
+        return(FALSE)  
+      }
     }
     return(TRUE)
   }
@@ -307,11 +309,12 @@ setMethod(
       LT.Random.Design = "Random Parallel Line Transect",
       LT.User.Specified.Design = "Subjective Line Transect",
       PT.Systematic.Design = "Systematic Point Transect",
+      PT.Nested.Design = "Systematic Nested Point Transect",
       PT.Random.Design = "Random Point Transect")
     slots <- slotNames(object@design)
     design.parameters <- list()
     for(i in seq(along = slots)){
-      if(slots[i] %in% c("design.axis", "spacing", "plus.sampling")){
+      if(slots[i] %in% c("design.axis", "spacing", "plus.sampling", "nested.space")){
         design.parameters[[slots[i]]] <- slot(object@design, slots[i])  
       }
     }
