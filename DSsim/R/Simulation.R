@@ -103,27 +103,27 @@ setMethod(
 )
 
 setValidity("Simulation",
-  function(object){
-    if(object@double.observer){
-      warning("Double observer simulations not supported at present", call. = TRUE, immediate. = TRUE)
-      return(FALSE)
-    }
-    design <- object@design
-    transects.from.file <- ifelse(length(design@path) == 1, TRUE, FALSE)
-    if(transects.from.file & !object@single.transect.set){
-      no.files <- length(design@filenames)
-      if(object@reps > no.files){
-        message("You have specified a higher number of repetitions than you have provided transect shapefiles at: ", design@path)
-        return(FALSE)
-      }
-    }else if(!transects.from.file){
-      if(!(class(object@design) %in% c("PT.Nested.Design"))){
-        message("The generation of transects is only implemented in R for nested point transect designs")
-        return(FALSE)  
-      }
-    }
-    return(TRUE)
-  }
+            function(object){
+              if(object@double.observer){
+                warning("Double observer simulations not supported at present", call. = TRUE, immediate. = TRUE)
+                return(FALSE)
+              }
+              design <- object@design
+              transects.from.file <- ifelse(length(design@path) == 1, TRUE, FALSE)
+              if(transects.from.file & !object@single.transect.set){
+                no.files <- length(design@filenames)
+                if(object@reps > no.files){
+                  message("You have specified a higher number of repetitions than you have provided transect shapefiles at: ", design@path)
+                  return(FALSE)
+                }
+              }else if(!transects.from.file){
+                if(!(class(object@design) %in% c("PT.Nested.Design"))){
+                  message("The generation of transects is only implemented in R for nested point transect designs")
+                  return(FALSE)  
+                }
+              }
+              return(TRUE)
+            }
 )
 
 # GENERIC METHODS DEFINITIONS --------------------------------------------
@@ -146,6 +146,13 @@ setMethod(
     if(description.summary){
       description.summary()
     }
+    #Create function to calculate RMSE
+    calc.RMSE <- function(x, reps){ 
+      true.x <- x[(reps+1)]
+      x <- x[1:reps]
+      return( sqrt( sum((x-true.x)^2) / reps ))
+    }
+    #Get number of reps
     reps <- object@reps
     #Calculate true values
     strata.names <- object@region@strata.name
@@ -169,7 +176,7 @@ setMethod(
       #Add on totals
       areas <- c(areas, sum(areas))
       N <- c(N, sum(N))
-    #Otherwise process areas and Population size as normal
+      #Otherwise process areas and Population size as normal
     }else{
       #Re ordering in the same way as the results tables (think dht arranges them)
       for(strat in seq(along = strata.names)){
@@ -201,7 +208,7 @@ setMethod(
       true.D.individuals <- true.N.individuals/areas
       true.D.clusters <- true.N.clusters/areas
     }
-
+    
     #Create summary tables
     capture <- array(NA, dim = c(reps, length(true.N.individuals)))
     capture.D <- array(NA, dim = c(reps, length(true.D.individuals)))
@@ -225,22 +232,24 @@ setMethod(
                                      mean.se.ER = object@results$individuals$summary[,"se.ER","mean"],
                                      sd.mean.ER = object@results$individuals$summary[,"ER","sd"])
     individual.N <- data.frame(Truth = true.N.individuals,
-                                   mean.Estimate = object@results$individuals$N[,"Estimate","mean"],
-                                   percent.bias = (object@results$individuals$N[,"Estimate","mean"] - true.N.individuals)/true.N.individuals*100,
-                                   #lcl = object@results$individuals$N[,"lcl","mean"],
-                                   #ucl = object@results$individuals$N[,"ucl","mean"],
-                                   CI.coverage.prob = percent.capture/100,
-                                   mean.se = object@results$individuals$N[,"se","mean"],
-                                   sd.of.means = object@results$individuals$N[,"Estimate","sd"])
+                               mean.Estimate = object@results$individuals$N[,"Estimate","mean"],
+                               percent.bias = (object@results$individuals$N[,"Estimate","mean"] - true.N.individuals)/true.N.individuals*100,
+                               RMSE = apply(cbind(object@results$individuals$N[, "Estimate", 1:reps], true.N.individuals), 1, calc.RMSE, reps = reps),
+                               #lcl = object@results$individuals$N[,"lcl","mean"],
+                               #ucl = object@results$individuals$N[,"ucl","mean"],
+                               CI.coverage.prob = percent.capture/100,
+                               mean.se = object@results$individuals$N[,"se","mean"],
+                               sd.of.means = object@results$individuals$N[,"Estimate","sd"])
     individual.D <- data.frame(Truth = true.D.individuals,
-                                   mean.Estimate = object@results$individuals$D[,"Estimate","mean"],
-                                   percent.bias = (object@results$individuals$D[,"Estimate","mean"] - true.D.individuals)/true.D.individuals*100,
-                                   #lcl = object@results$individuals$N[,"lcl","mean"],
-                                   #ucl = object@results$individuals$N[,"ucl","mean"],
-                                   CI.coverage.prob = percent.capture.D/100,
-                                   mean.se = object@results$individuals$D[,"se","mean"],
-                                   sd.of.means = object@results$individuals$D[,"Estimate","sd"])
-
+                               mean.Estimate = object@results$individuals$D[,"Estimate","mean"],
+                               percent.bias = (object@results$individuals$D[,"Estimate","mean"] - true.D.individuals)/true.D.individuals*100,
+                               RMSE = apply(cbind(object@results$individuals$D[, "Estimate", 1:reps], true.D.individuals), 1, calc.RMSE, reps = reps),
+                               #lcl = object@results$individuals$N[,"lcl","mean"],
+                               #ucl = object@results$individuals$N[,"ucl","mean"],
+                               CI.coverage.prob = percent.capture.D/100,
+                               mean.se = object@results$individuals$D[,"se","mean"],
+                               sd.of.means = object@results$individuals$D[,"Estimate","sd"])
+    
     if(!is.null(object@results$clusters)){
       capture <- array(NA, dim = c(reps, length(true.N.individuals)))
       capture.D <- array(NA, dim = c(reps, length(true.D.individuals)))
@@ -256,29 +265,31 @@ setMethod(
       percent.capture.D <- (apply(capture.D, 2, sum, na.rm = TRUE)/nrow(na.omit(capture.D)))*100
       zero.n <- apply(zero.n, 2, sum)
       cluster.summary <- data.frame(mean.Cover.Area = object@results$clusters$summary[,"CoveredArea","mean"],
-                                       mean.Effort = object@results$clusters$summary[,"Effort","mean"],
-                                       mean.n = object@results$clusters$summary[,"n","mean"],
-                                       no.zero.n = zero.n,
-                                       mean.k = object@results$clusters$summary[,"k","mean"],
-                                       mean.ER = object@results$clusters$summary[,"ER","mean"],
-                                       mean.se.ER = object@results$clusters$summary[,"se.ER","mean"],
-                                       sd.mean.ER = object@results$clusters$summary[,"ER","sd"])
+                                    mean.Effort = object@results$clusters$summary[,"Effort","mean"],
+                                    mean.n = object@results$clusters$summary[,"n","mean"],
+                                    no.zero.n = zero.n,
+                                    mean.k = object@results$clusters$summary[,"k","mean"],
+                                    mean.ER = object@results$clusters$summary[,"ER","mean"],
+                                    mean.se.ER = object@results$clusters$summary[,"se.ER","mean"],
+                                    sd.mean.ER = object@results$clusters$summary[,"ER","sd"])
       cluster.N <- data.frame(Truth = true.N.clusters,
-                                     mean.Estimate = object@results$clusters$N[,"Estimate","mean"],
-                                     percent.bias = (object@results$clusters$N[,"Estimate","mean"] - true.N.clusters)/true.N.clusters*100,
-                                     #lcl = object@results$clusters$N[,"lcl","mean"],
-                                     #ucl = object@results$clusters$N[,"ucl","mean"],
-                                     CI.coverage.prob = percent.capture/100,
-                                     mean.se = object@results$clusters$N[,"se","mean"],
-                                     sd.of.means = object@results$clusters$N[,"Estimate","sd"])
+                              mean.Estimate = object@results$clusters$N[,"Estimate","mean"],
+                              percent.bias = (object@results$clusters$N[,"Estimate","mean"] - true.N.clusters)/true.N.clusters*100,
+                              RMSE = apply(cbind(object@results$clusters$N[, "Estimate", 1:reps], true.N.clusters), 1, calc.RMSE, reps = reps),
+                              #lcl = object@results$clusters$N[,"lcl","mean"],
+                              #ucl = object@results$clusters$N[,"ucl","mean"],
+                              CI.coverage.prob = percent.capture/100,
+                              mean.se = object@results$clusters$N[,"se","mean"],
+                              sd.of.means = object@results$clusters$N[,"Estimate","sd"])
       cluster.D <- data.frame(Truth = true.D.clusters,
-                                     mean.Estimate = object@results$clusters$D[,"Estimate","mean"],
-                                     percent.bias = abs(object@results$clusters$D[,"Estimate","mean"] - true.D.clusters)/true.D.clusters*100,
-                                     #lcl = object@results$clusters$N[,"lcl","mean"],
-                                     #ucl = object@results$clusters$N[,"ucl","mean"],
-                                     CI.coverage.prob = percent.capture.D/100,
-                                     mean.se = object@results$clusters$D[,"se","mean"],
-                                     sd.of.means = object@results$clusters$D[,"Estimate","sd"])
+                              mean.Estimate = object@results$clusters$D[,"Estimate","mean"],
+                              percent.bias = abs(object@results$clusters$D[,"Estimate","mean"] - true.D.clusters)/true.D.clusters*100,
+                              RMSE = apply(cbind(object@results$clusters$D[, "Estimate", 1:reps], true.D.clusters), 1, calc.RMSE, reps = reps),
+                              #lcl = object@results$clusters$N[,"lcl","mean"],
+                              #ucl = object@results$clusters$N[,"ucl","mean"],
+                              CI.coverage.prob = percent.capture.D/100,
+                              mean.se = object@results$clusters$D[,"se","mean"],
+                              sd.of.means = object@results$clusters$D[,"Estimate","sd"])
       expected.size <- data.frame(Truth = true.expected.s,
                                   mean.Expected.S = object@results$expected.size[,"Expected.S","mean"],
                                   percent.bias = abs(true.expected.s - object@results$expected.size[,"Expected.S","mean"])/true.expected.s*100,
@@ -303,14 +314,14 @@ setMethod(
     analysis.summary <- list(dsmodels = list(), criteria = object@ddf.analyses[[1]]@criteria, truncation = object@ddf.analyses[[1]]@truncation)
     #Create design summary
     design.type <- switch(class(object@design),
-      LT.Systematic.Design = "Systematic Parallel Line Transect",
-      LT.EqAngle.ZZ.Design = "Equal Angle Zigzag Line Transect",
-      LT.EqSpace.ZZ.Design = "Equal Spaced Zigzag Line Transect",
-      LT.Random.Design = "Random Parallel Line Transect",
-      LT.User.Specified.Design = "Subjective Line Transect",
-      PT.Systematic.Design = "Systematic Point Transect",
-      PT.Nested.Design = "Systematic Nested Point Transect",
-      PT.Random.Design = "Random Point Transect")
+                          LT.Systematic.Design = "Systematic Parallel Line Transect",
+                          LT.EqAngle.ZZ.Design = "Equal Angle Zigzag Line Transect",
+                          LT.EqSpace.ZZ.Design = "Equal Spaced Zigzag Line Transect",
+                          LT.Random.Design = "Random Parallel Line Transect",
+                          LT.User.Specified.Design = "Subjective Line Transect",
+                          PT.Systematic.Design = "Systematic Point Transect",
+                          PT.Nested.Design = "Systematic Nested Point Transect",
+                          PT.Random.Design = "Random Point Transect")
     slots <- slotNames(object@design)
     design.parameters <- list()
     for(i in seq(along = slots)){
