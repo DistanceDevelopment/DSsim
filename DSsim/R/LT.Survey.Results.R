@@ -117,7 +117,7 @@ temp.func <- function(results){
   if(!add){      
     xlabel <- paste("X-coords (",plot.units[1],")", sep = "")
     ylabel <- paste("Y-coords (",plot.units[1],")", sep = "")
-    plot(c(x@box[["xmin"]], x@box[["xmax"]]), c(x@box[["ymin"]], x@box[["ymax"]]), col = "white", xlab = xlabel, ylab = ylabel, main = x@region.name, yaxt = "n", xaxt = "n")
+    plot(c(x@box[["xmin"]], x@box[["xmax"]]), c(x@box[["ymin"]], x@box[["ymax"]]), col = "white", xlab = xlabel, ylab = ylabel, main = "Example Survey", yaxt = "n", xaxt = "n")
     xticks <- axTicks(1)
     yticks <- axTicks(2)
     #Set up axes
