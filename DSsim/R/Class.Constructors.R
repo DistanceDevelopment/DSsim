@@ -71,6 +71,7 @@ make.region <- function(region.name, strata.name = character(0), units, area = n
 #' @param region.obj the name of the Region object where the survey is to be carried out.
 #' @param design.axis user may provide the angle of the design axis but not currently used
 #' @param spacing user may provide the systematic design spacing but but not currently used
+#' @param nested.space the number of spaces between nested points. If spacing = 1 then all points on the systematic design will be sepected.
 #' @param angle user may provide the design angle (only relevant in equal angle zigzag designs) but not currently used
 #' @param plus.sampling logical vaule indicating whether a plus sampling protocol is used but not currently used
 #' @param path pathway giving the location of the folder of survey shapefiles 

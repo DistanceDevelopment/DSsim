@@ -1,6 +1,6 @@
 #' @include Transect.R
 
-#' Class "Point.Transect" contains an instance of a Line Transect Survey
+#' @description Class "Point.Transect" contains an instance of a Line Transect Survey
 #'
 #' @name Point.Transect-class
 #' @title S4 Class "Point.Transect"

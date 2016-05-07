@@ -25,6 +25,8 @@ run.analysis(object, data, ...)
 \item{...}{optional arguments including the following:}
 
 \item{dht}{logical whether density should be estimated after fitting the model}
+
+\item{point}{logical indicating whether it is a point transect survey}
 }
 \value{
 a list containing an S3 ddf object and optionally an S3 dht object relating to the model with the miminum criteria.

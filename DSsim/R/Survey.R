@@ -9,7 +9,7 @@
 #' @title S4 Class "Survey"
 #' @slot population Object of class \code{"Population"}; an instance of
 #' a population.
-#' #' @slot transect Object of class \code{"Transect"}; the
+#' @slot transect Object of class \code{"Transect"}; the
 #'  transects.
 #' @section Methods:
 #' \describe{

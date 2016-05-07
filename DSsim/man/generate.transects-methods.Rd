@@ -41,6 +41,8 @@ supplied allowing the user to access / plot different sets of transects
 listed in the filenames slot.}
 
 \item{index}{specifies which set of transect should be loaded}
+
+\item{silent}{if TRUE does not report warnings about a single value for nested spacing with a multi strata region}
 }
 \value{
 an object of class Line.Transect

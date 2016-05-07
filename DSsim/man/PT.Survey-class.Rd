@@ -11,7 +11,7 @@ and a set of transects.
 \section{Slots}{
 
 \describe{
-\item{\code{point.transect}}{Object of class \code{"Point.Transect"}; the
+\item{\code{transect}}{Object of class \code{"Transect"}; the
 transects.}
 
 \item{\code{radial.truncation}}{Object of class \code{"numeric"}; the

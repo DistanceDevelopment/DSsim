@@ -54,6 +54,7 @@ setValidity("PT.Nested.Design",
 # GENERIC METHODS DEFINITIONS --------------------------------------------
 
 #' @rdname generate.transects-methods
+#' @param silent if TRUE does not report warnings about a single value for nested spacing with a multi strata region
 #' @importFrom utils read.table
 #' @export
 setMethod(

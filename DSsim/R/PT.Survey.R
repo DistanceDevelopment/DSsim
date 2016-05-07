@@ -7,7 +7,7 @@
 #' and a set of transects.
 #' @name PT.Survey-class
 #' @title S4 Class "PT.Survey"
-#' @slot point.transect Object of class \code{"Point.Transect"}; the
+#' @slot transect Object of class \code{"Transect"}; the
 #'  transects.
 #' @slot radial.truncation Object of class \code{"numeric"}; the
 #'  maximum distance from the transect at which animals may be detected.

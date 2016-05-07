@@ -20,6 +20,8 @@ make.design(transect.type, design.details, region.obj,
 
 \item{spacing}{user may provide the systematic design spacing but but not currently used}
 
+\item{nested.space}{the number of spaces between nested points. If spacing = 1 then all points on the systematic design will be sepected.}
+
 \item{angle}{user may provide the design angle (only relevant in equal angle zigzag designs) but not currently used}
 
 \item{plus.sampling}{logical vaule indicating whether a plus sampling protocol is used but not currently used}

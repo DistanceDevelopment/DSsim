@@ -40,7 +40,7 @@ setValidity("Design.Summary",
 #' 
 #' Displays the simulation summary
 #' 
-#' @param object object of class Simulation.Summary
+#' #@param object object of class Simulation.Summary
 #' @rdname show.Simulation.Summary-methods
 #' @export
 setMethod(

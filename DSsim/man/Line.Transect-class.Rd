@@ -4,6 +4,9 @@
 \name{Line.Transect-class}
 \alias{Line.Transect-class}
 \title{S4 Class "Line.Transect"}
+\description{
+Class "Line.Transect" contains an instance of a Line Transect Survey
+}
 \section{Methods}{
 
 \describe{

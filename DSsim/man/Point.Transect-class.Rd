@@ -4,6 +4,9 @@
 \name{Point.Transect-class}
 \alias{Point.Transect-class}
 \title{S4 Class "Point.Transect"}
+\description{
+Class "Point.Transect" contains an instance of a Line Transect Survey
+}
 \section{Slots}{
 
 \describe{

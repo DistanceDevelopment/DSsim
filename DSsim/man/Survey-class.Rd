@@ -11,9 +11,10 @@ Class \code{"Survey"} is an S4 class containing an instance of a population.
 
 \describe{
 \item{\code{population}}{Object of class \code{"Population"}; an instance of
-a population.
-#' @slot transect Object of class \code{"Transect"}; the
- transects.}
+a population.}
+
+\item{\code{transect}}{Object of class \code{"Transect"}; the
+transects.}
 }}
 \section{Methods}{
 

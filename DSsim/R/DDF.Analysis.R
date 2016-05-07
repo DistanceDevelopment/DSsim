@@ -76,6 +76,7 @@ setValidity("DDF.Analysis",
 # GENERIC METHODS DEFINITIONS --------------------------------------------
  
 #' @rdname run.analysis-methods
+#' @param point logical indicating whether it is a point transect survey
 #' @export
 setMethod(
   f="run.analysis",
