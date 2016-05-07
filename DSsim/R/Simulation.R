@@ -372,7 +372,7 @@ setMethod(
 #' 
 #' @param object object of class Simulation
 #' @rdname hist.Simulation-methods
-#' @importFrom graphics abline, hist
+#' @importFrom graphics abline hist
 #' @export
 setMethod(
   f="hist",
