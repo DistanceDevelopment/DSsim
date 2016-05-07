@@ -166,6 +166,10 @@ if (!isGeneric("plot")){
   setGeneric(name = "plot", def = function(x, y, ...){standardGeneric("plot")})
 }
 
+if (!isGeneric("hist")){
+  setGeneric(name = "hist", def = function(x, ...){standardGeneric("hist")})
+}
+
 if (!isGeneric("summary")){
   setGeneric(name = "summary", def = function(object, ...){standardGeneric("summary")})
 }
