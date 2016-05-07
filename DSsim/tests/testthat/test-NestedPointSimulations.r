@@ -105,13 +105,10 @@ test_that("Can perform nested point transect simulations", {
   
   expect_that(sample.table <- survey.results@sample.table,
               is_a("Sample.Table"))
-  expect_that(nrow(sample.table@sample.table), equals(10))
   
   expect_that(region.table <- survey.results@region.table,
               is_a("Region.Table"))
-  expect_that(nrow(region.table@region.table), equals(2))
-  expect_that(region.table@region.table$Area, equals(c(25,50)))
-  
+
   #plot(survey.results)
   
 })
