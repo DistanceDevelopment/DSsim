@@ -366,30 +366,29 @@ setMethod(
   }
 )
 
-#' hist
+#' histogram.N.ests
 #' 
-#' Not currently implemented
+#' Plots a histogram of the estimates abundances
 #' 
-#' @param object object of class Simulation
-#' @rdname hist.Simulation-methods
-#' @importFrom graphics abline hist
+#' @param x object of class Simulation
+#' @param ... optional parameters to pass to the generic hist function in graphics
+#' @rdname histogram.N.ests-methods
+#' @importFrom graphics hist abline
 #' @export
-setMethod(
-  f="hist",
-  signature="Simulation",
-  definition=function(x, ...){
-    reps <- x@reps
-    true.N <- sum(x@population.description@N)
-    if(!is.null(x@results$clusters)){
-      hist(x@results$clusters$N["Total", "Estimate", 1:reps], main = "Histogram of Estimates", xlab = "Estimated Abundance of Clusters") 
-    }else{
-      hist(x@results$individuals$N["Total", "Estimate", 1:reps], main = "Histogram of Estimates", xlab = "Estimated Abundance of Individuals")  
-    }
-    abline(v = true.N, col = 2, lwd = 3, lty = 2)
-    invisible(x)
+histogram.N.ests <- function(x, ...){
+  reps <- x@reps
+  index <- dim(x@results$individuals$N)[1]
+  true.N <- sum(x@population.description@N)
+  if(!is.null(x@results$clusters)){
+    ests <- x@results$clusters$N[index, "Estimate", 1:reps]
+    hist(ests, main = "Histogram of Estimates", xlab = "Estimated Abundance of Clusters", ...) 
+  }else{
+    ests <- x@results$individuals$N[index, "Estimate", 1:reps]
+    hist(ests, main = "Histogram of Estimates", xlab = "Estimated Abundance of Individuals", ...)  
   }
-)
-
+  abline(v = true.N, col = 2, lwd = 3, lty = 2)
+  invisible(x)
+}
 
 # @rdname Simulation-class
 # @export
