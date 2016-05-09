@@ -3,14 +3,15 @@ DSsim 1.0.5
 
 Notes
 
-  * Please note that currently objects in a population may only be detected from the nearest transect. This can sometimes results in edge-like effects if transects are located close together, e.g. with parallel random designs, or intersect one another.
+  * Objects in a population may be detected from any transect. This means objects can be detected from two or more transects.
 
 New Features
 
-  * Now implements point transects
+  * Now implements point transects including the generation of nested point transect designs (for dual reciever type acoustic surveys)
   * Now implements AICc and BIC model selection criteria in addition to AIC
   * Stores how many times each model was selected based on information criteria and displays this information in the simulation summary.
   * Stores the delta AIC/AICc/BIC to second best model if there is one (however, not currently displayed in summary)
+  * save.sim.results will save simulation replicate results to csv files
   
 Bug Fixes
 
@@ -22,7 +23,7 @@ DSsim 1.0.4
 
 Notes
 
-  * Please note that currently objects in a population may only be detected from the nearest transect. This can sometimes results in edge-like effects if transects are located close together, e.g. with parallel random designs.
+  * Objects in a population may be detected from any transect. This means objects can be detected from two or more transects.
 
 New Features
 
@@ -40,7 +41,7 @@ DSsim 1.0.3
 
 Notes
 
-  * Please note that currently objects in a population may only be detected from the nearest transect. This can sometimes results in edge-like effects if transects are located close together, e.g. with parallel random designs.
+  * Objects in a population may be detected from any transect. This means objects can be detected from two or more transects.
   * Please note that the heat colour have now been inverted by default to be more consistent with normal use. Red is now low and white is high.
 
 New Features
