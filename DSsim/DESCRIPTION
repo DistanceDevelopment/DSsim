@@ -98,6 +98,7 @@ Collate:
     'is.gap.R'
     'modify.strata.for.analysis.R'
     'rename.duplicates.R'
+    'save.sim.results.R'
     'simulate.detections.R'
     'single.simulation.loop.R'
     'store.ddf.results.R'
