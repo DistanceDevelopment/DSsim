@@ -224,6 +224,13 @@ setMethod(
     percent.capture <- (apply(capture, 2, sum, na.rm = TRUE)/nrow(na.omit(capture)))*100
     percent.capture.D <- (apply(capture.D, 2, sum, na.rm = TRUE)/nrow(na.omit(capture)))*100
     zero.n <- apply(zero.n, 2, sum)
+    if(length(true.N.individuals) == 1){
+      RMSE.N = apply(cbind(t(as.matrix(object@results$individuals$N[, "Estimate", 1:reps])), true.N.individuals), 1, calc.RMSE, reps = reps)
+      RMSE.D = apply(cbind(t(as.matrix(object@results$individuals$D[, "Estimate", 1:reps])), true.D.individuals), 1, calc.RMSE, reps = reps)
+    }else{
+      RMSE.N = apply(cbind(object@results$individuals$N[, "Estimate", 1:reps], true.N.individuals), 1, calc.RMSE, reps = reps) 
+      RMSE.D = apply(cbind(object@results$individuals$D[, "Estimate", 1:reps], true.D.individuals), 1, calc.RMSE, reps = reps)
+    }
     individual.summary <- data.frame(mean.Cover.Area = object@results$individuals$summary[,"CoveredArea","mean"],
                                      mean.Effort = object@results$individuals$summary[,"Effort","mean"],
                                      mean.n = object@results$individuals$summary[,"n","mean"],
@@ -234,7 +241,7 @@ setMethod(
     individual.N <- data.frame(Truth = true.N.individuals,
                                mean.Estimate = object@results$individuals$N[,"Estimate","mean"],
                                percent.bias = (object@results$individuals$N[,"Estimate","mean"] - true.N.individuals)/true.N.individuals*100,
-                               RMSE = apply(cbind(object@results$individuals$N[, "Estimate", 1:reps], true.N.individuals), 1, calc.RMSE, reps = reps),
+                               RMSE = RMSE.N,
                                #lcl = object@results$individuals$N[,"lcl","mean"],
                                #ucl = object@results$individuals$N[,"ucl","mean"],
                                CI.coverage.prob = percent.capture/100,
@@ -243,7 +250,7 @@ setMethod(
     individual.D <- data.frame(Truth = true.D.individuals,
                                mean.Estimate = object@results$individuals$D[,"Estimate","mean"],
                                percent.bias = (object@results$individuals$D[,"Estimate","mean"] - true.D.individuals)/true.D.individuals*100,
-                               RMSE = apply(cbind(object@results$individuals$D[, "Estimate", 1:reps], true.D.individuals), 1, calc.RMSE, reps = reps),
+                               RMSE = RMSE.D,
                                #lcl = object@results$individuals$N[,"lcl","mean"],
                                #ucl = object@results$individuals$N[,"ucl","mean"],
                                CI.coverage.prob = percent.capture.D/100,
@@ -251,9 +258,9 @@ setMethod(
                                sd.of.means = object@results$individuals$D[,"Estimate","sd"])
     
     if(!is.null(object@results$clusters)){
-      capture <- array(NA, dim = c(reps, length(true.N.individuals)))
-      capture.D <- array(NA, dim = c(reps, length(true.D.individuals)))
-      zero.n <- array(NA, dim = c(reps, length(true.N.individuals)))
+      capture <- array(NA, dim = c(reps, length(true.N.clusters)))
+      capture.D <- array(NA, dim = c(reps, length(true.D.clusters)))
+      zero.n <- array(NA, dim = c(reps, length(true.N.clusters)))
       for(strat in seq(along = true.N.clusters)){
         for(i in 1:reps){
           capture[i, strat] <- ifelse(object@results$clusters$N[strat, "lcl", i] < true.N.clusters[strat] & object@results$clusters$N[strat, "ucl", i] > true.N.clusters[strat], TRUE, FALSE)
@@ -264,6 +271,13 @@ setMethod(
       percent.capture <- (apply(capture, 2, sum, na.rn = TRUE)/nrow(na.omit(capture)))*100
       percent.capture.D <- (apply(capture.D, 2, sum, na.rm = TRUE)/nrow(na.omit(capture.D)))*100
       zero.n <- apply(zero.n, 2, sum)
+      if(length(true.N.clusters) == 1){
+        RMSE.N = apply(cbind(t(as.matrix(object@results$clusters$N[, "Estimate", 1:reps])), true.N.clusters), 1, calc.RMSE, reps = reps)
+        RMSE.D = apply(cbind(t(as.matrix(object@results$clusters$D[, "Estimate", 1:reps])), true.D.clusters), 1, calc.RMSE, reps = reps)
+      }else{
+        RMSE.N = apply(cbind(object@results$clusters$N[, "Estimate", 1:reps], true.N.clusters), 1, calc.RMSE, reps = reps) 
+        RMSE.D = apply(cbind(object@results$clusters$D[, "Estimate", 1:reps], true.D.clusters), 1, calc.RMSE, reps = reps)
+      }
       cluster.summary <- data.frame(mean.Cover.Area = object@results$clusters$summary[,"CoveredArea","mean"],
                                     mean.Effort = object@results$clusters$summary[,"Effort","mean"],
                                     mean.n = object@results$clusters$summary[,"n","mean"],
@@ -275,7 +289,7 @@ setMethod(
       cluster.N <- data.frame(Truth = true.N.clusters,
                               mean.Estimate = object@results$clusters$N[,"Estimate","mean"],
                               percent.bias = (object@results$clusters$N[,"Estimate","mean"] - true.N.clusters)/true.N.clusters*100,
-                              RMSE = apply(cbind(object@results$clusters$N[, "Estimate", 1:reps], true.N.clusters), 1, calc.RMSE, reps = reps),
+                              RMSE = RMSE.N,
                               #lcl = object@results$clusters$N[,"lcl","mean"],
                               #ucl = object@results$clusters$N[,"ucl","mean"],
                               CI.coverage.prob = percent.capture/100,
@@ -284,7 +298,7 @@ setMethod(
       cluster.D <- data.frame(Truth = true.D.clusters,
                               mean.Estimate = object@results$clusters$D[,"Estimate","mean"],
                               percent.bias = abs(object@results$clusters$D[,"Estimate","mean"] - true.D.clusters)/true.D.clusters*100,
-                              RMSE = apply(cbind(object@results$clusters$D[, "Estimate", 1:reps], true.D.clusters), 1, calc.RMSE, reps = reps),
+                              RMSE = RMSE.D,
                               #lcl = object@results$clusters$N[,"lcl","mean"],
                               #ucl = object@results$clusters$N[,"ucl","mean"],
                               CI.coverage.prob = percent.capture.D/100,
