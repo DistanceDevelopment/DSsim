@@ -109,9 +109,8 @@ make.design <- function(transect.type, design.details, region.obj, design.axis =
         if(design.details[2] %in% c("Equal Spaced", "ES", "equal spaced", "Equal spaced")){
           design <- new(Class = "LT.EqSpace.ZZ.Design", region = region, design.axis = design.axis, spacing = spacing, plus.sampling = plus.sampling, path = path)
         }
-        if(design.details[2] %in% c("Equal Angle", "equal angle", "Equal angle")){               #error in this no spacing only angle
-          stop("This design is not currently supported")
-          design <- new(Class = "LT.EqAngle.ZZ.Design", region = region, design.axis = design.axis, angle = angle, plus.sampling = plus.sampling, path = path)
+        if(design.details[2] %in% c("Equal Angle", "equal angle", "Equal angle")){            
+          design <- new(Class = "LT.EqAngle.ZZ.Design", region = region, design.axis = design.axis, spacing = numeric(0), plus.sampling = plus.sampling, path = path)
         }
       }
       if(design.details[1] %in% c("P", "Parallel", "parallel")){
