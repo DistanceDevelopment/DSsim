@@ -1,4 +1,4 @@
-#' @include PT.Design.R
+85#' @include PT.Design.R
 
 setClass(Class = "PT.Nested.Design", 
          representation = representation(nested.space = "numeric"),
@@ -67,8 +67,11 @@ setMethod(
     }
     #Input pre-processing
     if(read.from.file){
+      stop("Cannot currently load surveys of this type from file.")
+      return(NULL)
       #Go to parent method to read from file
-      callNextMethod()
+      #point.transect <- callNextMethod()
+      #return(point.transect)
     }else{
       if(length(region@strata.name) > 0){
         strata.names <- region@strata.name
