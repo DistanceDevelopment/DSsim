@@ -3,11 +3,8 @@
 \docType{class}
 \name{Sample.Table-class}
 \alias{Sample.Table-class}
-\title{S4 Class "Sample.Table"}
+\title{Class "Sample.Table"}
 \description{
-Class "Sample.Table"
-}
-\details{
 Class \code{"Sample.Table"} is an S4 class containing a 
 region table which is required for Hortvitz-Thompson estimation of 
 density and abundance.

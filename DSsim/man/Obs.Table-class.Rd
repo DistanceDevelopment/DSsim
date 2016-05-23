@@ -3,11 +3,8 @@
 \docType{class}
 \name{Obs.Table-class}
 \alias{Obs.Table-class}
-\title{S4 Class "Obs.Table"}
+\title{Class "Obs.Table"}
 \description{
-Class "Obs.Table"
-}
-\details{
 Class \code{"Obs.Table"} is an S4 class containing an 
 observation table which is required for Hortvitz-Thompson estimation of 
 density and abundance.

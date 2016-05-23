@@ -6,7 +6,6 @@
 #' @description Class \code{"Survey"} is an S4 class containing an instance of a population.
 #'
 #' @name Survey-class
-#' @title S4 Class "Survey"
 #' @slot population Object of class \code{"Population"}; an instance of
 #' a population.
 #' @slot transect Object of class \code{"Transect"}; the
