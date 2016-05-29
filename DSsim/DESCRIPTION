@@ -82,6 +82,7 @@ Collate:
     'check.shapefile.R'
     'coords.from.shapefile.R'
     'create.bins.R'
+    'data.for.distance.R'
     'description.summary.R'
     'generate.pop.D.R'
     'generate.pop.N.R'

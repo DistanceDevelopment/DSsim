@@ -2,6 +2,7 @@
 
 export(add.hotspot)
 export(create.survey.results)
+export(data.for.distance)
 export(description.summary)
 export(generate.population)
 export(generate.transects)

@@ -1,4 +1,4 @@
-85#' @include PT.Design.R
+#' @include PT.Design.R
 
 setClass(Class = "PT.Nested.Design", 
          representation = representation(nested.space = "numeric"),

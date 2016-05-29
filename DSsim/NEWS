@@ -7,11 +7,12 @@ Notes
 
 New Features
 
-  * Now implements point transects including the generation of nested point transect designs (for dual reciever type acoustic surveys)
+  * Now generates point transects including the generation of nested point transect designs (for dual receiver type acoustic surveys)
   * Now implements AICc and BIC model selection criteria in addition to AIC
   * Stores how many times each model was selected based on information criteria and displays this information in the simulation summary.
   * Stores the delta AIC/AICc/BIC to second best model if there is one (however, not currently displayed in summary)
   * save.sim.results will save simulation replicate results to csv files
+  * new function to format data ready to be read into Distance (format.for.distance)
   
 Bug Fixes
 
