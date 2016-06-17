@@ -7,7 +7,7 @@ Notes
 
 New Features
 
-  * Now generates point transects including the generation of nested point transect designs (for dual receiver type acoustic surveys)
+  * Now implemented point transects 
   * Now implements AICc and BIC model selection criteria in addition to AIC
   * Stores how many times each model was selected based on information criteria and displays this information in the simulation summary.
   * Stores the delta AIC/AICc/BIC to second best model if there is one (however, not currently displayed in summary)

@@ -5,7 +5,6 @@ Depends:
     mrds,
     mgcv,
     shapefiles,
-    fields,
     methods
 Suggests:
     testthat,
@@ -15,17 +14,18 @@ Suggests:
 Type: Package
 Title: Distance Sampling Simulations
 Version: 1.0.5
-Date: 2016-04-09
+Date: 2016-06-17
 LazyLoad: yes
 Author: Laura Marshall <lhm@st-and.ac.uk>
 Maintainer: Laura Marshall <lhm@st-and.ac.uk>
 Description: Performs distance sampling simulations. It repeatedly
     generates instances of a user defined population within a given survey
     region, generates realisations of a survey design (currently these must
-    be pre-generated using Distance software) and simulates the detection
-    process. The data are then analysed so that the results can be compared for
-    accuracy and precision across all replications. This will allow users to
-    select survey designs which will give them the best accuracy and precision
+    be pregenerated using Distance software http://distancesampling.org/) and 
+    simulates the detection process. The data are then analysed 
+    so that the results can be compared for accuracy and precision 
+    across all replications. This will allow users to select survey 
+    designs which will give them the best accuracy and precision
     given their expectations about population distribution. Any uncertainty in
     population distribution or population parameters can be included by running
     the different survey designs for a number of different population
@@ -39,7 +39,6 @@ Collate:
     'DS.Analysis.R'
     'Survey.Design.R'
     'PT.Design.R'
-    'PT.Nested.Design.R'
     'PT.Systematic.Design.R'
     'PT.Random.Design.R'
     'LT.Design.R'
@@ -107,4 +106,3 @@ Collate:
     'store.dht.results.R'
     'uf.detect.R'
 RoxygenNote: 5.0.1
-VignetteBuilder: knitr
