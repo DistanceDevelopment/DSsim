@@ -5,6 +5,7 @@ Depends:
     mrds,
     mgcv,
     shapefiles,
+    fields,
     methods
 Suggests:
     testthat,

@@ -92,7 +92,7 @@ make.region <- function(region.name, strata.name = character(0), units, area = n
 #'  design.axis = 0, spacing = 100, plus.sampling =FALSE, 
 #'  path = shapefile.pathway)
 #' }
-make.design <- function(transect.type, design.details, region.obj, design.axis = numeric(0), spacing = numeric(0), nested.space = numeric(0), angle = numeric(0), plus.sampling = logical(0), path = character(0)){
+make.design <- function(transect.type, design.details, region.obj, design.axis = numeric(0), spacing = numeric(0), nested.space = numeric(0), no.complex = numeric(0), angle = numeric(0), plus.sampling = logical(0), path = character(0)){
   region <- global.name <- deparse(substitute(region.obj))
   #if(class(region) != "character"){
   #  message("Error: the region argument is not of class character. Only the object name should be provided using quotes.")
@@ -133,7 +133,7 @@ make.design <- function(transect.type, design.details, region.obj, design.axis =
       design <- new(Class = "PT.Random.Design", region = region, design.axis = design.axis, spacing = spacing, plus.sampling = plus.sampling, path = path)
     }
     if(design.details[1] %in% c("Nested", "nested")){
-      design <- new(Class = "PT.Nested.Design", region = region, design.axis = design.axis, spacing = spacing, nested.space = nested.space, plus.sampling = plus.sampling, path = path)
+      design <- new(Class = "PT.Nested.Design", region = region, design.axis = design.axis, spacing = spacing, nested.space = nested.space, no.complex = no.complex, plus.sampling = plus.sampling, path = path)
     }
   }
   if(is.null(design)){

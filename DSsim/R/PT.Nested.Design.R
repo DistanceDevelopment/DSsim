@@ -1,13 +1,14 @@
 #' @include PT.Design.R
 
 setClass(Class = "PT.Nested.Design", 
-         representation = representation(nested.space = "numeric"),
+         representation = representation(nested.space = "numeric",
+                                         no.complex = "numeric"),
          contains = "PT.Design")
 
 setMethod(
   f="initialize",
   signature="PT.Nested.Design",
-  definition=function(.Object, region, spacing, nested.space, design.axis, plus.sampling, path = character(0), ...){
+  definition=function(.Object, region, spacing, nested.space = numeric(0), no.complex = numeric(0), design.axis, plus.sampling, path = character(0), ...){
     filenames <- character(0)
     file.index <- numeric(0)
     if(length(path) > 0){
@@ -19,6 +20,7 @@ setMethod(
     .Object@plus.sampling <- plus.sampling
     .Object@spacing       <- spacing
     .Object@nested.space  <- nested.space
+    .Object@no.complex    <- no.complex
     .Object@design.axis   <- design.axis
     .Object@path          <- path
     .Object@filenames     <- filenames
@@ -36,15 +38,16 @@ setValidity("PT.Nested.Design",
                 return("You must only specify one path. All transect shapefiles must be in the same folder.")
               }
               nested.space <- object@nested.space
-              if(length(nested.space) == 0){
-                return("You must supply a value for nested.space. This should be an integer value.")
-              }else{
+              if(length(nested.space) > 0){
                 if(any(!as.integer(nested.space) == nested.space)){
                   return("The nested space value should be an integer specifying how many point in the main grid are between each nested point.")
                 }
               }
               if(any(ifelse(object@design.axis != 0, TRUE, FALSE))){
                 warning("Only a design axis of 0 is currently implemented, other values will be ignored at present.", call. = FALSE, immediate. = TRUE)
+              }
+              if(length(object@nested.space) == 0 & length(object@no.complex) == 0){
+                return("A value must be supplied for either nested.space or no.complex.")
               }
               #Check that design axes are both 0
               return(TRUE)
@@ -56,6 +59,7 @@ setValidity("PT.Nested.Design",
 #' @rdname generate.transects-methods
 #' @param silent if TRUE does not report warnings about a single value for nested spacing with a multi strata region
 #' @importFrom utils read.table
+#' @importFrom fields cover.design
 #' @export
 setMethod(
   f="generate.transects",
@@ -80,11 +84,22 @@ setMethod(
         strata.names <- region@region.name
         strata.no <- 1
       }
-      if(strata.no != length(object@nested.space)){
-        object@nested.space <- rep(object@nested.space[1], strata.no)
-        if(!silent){
-          warning("The number of nested space values did not match the number of strata. Only the first value will be used.", call. = FALSE, immediate. = TRUE)  
+      nested = FALSE
+      if(length(object@nested.space) > 0){
+        nested = TRUE
+        if(strata.no != length(object@nested.space)){
+          object@nested.space <- rep(object@nested.space[1], strata.no)
+          if(!silent){
+            warning("The number of nested space values did not match the number of strata. Only the first value will be used.", call. = FALSE, immediate. = TRUE)  
+          }
         }
+      }else{
+        if(strata.no != length(object@no.complex)){
+          object@no.complex <- rep(object@no.complex[1], strata.no)
+          if(!silent){
+            warning("The number of no.complex values did not match the number of strata. Only the first value will be used.", call. = FALSE, immediate. = TRUE)  
+          }
+        }  
       }
       #Main grid generation
       for (strat in seq(along = region@coords)) {
@@ -107,28 +122,38 @@ setMethod(
         #Add strata ID
         gridpoints$strata <- rep(strata.names[strat], nrow(gridpoints))
         
-        #Generate nested grid
-        no.point.space <- object@nested.space[strat]
-        nested.spacing <- no.point.space*spacing
-        start.x.offset <- sample(0:(no.point.space-1), 1, prob = rep(1/(no.point.space), (no.point.space)))
-        start.y.offset <- sample(0:(no.point.space-1), 1, prob = rep(1/(no.point.space), (no.point.space)))
-        nested.start.x <- start.x + start.x.offset*spacing
-        nested.start.y <- start.y + start.y.offset*spacing
-        nested.x.vals <- seq(nested.start.x, region@box[["xmax"]], by = nested.spacing)
-        nested.y.vals <- seq(nested.start.y, region@box[["ymax"]], by = nested.spacing)
-        nested.temp.coords <- expand.grid(nested.x.vals, nested.y.vals)
-        names(nested.temp.coords) <- c("x","y")
-        #keep everything within the polygon strata
-        to.keep <-
-          in.polygons(region@coords[[strat]], pts = nested.temp.coords, boundary = TRUE)
-        nested.gridpoints <- nested.temp.coords[to.keep, ]
-        #Discard anything that lands in a gap
-        to.discard <-
-          in.polygons(region@gaps[[strat]], pts = nested.gridpoints, boundary = TRUE)
-        nested.gridpoints <- nested.gridpoints[!to.discard,]
+        if(nested){
+          #Generate nested grid
+          no.point.space <- object@nested.space[strat]
+          nested.spacing <- no.point.space*spacing
+          start.x.offset <- sample(0:(no.point.space-1), 1, prob = rep(1/(no.point.space), (no.point.space)))
+          start.y.offset <- sample(0:(no.point.space-1), 1, prob = rep(1/(no.point.space), (no.point.space)))
+          nested.start.x <- start.x + start.x.offset*spacing
+          nested.start.y <- start.y + start.y.offset*spacing
+          nested.x.vals <- seq(nested.start.x, region@box[["xmax"]], by = nested.spacing)
+          nested.y.vals <- seq(nested.start.y, region@box[["ymax"]], by = nested.spacing)
+          nested.temp.coords <- expand.grid(nested.x.vals, nested.y.vals)
+          names(nested.temp.coords) <- c("x","y")
+          #keep everything within the polygon strata
+          to.keep <-
+            in.polygons(region@coords[[strat]], pts = nested.temp.coords, boundary = TRUE)
+          nested.gridpoints <- nested.temp.coords[to.keep, ]
+          #Discard anything that lands in a gap
+          to.discard <-
+            in.polygons(region@gaps[[strat]], pts = nested.gridpoints, boundary = TRUE)
+          nested.gridpoints <- nested.gridpoints[!to.discard,]
+        }else{
+          # Generate required number of complex detectors based on space filling algorithm
+          temp <- gridpoints[,c("x","y")]
+          old.op <- options(warn = -1)
+          on.exit(options(old.op), add = TRUE)
+          space.fill <- cover.design(temp, object@no.complex[strat], nruns = 5)
+          options(old.op)
+          best.index <- space.fill$best.id
+          nested.gridpoints <- gridpoints[best.index,]
+        }
         #Add strata ID
         nested.gridpoints$strata <- rep(strata.names[strat], nrow(nested.gridpoints))
-        
         #Add ID to gridpoints
         gridpoints <- cbind(gridpoints, ID = 1:nrow(gridpoints))
         duplicate.ID <- merge(gridpoints, nested.gridpoints, by = c("x","y"))$ID
