@@ -335,12 +335,17 @@ setMethod(
                           LT.User.Specified.Design = "Subjective Line Transect",
                           PT.Systematic.Design = "Systematic Point Transect",
                           PT.Nested.Design = "Systematic Nested Point Transect",
-                          PT.Random.Design = "Random Point Transect")
+                          PT.Random.Design = "Random Point Transect",
+                          LT.SegmentedTrack.Design = "Segmented Track Line Transect",
+                          LT.SegmentedGrid.Design = "Segmented Grid Line Transect")
     slots <- slotNames(object@design)
     design.parameters <- list()
+    count <- 1
     for(i in seq(along = slots)){
       if(slots[i] %in% c("design.axis", "spacing", "plus.sampling", "nested.space")){
-        design.parameters[[slots[i]]] <- slot(object@design, slots[i])  
+        if(!(slot(object@design, slots[i]) == numeric(0))){
+          design.parameters[[slots[i]]] <- slot(object@design, slots[i])  
+        }
       }
     }
     design.summary <- new(Class = "Design.Summary", design.type = design.type, design.parameters = design.parameters)
