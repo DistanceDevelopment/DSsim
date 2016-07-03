@@ -12,7 +12,6 @@
 #' @include LT.User.Specified.Design.R
 #' @include PT.Random.Design.R
 #' @include PT.Systematic.Design.R
-#' @include PT.Nested.Design.R
 #' @include DS.Analysis.R
 
 #' @title Creates a Region object
@@ -71,8 +70,7 @@ make.region <- function(region.name, strata.name = character(0), units, area = n
 #' @param region.obj the name of the Region object where the survey is to be carried out.
 #' @param design.axis user may provide the angle of the design axis but not currently used
 #' @param spacing user may provide the systematic design spacing but but not currently used
-#' @param nested.space the number of spaces between nested points. If spacing = 1 then all points on the systematic design will be sepected.
-#' @param angle user may provide the design angle (only relevant in equal angle zigzag designs) but not currently used
+##' @param angle user may provide the design angle (only relevant in equal angle zigzag designs) but not currently used
 #' @param plus.sampling logical vaule indicating whether a plus sampling protocol is used but not currently used
 #' @param path pathway giving the location of the folder of survey shapefiles 
 #' @return object of a class which inherits from class Survey.Design 
@@ -92,7 +90,7 @@ make.region <- function(region.name, strata.name = character(0), units, area = n
 #'  design.axis = 0, spacing = 100, plus.sampling =FALSE, 
 #'  path = shapefile.pathway)
 #' }
-make.design <- function(transect.type, design.details, region.obj, design.axis = numeric(0), spacing = numeric(0), nested.space = numeric(0), no.complex = numeric(0), angle = numeric(0), plus.sampling = logical(0), path = character(0)){
+make.design <- function(transect.type, design.details, region.obj, design.axis = numeric(0), spacing = numeric(0), angle = numeric(0), plus.sampling = logical(0), path = character(0)){
   region <- global.name <- deparse(substitute(region.obj))
   #if(class(region) != "character"){
   #  message("Error: the region argument is not of class character. Only the object name should be provided using quotes.")
@@ -139,9 +137,6 @@ make.design <- function(transect.type, design.details, region.obj, design.axis =
     }
     if(design.details[1] %in% c("Random", "random")){
       design <- new(Class = "PT.Random.Design", region = region, design.axis = design.axis, spacing = spacing, plus.sampling = plus.sampling, path = path)
-    }
-    if(design.details[1] %in% c("Nested", "nested")){
-      design <- new(Class = "PT.Nested.Design", region = region, design.axis = design.axis, spacing = spacing, nested.space = nested.space, no.complex = no.complex, plus.sampling = plus.sampling, path = path)
     }
   }
   if(is.null(design)){
