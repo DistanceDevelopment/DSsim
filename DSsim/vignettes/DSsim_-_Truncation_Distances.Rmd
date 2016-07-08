@@ -32,7 +32,6 @@ set.seed(321)
 
 The first part of the simulation which must be created is the region.  For the investigation into the effects of truncation distances on the estimates of population abundance a simple 20km by 5km rectangular region will be used.  This will require a shapefile which describes the region.  In order to estimate the abundance in the region DSsim needs the area of the region.  This will be calculated using _areapl_ from the _splancs_ package [@splancs-pkg].  If this is not suitable then DSsim can be provided with an area that has been calculated elsewhere using the area argument of _make.region_.  The following code creates the region and plots it in Figure 2:
 ```{r fig.cap="Figure 2"}
-getwd()
 region.shapefile <- read.shapefile("Study_ar")
 region <- make.region(region.name = "Survey Region", units = "m", shapefile = region.shapefile)
 plot(region)
@@ -45,12 +44,12 @@ plot(pop.density, plot.units = "km", style = "blocks")
 plot(region, add = TRUE)
 ```
 
-Now that  a description of the density across the region is available we can put together our population description from which the simulation will generate a population.  A fixed value for the population size, N=250, is given. If this is not given then DSsim will generate the population using the average density across the region.   
+Now that a description of the density across the region is available the population description can be put together from which the simulation will generate a population.  A fixed value for the population size, N=250, is given. If this is not given then DSsim will generate the population using the average density across the region.   
 ```{r}
 pop.description <- make.population.description(region.obj = region, density.obj = pop.density, N = 250, fixed.N = TRUE)
 ```
 
-Now all of the parts of the simulation that will be needed to generate a population for our survey region have been created.  Next the components that will be used to simulate the observation process need to be made.  The first of these is the known detection function.  The key function can be one of _hn_(half normal), _hr_(hazard rate) or _uf_(uniform).  Here a half normal with scale parameter _100_ and a observation truncation distance of 500 is used:
+Now all of the parts of the simulation that will be needed to generate a population for the survey region have been created.  Next the components that will be used to simulate the observation process need to be made.  The first of these is the known detection function.  The key function can be one of _hn_(half normal), _hr_(hazard rate) or _uf_(uniform).  Here a half normal with scale parameter _100_ and a observation truncation distance of 500 is used:
 ```{r}
 detect <- make.detectability(key.function = "hn", scale.param = 100, truncation = 500)
 ```
@@ -60,7 +59,7 @@ Simulating the observation process also requires a survey  design.  Currently cr
 parallel.design <- make.design(transect.type = "Line",design.details = c("Parallel","Systematic"),region.obj = region, path = "shapefiles")
 ```
 
-Finally the simulation needs to know how to analyse the results of the observation process.  A list of models which can be fitted to the distance data will be made and the simulation will select the one with the minimum criteria value.  For our investigation we will allow the simulation to decide between a hazard rate model and a half normal model.  We will use AIC to select the model and the first truncation distance we will use is 125m:
+Finally the simulation needs to know how to analyse the results of the observation process.  A list of models which can be fitted to the distance data will be made and the simulation will select the one with the minimum criteria value.  In the truncation distances investigationw the simulation was allowed to decide between a hazard rate model and a half normal model.  AIC was used to select the model and the first truncation distance that was used was 125m:
 ```{r}
 ddf.analyses <- make.ddf.analysis.list(dsmodel = list(~cds(key = "hn", formula = ~1), ~cds(key = "hr", formula = ~1)), method = "ds", criteria = "AIC", truncation = 125)
 ```
@@ -97,12 +96,12 @@ dist.data <- get.distance.data(eg.survey)
 hist(dist.data$distance, xlab = "Distance (m)", main = "Distance Data")
 ```
 
-If the setup has been done right the simulation can now be run.  For the investigation multiple simulations over the same region will be run so to improve efficiency we can save the population data using the _save.data_ and _data.path_ arguments:
+If the setup has been done right the simulation can now be run.  For the investigation multiple simulations over the same region will be run so to improve efficiency the population data was saved using the _save.data_ and _data.path_ arguments:
 ```{r cache=TRUE, warning=FALSE, message=FALSE}
 simtrunc125 <- run(simtrunc125aichnhr, save.data = TRUE, data.path = "Data")
 ```
 
-More simulations are then needed for the investigation; each using different truncation distances for the analysis.  After changing a part of the simulation it is necessary to make the simulation again to update it.  The _load.data_ and _data.path_ arguments are used to load the data from the first simulation that we ran to improve efficiency:
+More simulations are then needed for the investigation; each using different truncation distances for the analysis.  After changing a part of the simulation it is necessary to make the simulation again to update it.  The _load.data_ and _data.path_ arguments are used to load the data from the first simulation that was run to improve efficiency:
 ```{r cache=TRUE, warning=FALSE, results='hide'}
 Trun.dists <- c(150, 175, 200, 250, 300)
 sims <- c(simtrunc125)
