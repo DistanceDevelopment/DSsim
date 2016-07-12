@@ -97,7 +97,7 @@ plot(region)
 plot(transects, col = 4, lwd = 2)
 ```
 
-The observation process can be quickly simulated once to ensure that it is working correctly,  the red dots are the unobserved animals and the blue dots are the observed ones:
+The observation process can be quickly simulated once to ensure that it is working correctly.  The distance from each animal to the transects will be used to calculate the probability of the animal being detected.  Then Bernoulli trials with these probabilities of success are carried  out for each of the animals.  The observed animals are marked as blue points, the unobserved animals are the red points:
 ```{r fig.cap="Figure 7"}
 eg.survey <- create.survey.results(simtrunc125aichnhr)
 plot(eg.survey)
@@ -115,7 +115,7 @@ simtrunc125 <- run(simtrunc125aichnhr, save.data = TRUE, data.path = "Data")
 ```
 
 More simulations are then needed for the investigation; each using different truncation distances for the analysis.  After changing a part of the simulation it is necessary to make the simulation again to update it.  The _load.data_ and _data.path_ arguments are used to load the data from the first simulation that was run to improve efficiency:
-```{r cache=TRUE, warning=FALSE, results='hide', eval=FALSE}
+```{r cache=TRUE, warning=FALSE, results='hide'}
 Trun.dists <- c(1.5*sigma, 1.75*sigma, 2*sigma, 2.5*sigma, 3*sigma)
 sims <- vector("list", length(Trun.dists+1))
 sims[[1]]<-simtrunc125
@@ -128,6 +128,11 @@ for(i in 2:6){
 ```
 
 ##4. The Results
+
+```{r}
+sims[[1]]@
+```
+
 
 ##5. The Conclusions
 
