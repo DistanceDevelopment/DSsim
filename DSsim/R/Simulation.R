@@ -344,7 +344,7 @@ setMethod(
     for(i in seq(along = slots)){
       if(slots[i] %in% c("design.axis", "spacing", "plus.sampling", "nested.space")){
         if(!(length(slot(object@design, slots[i])) == 0)){
-          design.parameters[[i]] <- slot(object@design, slots[i])  
+          design.parameters[[slots[i]]] <- slot(object@design, slots[i])  
         }
       }
     }
