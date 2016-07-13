@@ -38,7 +38,7 @@ set.seed(321)
 
 ###3.1 The Region
 The first part of the simulation which must be created is the region.  For the investigation into the effects of truncation distances on the estimates of population abundance a simple 20km by 5km rectangular region will be used.  This will require a shapefile which describes the region.  In order to estimate the abundance in the region DSsim needs the area of the region.  This will be calculated using _areapl_ from the _splancs_ package [@splancs-pkg].  If this is not suitable then DSsim can be provided with an area that has been calculated elsewhere using the area argument of _make.region_.  The following code creates the region and plots it in Figure 2:
-```{r fig.cap="Figure 3"}
+```{r fig.cap="Figure 3", fig.align="center", fig.width = 7, fig.height = 5}
 region.shapefile <- read.shapefile("Study_ar")
 region <- make.region(region.name = "Survey Region", units = "m", shapefile = region.shapefile)
 plot(region)
@@ -46,7 +46,7 @@ plot(region)
 
 ###3.2 The Population
 The next part of the simulation that is needed is the population description.  However in order to make the population description DSsim first needs a description of the population density.  For the investigation into truncation distances it is sufficient to have a constant density over the whole surface.  Furthermore when the simulation later generates a population during the simulation it will do so using a known population size so the value of this constant isn't important, so a value of 1 is used here.  The _x.space_ and _y.space_ arguments describe how spaced out the grid points on the density surface are.  As the density surface will be the same everywhere this doesn't matter too much, however if the density surface varies a lot then it may be wise to decrease the spacing between grid points in order to allow finer detail on the surface.  This code produces the density object and plots it over the region in figure 3:
-```{r fig.cap="Figure 4"}
+```{r fig.cap="Figure 4", fig.align="center", fig.width = 7, fig.height = 5}
 pop.density <- make.density(region = region, x.space = 1000, y.space = 1000, constant = 1) 
 plot(pop.density, plot.units = "km", style = "blocks")
 plot(region, add = TRUE)
@@ -84,27 +84,27 @@ simtrunc125aichnhr <- make.simulation(reps = 999, single.transect.set = FALSE, r
 
 As simulations can take a long time to run it is often worth checking that the setup is right first.
 The first thing that should be checked is that a population is being correctly generated within the region:
-```{r fig.cap="Figure 5"}
+```{r fig.cap="Figure 5", fig.align="center", fig.width = 7, fig.height = 5}
 pop <- generate.population(simtrunc125aichnhr)
 plot(region)
 plot(pop)
 ```
 
 Next it should be checked that the transects have been placed correctly:
-```{r fig.cap="Figure 6"}
+```{r fig.cap="Figure 6", fig.align="center", fig.width = 7, fig.height = 5}
 transects <- generate.transects(simtrunc125aichnhr)
 plot(region)
 plot(transects, col = 4, lwd = 2)
 ```
 
 The observation process can be quickly simulated once to ensure that it is working correctly.  The distance from each animal to the transects will be used to calculate the probability of the animal being detected.  Then Bernoulli trials with these probabilities of success are carried  out for each of the animals.  The observed animals are marked as blue points, the unobserved animals are the red points:
-```{r fig.cap="Figure 7"}
+```{r fig.cap="Figure 7", fig.align="center", fig.width = 7, fig.height = 5}
 eg.survey <- create.survey.results(simtrunc125aichnhr)
 plot(eg.survey)
 ```
 
 This distance data can also be viewed in a histogram to get an idea of what the fitted detection function will look like:
-```{r fig.cap="Figure 8"}
+```{r fig.cap="Figure 8", fig.align="center", fig.width = 5, fig.height = 5}
 dist.data <- get.distance.data(eg.survey)
 hist(dist.data$distance, xlab = "Distance (m)", main = "Distance Data")
 ```
@@ -129,8 +129,74 @@ for(i in 2:6){
 
 ##4. The Results
 
-```{r}
-sims[[1]]@
+The results of a simulation can be viewed by calling *summary* on the simulation object:
+```{r eval=FALSE}
+#Not run
+summary(sims[[1]])
+```
+
+However this investigation involves running multiple simulations and spotting patterns from the summaries can be quite difficult.  Instead we will extract the required information from the simulation objects and table it using the package *xtable*:
+```{r message=FALSE}
+library(xtable)
+```
+
+***
+
+**Need to table CI coverage**
+  
+**Not sure how to explain where to extract data from without getting too technical, would be good to have get methods to save hassle**
+
+***
+```{r results="asis", message=FALSE, fig.cap = "Table 1"}
+Trunc.Dist = rep(NA, 6)
+for(i in 1:length(sims)){ Trunc.Dist[i] = sims[[i]]@ddf.analyses[[1]]@truncation}
+
+n = rep(NA, 6)
+for(i in 1:length(sims)){ n[i] = sims[[i]]@results$individuals$summary[1,4,1000]}
+
+Est.Abund = rep(NA, 6)
+for(i in 1:length(sims)){ Est.Abund[i] = sims[[i]]@results$individuals$N[1,1,1000] }
+
+mean.se = rep(NA, 6)
+for(i in 1:length(sims)){ mean.se[i] = sims[[i]]@results$individuals$N[1,2,1000] }
+
+Perc.Bias = 100*(Est.Abund - 250)/250
+
+RMSE = rep(NA, 6)
+for(i in 1:length(sims)){ RMSE[i] = sqrt(sum((sims[[i]]@results$individuals$N[1,1,1:999]-250)**2)/999) 
+}
+
+Model.selection <- function(simulation){
+  sum = 0
+  for(x in simulation@results$Detection[1,5,1:999]){
+    if(!is.na(x) && x=="2"){
+      sum=sum+1
+    }
+  }
+  return(c(999-sum, sum))
+}
+
+model.selection.numbers = rep(NA, 6)
+for(i in 1:length(sims)){
+  model.selection.numbers[i] = Model.selection(sims[[i]])[1]
+}
+
+perc.correct.selection = rep(NA, 6)
+for(i in 1:length(sims)){
+  perc.correct.selection[i]=100*model.selection.numbers[i]/999
+}
+
+simulation.data = data.frame( Trunc.Dist = Trunc.Dist, n=n, Est.Abund = Est.Abund, mean.se = mean.se, Perc.Bias = Perc.Bias, RMSE=RMSE, Correct.Select = perc.correct.selection)
+table<-xtable(simulation.data, label = "Table", align = c('c', 'c', 'c', 'c', 'c', 'c', 'c', 'c'), digits = c(0, 0, 0, 2, 2, 2, 2, 2))
+colnames(table) <- c("$Trunc Dist$", "$n$", "$Mean \\hat{N}$", "$SE$", "$\\% Bias$", "$RMSE$", "$\\% Correct Select$")
+print(table, floating=TRUE, include.rownames = FALSE, NA.string="NA", caption = "Simulation Results", caption.placement="top", table.placement="!h", sanitize.colnames.function = identity, latex.environments="center", type = "html")
+```
+
+```{r fig.cap = "Figure 9", fig.align="center", fig.width = 5, fig.height = 5}
+library(ggplot2)
+data = data.frame(truncation = factor(rep(c(125, 150, 175, 200, 250, 300), each=999)), estimates = c(sims[[1]]@results$individuals$N[1,1,1:999], sims[[2]]@results$individuals$N[1,1,1:999], sims[[3]]@results$individuals$N[1,1,1:999], sims[[4]]@results$individuals$N[1,1,1:999], sims[[5]]@results$individuals$N[1,1,1:999], sims[[6]]@results$individuals$N[1,1,1:999]))
+
+ggplot(data, aes(x = truncation, y = estimates)) + geom_boxplot() + geom_hline(yintercept = 250, linetype="dashed", color = "red", size = 1.2) + stat_summary(fun.y = mean, geom="point", size = 2, color = "blue")
 ```
 
 
