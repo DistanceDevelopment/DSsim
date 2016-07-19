@@ -31,7 +31,7 @@ Firstly the package needs to be loaded and also the seed has been set so that th
 ```{r warning=FALSE, message=FALSE}
 library(DSsim)
 library(shapefiles)
-set.seed(321)
+set.seed(12345789)
 ```
 
 ##3. Making the Simulation Components
@@ -73,33 +73,33 @@ parallel.design <- make.design(transect.type = "Line",design.details = c("Parall
 Finally the simulation needs to know how to analyse the results of the observation process.  A list of models which can be fitted to the distance data will be made and the simulation will select the one with the minimum criteria value.  In the truncation distances investigationw the simulation was allowed to decide between a hazard rate model and a half normal model.  AIC was used to select the model and the first truncation distance that was used was 1.25$\sigma$:
 ```{r}
 sigma = 100
-ddf.analyses <- make.ddf.analysis.list(dsmodel = list(~cds(key = "hn", formula = ~1), ~cds(key = "hr", formula = ~1)), method = "ds", criteria = "AIC", truncation = 1.25*sigma)
+ddf.analyses <- make.ddf.analysis.list(dsmodel = list(~cds(key = "hn", formula = ~1)), method = "ds", criteria = "AIC", truncation = 125)
 ```
 
 ###3.6 The Simulations
 Now that all of the components of the simulation have been made the simulation is made by putting them all together:
 ```{r}
-simtrunc125aichnhr <- make.simulation(reps = 999, single.transect.set = FALSE, region.obj = region, design.obj = parallel.design, population.description.obj = pop.description, detectability.obj = detect, ddf.analyses.list = ddf.analyses)
+simtrunc125 <- make.simulation(reps = 999, single.transect.set = FALSE, region.obj = region, design.obj = parallel.design, population.description.obj = pop.description, detectability.obj = detect, ddf.analyses.list = ddf.analyses)
 ```
 
 As simulations can take a long time to run it is often worth checking that the setup is right first.
 The first thing that should be checked is that a population is being correctly generated within the region:
 ```{r fig.cap="Figure 5", fig.align="center", fig.width = 7, fig.height = 5}
-pop <- generate.population(simtrunc125aichnhr)
+pop <- generate.population(simtrunc125)
 plot(region)
 plot(pop)
 ```
 
 Next it should be checked that the transects have been placed correctly:
 ```{r fig.cap="Figure 6", fig.align="center", fig.width = 7, fig.height = 5}
-transects <- generate.transects(simtrunc125aichnhr)
+transects <- generate.transects(simtrunc125)
 plot(region)
 plot(transects, col = 4, lwd = 2)
 ```
 
 The observation process can be quickly simulated once to ensure that it is working correctly.  The distance from each animal to the transects will be used to calculate the probability of the animal being detected.  Then Bernoulli trials with these probabilities of success are carried  out for each of the animals.  The observed animals are marked as blue points, the unobserved animals are the red points:
 ```{r fig.cap="Figure 7", fig.align="center", fig.width = 7, fig.height = 5}
-eg.survey <- create.survey.results(simtrunc125aichnhr)
+eg.survey <- create.survey.results(simtrunc125)
 plot(eg.survey)
 ```
 
@@ -109,25 +109,25 @@ dist.data <- get.distance.data(eg.survey)
 hist(dist.data$distance, xlab = "Distance (m)", main = "Distance Data")
 ```
 
-If the setup has been done right the simulation can now be run.  For the investigation multiple simulations over the same region will be run so to improve efficiency the population data was saved using the _save.data_ and _data.path_ arguments:
-```{r cache=TRUE, warning=FALSE, message=FALSE}
-simtrunc125 <- run(simtrunc125aichnhr, save.data = TRUE, data.path = "Data")
+If the setup has been done right the simulation can now be run:
+```{r cache = TRUE, warning=FALSE, message=FALSE}
+simtrunc125 <- run(simtrunc125)
 ```
 
-More simulations are then needed for the investigation; each using different truncation distances for the analysis.  After changing a part of the simulation it is necessary to make the simulation again to update it.  The _load.data_ and _data.path_ arguments are used to load the data from the first simulation that was run to improve efficiency:
+More simulations are then needed for the investigation; each using different truncation distances for the analysis.  After changing a part of the simulation it is necessary to make the simulation again to update it:
 ```{r cache=TRUE, warning=FALSE, results='hide'}
-Trun.dists <- c(1.5*sigma, 1.75*sigma, 2*sigma, 2.5*sigma, 3*sigma)
-sims <- vector("list", length(Trun.dists+1))
+Trun.dists <- c(1.25*sigma, 1.5*sigma, 1.75*sigma, 2*sigma, 2.5*sigma, 3*sigma)
+sims <- vector("list", length(Trun.dists))
 sims[[1]]<-simtrunc125
 for(i in 2:6){
-  ddf.analyses <- make.ddf.analysis.list(dsmodel = list(~cds(key = "hn", formula = ~1), ~cds(key = "hr", formula = ~1)), method = "ds", criteria = "AIC", truncation = Trun.dists[[i-1]])
+  ddf.analyses <- make.ddf.analysis.list(dsmodel = list(~cds(key = "hn", formula = ~1)), method = "ds", criteria = "AIC", truncation = Trun.dists[[i]])
   sim <- make.simulation(reps = 999, single.transect.set = FALSE, region.obj = region, design.obj = parallel.design, population.description.obj = pop.description, detectability.obj = detect, ddf.analyses.list = ddf.analyses)
-  sim  <- run(sim, load.data = TRUE, data.path = "Data")
+  sim  <- run(sim)
   sims[[i]]<-sim
 }
 ```
 
-##4. The Results
+##4. Extracting the Results
 
 The results of a simulation can be viewed by calling *summary* on the simulation object:
 ```{r eval=FALSE}
@@ -135,71 +135,107 @@ The results of a simulation can be viewed by calling *summary* on the simulation
 summary(sims[[1]])
 ```
 
-However this investigation involves running multiple simulations and spotting patterns from the summaries can be quite difficult.  Instead we will extract the required information from the simulation objects and table it using the package *xtable*:
+However this investigation involves running multiple simulations and spotting patterns from the summaries can be quite tedious.  Instead we will write some functions to extract the required information from the simulation objects.  It is not necessary to understand how these functions work, details are provided here for interested readers however the reader could just run the code and skip to the next section if they prefer.
+
+The first pieces of information that we can extract from the simulation is the known size of the population and the number of times the simulation was repeated.  These will be useful for extracting other information later.
+
+```{r}
+extract.N <- function(simulation){
+  return(simulation@population.description@N)
+}
+
+extract.reps <- function(simulation){
+  return(simulation@reps)
+}
+```
+
+
+This investigation focuses on the effects of truncation distance so the truncation distances will be extracted first:
+```{r}
+extract.trun.dist <- function(simulation){
+  return(simulation@ddf.analyses[[1]]@truncation)
+}
+```
+
+Next it will be useful to know how the truncation distances has affected the number of observations:
+
+```{r}
+extract.n <- function(simulation){
+  return(simulation@results$individuals$summary[1,4,1000])
+}
+```
+
+The estimated population size and mean squared error will also be important:
+```{r}
+extract.est.abund <- function(simulation){
+  return(simulation@results$individuals$N[1,1,1000])
+}
+
+extract.mean.se <- function(simulation){
+  return(simulation@results$individuals$N[1,2,1000])
+}
+```
+
+
+Using the known popultion size and the estimated population size the percentage bias can be calculated:
+```{r}
+extract.perc.bias <- function(simulation){
+  N <- extract.N(simulation)
+  Est.Abund <- extract.est.abund(simulation)
+  return(100*(Est.Abund-N)/N)
+}
+```
+
+Using the known population size and the values of the estimated population size from each of the repetitions of the simulation the root mean squared error(RMSE) can be calculated:
+```{r}
+extract.RMSE <- function(simulation){
+  N <- extract.N(simulation)
+  reps <- extract.reps(simulation)
+  results <- simulation@results$individuals$N[1,1,1:reps]
+  return(sqrt(sum((results-N)**2)/reps))
+}
+```
+
+
+##5. The Results
 ```{r message=FALSE}
 library(xtable)
 ```
 
-***
-
-**Need to table CI coverage**
-  
-**Not sure how to explain where to extract data from without getting too technical, would be good to have get methods to save hassle**
-
-***
 ```{r results="asis", message=FALSE, fig.cap = "Table 1"}
-Trunc.Dist = rep(NA, 6)
-for(i in 1:length(sims)){ Trunc.Dist[i] = sims[[i]]@ddf.analyses[[1]]@truncation}
+simtrunc125@results$individuals$N[,,555]
 
-n = rep(NA, 6)
-for(i in 1:length(sims)){ n[i] = sims[[i]]@results$individuals$summary[1,4,1000]}
+Trunc.Dist <- lapply(sims, extract.trun.dist)
 
-Est.Abund = rep(NA, 6)
-for(i in 1:length(sims)){ Est.Abund[i] = sims[[i]]@results$individuals$N[1,1,1000] }
+n <- lapply(sims, extract.n)
 
-mean.se = rep(NA, 6)
-for(i in 1:length(sims)){ mean.se[i] = sims[[i]]@results$individuals$N[1,2,1000] }
+Est.Abund <- lapply(sims, extract.est.abund)
 
-Perc.Bias = 100*(Est.Abund - 250)/250
+mean.se <- lapply(sims, extract.mean.se)
 
-RMSE = rep(NA, 6)
-for(i in 1:length(sims)){ RMSE[i] = sqrt(sum((sims[[i]]@results$individuals$N[1,1,1:999]-250)**2)/999) 
-}
+Perc.Bias <- lapply(sims, extract.perc.bias)
 
-Model.selection <- function(simulation){
-  sum = 0
-  for(x in simulation@results$Detection[1,5,1:999]){
-    if(!is.na(x) && x=="2"){
-      sum=sum+1
-    }
-  }
-  return(c(999-sum, sum))
-}
+RMSE = lapply(sims, extract.RMSE)
 
-model.selection.numbers = rep(NA, 6)
-for(i in 1:length(sims)){
-  model.selection.numbers[i] = Model.selection(sims[[i]])[1]
-}
-
-perc.correct.selection = rep(NA, 6)
-for(i in 1:length(sims)){
-  perc.correct.selection[i]=100*model.selection.numbers[i]/999
-}
-
-simulation.data = data.frame( Trunc.Dist = Trunc.Dist, n=n, Est.Abund = Est.Abund, mean.se = mean.se, Perc.Bias = Perc.Bias, RMSE=RMSE, Correct.Select = perc.correct.selection)
-table<-xtable(simulation.data, label = "Table", align = c('c', 'c', 'c', 'c', 'c', 'c', 'c', 'c'), digits = c(0, 0, 0, 2, 2, 2, 2, 2))
-colnames(table) <- c("$Trunc Dist$", "$n$", "$Mean \\hat{N}$", "$SE$", "$\\% Bias$", "$RMSE$", "$\\% Correct Select$")
+simulation.data = cbind(Trunc.Dist = Trunc.Dist, n=n, Est.Abund = Est.Abund, mean.se = mean.se, Perc.Bias = Perc.Bias, RMSE=RMSE)
+table<-xtable(simulation.data, label = "Table", align = c('c', 'c', 'c', 'c', 'c', 'c', 'c') , digits = c(0, 0, 0, 2, 2, 2, 2))
+colnames(table) <- c("$Trunc Dist$", "$n$", "$Mean \\hat{N}$", "$SE$", "$\\% Bias$", "$RMSE$")
 print(table, floating=TRUE, include.rownames = FALSE, NA.string="NA", caption = "Simulation Results", caption.placement="top", table.placement="!h", sanitize.colnames.function = identity, latex.environments="center", type = "html")
 ```
 
+For distance sampling surveys it is usually recommended to have a minimum of 60-80 detections[@Buckland:2001vm] however even at this small number of observations $\% Bias$ is small.  Increasing the truncation distance does seem to have increased this bias slightly however there is clearly a trend in RMSE which shows that the increase in precision, which can be seen in the standard error, greatly outweighs this effect:
 ```{r fig.cap = "Figure 9", fig.align="center", fig.width = 5, fig.height = 5}
-library(ggplot2)
-data = data.frame(truncation = factor(rep(c(125, 150, 175, 200, 250, 300), each=999)), estimates = c(sims[[1]]@results$individuals$N[1,1,1:999], sims[[2]]@results$individuals$N[1,1,1:999], sims[[3]]@results$individuals$N[1,1,1:999], sims[[4]]@results$individuals$N[1,1,1:999], sims[[5]]@results$individuals$N[1,1,1:999], sims[[6]]@results$individuals$N[1,1,1:999]))
+plot(Trunc.Dist, RMSE)
+```
 
-ggplot(data, aes(x = truncation, y = estimates)) + geom_boxplot() + geom_hline(yintercept = 250, linetype="dashed", color = "red", size = 1.2) + stat_summary(fun.y = mean, geom="point", size = 2, color = "blue")
+```{r fig.cap = "Figure 10", fig.align="center", fig.width = 5, fig.height = 5}
+library(ggplot2)
+data = data.frame(Truncation = factor(rep(c(125, 150, 175, 200, 250, 300), each=999)), Estimates = c(sims[[1]]@results$individuals$N[1,1,1:999], sims[[2]]@results$individuals$N[1,1,1:999], sims[[3]]@results$individuals$N[1,1,1:999], sims[[4]]@results$individuals$N[1,1,1:999], sims[[5]]@results$individuals$N[1,1,1:999], sims[[6]]@results$individuals$N[1,1,1:999]))
+
+ggplot(data, aes(x = Truncation, y = Estimates)) + geom_boxplot() + geom_hline(yintercept = 250, linetype="dashed", color = "red", size = 1.2) + stat_summary(fun.y = mean, geom="point", size = 2, color = "blue")
 ```
 
 
-##5. The Conclusions
+##6. The Conclusions
 
-##6. References
+##7. References
