@@ -31,7 +31,7 @@ Firstly the package needs to be loaded and also the seed has been set so that th
 ```{r warning=FALSE, message=FALSE}
 library(DSsim)
 library(shapefiles)
-set.seed(12345789)
+set.seed(321)
 ```
 
 ##3. Making the Simulation Components
@@ -203,8 +203,6 @@ library(xtable)
 ```
 
 ```{r results="asis", message=FALSE, fig.cap = "Table 1"}
-simtrunc125@results$individuals$N[,,555]
-
 Trunc.Dist <- lapply(sims, extract.trun.dist)
 
 n <- lapply(sims, extract.n)
