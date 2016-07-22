@@ -12,7 +12,7 @@
 
 <meta name="author" content="Kieran Richards" />
 
-<meta name="date" content="2016-07-19" />
+<meta name="date" content="2016-07-22" />
 
 <title>DSsim - Truncation Distances</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">DSsim - Truncation Distances</h1>
 <h4 class="author"><em>Kieran Richards</em></h4>
-<h4 class="date"><em>2016-07-19</em></h4>
+<h4 class="date"><em>2016-07-22</em></h4>
 
 
 
@@ -246,7 +246,9 @@ extract.mean.se &lt;-<span class="st"> </span>function(simulation){
 </div>
 <div id="the-results" class="section level2">
 <h2>5. The Results</h2>
+<p>Once the results have been extracted the package <em>xtable</em> will be used to table the results:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(xtable)</code></pre></div>
+<p>Using the function <em>lapply</em> the results from all of the simulations in the list can be quickly extracted using the functions defined in Section 4:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Trunc.Dist &lt;-<span class="st"> </span><span class="kw">lapply</span>(sims, extract.trun.dist)
 
 n &lt;-<span class="st"> </span><span class="kw">lapply</span>(sims, extract.n)
@@ -257,14 +259,15 @@ mean.se &lt;-<span class="st"> </span><span class="kw">lapply</span>(sims, extra
 
 Perc.Bias &lt;-<span class="st"> </span><span class="kw">lapply</span>(sims, extract.perc.bias)
 
-RMSE =<span class="st"> </span><span class="kw">lapply</span>(sims, extract.RMSE)
-
-simulation.data =<span class="st"> </span><span class="kw">cbind</span>(<span class="dt">Trunc.Dist =</span> Trunc.Dist, <span class="dt">n=</span>n, <span class="dt">Est.Abund =</span> Est.Abund, <span class="dt">mean.se =</span> mean.se, <span class="dt">Perc.Bias =</span> Perc.Bias, <span class="dt">RMSE=</span>RMSE)
-table&lt;-<span class="kw">xtable</span>(simulation.data, <span class="dt">label =</span> <span class="st">&quot;Table&quot;</span>, <span class="dt">align =</span> <span class="kw">c</span>(<span class="st">'c'</span>, <span class="st">'c'</span>, <span class="st">'c'</span>, <span class="st">'c'</span>, <span class="st">'c'</span>, <span class="st">'c'</span>, <span class="st">'c'</span>) , <span class="dt">digits =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">2</span>))
+RMSE =<span class="st"> </span><span class="kw">lapply</span>(sims, extract.RMSE)</code></pre></div>
+<p>Then the results must be combined into a data frame to be tabled:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">simulation.data =<span class="st"> </span><span class="kw">cbind</span>(<span class="dt">Trunc.Dist =</span> Trunc.Dist, <span class="dt">n=</span>n, <span class="dt">Est.Abund =</span> Est.Abund, <span class="dt">mean.se =</span> mean.se, <span class="dt">Perc.Bias =</span> Perc.Bias, <span class="dt">RMSE=</span>RMSE)</code></pre></div>
+<p>Finally the results can be tabled. The align argument has been used to centre the results in each column and the digits argument has been used to specify the number of decimal places in each column. Both of these arguments should be lists that are one longer than the number of columns in the data frame as the first entry describes the row names column. The column names have then been set as Latex labels before the table was printed, then when the table was printed the <em>sanitize.colnames.function</em> was set to identity to ensure that the latex labels were output correctly. When printing the table the <em>include.rownames</em> argment has been set as FALSE so that we only print the data from the data frame.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">table&lt;-<span class="kw">xtable</span>(simulation.data, <span class="dt">label =</span> <span class="st">&quot;Table&quot;</span>, <span class="dt">align =</span> <span class="kw">c</span>(<span class="st">'c'</span>, <span class="st">'c'</span>, <span class="st">'c'</span>, <span class="st">'c'</span>, <span class="st">'c'</span>, <span class="st">'c'</span>, <span class="st">'c'</span>) , <span class="dt">digits =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">2</span>))
 <span class="kw">colnames</span>(table) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;$Trunc Dist$&quot;</span>, <span class="st">&quot;$n$&quot;</span>, <span class="st">&quot;$Mean </span><span class="ch">\\</span><span class="st">hat{N}$&quot;</span>, <span class="st">&quot;$SE$&quot;</span>, <span class="st">&quot;$</span><span class="ch">\\</span><span class="st">% Bias$&quot;</span>, <span class="st">&quot;$RMSE$&quot;</span>)
 <span class="kw">print</span>(table, <span class="dt">floating=</span><span class="ot">TRUE</span>, <span class="dt">include.rownames =</span> <span class="ot">FALSE</span>, <span class="dt">NA.string=</span><span class="st">&quot;NA&quot;</span>, <span class="dt">caption =</span> <span class="st">&quot;Simulation Results&quot;</span>, <span class="dt">caption.placement=</span><span class="st">&quot;top&quot;</span>, <span class="dt">table.placement=</span><span class="st">&quot;!h&quot;</span>, <span class="dt">sanitize.colnames.function =</span> identity, <span class="dt">latex.environments=</span><span class="st">&quot;center&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;html&quot;</span>)</code></pre></div>
 <!-- html table generated in R 3.3.1 by xtable 1.8-2 package -->
-<!-- Tue Jul 19 17:20:20 2016 -->
+<!-- Fri Jul 22 09:48:16 2016 -->
 <table border="1">
 <tr>
 <th>

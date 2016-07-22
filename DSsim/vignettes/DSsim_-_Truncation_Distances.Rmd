@@ -198,11 +198,14 @@ extract.RMSE <- function(simulation){
 
 
 ##5. The Results
+
+Once the results have been extracted the package _xtable_ will be used to table the results:
 ```{r message=FALSE}
 library(xtable)
 ```
 
-```{r results="asis", message=FALSE, fig.cap = "Table 1"}
+Using the function _lapply_ the results from all of the simulations in  the list can be quickly extracted using the functions defined in Section 4:
+```{r}
 Trunc.Dist <- lapply(sims, extract.trun.dist)
 
 n <- lapply(sims, extract.n)
@@ -214,8 +217,16 @@ mean.se <- lapply(sims, extract.mean.se)
 Perc.Bias <- lapply(sims, extract.perc.bias)
 
 RMSE = lapply(sims, extract.RMSE)
+```
 
+Then the results must be combined into a data frame to be tabled:
+```{r}
 simulation.data = cbind(Trunc.Dist = Trunc.Dist, n=n, Est.Abund = Est.Abund, mean.se = mean.se, Perc.Bias = Perc.Bias, RMSE=RMSE)
+```
+
+
+Finally the results can be tabled.  The align argument has been used  to centre the results in each column and the digits argument has been used to specify the number of decimal places in each column. Both of these arguments should be lists that are one longer than the number of columns in the data frame as the first entry describes the row names column.  The column names have then been set as Latex labels before the table was printed, then when the table was printed the _sanitize.colnames.function_ was set to identity to ensure that the latex labels were output correctly.  When printing the table the _include.rownames_ argment has been set as FALSE so that we only print the data from the data frame.
+```{r results="asis", message=FALSE, fig.cap = "Table 1"}
 table<-xtable(simulation.data, label = "Table", align = c('c', 'c', 'c', 'c', 'c', 'c', 'c') , digits = c(0, 0, 0, 2, 2, 2, 2))
 colnames(table) <- c("$Trunc Dist$", "$n$", "$Mean \\hat{N}$", "$SE$", "$\\% Bias$", "$RMSE$")
 print(table, floating=TRUE, include.rownames = FALSE, NA.string="NA", caption = "Simulation Results", caption.placement="top", table.placement="!h", sanitize.colnames.function = identity, latex.environments="center", type = "html")
