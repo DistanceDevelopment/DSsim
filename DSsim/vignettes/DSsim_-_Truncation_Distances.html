@@ -142,7 +142,7 @@ Figure 4
 <h3>3.5 The Analysis</h3>
 <p>Finally the simulation needs to know how to analyse the results of the observation process. A list of models which can be fitted to the distance data will be made and the simulation will select the one with the minimum criteria value. In the truncation distances investigationw the simulation was allowed to decide between a hazard rate model and a half normal model. AIC was used to select the model and the first truncation distance that was used was 1.25<span class="math inline">\(\sigma\)</span>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sigma =<span class="st"> </span><span class="dv">100</span>
-ddf.analyses &lt;-<span class="st"> </span><span class="kw">make.ddf.analysis.list</span>(<span class="dt">dsmodel =</span> <span class="kw">list</span>(~<span class="kw">cds</span>(<span class="dt">key =</span> <span class="st">&quot;hn&quot;</span>, <span class="dt">formula =</span> ~<span class="dv">1</span>)), <span class="dt">method =</span> <span class="st">&quot;ds&quot;</span>, <span class="dt">criteria =</span> <span class="st">&quot;AIC&quot;</span>, <span class="dt">truncation =</span> <span class="dv">125</span>)</code></pre></div>
+ddf.analyses &lt;-<span class="st"> </span><span class="kw">make.ddf.analysis.list</span>(<span class="dt">dsmodel =</span> <span class="kw">list</span>(~<span class="kw">cds</span>(<span class="dt">key =</span> <span class="st">&quot;hn&quot;</span>, <span class="dt">formula =</span> ~<span class="dv">1</span>)), <span class="dt">method =</span> <span class="st">&quot;ds&quot;</span>, <span class="dt">criteria =</span> <span class="st">&quot;AIC&quot;</span>, <span class="dt">truncation =</span> <span class="fl">1.25</span>*sigma)</code></pre></div>
 </div>
 <div id="the-simulations" class="section level3">
 <h3>3.6 The Simulations</h3>
@@ -267,7 +267,7 @@ RMSE =<span class="st"> </span><span class="kw">lapply</span>(sims, extract.RMSE
 <span class="kw">colnames</span>(table) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;$Trunc Dist$&quot;</span>, <span class="st">&quot;$n$&quot;</span>, <span class="st">&quot;$Mean </span><span class="ch">\\</span><span class="st">hat{N}$&quot;</span>, <span class="st">&quot;$SE$&quot;</span>, <span class="st">&quot;$</span><span class="ch">\\</span><span class="st">% Bias$&quot;</span>, <span class="st">&quot;$RMSE$&quot;</span>)
 <span class="kw">print</span>(table, <span class="dt">floating=</span><span class="ot">TRUE</span>, <span class="dt">include.rownames =</span> <span class="ot">FALSE</span>, <span class="dt">NA.string=</span><span class="st">&quot;NA&quot;</span>, <span class="dt">caption =</span> <span class="st">&quot;Simulation Results&quot;</span>, <span class="dt">caption.placement=</span><span class="st">&quot;top&quot;</span>, <span class="dt">table.placement=</span><span class="st">&quot;!h&quot;</span>, <span class="dt">sanitize.colnames.function =</span> identity, <span class="dt">latex.environments=</span><span class="st">&quot;center&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;html&quot;</span>)</code></pre></div>
 <!-- html table generated in R 3.3.1 by xtable 1.8-2 package -->
-<!-- Fri Jul 22 09:48:16 2016 -->
+<!-- Fri Jul 22 15:31:01 2016 -->
 <table border="1">
 <tr>
 <th>

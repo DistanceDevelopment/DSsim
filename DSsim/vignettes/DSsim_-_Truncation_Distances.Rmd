@@ -28,7 +28,7 @@ In the first section each of the components of a simulation is built and then th
 ##2. Setup
 
 Firstly the package needs to be loaded and also the seed has been set so that the results in this vignette can be easily reproduced.  The package _shapefiles_ will also be required. 
-```{r warning=FALSE, message=FALSE}
+```{r setup, warning=FALSE, message=FALSE}
 library(DSsim)
 library(shapefiles)
 set.seed(321)
@@ -38,7 +38,7 @@ set.seed(321)
 
 ###3.1 The Region
 The first part of the simulation which must be created is the region.  For the investigation into the effects of truncation distances on the estimates of population abundance a simple 20km by 5km rectangular region will be used.  This will require a shapefile which describes the region.  In order to estimate the abundance in the region DSsim needs the area of the region.  This will be calculated using _areapl_ from the _splancs_ package [@splancs-pkg].  If this is not suitable then DSsim can be provided with an area that has been calculated elsewhere using the area argument of _make.region_.  The following code creates the region and plots it in Figure 2:
-```{r fig.cap="Figure 3", fig.align="center", fig.width = 7, fig.height = 5}
+```{r region, fig.cap="Figure 3", fig.align="center", fig.width = 7, fig.height = 5}
 region.shapefile <- read.shapefile("Study_ar")
 region <- make.region(region.name = "Survey Region", units = "m", shapefile = region.shapefile)
 plot(region)
@@ -46,76 +46,76 @@ plot(region)
 
 ###3.2 The Population
 The next part of the simulation that is needed is the population description.  However in order to make the population description DSsim first needs a description of the population density.  For the investigation into truncation distances it is sufficient to have a constant density over the whole surface.  Furthermore when the simulation later generates a population during the simulation it will do so using a known population size so the value of this constant isn't important, so a value of 1 is used here.  The _x.space_ and _y.space_ arguments describe how spaced out the grid points on the density surface are.  As the density surface will be the same everywhere this doesn't matter too much, however if the density surface varies a lot then it may be wise to decrease the spacing between grid points in order to allow finer detail on the surface.  This code produces the density object and plots it over the region in figure 3:
-```{r fig.cap="Figure 4", fig.align="center", fig.width = 7, fig.height = 5}
+```{r density, fig.cap="Figure 4", fig.align="center", fig.width = 7, fig.height = 5}
 pop.density <- make.density(region = region, x.space = 1000, y.space = 1000, constant = 1) 
 plot(pop.density, plot.units = "km", style = "blocks")
 plot(region, add = TRUE)
 ```
 
 Now that a description of the density across the region is available the population description can be put together from which the simulation will generate a population.  A fixed value for the population size, N=250, is given. If this is not given then DSsim will generate the population using the average density across the region.   
-```{r}
+```{r population}
 pop.description <- make.population.description(region.obj = region, density.obj = pop.density, N = 250, fixed.N = TRUE)
 ```
 
 ###3.3 The Detection Function
 Now all of the parts of the simulation that will be needed to generate a population for the survey region have been created.  Next the components that will be used to simulate the observation process need to be made.  The first of these is the known detection function.  The key function can be one of _hn_(half normal), _hr_(hazard rate) or _uf_(uniform).  Here a half normal with scale parameter _100_ and a observation truncation distance of 500 is used:
-```{r}
+```{r detection}
 detect <- make.detectability(key.function = "hn", scale.param = 100, truncation = 500)
 ```
 
 ###3.4 The Survey Design
 Simulating the observation process also requires a survey  design.  Currently creating survey designs from scratch has not been implemented in DSsim and the surveys must be created in advance and saved as shapefiles using the Distance for Windows software [@Thomas:2010cf]. For the investigation a systematic parallel line transect design with a spacing of 1km between transects was used.  The transects were orientated so that they were running across the narrower dimension of the study region, this resulted in 20 transects per survey. The recommended minimum number of transects for line transect studies is from 10-20 [@Buckland:2001vm].
-```{r}
+```{r design}
 parallel.design <- make.design(transect.type = "Line",design.details = c("Parallel","Systematic"),region.obj = region, path = "shapefiles")
 ```
 
 ###3.5 The Analysis
 Finally the simulation needs to know how to analyse the results of the observation process.  A list of models which can be fitted to the distance data will be made and the simulation will select the one with the minimum criteria value.  In the truncation distances investigationw the simulation was allowed to decide between a hazard rate model and a half normal model.  AIC was used to select the model and the first truncation distance that was used was 1.25$\sigma$:
-```{r}
+```{r analyses}
 sigma = 100
 ddf.analyses <- make.ddf.analysis.list(dsmodel = list(~cds(key = "hn", formula = ~1)), method = "ds", criteria = "AIC", truncation = 125)
 ```
 
 ###3.6 The Simulations
 Now that all of the components of the simulation have been made the simulation is made by putting them all together:
-```{r}
+```{r make.sim}
 simtrunc125 <- make.simulation(reps = 999, single.transect.set = FALSE, region.obj = region, design.obj = parallel.design, population.description.obj = pop.description, detectability.obj = detect, ddf.analyses.list = ddf.analyses)
 ```
 
 As simulations can take a long time to run it is often worth checking that the setup is right first.
 The first thing that should be checked is that a population is being correctly generated within the region:
-```{r fig.cap="Figure 5", fig.align="center", fig.width = 7, fig.height = 5}
+```{r gen.pop, fig.cap="Figure 5", fig.align="center", fig.width = 7, fig.height = 5}
 pop <- generate.population(simtrunc125)
 plot(region)
 plot(pop)
 ```
 
 Next it should be checked that the transects have been placed correctly:
-```{r fig.cap="Figure 6", fig.align="center", fig.width = 7, fig.height = 5}
+```{r gen.transects, fig.cap="Figure 6", fig.align="center", fig.width = 7, fig.height = 5}
 transects <- generate.transects(simtrunc125)
 plot(region)
 plot(transects, col = 4, lwd = 2)
 ```
 
 The observation process can be quickly simulated once to ensure that it is working correctly.  The distance from each animal to the transects will be used to calculate the probability of the animal being detected.  Then Bernoulli trials with these probabilities of success are carried  out for each of the animals.  The observed animals are marked as blue points, the unobserved animals are the red points:
-```{r fig.cap="Figure 7", fig.align="center", fig.width = 7, fig.height = 5}
+```{r survey, fig.cap="Figure 7", fig.align="center", fig.width = 7, fig.height = 5}
 eg.survey <- create.survey.results(simtrunc125)
 plot(eg.survey)
 ```
 
 This distance data can also be viewed in a histogram to get an idea of what the fitted detection function will look like:
-```{r fig.cap="Figure 8", fig.align="center", fig.width = 5, fig.height = 5}
+```{r dist.data, fig.cap="Figure 8", fig.align="center", fig.width = 5, fig.height = 5}
 dist.data <- get.distance.data(eg.survey)
 hist(dist.data$distance, xlab = "Distance (m)", main = "Distance Data")
 ```
 
 If the setup has been done right the simulation can now be run:
-```{r cache = TRUE, warning=FALSE, message=FALSE}
-simtrunc125 <- run(simtrunc125)
+```{r first.sim, cache = TRUE, warning=FALSE, message=FALSE}
+simtrunc125 <- run(simtrunc125, save.data=TRUE, data.path = "Results")
 ```
 
 More simulations are then needed for the investigation; each using different truncation distances for the analysis.  After changing a part of the simulation it is necessary to make the simulation again to update it:
-```{r cache=TRUE, warning=FALSE, results='hide'}
+```{r sims, cache=TRUE, warning=FALSE, results='hide'}
 Trun.dists <- c(1.25*sigma, 1.5*sigma, 1.75*sigma, 2*sigma, 2.5*sigma, 3*sigma)
 sims <- vector("list", length(Trun.dists))
 sims[[1]]<-simtrunc125
@@ -130,7 +130,7 @@ for(i in 2:6){
 ##4. Extracting the Results
 
 The results of a simulation can be viewed by calling *summary* on the simulation object:
-```{r eval=FALSE}
+```{r summary, eval=FALSE}
 #Not run
 summary(sims[[1]])
 ```
