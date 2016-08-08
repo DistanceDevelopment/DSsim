@@ -12,28 +12,28 @@ vignette: >
 #Using DSsim to investigate Truncation Distances
 
 ##1. Introduction
-Distance Sampling is a process in which an area is surveyed so that the size of a population within the area can be estimated.  Distances from a set of transects to observed objects are recorded and this data is used to model a detectability function.  From this the population in the whole area can be estimated.  
+Distance Sampling is a process in which an area is surveyed so that the size of a population within the area can be estimated.  Distances from a set of transects to observed objects are recorded and these data are used to model a detectability function.  From this the population in the whole area can be estimated.  
 
 ###1.1 Introduction to DSsim
 
-DSsim is a tool which simulates this process.  DSsim splits the process into three stages.  First it generates a population across the region.  This is the population that we are trying to measure the size of.  After that DSsim simulates the distance sampling survey.  This is done using a detectability function and a survey design.  For the final stage DSsim analyses the data which is output from the survey.
+DSsim is a tool which simulates this process.  DSsim splits the process into three stages.  First it generates a population.  DSsim then simulates the distance sampling survey.  This is done using a detectability function and a survey design.  For the final stage DSsim analyses the data from the survey.
 
-![Figure 1 - Composition of a simulation](SimulationDiagram.png)
+![Figure 1 - A simulation is composed of several other objects including the region and a survey design.  If you wish to change one of these components you will also have to remake the simulation afterwards to update the simulation.](SimulationDiagram.png)
 
-When fitting a detection function the data is often truncated at some distance from the transect.  The number of detections will decrease at larger distances from the transect and leaving in widely dispersed observations can lead to bias in the estimate of abundance by distorting the shape of the detection function.  It has been suggested that a good rule of thumb is to truncate the data where the estimated probability of detection is 0.15 [@Buckland:2001vm] however this has been a topic of much discussion.
+When fitting a detection function the data is often truncated at some distance from the transect.  The number of detections will decrease at larger distances from the transect and observations can lead to poorer precision in the estimate of abundance by distorting the shape of the detection function.  It has been suggeste to truncate the data where the estimated probability of detection is 0.15 [@Buckland:2001vm] however this has been a topic of much discussion.
 
-This vignette explores how truncation distances affect the accuracy and precision of the estimates of a population size.  This will be used to provide examples of how to use DSsim to make and run simulations as well as how to analyse the results.  Simulations will be run with truncation distances at different multiples of $\sigma$.  For a half normal detection function the suggested truncation distance is approximately 2$\sigma$ and for a hazard rate detection function with shape parameter 4 this is approximately 1.5$\sigma$. 
+This vignette explores how truncation distances affect the accuracy and precision of the estimates of a population size.  This will be used to provide examples of how to use DSsim to make and run simulations as well as how to analyse the results.  Simulations will be run with truncation distances at different multiples of $\sigma$ as shown in Figure 2.  For a half normal detection function the suggested truncation distance is approximately 2$\sigma$ and for a hazard rate detection function with shape parameter 4 this is approximately 1.5$\sigma$. 
 
-![Figure 2 - Detectability Functions](Rplots.png)
+![Figure 2 - A half normal and hazard rate distributions with vertical lines showing the truncation distances used in this vignette](Rplots.png)
 
-The rest of this vignette will guide you through the steps to create and run a series of simulations to investigate the effects of varying truncation distance.  For the advanced reader we also inlude sections describing how to save the data from a simulation in order to speed up subsequent simulations using the same population and on how to include model selection in the investigation.  In the results section w describe how truncation distance affects the accuracy and precision of the distance sampling abundance estimates.  Finally we conclude by discussing the implications of our findings for carrying out distance sampling surveys in practice.
+The rest of this vignette will guide you through the steps to create and run a series of simulations to investigate the effects of varying truncation distance.  For the advanced reader we also include sections describing how to save the data from a simulation in order to speed up subsequent simulations using the same population and on how to include model selection in the investigation.  In the results section we describe how truncation distance affects the accuracy and precision of the distance sampling abundance estimates.  Finally we conclude by discussing the implications of our findings for carrying out distance sampling surveys in practice.
 
 
 ##2. Methods
 
 ###2.1 Setup
 
-Firstly the package needs to be loaded and also the seed has been set so that the results in this vignette can be easily reproduced.  The package _shapefiles_ will also be required. 
+The package needs to be loaded and also the seed has been set so that the results in this vignette can be easily reproduced.  The package _shapefiles_ will also be required. 
 ```{r setup, warning=FALSE, message=FALSE}
 library(DSsim)
 library(shapefiles)
@@ -43,47 +43,50 @@ set.seed(4321)
 ##2.2 Making the Simulation Components
 
 ###2.2.1 Region
-The first part of the simulation is the region.  For the investigation a simple 20km by 5km rectangular region will be used.  This requires a shapefile which describes the region.  In order to estimate the abundance in the region DSsim needs the area of the region.  DSsim calculates this automatically using _areapl_ from the _splancs_ package [@splancs-pkg].  If this is not suitable then DSsim can be provided with an area that has been calculated elsewhere using the area argument of _make.region_.  The following code creates the region and plots it in Figure 3:
+The first part of the simulation is the region.  For the investigation a simple 20,000m by 5,000m rectangular region will be used.  This requires a shapefile which describes the region.  To estimate the abundance in the region DSsim needs the area of the region.  DSsim calculates this automatically using _areapl_ from the _splancs_ package [@splancs-pkg].  If this is not suitable then DSsim can be provided with an area that has been calculated elsewhere using the area argument of _make.region_.  The following code creates the region and plots it in Figure 3:
 ```{r region, fig.cap="Figure 3 - Region", fig.align="center", fig.width = 7, fig.height = 5}
-region.shapefile <- read.shapefile("Study_ar")
+region.shapefile <- read.shapefile("Study_ar") #DSsim assumes there is a shapefile called this in the R working directory
 region <- make.region(region.name = "Survey Region", units = "m", shapefile = region.shapefile)
 plot(region)
 ```
 
 ###2.2.2 Population
-The population description first needs a description of the population density.  For the investigation we will use a constant density over the whole surface.  Furthermore when the simulation later generates a population during the simulation it will do so using a known population size so the value of this constant isn't important.  The _x.space_ and _y.space_ arguments describe the grid points on the density surface.  As the density surface will be the same everywhere this doesn't matter too much, however if the density surface varies a lot then it may be wise to decrease the spacing between grid points in order to allow finer detail on the surface.  This code produces the density object and plots it over the region in figure 4:
+The population description first needs a description of the population density.  For the investigation we will use a constant density over the whole surface.  Furthermore when the simulation later generates a population during the simulation it will do so using a known population size so the value of this constant is not important.  The _x.space_ and _y.space_ arguments describe the grid points on the density surface.  As the density surface will be the same everywhere this does not matter too much, however if the density surface varies then it may be wise to decrease the spacing between grid points to allow finer detail on the surface.  This code produces the density object and plots it over the region in Figure 4:
 ```{r density, fig.cap="Figure 4", fig.align="center", fig.width = 7, fig.height = 5}
 pop.density <- make.density(region = region, x.space = 1000, y.space = 1000, constant = 1) 
-plot(pop.density, plot.units = "km", style = "blocks")
+plot(pop.density, plot.units = "m", style = "blocks")
 plot(region, add = TRUE)
 ```
 
-Now that a description of the density across the region is available the population description can be put together from which the simulation will generate a population.  A fixed value for the population size, N=250, is given. We have chosen 250 because this results in around 60 observations, the minimum number of recomendations usually recommended for distance sampling surveys.  This will ensure that any effects of truncation distance are not obscured by using a large population size. If this is not given then DSsim will generate the population using the average density across the region.   
+Now that a description of the density across the region is available the population description can be put together from which the simulation will generate a population.  A fixed value for the population size, N=250, is given. We have chosen 250 because with the detection function we have used this results in around 60 observations, the minimum number of recomendations usually recommended for distance sampling surveys.  This will ensure that any effects of truncation distance are not obscured by using a large population size. If this is not given then DSsim will generate the population using the average density across the region.   
 ```{r population}
 pop.description <- make.population.description(region.obj = region, density.obj = pop.density, N = 250, fixed.N = TRUE)
 ```
 
 ###2.2.3 Defining Detectability
-Next the components that will be used to simulate the observation process need to be made.  The first of these is the known detection function.  The key function can be one of _hn_(half normal) or _hr_(hazard rate).  Here a half normal with scale parameter _100_ and a observation truncation distance of 500 is used:
+Next the components that will be used to simulate the observation process need to be made.  The first of these is the known detection function.  The key function can be one of _hn_(half normal) or _hr_(hazard rate).  Here a half normal with scale parameter 100 and a observation truncation distance of 500 is used:
 ```{r detection}
-detect <- make.detectability(key.function = "hn", scale.param = 100, truncation = 500)
+sigma = 100
+detect <- make.detectability(key.function = "hn", scale.param = sigma, truncation = 500)
 ```
 
 ###2.2.4 Design
-When carrying out a distance sampling survey it is important to create a survey based on a design. Currently this cannot be done using DSsim and must be done using other software.  Here we have done this using the Distance for Windows software [@Thomas:2010cf].  A systematic parallel line transect design with a spacing of 1km between transects was used.  The transects were orientated so that they were running across the narrower dimension of the study region, this resulted in 20 transects per survey. The recommended minimum number of transects for line transect studies is from 10-20 [@Buckland:2001vm].
+When carrying out a distance sampling survey we create a survey based on a design. Currently this cannot be done using DSsim and must be done using other software.  Here we have done this using the Distance for Windows software [@Thomas:2010cf].  A systematic parallel line transect design with a spacing of 1000m between transects was used.  The transects were orientated so that they were running across the narrower dimension of the study region, this resulted in 20 transects per survey. The recommended minimum number of transects for line transect studies is from 10-20 [@Buckland:2001vm].
 ```{r design}
 parallel.design <- make.design(transect.type = "Line",design.details = c("Parallel","Systematic"),region.obj = region, path = "shapefiles")
 ```
 
 ###2.2.5 Analysis
-Finally the simulation needs to know how to analyse the results of the observation process.  A list of models which can be fitted to the distance data will be made and the simulation will select the one with the minimum criteria value.  In the truncation distances investigationw the simulation was allowed to decide between a hazard rate model and a half normal model.  AIC was used to select the model and the first truncation distance that was used was 1.25$\sigma$:
+Finally the simulation needs to know how to analyse the results of the observation process.  A list of models which can be fitted to the distance data will be made and the simulation will select the one with the minimum criteria value.  In the truncation distances investigation the simulation was forced to pick a half normal model.  The first truncation distance that was used was 1.25$\sigma$:
 ```{r analyses}
-sigma = 100
-ddf.analyses <- make.ddf.analysis.list(dsmodel = list(~cds(key = "hn", formula = ~1)), method = "ds", criteria = "AIC", truncation = 125)
+ddf.analyses <- make.ddf.analysis.list(dsmodel = list(~cds(key = "hn", formula = ~1)), method = "ds", truncation = 125)
 ```
 
 ###2.2.5.1 Model Selection
-To be added
+In the real world we do not know the shape of the detection function and must use model selection criteria to decide between models of different shape.  Here we use the AIC to decide between a hazard rate model and a half normal model:
+```{r analyses2}
+ddf.analyses <- make.ddf.analysis.list(dsmodel = list(~cds(key = "hn", formula = ~1), ~cds(key = "hr", formula = ~1)), method = "ds", criteria = "AIC", truncation = 125)
+```
 
 ###2.2.6 Simulations
 Now that all of the components of the simulation have been made the simulation is made by putting them all together:
@@ -106,7 +109,7 @@ plot(region)
 plot(transects, col = 4, lwd = 2)
 ```
 
-The observation process can be quickly simulated once to ensure that it is working correctly.  The distance from each animal to the transects will be used to calculate the probability of the animal being detected.  Then Bernoulli trials with these probabilities of success are carried  out for each of the animals.  The observed animals are marked as blue points, the unobserved animals are the red points:
+The observation process can be quickly simulated once to ensure that it is working correctly.  The distance from each object to the transects will be used to calculate the probability of the object being detected.  Then Bernoulli trials with these probabilities of success are carried  out for each of the objects.  The observed objects are marked as blue points, the unobserved objects are the red points:
 ```{r survey, fig.cap="Figure 7", fig.align="center", fig.width = 7, fig.height = 5}
 eg.survey <- create.survey.results(simtrunc125)
 plot(eg.survey)
@@ -125,6 +128,9 @@ simtrunc125 <- run(simtrunc125)
 ```
 
 More simulations are then needed for the investigation; each using different truncation distances for the analysis.  After changing a part of the simulation it is necessary to make the simulation again to update it:
+```{r}
+#still need to comment this
+```
 ```{r sims, cache=TRUE, warning=FALSE, results='hide'}
 Trun.dists <- c(1.25*sigma, 1.5*sigma, 1.75*sigma, 2*sigma, 2.5*sigma, 3*sigma)
 sims <- vector("list", length(Trun.dists))
@@ -148,14 +154,8 @@ summary(sims[[1]])
 
 This investigation involves running multiple simulations so instead we will write some functions to extract information from the simulation objects.  It is not necessary to understand how these functions work, details are provided here for interested readers however the reader could just run the code and skip to the next section if they prefer.
 
-***
-  
-**SECTION NEEDS REWORKED FOR NEW GET FUNCTION**
+We use a switch statement to allow the user to specify the required information and then return the value from the appropriate slot in the simulation object:
 
-***
-  
-The first pieces of information that we can extract from the simulation is the known size of the population and the number of times the simulation was repeated.  These will be useful for extracting other information later.
-  
 ```{r}
 extract.info <- function(simulation, info.name){
   switch(info.name,
@@ -167,61 +167,6 @@ extract.info <- function(simulation, info.name){
          mean.se = simulation@results$individuals$N[1,2,1000],
          percentage.bias = 100*((simulation@results$individuals$N[1,1,1000] - simulation@population.description@N)/simulation@population.description@N),
          RMSE = sqrt(sum((simulation@results$individuals$N[1,1,1:simulation@reps]-simulation@population.description@N)**2)/simulation@reps))
-}
-
-extract.N <- function(simulation){
-  return(simulation@population.description@N)
-}
-
-extract.reps <- function(simulation){
-  return(simulation@reps)
-}
-```
-
-
-This investigation focuses on the effects of truncation distance so the truncation distances will be extracted first:
-```{r}
-extract.trun.dist <- function(simulation){
-  return(simulation@ddf.analyses[[1]]@truncation)
-}
-```
-
-Next it will be useful to know how the truncation distances has affected the number of observations:
-
-```{r}
-extract.n <- function(simulation){
-  return(simulation@results$individuals$summary[1,4,1000])
-}
-```
-
-The estimated population size and mean squared error will also be important:
-```{r}
-extract.est.abund <- function(simulation){
-  return(simulation@results$individuals$N[1,1,1000])
-}
-
-extract.mean.se <- function(simulation){
-  return(simulation@results$individuals$N[1,2,1000])
-}
-```
-
-
-Using the known popultion size and the estimated population size the percentage bias can be calculated:
-```{r}
-extract.perc.bias <- function(simulation){
-  N <- extract.N(simulation)
-  Est.Abund <- extract.est.abund(simulation)
-  return(100*(Est.Abund-N)/N)
-}
-```
-
-Using the known population size and the values of the estimated population size from each of the repetitions of the simulation the root mean squared error(RMSE) can be calculated:
-```{r}
-extract.RMSE <- function(simulation){
-  N <- extract.N(simulation)
-  reps <- extract.reps(simulation)
-  results <- simulation@results$individuals$N[1,1,1:reps]
-  return(sqrt(sum((results-N)**2)/reps))
 }
 ```
 
@@ -254,8 +199,9 @@ simulation.data = cbind(Trunc.Dist = Trunc.Dist, n=n, Est.Abund = Est.Abund, mea
 
 
 Finally the results can be tabled.  The align argument has been used  to centre the results in each column and the digits argument has been used to specify the number of decimal places in each column. Both of these arguments should be lists that are one longer than the number of columns in the data frame as the first entry describes the row names column.  The column names have then been set as Latex labels before the table was printed, then when the table was printed the _sanitize.colnames.function_ was set to identity to ensure that the latex labels were output correctly.  When printing the table the _include.rownames_ argment has been set as FALSE so that we only print the data from the data frame.
-```{r results="asis", message=FALSE, fig.cap = "Table 1"}
-table<-kable(simulation.data, digits = c(0, 0, 2, 2, 2, 2), col.names = c("$Trunc Dist$", "$n$", "$Mean \\hat{N}$", "$SE$", "$\\% Bias$", "$RMSE$"), align = c('c', 'c', 'c', 'c', 'c', 'c', 'c') )
+```{r results="asis", fig.cap = "Table 1"}
+table<-kable(simulation.data, digits = 2, col.names = c("$Trunc Dist$", "$n$", "$Mean \\hat{N}$", "$SE$", "$\\% Bias$", "$RMSE$"), align = c('c', 'c', 'c', 'c', 'c', 'c', 'c') )
+
 print(table, floating=TRUE, include.rownames = FALSE, NA.string="NA", caption = "Simulation Results", caption.placement="top", table.placement="!h", latex.environments="center", type = "html")
 ```
 
@@ -268,10 +214,12 @@ plot(Trunc.Dist, RMSE)
 library(ggplot2)
 data = data.frame(Truncation = factor(rep(c(125, 150, 175, 200, 250, 300), each=999)), Estimates = c(sims[[1]]@results$individuals$N[1,1,1:999], sims[[2]]@results$individuals$N[1,1,1:999], sims[[3]]@results$individuals$N[1,1,1:999], sims[[4]]@results$individuals$N[1,1,1:999], sims[[5]]@results$individuals$N[1,1,1:999], sims[[6]]@results$individuals$N[1,1,1:999]))
 
-ggplot(data, aes(x = Truncation, y = Estimates)) + geom_boxplot() + geom_hline(yintercept = 250, linetype="dashed", color = "red", size = 1.2) + stat_summary(fun.y = mean, geom="point", size = 2, color = "blue")
+ggplot(data, aes(x = Truncation, y = Estimates)) + geom_boxplot() + geom_hline(yintercept = 250, color = "red", size = 0.5) + stat_summary(fun.y = mean, geom="point", size = 2, color = "blue")
 ```
 
 
 ##5. The Conclusions
+
+Changing the truncation distance did not lead to big differences in the % Bias however there was a clear trend in precision.  Since each simulation was successfully run the same number of times we could use the RMSE as a meaningful comparison to combine the two and found that truncating less data was better by this metric.  However, differences were small even at this small sample size and so truncation distance should not be a big concern at the analysis stage.  It should also be noted that the observers for the survey should not be given a truncation distance because if they see something just beyond this distance they may be tempted to record it at the truncation distance which will lead to heaping at this distance. 
 
 ##6. References
