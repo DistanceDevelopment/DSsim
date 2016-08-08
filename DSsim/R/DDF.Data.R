@@ -1,6 +1,8 @@
-#' Class "DDF.Data" 
+#' @include generic.functions.R
+
+#' @title Class "DDF.Data" 
 #' 
-#' A virtual class containing a data.frame with distance sampling data in the 
+#' @description A virtual class containing a data.frame with distance sampling data in the 
 #' correct format for mrds.
 #'
 #' @name DDF.Data-class

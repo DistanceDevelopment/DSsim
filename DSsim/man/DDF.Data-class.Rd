@@ -3,11 +3,8 @@
 \docType{class}
 \name{DDF.Data-class}
 \alias{DDF.Data-class}
-\title{S4 Class "DDF.Data"}
+\title{Class "DDF.Data"}
 \description{
-Class "DDF.Data"
-}
-\details{
 A virtual class containing a data.frame with distance sampling data in the 
 correct format for mrds.
 }
