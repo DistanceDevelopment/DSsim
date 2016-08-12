@@ -12,11 +12,11 @@ vignette: >
 #Using DSsim to investigate Truncation Distances
 
 ##1. Introduction
-Distance Sampling is a process in which an area is surveyed so that the size of a population within the area can be estimated.  Distances from a set of transects to observed objects are recorded and these data are used to model a detectability function.  From this the population in the whole area can be estimated.  
+Distance Sampling is a process in which an area is surveyed so that the size of a population within an area can be estimated.  Distances from a set of transects to observed objects are recorded and these data are used to model a detection function.  From this the population in the whole area can be estimated.  
 
 ###1.1 Introduction to DSsim
 
-DSsim is a tool which simulates this process.  DSsim splits the process into three stages.  First it generates a population.  DSsim then simulates the distance sampling survey.  This is done using a detectability function and a survey design.  For the final stage DSsim analyses the data from the survey.
+DSsim is a tool which simulates this process.  DSsim splits the process into three stages.  First it generates a population.  DSsim then simulates the distance sampling survey.  This is done using a detection function and a survey design.  For the final stage DSsim analyses the data from the survey.
 
 ![Figure 1 - A simulation is composed of several other objects including the region and a survey design.  If you wish to change one of these components you will also have to remake the simulation afterwards to update the simulation.](SimulationDiagram.png)
 
@@ -44,79 +44,103 @@ set.seed(4321)
 
 ###2.2.1 Region
 The first part of the simulation is the region.  For the investigation a simple 20,000m by 5,000m rectangular region will be used.  This requires a shapefile which describes the region.  To estimate the abundance in the region DSsim needs the area of the region.  DSsim calculates this automatically using _areapl_ from the _splancs_ package [@splancs-pkg].  If this is not suitable then DSsim can be provided with an area that has been calculated elsewhere using the area argument of _make.region_.  The following code creates the region and plots it in Figure 3:
-```{r region, fig.cap="Figure 3 - Region", fig.align="center", fig.width = 7, fig.height = 5}
+```{r region, fig.cap="Figure 3 - A plot of the study region", fig.align="center", fig.width = 7, fig.height = 3}
 region.shapefile <- read.shapefile("Study_ar") #DSsim assumes there is a shapefile called this in the R working directory
-region <- make.region(region.name = "Survey Region", units = "m", shapefile = region.shapefile)
+region <- make.region(region.name = "Survey Region", 
+                      units = "m", 
+                      shapefile = region.shapefile)
 plot(region)
 ```
 
 ###2.2.2 Population
-The population description first needs a description of the population density.  For the investigation we will use a constant density over the whole surface.  Furthermore when the simulation later generates a population during the simulation it will do so using a known population size so the value of this constant is not important.  The _x.space_ and _y.space_ arguments describe the grid points on the density surface.  As the density surface will be the same everywhere this does not matter too much, however if the density surface varies then it may be wise to decrease the spacing between grid points to allow finer detail on the surface.  This code produces the density object and plots it over the region in Figure 4:
-```{r density, fig.cap="Figure 4", fig.align="center", fig.width = 7, fig.height = 5}
-pop.density <- make.density(region = region, x.space = 1000, y.space = 1000, constant = 1) 
+The second part of the simulation is the population description which needs a description of the population density.  For the investigation we will use a constant density over the whole surface.  Furthermore when the simulation later generates a population during the simulation it will do so using a known population size so the value of this constant is not important.  The _x.space_ and _y.space_ arguments describe the grid points on the density surface.  As the density surface will be the same everywhere this does not matter too much, however if the density surface varies then it may be wise to decrease the spacing between grid points to allow finer detail on the surface.  This code produces the density object and plots it over the region in Figure 4:
+```{r density, fig.cap="Figure 4 - A plot of the study region with a heat map showing the population density overlayed", fig.align="center", fig.width = 7, fig.height = 3}
+pop.density <- make.density(region = region, 
+                            x.space = 1000, 
+                            y.space = 1000, 
+                            constant = 1) 
 plot(pop.density, plot.units = "m", style = "blocks")
 plot(region, add = TRUE)
 ```
 
 Now that a description of the density across the region is available the population description can be put together from which the simulation will generate a population.  A fixed value for the population size, N=250, is given. We have chosen 250 because with the detection function we have used this results in around 60 observations, the minimum number of recomendations usually recommended for distance sampling surveys.  This will ensure that any effects of truncation distance are not obscured by using a large population size. If this is not given then DSsim will generate the population using the average density across the region.   
 ```{r population}
-pop.description <- make.population.description(region.obj = region, density.obj = pop.density, N = 250, fixed.N = TRUE)
+pop.description <- make.population.description(region.obj = region, 
+                                               density.obj = pop.density, 
+                                               N = 250, 
+                                               fixed.N = TRUE)
 ```
 
 ###2.2.3 Defining Detectability
 Next the components that will be used to simulate the observation process need to be made.  The first of these is the known detection function.  The key function can be one of _hn_(half normal) or _hr_(hazard rate).  Here a half normal with scale parameter 100 and a observation truncation distance of 500 is used:
 ```{r detection}
 sigma = 100
-detect <- make.detectability(key.function = "hn", scale.param = sigma, truncation = 500)
+detect <- make.detectability(key.function = "hn", 
+                             scale.param = sigma, 
+                             truncation = 500)
 ```
 
 ###2.2.4 Design
 When carrying out a distance sampling survey we create a survey based on a design. Currently this cannot be done using DSsim and must be done using other software.  Here we have done this using the Distance for Windows software [@Thomas:2010cf].  A systematic parallel line transect design with a spacing of 1000m between transects was used.  The transects were orientated so that they were running across the narrower dimension of the study region, this resulted in 20 transects per survey. The recommended minimum number of transects for line transect studies is from 10-20 [@Buckland:2001vm].
 ```{r design}
-parallel.design <- make.design(transect.type = "Line",design.details = c("Parallel","Systematic"),region.obj = region, path = "shapefiles")
+parallel.design <- make.design(transect.type = "Line", 
+                               design.details = c("Parallel","Systematic"), 
+                               region.obj = region, 
+                               path = "shapefiles")
 ```
 
 ###2.2.5 Analysis
 Finally the simulation needs to know how to analyse the results of the observation process.  A list of models which can be fitted to the distance data will be made and the simulation will select the one with the minimum criteria value.  In the truncation distances investigation the simulation was forced to pick a half normal model.  The first truncation distance that was used was 1.25$\sigma$:
 ```{r analyses}
-ddf.analyses <- make.ddf.analysis.list(dsmodel = list(~cds(key = "hn", formula = ~1)), method = "ds", truncation = 125)
+ddf.analyses <- make.ddf.analysis.list(dsmodel = list(~cds(key = "hn", formula = ~1)), 
+                                       method = "ds", 
+                                       truncation = 125)
 ```
 
 ###2.2.5.1 Model Selection
-In the real world we do not know the shape of the detection function and must use model selection criteria to decide between models of different shape.  Here we use the AIC to decide between a hazard rate model and a half normal model:
+In the real world we do not know the shape of the detection function and must use model selection criteria to decide between models of different shape.  Here we use the AIC to decide between a hazard rate model and a half normal model but the BIC can also be used:
 ```{r analyses2}
-ddf.analyses <- make.ddf.analysis.list(dsmodel = list(~cds(key = "hn", formula = ~1), ~cds(key = "hr", formula = ~1)), method = "ds", criteria = "AIC", truncation = 125)
+ddf.analyses.aic <- make.ddf.analysis.list(dsmodel = list(~cds(key = "hn", formula = ~1), ~cds(key = "hr", formula = ~1)), 
+                                           method = "ds", 
+                                           criteria = "AIC", 
+                                           truncation = 125)
 ```
 
 ###2.2.6 Simulations
 Now that all of the components of the simulation have been made the simulation is made by putting them all together:
 ```{r make.sim}
-simtrunc125 <- make.simulation(reps = 999, single.transect.set = FALSE, region.obj = region, design.obj = parallel.design, population.description.obj = pop.description, detectability.obj = detect, ddf.analyses.list = ddf.analyses)
+simtrunc125 <- make.simulation(reps = 999, 
+                               single.transect.set = FALSE, 
+                               region.obj = region, 
+                               design.obj = parallel.design, 
+                               population.description.obj = pop.description, 
+                               detectability.obj = detect, 
+                               ddf.analyses.list = ddf.analyses)
 ```
 
 As simulations can take a long time to run it is often worth checking that the setup is right first.
 The first thing that should be checked is that a population is being correctly generated within the region:
-```{r gen.pop, fig.cap="Figure 5", fig.align="center", fig.width = 7, fig.height = 5}
+```{r gen.pop, fig.cap="Figure 5 - A plot of the study region with an example population displayed", fig.align="center", fig.width = 7, fig.height = 3}
 pop <- generate.population(simtrunc125)
 plot(region)
 plot(pop)
 ```
 
 Next it should be checked that the transects have been placed correctly:
-```{r gen.transects, fig.cap="Figure 6", fig.align="center", fig.width = 7, fig.height = 5}
+```{r gen.transects, fig.cap="Figure 6 - A plot of the study region with an example set of transect lines overlayed", fig.align="center", fig.width = 7, fig.height = 3}
 transects <- generate.transects(simtrunc125)
 plot(region)
 plot(transects, col = 4, lwd = 2)
 ```
 
 The observation process can be quickly simulated once to ensure that it is working correctly.  The distance from each object to the transects will be used to calculate the probability of the object being detected.  Then Bernoulli trials with these probabilities of success are carried  out for each of the objects.  The observed objects are marked as blue points, the unobserved objects are the red points:
-```{r survey, fig.cap="Figure 7", fig.align="center", fig.width = 7, fig.height = 5}
+```{r survey, fig.cap="Figure 7 - A plot of the study region showing a completed observation process.  The red dots are the unobserved objects while the blue dots are the observed objects", fig.align="center", fig.width = 7, fig.height = 3}
 eg.survey <- create.survey.results(simtrunc125)
 plot(eg.survey)
 ```
 
 This distance data can also be viewed in a histogram to get an idea of what the fitted detection function will look like:
-```{r dist.data, fig.cap="Figure 8", fig.align="center", fig.width = 5, fig.height = 5}
+```{r dist.data, fig.cap="Figure 8 - A histogram showing the distances from the transects at which objects were observed", fig.align="center", fig.width = 5, fig.height = 5}
 dist.data <- get.distance.data(eg.survey)
 hist(dist.data$distance, xlab = "Distance (m)", main = "Distance Data")
 ```
@@ -128,20 +152,33 @@ simtrunc125 <- run(simtrunc125)
 ```
 
 More simulations are then needed for the investigation; each using different truncation distances for the analysis.  After changing a part of the simulation it is necessary to make the simulation again to update it:
-```{r}
-#still need to comment this
-```
-```{r sims, cache=TRUE, warning=FALSE, results='hide'}
+
+```{r sims, eval=FALSE}
 Trun.dists <- c(1.25*sigma, 1.5*sigma, 1.75*sigma, 2*sigma, 2.5*sigma, 3*sigma)
 sims <- vector("list", length(Trun.dists))
 sims[[1]]<-simtrunc125
 for(i in 2:6){
   set.seed(4321)
-  ddf.analyses <- make.ddf.analysis.list(dsmodel = list(~cds(key = "hn", formula = ~1)), method = "ds", criteria = "AIC", truncation = Trun.dists[[i]])
-  sim <- make.simulation(reps = 999, single.transect.set = FALSE, region.obj = region, design.obj = parallel.design, population.description.obj = pop.description, detectability.obj = detect, ddf.analyses.list = ddf.analyses)
-  sim  <- run(sim, save.data=TRUE, data.path = eval(paste("Results/trunc",Trun.dists[i], sep = "")))
+  ddf.analyses <- make.ddf.analysis.list(dsmodel = list(~cds(key = "hn", formula = ~1)), 
+                                         method = "ds", truncation = Trun.dists[[i]])
+  sim <- make.simulation(reps = 999, 
+                         single.transect.set = FALSE, 
+                         region.obj = region, 
+                         design.obj = parallel.design, 
+                         population.description.obj = pop.description, 
+                         detectability.obj = detect, 
+                         ddf.analyses.list = ddf.analyses)
+  sim  <- run(sim)
   sims[[i]]<-sim
 }
+save(sims, file = "~/GitHub/DSsim/DSsim/data/truncationResults.rda")
+```
+
+Since these simulations take a long time to run we do not run them here.  However we have included the results of these simulations in the package so we will load them so that we can interperet them in this vignette.  We have also loaded some results from simulations where DSsim was allowed to choose between a half normal and a hazard rate key for the detection function using both the AIC and the BIC criteria:
+```{r}
+load(file = "~/GitHub/DSsim/DSsim/data/truncationResults.rda")
+load(file = "~/GitHub/DSsim/DSsim/data/truncationResultsAIC.rda")
+load(file = "~/GitHub/DSsim/DSsim/data/truncationResultsBIC.rda")
 ```
 
 ##3. Extracting the Results
@@ -165,8 +202,11 @@ extract.info <- function(simulation, info.name){
          n = simulation@results$individuals$summary[1,4,1000],
          estimated.abundance = simulation@results$individuals$N[1,1,1000],
          mean.se = simulation@results$individuals$N[1,2,1000],
-         percentage.bias = 100*((simulation@results$individuals$N[1,1,1000] - simulation@population.description@N)/simulation@population.description@N),
-         RMSE = sqrt(sum((simulation@results$individuals$N[1,1,1:simulation@reps]-simulation@population.description@N)**2)/simulation@reps))
+         percentage.bias = 100*((simulation@results$individuals$N[1,1,1000] 
+                                 - simulation@population.description@N)
+                                /simulation@population.description@N),
+         RMSE = sqrt(sum((simulation@results$individuals$N[1,1,1:simulation@reps] 
+                          - simulation@population.description@N)**2, na.rm = TRUE)/simulation@reps))
 }
 ```
 
@@ -180,37 +220,40 @@ library(knitr)
 Using the function _lapply_ the results from all of the simulations in  the list can be quickly extracted using the functions defined in Section 4:
 ```{r}
 Trunc.Dist <- lapply(sims, extract.info, info.name = "truncation.distance")
-
-n <- lapply(sims, extract.info, info.name = "n")
-
-Est.Abund <- lapply(sims, extract.info, info.name = "estimated.abundance")
-
-mean.se <- lapply(sims, extract.info, info.name = "mean.se")
-
-Perc.Bias <- lapply(sims, extract.info, info.name = "percentage.bias")
-
-RMSE = lapply(sims, extract.info, info.name = "RMSE")
+n          <- lapply(sims, extract.info, info.name = "n")
+Est.Abund  <- lapply(sims, extract.info, info.name = "estimated.abundance")
+mean.se    <- lapply(sims, extract.info, info.name = "mean.se")
+Perc.Bias  <- lapply(sims, extract.info, info.name = "percentage.bias")
+RMSE       <- lapply(sims, extract.info, info.name = "RMSE")
 ```
 
 Then the results must be combined into a data frame to be tabled:
 ```{r}
-simulation.data = cbind(Trunc.Dist = Trunc.Dist, n=n, Est.Abund = Est.Abund, mean.se = mean.se, Perc.Bias = Perc.Bias, RMSE=RMSE)
+simulation.data = cbind(Trunc.Dist = Trunc.Dist, 
+                        n=n, 
+                        Est.Abund = Est.Abund, 
+                        mean.se = mean.se, 
+                        Perc.Bias = Perc.Bias, 
+                        RMSE=RMSE)
 ```
 
 
-Finally the results can be tabled.  The align argument has been used  to centre the results in each column and the digits argument has been used to specify the number of decimal places in each column. Both of these arguments should be lists that are one longer than the number of columns in the data frame as the first entry describes the row names column.  The column names have then been set as Latex labels before the table was printed, then when the table was printed the _sanitize.colnames.function_ was set to identity to ensure that the latex labels were output correctly.  When printing the table the _include.rownames_ argment has been set as FALSE so that we only print the data from the data frame.
-```{r results="asis", fig.cap = "Table 1"}
-table<-kable(simulation.data, digits = 2, col.names = c("$Trunc Dist$", "$n$", "$Mean \\hat{N}$", "$SE$", "$\\% Bias$", "$RMSE$"), align = c('c', 'c', 'c', 'c', 'c', 'c', 'c') )
+Finally the results can be tabled.  The align argument has been used  to centre the results in each column and the digits argument has been used to specify the number of decimal places in each column. 
+```{r results="asis", fig.cap = "Table 1 - The results from the simulations"}
+table<-kable(simulation.data, 
+             digits = 2, 
+             col.names = c("$Trunc Dist$", "$n$", "$Mean \\hat{N}$", "$SE$", "$\\% Bias$", "$RMSE$"),
+             align = c('c', 'c', 'c', 'c', 'c', 'c', 'c') )
 
-print(table, floating=TRUE, include.rownames = FALSE, NA.string="NA", caption = "Simulation Results", caption.placement="top", table.placement="!h", latex.environments="center", type = "html")
+print(table, floating=TRUE, NA.string="NA", caption = "Simulation Results", caption.placement="top", table.placement="!h", latex.environments="center", type = "html")
 ```
 
 For distance sampling surveys it is usually recommended to have a minimum of 60-80 detections[@Buckland:2001vm] however even at this small number of observations $\% Bias$ is small.  Increasing the truncation distance does seem to have increased this bias slightly however there is clearly a trend in RMSE which shows that the increase in precision, which can be seen in the standard error, greatly outweighs this effect:
-```{r fig.cap = "Figure 9", fig.align="center", fig.width = 5, fig.height = 5}
+```{r fig.cap = "Figure 9 - There is a clear downwards trend in RMSE as less data is truncated", fig.align="center", fig.width = 5, fig.height = 5}
 plot(Trunc.Dist, RMSE)
 ```
 
-```{r fig.cap = "Figure 10", fig.align="center", fig.width = 5, fig.height = 5}
+```{r fig.cap = "Figure 10 - The red line indicates the true size of the population while the blue dots are the means of the estimates.  There is no clear trend in the accuracy of the estimate however it is easy to see that the precision improves considerably when less data is truncated", fig.align="center", fig.width = 5, fig.height = 5}
 library(ggplot2)
 data = data.frame(Truncation = factor(rep(c(125, 150, 175, 200, 250, 300), each=999)), Estimates = c(sims[[1]]@results$individuals$N[1,1,1:999], sims[[2]]@results$individuals$N[1,1,1:999], sims[[3]]@results$individuals$N[1,1,1:999], sims[[4]]@results$individuals$N[1,1,1:999], sims[[5]]@results$individuals$N[1,1,1:999], sims[[6]]@results$individuals$N[1,1,1:999]))
 
