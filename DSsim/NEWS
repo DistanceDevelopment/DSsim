@@ -1,3 +1,13 @@
+DSsim 1.0.7
+-----------
+
+DSsim 1.0.6
+-----------
+
+Bug Fixes
+
+  * Fixed RMSE bug with NAs
+
 DSsim 1.0.5
 -----------
 
