@@ -1,6 +1,6 @@
 ---
 title: "DSsim - Truncation Distances"
-author: "Kieran Richards"
+author: "Kieran Richards, Laura Marshall"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 bibliography: refs.bib
@@ -12,19 +12,19 @@ vignette: >
 #Using DSsim to investigate Truncation Distances
 
 ##1. Introduction
-Distance Sampling is a process in which an area is surveyed so that the size of a population within an area can be estimated.  Distances from a set of transects to observed objects are recorded and these data are used to model a detection function.  From this the population in the whole area can be estimated.  
+Distance Sampling is a process in which a study area is surveyed so that the size of the population within it can be estimated. It can be thought of as an extension to plot sampling. However, while plot sampling assumes that all animals within the plots are detected, distance sampling relaxes this assumption. By fitting a detection function to the recorded distances from the objects to a transect we can estimate how many objects were missed. In order to simulate distance surveys the user must make some assuptions about the population of interest and the detection process giving rise to the observed distances. Simulations can be repeated over a range of assumptions so that the user can be confident that their chosen design will perform well despite any uncertainty.
 
 ###1.1 Introduction to DSsim
 
-DSsim is a tool which simulates this process.  DSsim splits the process into three stages.  First it generates a population.  DSsim then simulates the distance sampling survey.  This is done using a detection function and a survey design.  For the final stage DSsim analyses the data from the survey.
+DSsim takes information from the user on the study region, population and detection process and uses it to generate distance sampling data. DSsim can then be asked to fit detections functions to this data and produce estimates of abundance and the associated uncertainty.  DSsim splits this process into three stages.  First it generates a population.  DSsim then simulates the distance sampling survey.  This is done using a detection function and a survey design.  For the final stage DSsim analyses the data from the survey.
 
-![Figure 1 - A simulation is composed of several other objects including the region and a survey design.  If you wish to change one of these components you will also have to remake the simulation afterwards to update the simulation.](SimulationDiagram.png)
+![Figure 1 - A simulation is composed of several other objects including the region and a survey design.  If you wish to change one of these components you will also have to remake the simulation afterwards to update the simulation.](images/SimulationDiagram.png)
 
 When fitting a detection function the data is often truncated at some distance from the transect.  The number of detections will decrease at larger distances from the transect and observations can lead to poorer precision in the estimate of abundance by distorting the shape of the detection function.  It has been suggeste to truncate the data where the estimated probability of detection is 0.15 [@Buckland:2001vm] however this has been a topic of much discussion.
 
 This vignette explores how truncation distances affect the accuracy and precision of the estimates of a population size.  This will be used to provide examples of how to use DSsim to make and run simulations as well as how to analyse the results.  Simulations will be run with truncation distances at different multiples of $\sigma$ as shown in Figure 2.  For a half normal detection function the suggested truncation distance is approximately 2$\sigma$ and for a hazard rate detection function with shape parameter 4 this is approximately 1.5$\sigma$. 
 
-![Figure 2 - A half normal and hazard rate distributions with vertical lines showing the truncation distances used in this vignette](Rplots.png)
+![Figure 2 - A half normal and hazard rate distributions with vertical lines showing the truncation distances used in this vignette](images/Rplots.png)
 
 The rest of this vignette will guide you through the steps to create and run a series of simulations to investigate the effects of varying truncation distance.  For the advanced reader we also include sections describing how to save the data from a simulation in order to speed up subsequent simulations using the same population and on how to include model selection in the investigation.  In the results section we describe how truncation distance affects the accuracy and precision of the distance sampling abundance estimates.  Finally we conclude by discussing the implications of our findings for carrying out distance sampling surveys in practice.
 
@@ -146,7 +146,7 @@ hist(dist.data$distance, xlab = "Distance (m)", main = "Distance Data")
 ```
 
 If the setup has been done right the simulation can now be run but first we will reset the seed so that subsequent simulations use the same population:
-```{r first.sim, cache = TRUE, warning=FALSE, message=FALSE}
+```{r first.sim, warning=FALSE, message=FALSE, eval=FALSE}
 set.seed(4321)
 simtrunc125 <- run(simtrunc125)
 ```
@@ -349,16 +349,16 @@ for(i in 2:6){
 }
 save(sims, file = "~/GitHub/DSsim/DSsim/data/truncationResultsBIChrkey.rda")
 ```
-Since these simulations take a long time to run we do not run them here.  However we have included the results of these simulations in the package so we will load them so that we can interperet them in this vignette.  We have also loaded some results from simulations where DSsim was allowed to choose between a half normal and a hazard rate key for the detection function using both the AIC and the BIC criteria as well as some where the true detection function had a hazard rate key:
+Since these simulations take a long time to run we have run them in advance and saved the results as data in the DSsim package.  Each of these objects is a list of simulations with varying truncation distance.  We can use the following code to load these results:
 ```{r}
-load(file = "~/GitHub/DSsim/DSsim/data/truncationResults.rda")
-load(file = "~/GitHub/DSsim/DSsim/data/truncationResultsAIC.rda")
-load(file = "~/GitHub/DSsim/DSsim/data/truncationResultsBIC.rda")
-load(file = "~/GitHub/DSsim/DSsim/data/truncationResultsAIChrkey.rda")
-load(file = "~/GitHub/DSsim/DSsim/data/truncationResultsBIChrkey.rda")
+data("truncationResults")
+data("truncationResultsAIC")
+data("truncationResultsBIC")
+data("truncationResultsAIChrkey")
+data("truncationResultsBIChrkey")
 ```
 
-##3. Extracting the Results
+##3. Extracting Result Statistics
 
 The results of simulations can be viewed by calling *summary* on the simulation object:
 ```{r summary, eval=FALSE}
@@ -366,9 +366,7 @@ The results of simulations can be viewed by calling *summary* on the simulation 
 summary(sims[[1]])
 ```
 
-This investigation involves running multiple simulations so instead we will write some functions to extract information from the simulation objects.  It is not necessary to understand how these functions work, details are provided here for interested readers however the reader could just run the code and skip to the next section if they prefer.
-
-We use a switch statement to allow the user to specify the required information and then return the value from the appropriate slot in the simulation object:
+As this investigation involved running many simulations we provide a function to allow the automated extraction of results.  It is not necessary to understand how these functions work, details are provided here for interested readers however the reader could just run the code and skip to the next section if they prefer.
 
 ```{r}
 extract.info <- function(simulation, info.name){
@@ -458,7 +456,7 @@ simulation.modelselect.data = cbind(Trunc.Dist = Trunc.Dist,
                                     RMSE=RMSE)
 ```
 
-```{r results="asis", fig.cap = "Table 2 - The results from the model selection simulations"}
+```{r results="asis", fig.cap = "Table 2 - The results from the model selection simulations", echo = FALSE}
 table<-kable(simulation.data, 
              digits = 2, 
              col.names = c("$Trunc Dist$", "$n$", "$Mean \\hat{N}$", "$SE$", "$\\% Bias$", "$RMSE$"),
@@ -500,7 +498,7 @@ simulation.modelselect.hr.data = cbind(Trunc.Dist = Trunc.Dist,
                                        RMSE=RMSE)
 ```
 
-```{r results="asis", fig.cap = "Table 3 - The results from the model selection simulations when the true detection function has a hazard rate key"}
+```{r results="asis", fig.cap = "Table 3 - The results from the model selection simulations when the true detection function has a hazard rate key", echo = FALSE}
 table<-kable(simulation.modelselect.hr.data, 
              digits = 2, 
              col.names = c("$Trunc Dist$", "$n$", "$Mean \\hat{N}$", "$SE$", "$\\% Bias$", "$RMSE$"),
@@ -514,19 +512,19 @@ For distance sampling surveys it is usually recommended to have a minimum of 60-
 plot(Trunc.Dist[1:6], RMSE.orig)
 ```
 
-```{r fig.cap = "Figure 9b - There is a clear downwards trend in RMSE as less data is truncated", fig.align="center", fig.width = 5, fig.height = 5}
+```{r fig.cap = "Figure 9b - There is a clear downwards trend in RMSE as less data is truncated", fig.align="center", fig.width = 5, fig.height = 5, echo=FALSE}
 plot(Trunc.Dist[1:6], RMSE.aic)
 ```
 
-```{r fig.cap = "Figure 9c - There is a clear downwards trend in RMSE as less data is truncated", fig.align="center", fig.width = 5, fig.height = 5}
+```{r fig.cap = "Figure 9c - There is a clear downwards trend in RMSE as less data is truncated", fig.align="center", fig.width = 5, fig.height = 5, echo=FALSE}
 plot(Trunc.Dist[1:6], RMSE.bic)
 ```
 
-```{r fig.cap = "Figure 9d - There is a clear downwards trend in RMSE as less data is truncated", fig.align="center", fig.width = 5, fig.height = 5}
+```{r fig.cap = "Figure 9d - There is a clear downwards trend in RMSE as less data is truncated", fig.align="center", fig.width = 5, fig.height = 5, echo=FALSE}
 plot(Trunc.Dist[1:6], RMSE.hr.aic)
 ```
 
-```{r fig.cap = "Figure 9e - There is a clear downwards trend in RMSE as less data is truncated", fig.align="center", fig.width = 5, fig.height = 5}
+```{r fig.cap = "Figure 9e - There is a clear downwards trend in RMSE as less data is truncated", fig.align="center", fig.width = 5, fig.height = 5, echo=FALSE}
 plot(Trunc.Dist[1:6], RMSE.hr.bic)
 ```
 
@@ -537,28 +535,28 @@ data = data.frame(Truncation = factor(rep(c(125, 150, 175, 200, 250, 300), each=
 ggplot(data, aes(x = Truncation, y = Estimates)) + geom_boxplot() + geom_hline(yintercept = 250, color = "red", size = 0.5) + stat_summary(fun.y = mean, geom="point", size = 2, color = "blue")
 ```
 
-```{r fig.cap = "Figure 11", fig.align="center", fig.width = 5, fig.height = 5}
+```{r fig.cap = "Figure 11", fig.align="center", fig.width = 5, fig.height = 5, echo=FALSE}
 library(ggplot2)
 data = data.frame(Truncation = factor(rep(c(125, 150, 175, 200, 250, 300), each=999)), Estimates = c(sims.aic[[1]]@results$individuals$N[1,1,1:999], sims.aic[[2]]@results$individuals$N[1,1,1:999], sims.aic[[3]]@results$individuals$N[1,1,1:999], sims.aic[[4]]@results$individuals$N[1,1,1:999], sims.aic[[5]]@results$individuals$N[1,1,1:999], sims.aic[[6]]@results$individuals$N[1,1,1:999]))
 
 ggplot(data, aes(x = Truncation, y = Estimates)) + geom_boxplot() + geom_hline(yintercept = 250, color = "red", size = 0.5) + stat_summary(fun.y = mean, geom="point", size = 2, color = "blue")
 ```
 
-```{r fig.cap = "Figure 12", fig.align="center", fig.width = 5, fig.height = 5}
+```{r fig.cap = "Figure 12", fig.align="center", fig.width = 5, fig.height = 5, echo=FALSE}
 library(ggplot2)
 data = data.frame(Truncation = factor(rep(c(125, 150, 175, 200, 250, 300), each=999)), Estimates = c(sims.bic[[1]]@results$individuals$N[1,1,1:999], sims.bic[[2]]@results$individuals$N[1,1,1:999], sims.bic[[3]]@results$individuals$N[1,1,1:999], sims.bic[[4]]@results$individuals$N[1,1,1:999], sims.bic[[5]]@results$individuals$N[1,1,1:999], sims.bic[[6]]@results$individuals$N[1,1,1:999]))
 
 ggplot(data, aes(x = Truncation, y = Estimates)) + geom_boxplot() + geom_hline(yintercept = 250, color = "red", size = 0.5) + stat_summary(fun.y = mean, geom="point", size = 2, color = "blue")
 ```
 
-```{r fig.cap = "Figure 13", fig.align="center", fig.width = 5, fig.height = 5}
+```{r fig.cap = "Figure 13", fig.align="center", fig.width = 5, fig.height = 5, echo=FALSE}
 library(ggplot2)
 data = data.frame(Truncation = factor(rep(c(125, 150, 175, 200, 250, 300), each=999)), Estimates = c(sims.hr.aic[[1]]@results$individuals$N[1,1,1:999], sims.hr.aic[[2]]@results$individuals$N[1,1,1:999], sims.hr.aic[[3]]@results$individuals$N[1,1,1:999], sims.hr.aic[[4]]@results$individuals$N[1,1,1:999], sims.hr.aic[[5]]@results$individuals$N[1,1,1:999], sims.hr.aic[[6]]@results$individuals$N[1,1,1:999]))
 
 ggplot(data, aes(x = Truncation, y = Estimates)) + geom_boxplot() + geom_hline(yintercept = 250, color = "red", size = 0.5) + stat_summary(fun.y = mean, geom="point", size = 2, color = "blue")
 ```
 
-```{r fig.cap = "Figure 14", fig.align="center", fig.width = 5, fig.height = 5}
+```{r fig.cap = "Figure 14", fig.align="center", fig.width = 5, fig.height = 5, echo=FALSE}
 library(ggplot2)
 data = data.frame(Truncation = factor(rep(c(125, 150, 175, 200, 250, 300), each=999)), Estimates = c(sims.hr.bic[[1]]@results$individuals$N[1,1,1:999], sims.hr.bic[[2]]@results$individuals$N[1,1,1:999], sims.hr.bic[[3]]@results$individuals$N[1,1,1:999], sims.hr.bic[[4]]@results$individuals$N[1,1,1:999], sims.hr.bic[[5]]@results$individuals$N[1,1,1:999], sims.hr.bic[[6]]@results$individuals$N[1,1,1:999]))
 
@@ -569,3 +567,6 @@ ggplot(data, aes(x = Truncation, y = Estimates)) + geom_boxplot() + geom_hline(y
 Changing the truncation distance did not lead to big differences in the % Bias however there was a clear trend in precision.  Since each simulation was successfully run the same number of times we could use the RMSE as a meaningful comparison to combine the two and found that truncating less data was better by this metric.  However, differences were small even at this small sample size and so truncation distance should not be a big concern at the analysis stage.  It should also be noted that the observers for the survey should not be given a truncation distance because if they see something just beyond this distance they may be tempted to record it at the truncation distance which will lead to heaping at this distance. 
 
 ##6. References
+
+
+
