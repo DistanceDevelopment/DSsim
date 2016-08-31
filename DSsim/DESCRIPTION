@@ -14,8 +14,7 @@ Suggests:
     rmarkdown
 Type: Package
 Title: Distance Sampling Simulations
-Version: 1.0.6
-Date: 2016-06-20
+Version: 1.0.7
 LazyLoad: yes
 Author: Laura Marshall <lhm@st-and.ac.uk>
 Maintainer: Laura Marshall <lhm@st-and.ac.uk>
