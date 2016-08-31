@@ -1,5 +1,10 @@
-DSsim 1.0.7
+DSsim 1.0.6-2
 -----------
+
+Bug Fixes
+
+  * Fixed backwards compatability bug when no analysis strata exists in 
+  analysis objects
 
 DSsim 1.0.6
 -----------

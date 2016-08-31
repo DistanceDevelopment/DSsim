@@ -158,7 +158,10 @@ setMethod(
     strata.names <- object@region@strata.name
     strata.order <- NULL
     #Deal with any grouping of strata
-    analysis.strata <- object@ddf.analyses[[1]]@analysis.strata
+    analysis.strata <- try(object@ddf.analyses[[1]]@analysis.strata, silent = TRUE)
+    if(class(analysis.strata) == "try-error"){
+      analysis.strata <- data.frame()
+    }
     if(nrow(analysis.strata) > 0){
       #get strata names
       sub.strata.names <- strata.names
