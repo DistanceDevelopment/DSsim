@@ -119,6 +119,14 @@ make.design <- function(transect.type, design.details, region.obj, design.axis =
           design <- new(Class = "LT.Systematic.Design", region = region, design.axis = design.axis, spacing = spacing, plus.sampling = plus.sampling, path = path)
         }
       }
+      if(design.details[1] %in% c("Segmented", "segmented")){
+        if(design.details[2] %in% c("Grid", "grid")){
+          design <- new(Class = "LT.SegmentedGrid.Design", region = region, design.axis = design.axis, spacing = spacing, plus.sampling = plus.sampling, path = path)
+        }
+        if(design.details[2] %in% c("Track", "track")){
+          design <- new(Class = "LT.SegmentedTrack.Design", region = region, design.axis = design.axis, spacing = spacing, plus.sampling = plus.sampling, path = path)
+        }
+      }
     }
   }else if(transect.type %in% c("Point", "point", "Point Transect", "point transect")){
     if(length(design.details) > 1){
