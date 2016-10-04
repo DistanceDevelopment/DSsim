@@ -1,3 +1,18 @@
+DSsim 1.0.7
+-----------
+
+New Features
+
+  * Implements segmented track and segmented grid designs
+
+
+DSsim 1.0.6
+-----------
+
+Bug Fixes
+
+  * Fixed RMSE bug
+
 DSsim 1.0.5
 -----------
 
