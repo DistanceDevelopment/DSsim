@@ -11,7 +11,7 @@ Suggests:
     parallel
 Type: Package
 Title: Distance Sampling Simulations
-Version: 1.0.7
+Version: 1.0.8
 LazyLoad: yes
 Author: Laura Marshall <lhm@st-and.ac.uk>
 Maintainer: Laura Marshall <lhm@st-and.ac.uk>
@@ -76,6 +76,7 @@ Collate:
     'calc.area.R'
     'calc.poss.detect.dists.lines.R'
     'calc.poss.detect.dists.points.R'
+    'check.LinkID.order.R'
     'check.intersection.R'
     'check.shapefile.R'
     'coords.from.shapefile.R'
