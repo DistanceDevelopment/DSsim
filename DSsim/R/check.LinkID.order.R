@@ -1,6 +1,7 @@
 check.LinkID.order <- function(shapefile){
-  #Checks the order of the LinkID attribute
-  #Returns
+  # Checks the order of the LinkID attribute
+  # Returns NULL LinkID doesn't exist, or if the order is correct
+  # Returns the new order if there is a problem
   att.table <- shapefile$dbf$dbf
   if (is.null(att.table$LinkID)){
     #If there is no LinkID don't need to worry

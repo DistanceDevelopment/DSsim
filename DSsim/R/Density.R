@@ -31,12 +31,12 @@ setClass("Density", representation(region.name = "character",
 setMethod(
   f="initialize",
   signature="Density",
-  definition=function(.Object, region, strata.name = character(0), density.surface = list(), x.space, y.space, constant = NULL, density.gam = NULL, jit = 1){
+  definition=function(.Object, region, strata.name = character(0), density.surface = list(), x.space, y.space, constant = NULL, density.gam = NULL, buffer = numeric(0)){
     #Input pre-processing
     if(length(density.surface) == 0){
       if(!is.null(constant)){
         #Create density surface with constant density within strata
-        density.surface <- get.surface.constant(region, x.space, y.space, constant, jit)
+        density.surface <- get.surface.constant(region, x.space, y.space, constant, buffer)
       }else if(!is.null(density.gam)){
         #Create density surface from gam
         density.surface <- get.surface.gam(region, x.space, y.space, gam.model = density.gam)

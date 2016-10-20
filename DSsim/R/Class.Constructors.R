@@ -161,6 +161,7 @@ make.design <- function(transect.type, design.details, region.obj, design.axis =
 #'  data.frame for each strata.
 #' @param x.space the intervals in the grid in the x direction
 #' @param y.space the intervals in the grid in the y direction
+#' @param buffer the width of the buffer region for generating the density grid. If not supplied DSsim will use the maximum value provided for the x.space or y.space.
 #' @param constant a value describing a constant density across the surface.
 #' @param density.gam \code{gam} object created using \code{mgcv}
 #' @param dsm not currently implemented
@@ -190,13 +191,13 @@ make.design <- function(transect.type, design.details, region.obj, design.axis =
 #' plot(region, add = TRUE)
 #' 
 #' }
-make.density <- function(region.obj, density.surface = list(), x.space, y.space, constant = numeric(0), density.gam = NULL, dsm = NULL, formula = NULL){
+make.density <- function(region.obj, density.surface = list(), x.space, y.space, buffer = numeric(0), constant = numeric(0), density.gam = NULL, dsm = NULL, formula = NULL){
   if(!is.null(constant)){
     if(length(region.obj@strata.name) > 0 & length(constant) != length(region.obj@strata.name)){
       stop("The length of the constant vector does not correspond to the number of strata", call. = FALSE)
     }
   }
-  density <- new(Class = "Density", region = region.obj, strata.name = region.obj@strata.name, density.surface = density.surface, x.space = x.space, y.space = y.space, constant = constant, density.gam = density.gam, jit = 1)
+  density <- new(Class = "Density", region = region.obj, strata.name = region.obj@strata.name, density.surface = density.surface, x.space = x.space, y.space = y.space, constant = constant, density.gam = density.gam, buffer = buffer)
  return(density)
 }
 
