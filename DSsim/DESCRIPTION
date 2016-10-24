@@ -1,12 +1,14 @@
 Package: DSsim
 Depends:
+    mrds,
+    methods
+Imports:
     graphics,
     splancs,
-    mrds,
     mgcv,
     shapefiles,
-    methods,
-    rgeos
+    rgeos, 
+    sp
 Suggests:
     testthat,
     parallel

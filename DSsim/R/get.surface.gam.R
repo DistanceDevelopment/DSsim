@@ -1,3 +1,4 @@
+#' @importFrom sp Polygon Polygons SpatialPolygons
 get.surface.gam <- function(region, x.space, y.space, gam.model){
   
   # Check the value of the buffer
@@ -34,7 +35,7 @@ get.surface.gam <- function(region, x.space, y.space, gam.model){
     polys.rgeos <- Polygons(temp.list.coord, ID = 1)
     region.coords <- SpatialPolygons(list(polys.rgeos))
     # Add positive buffer region
-    buffered.coords[[strat]] <- gBuffer(region.coords, width = x.space)
+    buffered.coords[[strat]] <- rgeos::gBuffer(region.coords, width = x.space)
     #Just extract the coordinates
     buffered.coords[[strat]] <- extract.spat.poly.coords(buffered.coords[[strat]])
     # Now for the gaps
@@ -47,7 +48,7 @@ get.surface.gam <- function(region, x.space, y.space, gam.model){
       polys.rgeos <- Polygons(temp.list.gap, ID = 1)
       region.gaps <- SpatialPolygons(list(polys.rgeos))
       # Negative buffer region for gaps
-      buffered.gaps[[strat]] <- gBuffer(region.gaps, width = -1*x.space)
+      buffered.gaps[[strat]] <- rgeos::gBuffer(region.gaps, width = -1*x.space)
       # Just extract the coordinates
       buffered.gaps[[strat]] <- extract.spat.poly.coords(buffered.gaps[[strat]])
     }else{
@@ -62,7 +63,7 @@ get.surface.gam <- function(region, x.space, y.space, gam.model){
     gridpoints <- temp.coords[to.keep,]
     to.discard <- in.polygons(buffered.gaps[[strat]], pts = gridpoints, boundary = TRUE) 
     gridpoints <- gridpoints[!to.discard,]
-    predicted.values <- predict.gam(gam.model, newdata = gridpoints, type = "response")
+    predicted.values <- mgcv::predict.gam(gam.model, newdata = gridpoints, type = "response")
     gridpoints$density <- predicted.values
     density.surfaces[[strat]] <- gridpoints
   }  

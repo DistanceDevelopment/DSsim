@@ -26,7 +26,7 @@ setClass(Class = "DDF.Data", representation(ddf.dat = "data.frame", "VIRTUAL"))
 #' @param ... other general plot parameters 
 #' @rdname plot.DDF.Data-methods
 #' @importFrom graphics points
-#' @exportMethod 
+#' @exportMethod plot 
 setMethod(
   f="plot",
   signature="DDF.Data",

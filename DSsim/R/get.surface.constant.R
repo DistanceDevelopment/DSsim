@@ -1,4 +1,3 @@
-#' @importFrom rgeos gBuffer
 #' @importFrom sp Polygon Polygons SpatialPolygons
 get.surface.constant <- function(region, x.space, y.space, constant, buffer){ 
   
@@ -38,7 +37,7 @@ get.surface.constant <- function(region, x.space, y.space, constant, buffer){
     polys.rgeos <- Polygons(temp.list.coord, ID = 1)
     region.coords <- SpatialPolygons(list(polys.rgeos))
     # Add positive buffer region
-    buffered.coords[[strat]] <- gBuffer(region.coords, width = x.space)
+    buffered.coords[[strat]] <- rgeos::gBuffer(region.coords, width = x.space)
     #Just extract the coordinates
     buffered.coords[[strat]] <- extract.spat.poly.coords(buffered.coords[[strat]])
     # Now for the gaps
@@ -51,7 +50,7 @@ get.surface.constant <- function(region, x.space, y.space, constant, buffer){
       polys.rgeos <- Polygons(temp.list.gap, ID = 1)
       region.gaps <- SpatialPolygons(list(polys.rgeos))
       # Negative buffer region for gaps
-      buffered.gaps[[strat]] <- gBuffer(region.gaps, width = -1*x.space)
+      buffered.gaps[[strat]] <- rgeos::gBuffer(region.gaps, width = -1*x.space)
       # Just extract the coordinates
       buffered.gaps[[strat]] <- extract.spat.poly.coords(buffered.gaps[[strat]])
     }else{
