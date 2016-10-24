@@ -64,7 +64,7 @@ setValidity("Line.Transect",
 #' @param ... other general plot parameters e.g. lwd
 #' @rdname plot.Line.Transect-methods
 #' @importFrom graphics lines
-#' @exportMethod 
+#' @exportMethod plot
 setMethod(
   f="plot",
   signature="Line.Transect",

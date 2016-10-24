@@ -164,7 +164,7 @@ setMethod(
 #' @param ... other general plot parameters 
 #' @rdname plot.Region-methods
 #' @importFrom graphics polygon plot axTicks axis
-#' @exportMethod 
+#' @exportMethod plot
 setMethod(
   f="plot",
   signature="Region",

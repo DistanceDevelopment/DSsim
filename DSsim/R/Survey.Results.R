@@ -77,19 +77,16 @@ setMethod(
 #' @param y not used
 #' @param ... other general plot parameters 
 #' @rdname plot.Survey.Results-methods
-#' @exportMethod
+#' @exportMethod plot
 setMethod(
   signature="Survey.Results",
   f="plot",
   definition=function(x, y, ...){
-    #plot(x@region, ...)
-    #plot(x@transects, ...)
-    #plot(x@population, ...)
-    #plot(x@ddf.data, ...)
-    #Temporary fix while until the issue is investigated more
-    results <- x
-    temp.func(results)
-    invisible(results)
+    plot(x@region, ...)
+    plot(x@transects, ...)
+    plot(x@population, ...)
+    plot(x@ddf.data, ...)
+    invisible(x)
   }
 )
 
