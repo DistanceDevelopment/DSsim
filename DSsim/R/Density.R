@@ -39,7 +39,7 @@ setMethod(
         density.surface <- get.surface.constant(region, x.space, y.space, constant, buffer)
       }else if(!is.null(density.gam)){
         #Create density surface from gam
-        density.surface <- get.surface.gam(region, x.space, y.space, gam.model = density.gam)
+        density.surface <- get.surface.gam(region, x.space, y.space, density.gam, buffer)
       }else{
         density.surface <- list(data.frame(x = NULL, y = NULL, density = NULL))    
       }

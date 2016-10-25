@@ -1,5 +1,5 @@
 #' @importFrom sp Polygon Polygons SpatialPolygons
-get.surface.gam <- function(region, x.space, y.space, gam.model){
+get.surface.gam <- function(region, x.space, y.space, gam.model, buffer){
   
   # Check the value of the buffer
   if(length(buffer) == 0){
