@@ -191,7 +191,7 @@ make.design <- function(transect.type, design.details, region.obj, design.axis =
 #' plot(region, add = TRUE)
 #' 
 #' }
-make.density <- function(region.obj, density.surface = list(), x.space, y.space, buffer = numeric(0), constant = numeric(0), density.gam = NULL, dsm = NULL, formula = NULL){
+make.density <- function(region.obj, density.surface = list(), x.space, y.space, buffer = numeric(0), constant = NULL, density.gam = NULL, dsm = NULL, formula = NULL){
   if(!is.null(constant)){
     if(length(region.obj@strata.name) > 0 & length(constant) != length(region.obj@strata.name)){
       stop("The length of the constant vector does not correspond to the number of strata", call. = FALSE)
