@@ -8,7 +8,8 @@ Imports:
     mgcv,
     shapefiles,
     rgeos, 
-    sp
+    sp,
+    fields
 Suggests:
     testthat,
     parallel
