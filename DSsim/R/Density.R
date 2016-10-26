@@ -128,6 +128,7 @@ setMethod("add.hotspot","Density",
 #' @rdname plot.Density-methods
 #' @importFrom grDevices heat.colors rainbow terrain.colors topo.colors cm.colors
 #' @importFrom graphics image contour plot points axTicks axis
+#' @importFrom fields quilt.plot
 #' @exportMethod plot  
 setMethod(
   f = "plot",
