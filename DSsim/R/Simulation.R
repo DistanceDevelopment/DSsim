@@ -149,8 +149,9 @@ setMethod(
     #Create function to calculate RMSE
     calc.RMSE <- function(x, reps){ 
       true.x <- x[(reps+1)]
-      x <- x[1:reps]
-      return( sqrt( sum((x-true.x)^2) / reps ))
+      x <- na.omit(x[1:reps])
+      reps.success <- length(x)
+      return( sqrt( sum((x-true.x)^2) / reps.success ))
     }
     #Get number of reps
     reps <- object@reps
