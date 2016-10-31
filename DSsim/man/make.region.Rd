@@ -5,7 +5,8 @@
 \title{Creates a Region object}
 \usage{
 make.region(region.name, strata.name = character(0), units,
-  area = numeric(0), shapefile = NULL, coords = list(), gaps = list())
+  area = numeric(0), shapefile = NULL, coords = list(), gaps = list(),
+  check.LinkID = TRUE)
 }
 \arguments{
 \item{region.name}{the region name}
@@ -22,6 +23,8 @@ calculated for you)}
 \item{coords}{list of polygons describing the areas of interest}
 
 \item{gaps}{list of polygons describing the areas to be excluded}
+
+\item{check.LinkID}{boolean to check the order of the LinkID value in the attribute table. This is important if this shapefile was used in Distance to create the survey shapefiles as Distance would have re-ordered the strata in this way. Failing to re-order the strata will mean that the strata in DSsim will not match the transect strata ID values created by Distance. If you have created your surveys outside Distance you can turn this option off.}
 }
 \value{
 object of class Region

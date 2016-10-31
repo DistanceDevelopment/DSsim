@@ -82,6 +82,7 @@ Collate:
     'calc.area.R'
     'calc.poss.detect.dists.lines.R'
     'calc.poss.detect.dists.points.R'
+    'check.LinkID.order.R'
     'check.intersection.R'
     'check.shapefile.R'
     'coords.from.shapefile.R'

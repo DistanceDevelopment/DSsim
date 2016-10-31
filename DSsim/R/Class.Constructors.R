@@ -29,6 +29,7 @@
 #' @param shapefile a shapefile of the region
 #' @param coords list of polygons describing the areas of interest
 #' @param gaps list of polygons describing the areas to be excluded
+#' @param check.LinkID boolean to check the order of the LinkID value in the attribute table. This is important if this shapefile was used in Distance to create the survey shapefiles as Distance would have re-ordered the strata in this way. Failing to re-order the strata will mean that the strata in DSsim will not match the transect strata ID values created by Distance. If you have created your surveys outside Distance you can turn this option off.
 #' @return object of class Region 
 #' @export
 #' @author Laura Marshall
@@ -43,8 +44,8 @@
 #'  coords = coords, gaps = gaps)
 #' plot(region)
 #' 
-make.region <- function(region.name, strata.name = character(0), units, area = numeric(0), shapefile = NULL, coords = list(), gaps = list()){
-    region <- new(Class="Region", region.name = region.name, strata.name = strata.name, units = units, area = area, shapefile = shapefile, coords = coords, gaps = gaps)
+make.region <- function(region.name, strata.name = character(0), units, area = numeric(0), shapefile = NULL, coords = list(), gaps = list(), check.LinkID = TRUE){
+    region <- new(Class="Region", region.name = region.name, strata.name = strata.name, units = units, area = area, shapefile = shapefile, coords = coords, gaps = gaps, check.LinkID = check.LinkID)
   return(region)
 }
   
