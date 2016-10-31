@@ -76,105 +76,18 @@ setMethod(
 #' @param y not used
 #' @param ... other general plot parameters 
 #' @rdname plot.LT.Survey.Results-methods
-#' @exportMethod
+#' @exportMethod plot
 setMethod(
   signature="LT.Survey.Results",
   f="plot",
   definition=function(x, y, ...){
-    #plot(x@region, ...)
-    #plot(x@transects, ...)
-    #plot(x@population, ...)
-    #plot(x@ddf.data, ...)
-    #Temporary fix while until the issue is investigated more
-    results <- x
-    temp.func(results)
-    invisible(results)
+    plot(x@region, ...)
+    plot(x@transects, ...)
+    plot(x@population, ...)
+    plot(x@ddf.data, ...)
+    invisible(x)
   }
 )
-
-# temporary function
-# 
-# A work around for a generic function issue
-#
-# @param lt.results
-# @export
-temp.func <- function(results){
-  #PLOT REGION
-  x <- results@region
-  add = FALSE
-  plot.units = character(0)
-  region.col = NULL
-  gap.col = NULL
-  plot.list <- function(list.coords, border = 1, fill.col = NULL){
-    #lapply(list.coords, FUN = lines, type = type, col = col)
-    lapply(list.coords, FUN = polygon, border = border, col = fill.col)
-    invisible(list.coords)                          
-  }
-  #Set up plot
-  if(length(plot.units) == 0){
-    plot.units <- x@units
-  }
-  if(!add){      
-    xlabel <- paste("X-coords (",plot.units[1],")", sep = "")
-    ylabel <- paste("Y-coords (",plot.units[1],")", sep = "")
-    plot(c(x@box[["xmin"]], x@box[["xmax"]]), c(x@box[["ymin"]], x@box[["ymax"]]), col = "white", xlab = xlabel, ylab = ylabel, main = "Example Survey", yaxt = "n", xaxt = "n")
-    xticks <- axTicks(1)
-    yticks <- axTicks(2)
-    #Set up axes
-    if(plot.units != x@units){
-      #convert units
-      if(x@units == "m" & plot.units == "km"){ 
-        axis(1, at = xticks, labels = xticks/1000)
-        axis(2, at = yticks, labels = yticks/1000)
-      }else if(x@units == "km" & plot.units == "m"){
-        axis(1, at = xticks, labels = xticks*1000)
-        axis(2, at = yticks, labels = yticks*1000)
-      }else{
-        warning("The requested conversion of units is not currently supported, this option will be ignored.", call. = FALSE, immediate. = TRUE)
-      }
-    }else{
-      #no unit conversion needed
-      axis(1, at = xticks, labels = xticks)
-      axis(2, at = yticks, labels = yticks)
-    }
-  }
-  lapply(x@coords, FUN = plot.list, fill.col = region.col)
-  lapply(x@gaps, FUN = plot.list, fill.col = gap.col)
-  #PLOT TRANSECTS
-  x <- results@transects
-  transect.ID = numeric(0) 
-  col = 1
-  if(class(x) == "Line.Transect"){
-    plot.transect <- function(sampler.info, col){
-      lines(x = c(sampler.info[["start.X"]],sampler.info[["end.X"]]), y = c(sampler.info[["start.Y"]],sampler.info[["end.Y"]]), col = col)
-      invisible(sampler.info)  
-    }
-    sampler.info <- x@sampler.info
-    sampler.info$ID <- as.numeric(sampler.info$ID)
-    if(length(transect.ID) == 0){
-      transect.ID <- unique(sampler.info$ID)
-    }
-    apply(as.matrix(sampler.info[sampler.info$ID%in%transect.ID,]), 1, FUN = plot.transect, col = col)  
-  }else if(class(x) == "Point.Transect"){
-    plot.transect <- function(sampler.info, col){
-      points(x = sampler.info[["X"]], y = sampler.info[["Y"]], col = col)
-      invisible(sampler.info)  
-    }
-    sampler.info <- x@sampler.info
-    sampler.info$ID <- as.numeric(sampler.info$ID)
-    if(length(transect.ID) == 0){
-      transect.ID <- unique(sampler.info$ID)
-    }
-    apply(as.matrix(sampler.info[sampler.info$ID%in%transect.ID,]), 1, FUN = plot.transect, col = col)
-    invisible()
-  }
-  #PLOT POPULATION
-  x <- results@population
-  points(x@population$x, x@population$y, col = 2, pch = 20)
-  #PLOT DETECTIONS
-  x <- results@ddf.data
-  points(x@ddf.dat$x, x@ddf.dat$y, col = 5, pch = 20, cex = 1.5)
-}
 
 #' @rdname get.distance.data-methods
 #' @export

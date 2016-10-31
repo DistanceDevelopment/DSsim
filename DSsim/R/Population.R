@@ -67,7 +67,7 @@ setValidity("Population",
 #' @param ... other general plot parameters 
 #' @rdname plot.Population-methods
 #' @importFrom graphics points
-#' @exportMethod 
+#' @exportMethod plot
 setMethod(
   f="plot",
   signature="Population",
