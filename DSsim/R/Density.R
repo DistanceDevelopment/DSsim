@@ -128,7 +128,8 @@ setMethod("add.hotspot","Density",
 #' @rdname plot.Density-methods
 #' @importFrom grDevices heat.colors rainbow terrain.colors topo.colors cm.colors
 #' @importFrom graphics image contour plot points axTicks axis
-#' @exportMethod  
+#' @importFrom fields quilt.plot
+#' @exportMethod plot
 setMethod(
   f = "plot",
   signature = "Density",
@@ -147,6 +148,9 @@ setMethod(
       x.vals <- c(x.vals, density.surface[[strat]]$x)
       y.vals <- c(y.vals, density.surface[[strat]]$y)
     }
+    # keep a copy of all the x and y values
+    x.vals.orig <- x.vals
+    y.vals.orig <- y.vals
     #define plot.units if it was not specified
     if(length(plot.units) == 0){
       plot.units <- x@units
@@ -191,7 +195,12 @@ setMethod(
     #If a contour plot is requested
     if(style == "blocks"){
       #Create the image
-      image(x.vals, y.vals, z.matrix, yaxt = "n", xaxt = "n", xlab = xlabel, ylab = ylabel, main = x@region.name, col = density.col)
+      #image(x.vals, y.vals, z.matrix, yaxt = "n", xaxt = "n", xlab = xlabel, ylab = ylabel, main = x@region.name, col = density.col)
+      # Get the number of intervals in each direction
+      nx <- (range(x.vals)[2]-range(x.vals)[1])/x@x.space
+      ny <- (range(y.vals)[2]-range(y.vals)[1])/x@y.space
+      # Use quilt plot to avoid stretching between polygons
+      fields::quilt.plot(x = x.vals.orig, y = y.vals.orig, z = densities, nx = nx, ny = ny, yaxt = "n", xaxt = "n", xlab = xlabel, ylab = ylabel, main = x@region.name, col = density.col)
       if(contours){
         contour(x.vals, y.vals, z.matrix, add = TRUE, ...)  
       }
