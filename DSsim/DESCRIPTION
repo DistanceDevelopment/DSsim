@@ -5,8 +5,8 @@ Depends:
     mrds,
     mgcv,
     shapefiles,
-    fields,
-    methods
+    rgeos,
+    sp
 Suggests:
     testthat,
     parallel,
@@ -89,6 +89,7 @@ Collate:
     'create.bins.R'
     'data.for.distance.R'
     'description.summary.R'
+    'extract.spat.poly.coords.R'
     'generate.pop.D.R'
     'generate.pop.N.R'
     'get.ave.density.R'

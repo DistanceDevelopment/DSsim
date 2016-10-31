@@ -5,7 +5,8 @@
 \title{Creates a Density object}
 \usage{
 make.density(region.obj, density.surface = list(), x.space, y.space,
-  constant = numeric(0), density.gam = NULL, dsm = NULL, formula = NULL)
+  buffer = numeric(0), constant = NULL, density.gam = NULL, dsm = NULL,
+  formula = NULL)
 }
 \arguments{
 \item{region.obj}{the Region object in which the density grid will be created}
@@ -17,6 +18,8 @@ data.frame for each strata.}
 \item{x.space}{the intervals in the grid in the x direction}
 
 \item{y.space}{the intervals in the grid in the y direction}
+
+\item{buffer}{the width of the buffer region for generating the density grid. If not supplied DSsim will use the maximum value provided for the x.space or y.space.}
 
 \item{constant}{a value describing a constant density across the surface.}
 

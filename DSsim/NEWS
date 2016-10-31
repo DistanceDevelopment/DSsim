@@ -1,6 +1,10 @@
 DSsim 1.0.6-2
 -----------
 
+New Features
+
+  * Now uses a buffer region for generating the density grid rather than jittering the points. Now imports rgeos and sp.
+
 Bug Fixes
 
   * Fixed backwards compatability bug when no analysis strata exists in 
