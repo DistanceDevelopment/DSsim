@@ -1,8 +1,5 @@
 #' @import methods 
-#' @import mgcv 
 #' @import mrds
-#' @import splancs
-#' @import shapefiles
 NULL
 
 #' S4 generic method to generate an instance of a population
