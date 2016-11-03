@@ -73,6 +73,7 @@ make.region <- function(region.name, strata.name = character(0), units, area = n
 #' @param design.axis user may provide the angle of the design axis but not currently used
 #' @param spacing user may provide the systematic design spacing but but not currently used
 #' @param nested.space the number of spaces between nested points. If spacing = 1 then all points on the systematic design will be sepected.
+#' @param no.complex the number of complex detectors to distribute based on simple random sampling of the systematic grid of detectors.
 #' @param angle user may provide the design angle (only relevant in equal angle zigzag designs) but not currently used
 #' @param plus.sampling logical vaule indicating whether a plus sampling protocol is used but not currently used
 #' @param path pathway giving the location of the folder of survey shapefiles 
@@ -94,11 +95,9 @@ make.region <- function(region.name, strata.name = character(0), units, area = n
 #'  path = shapefile.pathway)
 #' }
 make.design <- function(transect.type, design.details, region.obj, design.axis = numeric(0), spacing = numeric(0), nested.space = numeric(0), no.complex = numeric(0), angle = numeric(0), plus.sampling = logical(0), path = character(0)){
-  region <- global.name <- deparse(substitute(region.obj))
-  #if(class(region) != "character"){
-  #  message("Error: the region argument is not of class character. Only the object name should be provided using quotes.")
-  #  return(NULL)
-  #}             
+  if(class(region) != "character"){
+    region <- global.name <- deparse(substitute(region.obj))
+  }             
   design <- NULL
   if(transect.type %in% c("Line", "line", "Line Transect", "line transect")){
     if(length(design.details) == 1){

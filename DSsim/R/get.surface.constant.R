@@ -1,3 +1,4 @@
+#' @importFrom sp Polygon Polygons SpatialPolygons
 get.surface.constant <- function(region, x.space, y.space, constant, buffer){ 
   
   # Check the value of the buffer

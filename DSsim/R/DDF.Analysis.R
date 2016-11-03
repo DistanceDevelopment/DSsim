@@ -83,19 +83,26 @@ setMethod(
   signature=c("DDF.Analysis","DDF.Data"),
   definition=function(object, data, dht = FALSE, point = FALSE){
     dist.data <- data@ddf.dat
+    # Strip out missing distances
+    dist.data <- dist.data[!is.na(dist.data),]
+    # Make sure there is a detected column
+    if(is.null(dist.data$detected)){
+      dist.data$detected <- rep(1, nrow(dist.data))
+    }
     if(object@binned.data){
       #binned data
       dist.data <- dist.data[dist.data$distance <= max(object@cutpoints),]
       dist.data <- create.bins(dist.data, cutpoints = object@cutpoints)
       #Make sure error messages are surpressed
-      options(show.error.messages = FALSE)
+      old.opts <- options(show.error.messages = FALSE)
+      on.exit(options(old.opts), add = TRUE)
       #Try to fit ddf model
       if(point){
         ddf.result <- try(eval(parse(text = paste("ddf(dsmodel = ~", as.character(object@dsmodel)[2] ,", data = dist.data, method = 'ds', meta.data = list(width = ", max(object@cutpoints), ", point = TRUE, binned = TRUE, breaks = ", object@cutpoints ,"))", sep = ""))), silent = TRUE)
       }else{
         ddf.result <- try(eval(parse(text = paste("ddf(dsmodel = ~", as.character(object@dsmodel)[2] ,", data = dist.data, method = 'ds', meta.data = list(width = ", max(object@cutpoints), ", binned = TRUE, breaks = ", object@cutpoints ,"))", sep = ""))), silent = TRUE)
       }
-      options(show.error.messages = TRUE)
+      options(old.opts)
       #Check if it was successful
       if(any(class(ddf.result) == "try-error")){
         #If not

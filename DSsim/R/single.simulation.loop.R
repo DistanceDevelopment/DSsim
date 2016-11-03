@@ -51,7 +51,7 @@ single.simulation.loop <- function(i, object, save.data, load.data, data.path = 
       n.in.covered <- length(n.in.covered)
     }
     #analyse survey if there are data to analyse
-    if(nrow(ddf.data@ddf.dat) >= 20){
+    if(nrow(ddf.data@ddf.dat[!is.na(ddf.data@ddf.dat$distance),]) >= 20){
       ddf.results <- run.analysis(object, ddf.data)
     }else{
       warning("There are too few data points (<20) to be analysed, skipping this iteration.", call. = FALSE, immediate. = TRUE)
@@ -68,6 +68,18 @@ single.simulation.loop <- function(i, object, save.data, load.data, data.path = 
         obs.table <- new.tables$obs.table
         sample.table <- new.tables$sample.table
         region.table <- new.tables$region.table
+      }
+      #Check if there are missing distances
+      miss.dists <- any(is.na(ddf.data@ddf.dat$distance))
+      if(miss.dists){
+        # Add the missing distance observations in to ddf object
+        missing.dists <- ddf.data@ddf.dat[is.na(ddf.data@ddf.dat$distance),]
+        # NA's break dht
+        missing.dists$distance <- rep(-1, nrow(missing.dists))
+        if(is.null(missing.dists$detected)){
+          missing.dists$detected <- rep(1, nrow(missing.dists))  
+        }
+        ddf.results <- add.miss.dists(missing.dists, ddf.results)
       }
       #Compute density / abundance estimates
       compute.dht = TRUE

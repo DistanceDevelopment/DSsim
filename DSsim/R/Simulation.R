@@ -489,15 +489,27 @@ setMethod(
   f="run.analysis",
   signature=c("Simulation","Survey.Results"),
   definition=function(object, data, dht = FALSE){
-    #dist.data <- survey.results@ddf.data
     best.model <- run.analysis(object, data@ddf.data)
     #If dht is true but tables have not been provided
     if(dht & nrow(data@region.table@region.table) == 0){
       warning("dht tables have not been provided please re-run create.survey.results with dht.tables = TRUE if you would like density/abundance estimates in addition to ddf results.", immediate. = TRUE, call. = FALSE)
       dht = FALSE
     }
-    #If ddf has converged and dht it TRUE
+    #If ddf has converged and dht is TRUE
     if(dht & !is.null(best.model)){
+      #Check if there are missing distances
+      ddf.dat <- data@ddf.data@ddf.dat
+      miss.dists <- any(is.na(ddf.dat$distance))
+      if(miss.dists){
+        # Add the missing distance observations in to ddf object
+        missing.dists <- ddf.dat[is.na(ddf.dat$distance),]
+        # NA's break dht
+        missing.dists$distance <- rep(-1, nrow(missing.dists))
+        if(is.null(missing.dists$detected)){
+          missing.dists$detected <- rep(1, nrow(missing.dists))  
+        }
+        best.model <- add.miss.dists(missing.dists, best.model)
+      }
       #Calculate density/abundance
       dht.results <- dht(best.model, data@region.table@region.table, data@sample.table@sample.table, data@obs.table@obs.table)
       return(list(ddf = best.model, dht = dht.results))

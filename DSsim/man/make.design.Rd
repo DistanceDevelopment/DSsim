@@ -22,6 +22,8 @@ make.design(transect.type, design.details, region.obj,
 
 \item{nested.space}{the number of spaces between nested points. If spacing = 1 then all points on the systematic design will be sepected.}
 
+\item{no.complex}{the number of complex detectors to distribute based on simple random sampling of the systematic grid of detectors.}
+
 \item{angle}{user may provide the design angle (only relevant in equal angle zigzag designs) but not currently used}
 
 \item{plus.sampling}{logical vaule indicating whether a plus sampling protocol is used but not currently used}

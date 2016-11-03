@@ -47,7 +47,13 @@ setMethod(
     n.in.covered <- poss.distances$distance
     dist.data <- simulate.detections(poss.distances, population@detectability)
     dist.data <- rename.duplicates(dist.data)
-    dist.data <- dist.data[,c("object", "transect.ID", "distance", "x", "y")]    
+    dist.data <- dist.data[,c("object", "transect.ID", "distance", "x", "y")]  
+    # Check if we need to remove missing distances
+    if(!is.null(point.transect@sampler.info$ac.simple)){
+      # Remove distance for simple nodes
+      simple.nodes <- point.transect@sampler.info$ID[point.transect@sampler.info$ac.simple]
+      dist.data$distance <- ifelse(dist.data$transect.ID %in% simple.nodes, NA, dist.data$distance)
+    }
     ddf.data.obj <- new(Class = "Single.Obs.DDF.Data", data = dist.data)
     if(dht.tables){
       region.table <- create.region.table(object, ...)

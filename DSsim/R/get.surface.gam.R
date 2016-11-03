@@ -1,5 +1,5 @@
 #' @importFrom sp Polygon Polygons SpatialPolygons
-get.surface.gam <- function(region, x.space, y.space, gam.model){
+get.surface.gam <- function(region, x.space, y.space, gam.model, buffer){
   
   # Check the value of the buffer
   if(length(buffer) == 0){
@@ -63,7 +63,7 @@ get.surface.gam <- function(region, x.space, y.space, gam.model){
     gridpoints <- temp.coords[to.keep,]
     to.discard <- in.polygons(buffered.gaps[[strat]], pts = gridpoints, boundary = TRUE) 
     gridpoints <- gridpoints[!to.discard,]
-    predicted.values <- predict.gam(gam.model, newdata = gridpoints, type = "response")
+    predicted.values <- mgcv::predict.gam(gam.model, newdata = gridpoints, type = "response")
     gridpoints$density <- predicted.values
     density.surfaces[[strat]] <- gridpoints
   }  

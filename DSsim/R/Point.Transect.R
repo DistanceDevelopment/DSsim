@@ -75,8 +75,8 @@ setMethod(
     }else{
       simple <- sampler.info[sampler.info$ac.simple,]
       adv.detectors <- sampler.info[!sampler.info$ac.simple,]
-      points(adv.detectors$X, adv.detectors$Y, pch = 20, col = 5)
-      points(adv.detectors$X, adv.detectors$Y, pch = 1, col = 3)
+      points(adv.detectors$X, adv.detectors$Y, pch = 20, col = 4, cex = 1.75)
+      points(adv.detectors$X, adv.detectors$Y, pch = 20, col = 6)
       points(simple$X, simple$Y, pch = 20, col = 4)
     }
     invisible(x)

@@ -68,6 +68,7 @@ setMethod(
     if(is.null(region) | class(region) != "Region"){
       region <- object@region.obj
       region <- get(region, pos = 1)
+      warning("Obtaining region object from the global environment.", call. = FALSE, immediate. = TRUE)
     }
     #Input pre-processing
     if(read.from.file){
@@ -143,14 +144,15 @@ setMethod(
             in.polygons(region@gaps[[strat]], pts = nested.gridpoints, boundary = TRUE)
           nested.gridpoints <- nested.gridpoints[!to.discard,]
         }else{
-          # Generate required number of complex detectors based on space filling algorithm
-          temp <- gridpoints[,c("x","y")]
-          old.op <- options(warn = -1)
-          on.exit(options(old.op), add = TRUE)
-          space.fill <- cover.design(temp, object@no.complex[strat], nruns = 5)
-          options(old.op)
-          best.index <- space.fill$best.id
-          nested.gridpoints <- gridpoints[best.index,]
+          # Generate required number of complex detectors based on random sampling
+          #temp <- gridpoints[,c("x","y")]
+          #old.op <- options(warn = -1)
+          #on.exit(options(old.op), add = TRUE)
+          #space.fill <- cover.design(temp, object@no.complex[strat], nruns = 5)
+          #options(old.op)
+          #best.index <- space.fill$best.id
+          index <- sample(1:nrow(gridpoints), object@no.complex[strat])
+          nested.gridpoints <- gridpoints[index,]
         }
         #Add strata ID
         nested.gridpoints$strata <- rep(strata.names[strat], nrow(nested.gridpoints))

@@ -29,7 +29,9 @@ setMethod(
   f="plot",
   signature="DDF.Data",
   definition=function(x, y, ...){
-    points(x@ddf.dat$x, x@ddf.dat$y, col = 5, pch = 20, cex = 1.5, ...) 
+    # Colour code by missing distances
+    ccol <- ifelse(is.na(x@ddf.dat$distance), 5, 7)
+    points(x@ddf.dat$x, x@ddf.dat$y, col = ccol, pch = 20, cex = 1, ...) 
     invisible(x)
   }    
 )
