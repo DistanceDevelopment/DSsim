@@ -133,7 +133,11 @@ setMethod("add.hotspot","Density",
 setMethod(
   f = "plot",
   signature = "Density",
-  definition = function(x, y, add = FALSE, plot.units = character(0), contours = TRUE, style = "points", density.col = heat.colors(12), ...){
+  definition = function(x, y, add = FALSE, plot.units = character(0), contours = TRUE, style = "points", density.col = heat.colors(12), main = "", ...){
+    # If main is not supplied then take it from the object
+    if(main == ""){
+      main <- x@region.name
+    }
     #Check a valid style has been requested
     if(!style %in% c("points", "blocks")){
       stop("You have requested an unsupported plot style", call. = FALSE)
@@ -200,7 +204,7 @@ setMethod(
       nx <- (range(x.vals)[2]-range(x.vals)[1])/x@x.space
       ny <- (range(y.vals)[2]-range(y.vals)[1])/x@y.space
       # Use quilt plot to avoid stretching between polygons
-      fields::quilt.plot(x = x.vals.orig, y = y.vals.orig, z = densities, nx = nx, ny = ny, yaxt = "n", xaxt = "n", xlab = xlabel, ylab = ylabel, main = x@region.name, col = density.col)
+      fields::quilt.plot(x = x.vals.orig, y = y.vals.orig, z = densities, nx = nx, ny = ny, yaxt = "n", xaxt = "n", xlab = xlabel, ylab = ylabel, main = main, col = density.col)
       if(contours){
         contour(x.vals, y.vals, z.matrix, add = TRUE, ...)  
       }
@@ -221,7 +225,7 @@ setMethod(
 #       colorlut <- colorlut[length(colorlut):1]
       #Set up plot
       if(!add){
-        plot(range(x.vals), range(y.vals), col = "white", xlab = xlabel, ylab = ylabel, main = x@region.name, yaxt = "n", xaxt = "n")
+        plot(range(x.vals), range(y.vals), col = "white", xlab = xlabel, ylab = ylabel, main = main, yaxt = "n", xaxt = "n")
       }
       #Find the range of densities
       #zlim <- range(strat.density) 

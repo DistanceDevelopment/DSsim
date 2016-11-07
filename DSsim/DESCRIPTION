@@ -88,6 +88,7 @@ Collate:
     'check.LinkID.order.R'
     'check.intersection.R'
     'check.shapefile.R'
+    'check.sim.setup.R'
     'coords.from.shapefile.R'
     'create.bins.R'
     'data.for.distance.R'

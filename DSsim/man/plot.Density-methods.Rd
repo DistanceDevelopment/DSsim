@@ -6,7 +6,8 @@
 \title{Plot}
 \usage{
 \S4method{plot}{Density,ANY}(x, y, add = FALSE, plot.units = character(0),
-  contours = TRUE, style = "points", density.col = heat.colors(12), ...)
+  contours = TRUE, style = "points", density.col = heat.colors(12),
+  main = "", ...)
 }
 \arguments{
 \item{x}{object of class Density}

@@ -168,7 +168,11 @@ setMethod(
 setMethod(
   f="plot",
   signature="Region",
-  definition=function(x, y, add = FALSE, plot.units = character(0), region.col = NULL, gap.col = NULL, ...){
+  definition=function(x, y, add = FALSE, plot.units = character(0), region.col = NULL, gap.col = NULL, main = "", ...){
+    # If main is not supplied then take it from the object
+    if(main == ""){
+      main <- x@region.name
+    }
     plot.list <- function(list.coords, border = 1, fill.col = NULL){
       #lapply(list.coords, FUN = lines, type = type, col = col)
       lapply(list.coords, FUN = polygon, border = border, col = fill.col)
@@ -181,7 +185,7 @@ setMethod(
     if(!add){      
       xlabel <- paste("X-coords (",plot.units[1],")", sep = "")
       ylabel <- paste("Y-coords (",plot.units[1],")", sep = "")
-      plot(c(x@box[["xmin"]], x@box[["xmax"]]), c(x@box[["ymin"]], x@box[["ymax"]]), col = "white", xlab = xlabel, ylab = ylabel, main = x@region.name, yaxt = "n", xaxt = "n", ...)
+      plot(c(x@box[["xmin"]], x@box[["xmax"]]), c(x@box[["ymin"]], x@box[["ymax"]]), col = "white", xlab = xlabel, ylab = ylabel, main = main, yaxt = "n", xaxt = "n", ...)
       xticks <- axTicks(1)
       yticks <- axTicks(2)
       #Set up axes
