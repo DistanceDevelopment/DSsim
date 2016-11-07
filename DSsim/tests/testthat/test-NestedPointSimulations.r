@@ -29,28 +29,27 @@ test_that("Can perform nested point transect simulations", {
   size <- data.frame(size = c(1,2,3), prob = c(0.25,0.5,0.25))
   expect_that(pop.desc <- make.population.description(region, 
                                                       density, 
-                                                      cluster.size.table = size,
-                                                      N = c(100,1000), 
+                                                      #cluster.size.table = size,
+                                                      N = c(150,1000), 
                                                       fixed.N = TRUE),
               is_a("Population.Description"))
   
   #Create Detectability
-  expect_that(detect <- make.detectability(key.function = "hr", 
-                                           scale.param = 0.2,
-                                           shape.param = 3,
-                                           truncation = 0.5),
+  expect_that(detect <- make.detectability(key.function = "hn", 
+                                           scale.param = 0.25,
+                                           truncation = 0.75),
               is_a("Detectability"))
   
   #Create Design
   expect_that(design <- make.design(transect.type = "point", 
                                     design.details = "nested", 
-                                    spacing = c(1,1), 
+                                    spacing = c(0.75,1), 
                                     design.axis = c(0,0),
-                                    nested.space = c(2,3)),
+                                    nested.space = c(2,2)),
               is_a("PT.Nested.Design"))
   
   #Create Analyses
-  analyses <- make.ddf.analysis.list(dsmodel = list(~cds(key = "hn", formula = ~1),~cds(key = "hr", formula = ~1)), method = "ds", truncation = 0.5)
+  analyses <- make.ddf.analysis.list(dsmodel = list(~cds(key = "hn", formula = ~1),~cds(key = "hr", formula = ~1)), method = "ds", truncation = 0.75)
   
   expect_that(analyses, is_a("list"))
   expect_that(analyses[[2]], is_a("DDF.Analysis"))
@@ -110,5 +109,14 @@ test_that("Can perform nested point transect simulations", {
               is_a("Region.Table"))
 
   #plot(survey.results)
+  
+  expect_that(nrow(ddf.data@ddf.dat),
+              equals(448))
+  
+  with.dists <- ddf.data@ddf.dat[!is.na(ddf.data@ddf.dat$distance),]
+  
+  expect_that(nrow(with.dists),
+              equals(119))
+  
   
 })
