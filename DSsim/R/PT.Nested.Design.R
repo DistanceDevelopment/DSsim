@@ -104,7 +104,6 @@ setMethod(
       }
       #Main grid generation
       for (strat in seq(along = region@coords)) {
-        #strat = 1
         spacing <- object@spacing[strat]
         start.x <- region@box[["xmin"]] + runif(1, 0, spacing)
         start.y <- region@box[["ymin"]] + runif(1, 0, spacing)
