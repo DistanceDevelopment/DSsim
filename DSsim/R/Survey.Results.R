@@ -82,7 +82,7 @@ setMethod(
   signature="Survey.Results",
   f="plot",
   definition=function(x, y, ...){
-    plot(x@region, ...)
+    plot(x@region, main = "Example Survey", ...)
     plot(x@transects, ...)
     plot(x@population, ...)
     plot(x@ddf.data, ...)
