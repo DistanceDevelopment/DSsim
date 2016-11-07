@@ -34,6 +34,13 @@ Creates an object which describes a population. The values in this object
 will be used to create instances of the population
 }
 \examples{
+# An example population can be created from the default values
+pop.desc <- make.population.description()
+
+# To view an instance of this population
+pop <- generate.population(pop.desc, make.detecability(), make.region())
+plot(pop)
+
 \dontrun{
 pop.description <- make.population.description(N = 1000, 
  density.obj = pop.density, region = region, fixed.N = TRUE)

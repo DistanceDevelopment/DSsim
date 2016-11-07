@@ -26,14 +26,19 @@
 #' @param units the units given as a character (either 'm' or 'km')
 #' @param area the area of the region (optional - if not supplied it will be 
 #'   calculated for you)
-#' @param shapefile a shapefile of the region
-#' @param coords list of polygons describing the areas of interest
-#' @param gaps list of polygons describing the areas to be excluded
+#' @param shapefile a shapefile of the study region. These can be loaded using the \code{read.shapefile} function in the shapefiles library.
+#' @param coords A list with one element per strata. Each element in the list is a list of dataframes describing the polygon coordinates. This allows multiple regions in each strata. The corrdinates should start and finish with the same point. By default DSsim will create a rectangular study region 2000 m by 500 m.
+#' @param gaps A list with one element per strata. Each element in the list is a list of dataframes describing the polygon coordinates. This allows multiple gaps in each strata. The corrdinates should start and finish with the same point.
 #' @param check.LinkID boolean to check the order of the LinkID value in the attribute table. This is important if this shapefile was used in Distance to create the survey shapefiles as Distance would have re-ordered the strata in this way. Failing to re-order the strata will mean that the strata in DSsim will not match the transect strata ID values created by Distance. If you have created your surveys outside Distance you can turn this option off.
 #' @return object of class Region 
 #' @export
 #' @author Laura Marshall
 #' @examples
+#' # A basic study region of 2000m by 500m is created using the defaults
+#' region <- make.region()
+#' plot(region)
+#' 
+#' # Here is an example of a study region with gaps
 #' coords <- gaps <- list()
 #' coords[[1]] <- list(data.frame(x = c(0,1000,1000,0,0), y = c(0,0,
 #'  1000,1000,0)))
@@ -79,11 +84,12 @@ make.region <- function(region.name = "region",
 #'                Line          \tab Zigzag         \tab Equal Spaced  \cr
 #'                Line          \tab User Specified \tab               \cr
 #'                Point         \tab Systematic     \tab               \cr
-#'                Point         \tab Random         \tab               \cr}
+#'                Point         \tab Random         \tab               \cr
+#'                Point         \tab Nested         \tab               \cr}
 #'                                                                                     
 #' @param transect.type character variable specifying either "Line" or "Point"
 #' @param design.details a character vector describing the type of design. See details section.
-#' @param region.obj the name of the Region object where the survey is to be carried out.
+#' @param region.obj the character name of the Region object where the survey is to be carried out.
 #' @param design.axis user may provide the angle of the design axis but not currently used
 #' @param spacing user may provide the systematic design spacing but but not currently used
 #' @param nested.space the number of spaces between nested points. If spacing = 1 then all points on the systematic design will be sepected.
@@ -95,6 +101,15 @@ make.region <- function(region.name = "region",
 #' @export
 #' @author Laura Marshall
 #' @examples
+#' # DSsim can generate a systematic grid of point transects
+#' design <- make.design("point")
+#' 
+#' # The easiest way to generate the transect is by creating a simulation
+#' sim <- make.simulation(design.obj = make.design("point"))
+#' transects <- generate.transects(sim)
+#' plot(make.region())
+#' plot(transects)
+#' 
 #' \dontrun{
 #' data(transects.shp)
 #' #Edit the pathway below to point to an empty folder where the
@@ -205,7 +220,13 @@ make.design <- function(transect.type = "line", design.details = "default", regi
 #' @export
 #' @author Laura Marshall     
 #' @seealso \code{\link{make.region}}  
-#' @examples                  
+#' @examples  
+#' # A simple density surface can be created within a rectangular region using 
+#' # the default values:
+#' density <- make.density()
+#' plot(density)
+#' plot(make.region(), add = TRUE)
+#'                 
 #' \dontrun{
 #' pop.density <- make.density(region.obj = region, x.space = 10, 
 #'  y.space = 10, constant = 0.5) 
@@ -261,6 +282,13 @@ make.density <- function(region.obj = make.region(), density.surface = list(), x
 #' @author Laura Marshall
 #' @seealso \code{\link{make.region}}, \code{\link{make.density}}
 #' @examples
+#' # An example population can be created from the default values
+#' pop.desc <- make.population.description()
+#' 
+#' # To view an instance of this population
+#' pop <- generate.population(pop.desc, make.detecability(), make.region())
+#' plot(pop)
+#' 
 #' \dontrun{
 #' pop.description <- make.population.description(N = 1000, 
 #'  density.obj = pop.density, region = region, fixed.N = TRUE)
@@ -292,8 +320,9 @@ make.population.description <- make.pop.description <- function(region.obj = mak
 #' @export
 #' @author Laura Marshall
 #' @examples
-#' detect <- make.detectability(key.function = "hn", scale.param = 15,
-#'  truncation = 30) 
+#' # The default values create a detectability object as follows:
+#' detect <- make.detectability(key.function = "hn", scale.param = 25,
+#'  truncation = 75) 
 make.detectability <- function(key.function = "hn", scale.param = 25, shape.param = numeric(0), covariates = character(0), cov.param = numeric(0), truncation = 75){
   detectability <- new(Class = "Detectability", key.function = key.function, scale.param = scale.param, shape.param = shape.param, covariates = covariates, cov.param = cov.param, truncation = truncation)
   return(detectability)
@@ -305,6 +334,10 @@ make.detectability <- function(key.function = "hn", scale.param = 25, shape.para
 #' a model to fit to the distance data. The simulation will fit each of these 
 #' models to the data generated in the simulation and select the model with 
 #' the minimum criteria value.
+#' 
+#' @details By default this function creates a half-normal detection
+#'  function model \code{dsmodel = list(~cds(key = "hn",
+#'  formula = ~1))} with a truncation distance of 75. 
 #'
 #' @param dsmodel list of distance sampling model formula specifying the detection function (see \code{?ddf} for further details)
 #' @param mrmodel not yet implemented
@@ -322,6 +355,9 @@ make.detectability <- function(key.function = "hn", scale.param = 25, shape.para
 #' @author Laura Marshall
 #' @seealso \code{ddf} in \code{library(mrds)}
 #' @examples
+#' # A simple half-normal "ds" model can be created using the default values
+#' ddf.analyses <- make.ddf.analysis.list()
+#' 
 #' ddf.analyses <- make.ddf.analysis.list(dsmodel = list(~cds(key = "hn",
 #'  formula = ~1),~cds(key = "hr", formula = ~1)), method = "ds", 
 #'  criteria = "AIC")
@@ -339,23 +375,43 @@ make.ddf.analysis.list <- function(dsmodel = list(~cds(key = "hn", formula = ~1)
 }
 
 #' @title Creates a Simulation object
-#' @description 
-#' This creates a simulation object which groups together all the objects 
-#' needed to complete the simulation. 
-#'
+#' @description This creates a simulation object which groups together 
+#' all the objects needed to complete the simulation. 
+#' @details The \code{make.simulation} function is now set up so that by
+#'  default (with the exception of specifying point transects rather than
+#'   line) it can run a simple simulation example. See examples.
 #' @param reps number of times the simulation should be repeated
 #' @param single.transect.set logical specifying whether the transects should
 #'   be kept the same throughout the simulation.
 #' @param double.observer not currently implemented.
-#' @param region.obj an object of class Region
-#' @param design.obj an object of class Survey.Design
+#' @param region.obj an object of class Region created by a call to
+#'  \code{make.region}
+#' @param design.obj an object of class Survey.Design created by a call to
+#'  \code{make.design}
 #' @param population.description.obj an object of class Population.Description
-#' @param detectability.obj and object of class Detectabolity
-#' @param ddf.analyses.list a list of objects of class DDF.Analysis
+#'  created by a call to \code{make.population.description}
+#' @param detectability.obj and object of class Detectabolity created by a call to
+#'  \code{make.detectability}
+#' @param ddf.analyses.list a list of objects of class DDF.Analysis created by 
+#'  a call to\code{make.ddf.analysis.list}
 #' @return object of class Simulation 
 #' @export
 #' @author Laura Marshall
 #' @examples
+#' \dontrun{
+#' # A basic point transect simulation example
+#' sim <- make.simulation(design.obj = make.design("point"))
+#' check.sim.setup(sim)
+#' sim <- run(sim) 
+#' # Note you might find relatively high levels of bias due to low number of repetitions
+#' summary(sim)
+#' 
+#' # To increase the number of repetitions
+#' sim <- make.simulation(reps = 100, design.obj = make.design("point"))
+#' sim <- run(sim) 
+#' summary(sim)
+#' }
+#'
 #' coords <- gaps <- list()
 #' coords[[1]] <- list(data.frame(x = c(0,1000,1000,0,0), y = c(0,0,
 #'  1000,1000,0)))
@@ -415,7 +471,7 @@ make.ddf.analysis.list <- function(dsmodel = list(~cds(key = "hn", formula = ~1)
 #' summary(my.simulation)
 #' }
 #' 
-make.simulation <- function(reps = 100, single.transect.set = FALSE, double.observer = FALSE, region.obj = make.region(), design.obj = make.design(), population.description.obj = make.population.description(), detectability.obj = make.detectability(), ddf.analyses.list = make.ddf.analysis.list()){
+make.simulation <- function(reps = 10, single.transect.set = FALSE, double.observer = FALSE, region.obj = make.region(), design.obj = make.design(), population.description.obj = make.population.description(), detectability.obj = make.detectability(), ddf.analyses.list = make.ddf.analysis.list()){
   #Make the results arrays and store in a list
   no.strata <- ifelse(length(region.obj@strata.name) > 0, length(region.obj@strata.name)+1, 1) 
   #Check to see if the strata are grouped in the analyses

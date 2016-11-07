@@ -38,7 +38,15 @@ a model to fit to the distance data. The simulation will fit each of these
 models to the data generated in the simulation and select the model with 
 the minimum criteria value.
 }
+\details{
+By default this function creates a half-normal detection
+ function model \code{dsmodel = list(~cds(key = "hn",
+ formula = ~1))} with a truncation distance of 75.
+}
 \examples{
+# A simple half-normal "ds" model can be created using the default values
+ddf.analyses <- make.ddf.analysis.list()
+
 ddf.analyses <- make.ddf.analysis.list(dsmodel = list(~cds(key = "hn",
  formula = ~1),~cds(key = "hr", formula = ~1)), method = "ds", 
  criteria = "AIC")

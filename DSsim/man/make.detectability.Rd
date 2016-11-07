@@ -31,8 +31,9 @@ The detectability of the population is described by the values in this
 class.
 }
 \examples{
-detect <- make.detectability(key.function = "hn", scale.param = 15,
- truncation = 30) 
+# The default values create a detectability object as follows:
+detect <- make.detectability(key.function = "hn", scale.param = 25,
+ truncation = 75) 
 }
 \author{
 Laura Marshall

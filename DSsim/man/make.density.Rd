@@ -41,7 +41,13 @@ also supply a \code{mgcv gam} object and x, y spacings and the density grid will
 be created from these.
 }
 \examples{
-                 
+ 
+# A simple density surface can be created within a rectangular region using 
+# the default values:
+density <- make.density()
+plot(density)
+plot(make.region(), add = TRUE)
+                
 \dontrun{
 pop.density <- make.density(region.obj = region, x.space = 10, 
  y.space = 10, constant = 0.5) 

@@ -4,7 +4,7 @@
 \alias{make.simulation}
 \title{Creates a Simulation object}
 \usage{
-make.simulation(reps = 100, single.transect.set = FALSE,
+make.simulation(reps = 10, single.transect.set = FALSE,
   double.observer = FALSE, region.obj = make.region(),
   design.obj = make.design(),
   population.description.obj = make.population.description(),
@@ -19,24 +19,48 @@ be kept the same throughout the simulation.}
 
 \item{double.observer}{not currently implemented.}
 
-\item{region.obj}{an object of class Region}
+\item{region.obj}{an object of class Region created by a call to
+\code{make.region}}
 
-\item{design.obj}{an object of class Survey.Design}
+\item{design.obj}{an object of class Survey.Design created by a call to
+\code{make.design}}
 
-\item{population.description.obj}{an object of class Population.Description}
+\item{population.description.obj}{an object of class Population.Description
+created by a call to \code{make.population.description}}
 
-\item{detectability.obj}{and object of class Detectabolity}
+\item{detectability.obj}{and object of class Detectabolity created by a call to
+\code{make.detectability}}
 
-\item{ddf.analyses.list}{a list of objects of class DDF.Analysis}
+\item{ddf.analyses.list}{a list of objects of class DDF.Analysis created by 
+a call to\code{make.ddf.analysis.list}}
 }
 \value{
 object of class Simulation
 }
 \description{
-This creates a simulation object which groups together all the objects 
-needed to complete the simulation.
+This creates a simulation object which groups together 
+all the objects needed to complete the simulation.
+}
+\details{
+The \code{make.simulation} function is now set up so that by
+ default (with the exception of specifying point transects rather than
+  line) it can run a simple simulation example. See examples.
 }
 \examples{
+\dontrun{
+# A basic point transect simulation example
+sim <- make.simulation(design.obj = make.design("point"))
+check.sim.setup(sim)
+sim <- run(sim) 
+# Note you might find relatively high levels of bias due to low number of repetitions
+summary(sim)
+
+# To increase the number of repetitions
+sim <- make.simulation(reps = 100, design.obj = make.design("point"))
+sim <- run(sim) 
+summary(sim)
+}
+
 coords <- gaps <- list()
 coords[[1]] <- list(data.frame(x = c(0,1000,1000,0,0), y = c(0,0,
  1000,1000,0)))

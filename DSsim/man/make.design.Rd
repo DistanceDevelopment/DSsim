@@ -14,7 +14,7 @@ make.design(transect.type = "line", design.details = "default",
 
 \item{design.details}{a character vector describing the type of design. See details section.}
 
-\item{region.obj}{the name of the Region object where the survey is to be carried out.}
+\item{region.obj}{the character name of the Region object where the survey is to be carried out.}
 
 \item{design.axis}{user may provide the angle of the design axis but not currently used}
 
@@ -49,9 +49,19 @@ or 2 elements. These options are described in the table below:
                Line          \tab Zigzag         \tab Equal Spaced  \cr
                Line          \tab User Specified \tab               \cr
                Point         \tab Systematic     \tab               \cr
-               Point         \tab Random         \tab               \cr}
+               Point         \tab Random         \tab               \cr
+               Point         \tab Nested         \tab               \cr}
 }
 \examples{
+# DSsim can generate a systematic grid of point transects
+design <- make.design("point")
+
+# The easiest way to generate the transect is by creating a simulation
+sim <- make.simulation(design.obj = make.design("point"))
+transects <- generate.transects(sim)
+plot(make.region())
+plot(transects)
+
 \dontrun{
 data(transects.shp)
 #Edit the pathway below to point to an empty folder where the

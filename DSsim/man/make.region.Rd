@@ -19,11 +19,11 @@ make.region(region.name = "region", strata.name = character(0),
 \item{area}{the area of the region (optional - if not supplied it will be 
 calculated for you)}
 
-\item{shapefile}{a shapefile of the region}
+\item{shapefile}{a shapefile of the study region. These can be loaded using the \code{read.shapefile} function in the shapefiles library.}
 
-\item{coords}{list of polygons describing the areas of interest}
+\item{coords}{A list with one element per strata. Each element in the list is a list of dataframes describing the polygon coordinates. This allows multiple regions in each strata. The corrdinates should start and finish with the same point. By default DSsim will create a rectangular study region 2000 m by 500 m.}
 
-\item{gaps}{list of polygons describing the areas to be excluded}
+\item{gaps}{A list with one element per strata. Each element in the list is a list of dataframes describing the polygon coordinates. This allows multiple gaps in each strata. The corrdinates should start and finish with the same point.}
 
 \item{check.LinkID}{boolean to check the order of the LinkID value in the attribute table. This is important if this shapefile was used in Distance to create the survey shapefiles as Distance would have re-ordered the strata in this way. Failing to re-order the strata will mean that the strata in DSsim will not match the transect strata ID values created by Distance. If you have created your surveys outside Distance you can turn this option off.}
 }
@@ -38,6 +38,11 @@ needs to specify a list of polygons describing the areas of interest
 be excluded (gaps). If area is not specified it will be calculated.
 }
 \examples{
+# A basic study region of 2000m by 500m is created using the defaults
+region <- make.region()
+plot(region)
+
+# Here is an example of a study region with gaps
 coords <- gaps <- list()
 coords[[1]] <- list(data.frame(x = c(0,1000,1000,0,0), y = c(0,0,
  1000,1000,0)))
