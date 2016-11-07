@@ -34,7 +34,6 @@ setValidity("PT.Systematic.Design",
               if(length(object@path) > 1){
                 return("You must only specify one path. All transect shapefiles must be in the same folder.")
               }
-              nested.space <- object@nested.space
               if(any(ifelse(object@design.axis != 0, TRUE, FALSE))){
                 warning("Only a design axis of 0 is currently implemented, other values will be ignored at present.", call. = FALSE, immediate. = TRUE)
               }
@@ -103,7 +102,7 @@ setMethod(
       }
     }
     #Add effort and rename
-    sampler.info <- data.frame(ID = 1:nrow(transects), X = transects$x, Y = transects$y, region = transects$strata, ac.simple = transects$ac.simple, effort = rep(1, nrow(transects)))
+    sampler.info <- data.frame(ID = 1:nrow(transects), X = transects$x, Y = transects$y, region = transects$strata, effort = rep(1, nrow(transects)))
     point.transect <- new(Class = "Point.Transect", region = region, sampler.info = sampler.info)
     return(point.transect)
   }

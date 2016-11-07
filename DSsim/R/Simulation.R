@@ -117,8 +117,8 @@ setValidity("Simulation",
                   return(FALSE)
                 }
               }else if(!transects.from.file){
-                if(!(class(object@design) %in% c("PT.Nested.Design"))){
-                  message("The generation of transects is only implemented in R for nested point transect designs")
+                if(!(class(object@design) %in% c("PT.Nested.Design", "PT.Systematic.Design"))){
+                  message("The generation of transects is only implemented in R for nested and systematic point transect designs")
                   return(FALSE)  
                 }
               }
