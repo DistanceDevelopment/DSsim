@@ -30,7 +30,7 @@ setMethod(
   signature="DDF.Data",
   definition=function(x, y, ...){
     # Colour code by missing distances
-    ccol <- ifelse(is.na(x@ddf.dat$distance), 5, 7)
+    ccol <- ifelse(is.na(x@ddf.dat$distance), 7, 5)
     points(x@ddf.dat$x, x@ddf.dat$y, col = ccol, pch = 20, cex = 1, ...) 
     invisible(x)
   }    
