@@ -109,6 +109,11 @@ setValidity("Simulation",
                 return(FALSE)
               }
               design <- object@design
+              if(class(design) == "PT.Nested.Design"){
+                if(object@detectability@truncation > object@ddf.analyses[[1]]@truncation){
+                  warning("Please be aware that your truncation distance for analysis is less than that used to generate the data (defined in detectability). This will introduce bias into your estimates.", call. = FALSE, immediate. = TRUE)
+                }
+              }
               transects.from.file <- ifelse(length(design@path) == 1, TRUE, FALSE)
               if(transects.from.file & !object@single.transect.set){
                 no.files <- length(design@filenames)
