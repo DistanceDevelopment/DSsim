@@ -44,8 +44,22 @@
 #'  coords = coords, gaps = gaps)
 #' plot(region)
 #' 
-make.region <- function(region.name, strata.name = character(0), units, area = numeric(0), shapefile = NULL, coords = list(), gaps = list(), check.LinkID = TRUE){
-    region <- new(Class="Region", region.name = region.name, strata.name = strata.name, units = units, area = area, shapefile = shapefile, coords = coords, gaps = gaps, check.LinkID = check.LinkID)
+make.region <- function(region.name = "region", 
+                        strata.name = character(0), 
+                        units = "m", 
+                        area = numeric(0), 
+                        shapefile = NULL, 
+                        coords = coords <- list(list(data.frame(x = c(0, 0 , 2000, 2000, 0), y = c(0, 500, 500, 0, 0)))), 
+                        gaps = list(), 
+                        check.LinkID = TRUE){
+  # If the user hasn't specified gaps set up an empty list
+  if(length(gaps) == 0){
+    for(i in seq(along = coords)){
+      gaps[[i]] <- list()
+    }
+  }
+  # Call to make the region object
+  region <- new(Class="Region", region.name = region.name, strata.name = strata.name, units = units, area = area, shapefile = shapefile, coords = coords, gaps = gaps, check.LinkID = check.LinkID)
   return(region)
 }
   
@@ -94,10 +108,27 @@ make.region <- function(region.name, strata.name = character(0), units, area = n
 #'  design.axis = 0, spacing = 100, plus.sampling =FALSE, 
 #'  path = shapefile.pathway)
 #' }
-make.design <- function(transect.type, design.details, region.obj, design.axis = numeric(0), spacing = numeric(0), nested.space = numeric(0), no.complex = numeric(0), angle = numeric(0), plus.sampling = logical(0), path = character(0)){
+make.design <- function(transect.type = "line", design.details = "default", region.obj = "region", design.axis = 0, spacing = 100, nested.space = numeric(0), no.complex = numeric(0), angle = numeric(0), plus.sampling = logical(0), path = character(0)){
+  # Set the design details if spcified as "default"
+  if(design.details == "default"){
+    if(transect.type %in% c("line", "Line", "Line Transect", "line transect")){
+      design.details <- c("parallel", "systematic")
+    }else if(transect.type %in% c("Point", "point", "Point Transect", "point transect")){
+      design.details <- "systematic"
+    }else{
+      stop("Incorrect transect.type specified.", call. = FALSE)
+    }
+  }
+  # Get region object name only
+  region <- region.obj
   if(class(region) != "character"){
-    region <- global.name <- deparse(substitute(region.obj))
-  }             
+    if(class(region) == "Region"){
+      region <- global.name <- deparse(substitute(region.obj))
+    }else{
+      stop("Please supply the name of the region object to the region.obj argument.", call. = FALSE)  
+    }
+  } 
+  # 
   design <- NULL
   if(transect.type %in% c("Line", "line", "Line Transect", "line transect")){
     if(length(design.details) == 1){
@@ -195,12 +226,19 @@ make.design <- function(transect.type, design.details, region.obj, design.axis =
 #' plot(region, add = TRUE)
 #' 
 #' }
-make.density <- function(region.obj, density.surface = list(), x.space, y.space, buffer = numeric(0), constant = NULL, density.gam = NULL, dsm = NULL, formula = NULL){
+make.density <- function(region.obj = make.region(), density.surface = list(), x.space = 5, y.space = NULL, buffer = numeric(0), constant = 1, density.gam = NULL, dsm = NULL, formula = NULL){
+  # Check the user has supplied the correct number of consants
   if(!is.null(constant)){
     if(length(region.obj@strata.name) > 0 & length(constant) != length(region.obj@strata.name)){
       stop("The length of the constant vector does not correspond to the number of strata", call. = FALSE)
     }
   }
+  # Check if the user has supplied a y.space value
+  if(is.null(y.space)){
+    # If not set it equal to x.space
+    y.space <- x.space
+  }
+  # Make density object
   density <- new(Class = "Density", region = region.obj, strata.name = region.obj@strata.name, density.surface = density.surface, x.space = x.space, y.space = y.space, constant = constant, density.gam = density.gam, buffer = buffer)
  return(density)
 }
@@ -227,7 +265,7 @@ make.density <- function(region.obj, density.surface = list(), x.space, y.space,
 #' pop.description <- make.population.description(N = 1000, 
 #'  density.obj = pop.density, region = region, fixed.N = TRUE)
 #'  }
-make.population.description <- make.pop.description <- function(region.obj, density.obj, cluster.size.table = data.frame(NULL), size.distribution = character(0), size.param = numeric(0), N = numeric(0), fixed.N = TRUE, average.D = numeric(0)){
+make.population.description <- make.pop.description <- function(region.obj = make.region(), density.obj = make.density(), cluster.size.table = data.frame(NULL), size.distribution = character(0), size.param = numeric(0), N = 1000, fixed.N = TRUE, average.D = numeric(0)){
   if(nrow(cluster.size.table) > 0 | length(size.distribution) > 0){   
     cluster.size <- TRUE
   }else{
@@ -256,7 +294,7 @@ make.population.description <- make.pop.description <- function(region.obj, dens
 #' @examples
 #' detect <- make.detectability(key.function = "hn", scale.param = 15,
 #'  truncation = 30) 
-make.detectability <- function(key.function, scale.param, shape.param = numeric(0), covariates = character(0), cov.param = numeric(0), truncation){
+make.detectability <- function(key.function = "hn", scale.param = 25, shape.param = numeric(0), covariates = character(0), cov.param = numeric(0), truncation = 75){
   detectability <- new(Class = "Detectability", key.function = key.function, scale.param = scale.param, shape.param = shape.param, covariates = covariates, cov.param = cov.param, truncation = truncation)
   return(detectability)
 }
@@ -288,7 +326,7 @@ make.detectability <- function(key.function, scale.param, shape.param = numeric(
 #'  formula = ~1),~cds(key = "hr", formula = ~1)), method = "ds", 
 #'  criteria = "AIC")
 #'
-make.ddf.analysis.list <- function(dsmodel, mrmodel = NULL, method, criteria = "AIC", analysis.strata = data.frame(), truncation = numeric(0), binned.data = FALSE, cutpoints = numeric(0)){
+make.ddf.analysis.list <- function(dsmodel = list(~cds(key = "hn", formula = ~1)), mrmodel = NULL, method = "ds", criteria = "AIC", analysis.strata = data.frame(), truncation = 75, binned.data = FALSE, cutpoints = numeric(0)){
   ddf.analyses <- list()
   if(method == "ds"){
     for(a in seq(along = dsmodel)){
@@ -377,7 +415,7 @@ make.ddf.analysis.list <- function(dsmodel, mrmodel = NULL, method, criteria = "
 #' summary(my.simulation)
 #' }
 #' 
-make.simulation <- function(reps, single.transect.set = FALSE, double.observer = FALSE, region.obj, design.obj, population.description.obj, detectability.obj, ddf.analyses.list){
+make.simulation <- function(reps = 100, single.transect.set = FALSE, double.observer = FALSE, region.obj = make.region(), design.obj = make.design(), population.description.obj = make.population.description(), detectability.obj = make.detectability(), ddf.analyses.list = make.ddf.analysis.list()){
   #Make the results arrays and store in a list
   no.strata <- ifelse(length(region.obj@strata.name) > 0, length(region.obj@strata.name)+1, 1) 
   #Check to see if the strata are grouped in the analyses

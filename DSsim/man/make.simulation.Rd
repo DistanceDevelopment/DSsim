@@ -4,9 +4,12 @@
 \alias{make.simulation}
 \title{Creates a Simulation object}
 \usage{
-make.simulation(reps, single.transect.set = FALSE, double.observer = FALSE,
-  region.obj, design.obj, population.description.obj, detectability.obj,
-  ddf.analyses.list)
+make.simulation(reps = 100, single.transect.set = FALSE,
+  double.observer = FALSE, region.obj = make.region(),
+  design.obj = make.design(),
+  population.description.obj = make.population.description(),
+  detectability.obj = make.detectability(),
+  ddf.analyses.list = make.ddf.analysis.list())
 }
 \arguments{
 \item{reps}{number of times the simulation should be repeated}

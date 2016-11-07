@@ -4,10 +4,10 @@
 \alias{make.population.description}
 \title{Creates a Population.Description object}
 \usage{
-make.population.description(region.obj, density.obj,
-  cluster.size.table = data.frame(NULL), size.distribution = character(0),
-  size.param = numeric(0), N = numeric(0), fixed.N = TRUE,
-  average.D = numeric(0))
+make.population.description(region.obj = make.region(),
+  density.obj = make.density(), cluster.size.table = data.frame(NULL),
+  size.distribution = character(0), size.param = numeric(0), N = 1000,
+  fixed.N = TRUE, average.D = numeric(0))
 }
 \arguments{
 \item{region.obj}{the Region object in which this population exists.}

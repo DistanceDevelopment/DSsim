@@ -4,9 +4,10 @@
 \alias{make.ddf.analysis.list}
 \title{Creates a list of DDF.Analysis objects}
 \usage{
-make.ddf.analysis.list(dsmodel, mrmodel = NULL, method, criteria = "AIC",
-  analysis.strata = data.frame(), truncation = numeric(0),
-  binned.data = FALSE, cutpoints = numeric(0))
+make.ddf.analysis.list(dsmodel = list(~cds(key = "hn", formula = ~1)),
+  mrmodel = NULL, method = "ds", criteria = "AIC",
+  analysis.strata = data.frame(), truncation = 75, binned.data = FALSE,
+  cutpoints = numeric(0))
 }
 \arguments{
 \item{dsmodel}{list of distance sampling model formula specifying the detection function (see \code{?ddf} for further details)}
