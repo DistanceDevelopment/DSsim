@@ -390,7 +390,7 @@ setMethod(
   signature="Simulation",
   definition=function(object){
     summary <- summary(object, description.summary = FALSE)
-    return(summary)
+    show(summary)
   }
 )
 
