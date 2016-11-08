@@ -13,6 +13,7 @@ Imports:
 Suggests:
     testthat,
     parallel,
+    pbapply,
     knitr,
     rmarkdown
 Type: Package

@@ -594,7 +594,7 @@ setMethod(
     #set the transect index to 1
     orig.file.index <- object@design@file.index
     object@design@file.index <- 1
-    if(run.parallel & requireNamespace('parallel', quietly = TRUE)){
+    if(run.parallel & requireNamespace('parallel', quietly = TRUE) & requireNamespace('pbapply', quietly = TRUE)){
       # counts the number of cores you have
       nCores <- getOption("cl.cores", detectCores())
       if(!is.na(max.cores)){
@@ -605,13 +605,14 @@ setMethod(
       clusterEvalQ(myCluster, {
         require(DSsim)
       })
-      results <- parLapply(myCluster, X = as.list(1:object@reps), fun = single.simulation.loop, object = object, save.data = save.data, load.data = load.data, data.path = data.path)
+      results <- pbapply::pblapply(X= as.list(1:object@reps), FUN = single.simulation.loop, object = object, save.data = save.data, load.data = load.data, data.path = data.path, cl = myCluster)
+      #results <- parLapply(myCluster, X = as.list(1:object@reps), fun = single.simulation.loop, object = object, save.data = save.data, load.data = load.data, data.path = data.path)
       object <- accumulate.PP.results(simulation = object, results = results)
       stopCluster(myCluster)
     }else{
       #Check that it wasn't trying to run parallel
       if(run.parallel){
-        warning("Could not run in parallel, library(parallel) is not installed.")
+        warning("Could not run in parallel, library(parallel) or library(pbapply) is not installed.")
       }
       #otherwise loop
       for(i in 1:object@reps){
