@@ -389,8 +389,8 @@ setMethod(
   f="show",
   signature="Simulation",
   definition=function(object){
-    message("show not currently implemented")
-    invisible(object)
+    summary <- summary(object, description.summary = FALSE)
+    return(summary)
   }
 )
 
