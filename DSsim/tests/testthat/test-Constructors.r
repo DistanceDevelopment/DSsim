@@ -8,16 +8,14 @@ test_that("Can create object or return correct error messages", {
   #Test region constructor, invoke errors
   coords <- gaps <- list(1)
   coords[[1]] <- list(data.frame(x = c(0,0,100,100,0), y = c(0,100,100,0,0)))
+  gaps[[1]] <- list()
+  gaps[[2]] <- list()
   expect_that(make.region(region.name = "Region", 
                                     strata.name = c("strata"), 
-                                    units = "m", coords = coords),
+                                    units = "m", coords = coords, gaps = gaps),
               throws_error("The lengths of the coords and gaps lists differ, these must be the same and equal to the number of strata."))
   
-  expect_that(make.region(region.name = "Region", 
-                                    strata.name = c("strata"), 
-                                    units = "m"),
-              throws_error("You must provide either coordinates or a shapefile."))
-  
+  gaps <- list()
   gaps[[1]] <- list()
   
   region <- make.region(region.name = "StudySite",
@@ -54,7 +52,7 @@ test_that("Can create object or return correct error messages", {
   expect_identical(density, density2)
   
   # Test failure when nothing is supplied
-  expect_that(make.density(region, x.space = 2, y.space = 2),
+  expect_that(make.density(region, x.space = 2, y.space = 2, constant = 0),
               throws_error("All strata must have some cells with non-zero density. Check that you have correctly specified your density grid. Large grid spacing may also generate this error."))
   
 })      
