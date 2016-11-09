@@ -28,7 +28,7 @@ single.simulation.loop <- function(i, object, save.data, load.data, data.path = 
   if(load.data){
     #load data
     load(paste(data.path,"dataset_",i,".robj", sep = ""))
-    cat("Analysing dataset: ", i, fill = TRUE)
+    cat("\r Analysing dataset: ", i, "\r")
     ddf.data <- dist.data$ddf 
     obs.table <- dist.data$obs.table
     sample.table <- dist.data$sample.table
