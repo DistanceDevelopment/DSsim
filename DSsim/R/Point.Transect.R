@@ -71,13 +71,13 @@ setMethod(
   definition=function(x, y, transect.ID = numeric(0), col = 1, ...){
     sampler.info <- x@sampler.info
     if(is.null(sampler.info$ac.simple)){
-      points(sampler.info$X, sampler.info$Y, pch = 20, col = 4, cex = 1.5, ...)
+      points(sampler.info$X, sampler.info$Y, pch = 20, col = 4, cex = 1.75, ...)
     }else{
       simple <- sampler.info[sampler.info$ac.simple,]
       adv.detectors <- sampler.info[!sampler.info$ac.simple,]
-      points(adv.detectors$X, adv.detectors$Y, pch = 20, col = 4, cex = 2.5)
-      points(adv.detectors$X, adv.detectors$Y, pch = 20, col = 6, cex = 1.5)
-      points(simple$X, simple$Y, pch = 20, col = 4, cex = 1.5)
+      points(adv.detectors$X, adv.detectors$Y, pch = 17, col = "blueviolet", cex = 1.75)
+      #points(adv.detectors$X, adv.detectors$Y, pch = 20, col = 6, cex = 1.5)
+      points(simple$X, simple$Y, pch = 20, col = 4, cex = 1.75)
     }
     invisible(x)
   }

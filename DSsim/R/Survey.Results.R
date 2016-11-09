@@ -83,8 +83,8 @@ setMethod(
   f="plot",
   definition=function(x, y, ...){
     plot(x@region, main = "Example Survey", ...)
-    plot(x@transects, ...)
     plot(x@population, ...)
+    plot(x@transects, ...)
     plot(x@ddf.data, ...)
     invisible(x)
   }
