@@ -88,8 +88,7 @@ single.simulation.loop <- function(i, object, save.data, load.data, data.path = 
     compute.dht = TRUE
     if(compute.dht){
       dht.results <- dht(ddf.results, region.table@region.table, sample.table@sample.table, obs.table@obs.table)
-      object@results <- store.dht.results(object@results, dht.results, i, object@population.description@size)                                           
-    }
+      object@results <- store.dht.results(object@results, dht.results, i, object@population.description@size, ddf.data@ddf.dat, obs.table@obs.table)         }
   }
   object@results$filename <- object@design@filenames[object@design@file.index] 
   return(object@results)

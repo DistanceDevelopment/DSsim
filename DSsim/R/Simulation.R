@@ -243,10 +243,18 @@ setMethod(
     individual.summary <- data.frame(mean.Cover.Area = object@results$individuals$summary[,"CoveredArea","mean"],
                                      mean.Effort = object@results$individuals$summary[,"Effort","mean"],
                                      mean.n = object@results$individuals$summary[,"n","mean"],
+                                     mean.n.miss.dist = object@results$individuals$summary[,"n.miss.dist","mean"],
                                      no.zero.n = zero.n,
                                      mean.ER = object@results$individuals$summary[,"ER","mean"],
                                      mean.se.ER = object@results$individuals$summary[,"se.ER","mean"],
                                      sd.mean.ER = object@results$individuals$summary[,"ER","sd"])
+    # Remove unnecessary columns
+    if(all(individual.summary$mean.n.miss.dist == 0)){
+      individual.summary <- subset(individual.summary,select = -c(mean.n.miss.dist))
+    }
+    if(all(individual.summary$no.zero.n == 0)){
+      individual.summary <- subset(individual.summary,select = -c(no.zero.n))
+    }
     individual.N <- data.frame(Truth = true.N.individuals,
                                mean.Estimate = object@results$individuals$N[,"Estimate","mean"],
                                percent.bias = (object@results$individuals$N[,"Estimate","mean"] - true.N.individuals)/true.N.individuals*100,
@@ -290,11 +298,19 @@ setMethod(
       cluster.summary <- data.frame(mean.Cover.Area = object@results$clusters$summary[,"CoveredArea","mean"],
                                     mean.Effort = object@results$clusters$summary[,"Effort","mean"],
                                     mean.n = object@results$clusters$summary[,"n","mean"],
+                                    mean.n.miss.dist = object@results$clusters$summary[,"n.miss.dist","mean"],
                                     no.zero.n = zero.n,
                                     mean.k = object@results$clusters$summary[,"k","mean"],
                                     mean.ER = object@results$clusters$summary[,"ER","mean"],
                                     mean.se.ER = object@results$clusters$summary[,"se.ER","mean"],
                                     sd.mean.ER = object@results$clusters$summary[,"ER","sd"])
+      # Remove unnecessary columns
+      if(all(cluster.summary$mean.n.miss.dist == 0)){
+        cluster.summary <- subset(cluster.summary,select = -c(mean.n.miss.dist))
+      }
+      if(all(cluster.summary$no.zero.n == 0)){
+        cluster.summary <- subset(cluster.summary,select = -c(no.zero.n))
+      }
       cluster.N <- data.frame(Truth = true.N.clusters,
                               mean.Estimate = object@results$clusters$N[,"Estimate","mean"],
                               percent.bias = (object@results$clusters$N[,"Estimate","mean"] - true.N.clusters)/true.N.clusters*100,

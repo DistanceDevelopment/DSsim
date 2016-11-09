@@ -22,8 +22,10 @@ description.summary <- function(){
   cat("\n   mean.Effort     : mean effort across simulation.")
   cat("\n   mean.n          : mean number of observed objects across 
                      simulation.")
+  cat("\n   mean.n.miss.dist: mean number of observed objects where no distance 
+                    was recorded (only displayed if value > 0).")
   cat("\n   no.zero.n       : number of surveys in simulation where 
-                     nothing was detected.")
+                     nothing was detected (only displayed if value > 0).")
   cat("\n   mean.ER         : mean encounter rate across simulation.") 
   cat("\n   mean.se.ER      : mean standard error of the encounter rates 
                      across simulation.") 
