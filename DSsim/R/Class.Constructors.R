@@ -375,8 +375,15 @@ make.ddf.analysis.list <- function(dsmodel = list(~cds(key = "hn", formula = ~1)
 }
 
 #' @title Creates a Simulation object
-#' @description This creates a simulation object which groups together 
-#' all the objects needed to complete the simulation. 
+#' @description This creates a simulation with all the information necessary for DSsim
+#' to generate a population, create or read in transects, simulate the survey process
+#' and fit detection functions and estimate density / abundance. This function can be
+#' used by itself based on default values to create a simple line transect example, see
+#' Examples below. To create more comples simulations it is advisable to define the 
+#' different parts of the simulation individually before grouping them together. See
+#' the Arguments for links to the functions which make the definitions for the 
+#' individual simulation components. Example simulations can also be found at
+#' <https://github.com/DistanceDevelopment/DSsim/wiki>.
 #' @details The \code{make.simulation} function is now set up so that by
 #'  default (with the exception of specifying point transects rather than
 #'   line) it can run a simple simulation example. See examples.
@@ -385,29 +392,36 @@ make.ddf.analysis.list <- function(dsmodel = list(~cds(key = "hn", formula = ~1)
 #'   be kept the same throughout the simulation.
 #' @param double.observer not currently implemented.
 #' @param region.obj an object of class Region created by a call to
-#'  \code{make.region}
+#'  \link{make.region}
 #' @param design.obj an object of class Survey.Design created by a call to
-#'  \code{make.design}
+#'  \link{make.design}
 #' @param population.description.obj an object of class Population.Description
-#'  created by a call to \code{make.population.description}
+#'  created by a call to \link{make.population.description}
 #' @param detectability.obj and object of class Detectabolity created by a call to
-#'  \code{make.detectability}
+#'  \link{make.detectability}
 #' @param ddf.analyses.list a list of objects of class DDF.Analysis created by 
-#'  a call to\code{make.ddf.analysis.list}
+#'  a call to\link{make.ddf.analysis.list}
 #' @return object of class Simulation 
 #' @export
 #' @author Laura Marshall
 #' @examples
 #' \dontrun{
+#' # A basic line transect simulation example
+#' sim <- make.simulation()
+#' check.sim.setup(sim)
+#' sim <- run(sim) 
+#' summary(sim)
+#' 
 #' # A basic point transect simulation example
 #' sim <- make.simulation(design.obj = make.design("point"))
 #' check.sim.setup(sim)
 #' sim <- run(sim) 
-#' # Note you might find relatively high levels of bias due to low number of repetitions
 #' summary(sim)
+#' # Note % bias levels will vary due to low number of repetitions 
+#' # set by default in these examples
 #' 
 #' # To increase the number of repetitions
-#' sim <- make.simulation(reps = 100, design.obj = make.design("point"))
+#' sim <- make.simulation(reps = 100)
 #' sim <- run(sim) 
 #' summary(sim)
 #' }
