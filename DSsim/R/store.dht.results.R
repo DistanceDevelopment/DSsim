@@ -1,10 +1,5 @@
 store.dht.results <- function(results, dht.results, i, clusters, data, obs.tab){
   # Calculate the number of observations with missing distances
-  n <- nrow(data)
-  n.miss <- nrow(data[is.na(data$distance),])
-  cat("Total obs = ", n, fill = T)
-  cat("Missed dists = ", n.miss, fill = TRUE)
-  
   strata.names <- dimnames(results$individuals$summary)[[1]]
   strata.names.ND <- as.character(dht.results$individual$N$Label)
   for(strat in seq(along = strata.names)){
