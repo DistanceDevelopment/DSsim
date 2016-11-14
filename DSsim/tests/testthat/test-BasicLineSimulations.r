@@ -12,6 +12,10 @@ test_that("Can perform basic simulation", {
   gaps[[1]] <- list()
   gaps[[2]] <- list()
   expect_that(region <- make.region(region.name = "Region", 
+                                    strata.name = c("A", "Total"), 
+                                    units = "km", coords = coords, gaps = gaps),
+              throws_error("'Total' is not an accepted strata name, please ammend it."))
+  expect_that(region <- make.region(region.name = "Region", 
                                     strata.name = c("A", "B"), 
                                     units = "km", coords = coords, gaps = gaps),
               is_a("Region"))

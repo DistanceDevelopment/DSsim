@@ -108,6 +108,10 @@ setValidity("Region",
   function(object){
     if(length(object@strata.name) > 0){
       strata.name <- object@strata.name
+      # Check that none are Total
+      if(any(strata.name == "Total")){
+        return("'Total' is not an accepted strata name, please ammend it.")
+      }
       #check that they are all unique
       for(i in seq(along = strata.name)){
         temp <- strata.name[-i]
