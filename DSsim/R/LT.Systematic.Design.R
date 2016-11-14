@@ -69,7 +69,7 @@ setMethod(
         warning("Write to file not currently implemented", call. = FALSE, immediate. = TRUE)
       }
       # Storage vectors
-      ID <- start.X <- start.Y <- end.X <- end.Y <- tot.length <- d7.length <- numeric(0)
+      ID <- start.X <- start.Y <- end.X <- end.Y <- tot.length <- numeric(0)
       region.name <- character(0)
       transect.ID <- 1
       # Get strata names
@@ -127,7 +127,9 @@ setMethod(
         clipped.lines <- intersection@lines
         for(i in seq(along= clipped.lines)){
           # Get the next transect
-          next.line <- clipped.lines[[i]]@Lines 
+          next.line <- clipped.lines[[i]]@Lines
+          # Store part lengths
+          part.lengths <- numeric(0)
           # Transects may have multiple parts
           for(j in seq(along = next.line)){
             next.part <- next.line[[j]]@coords
@@ -137,20 +139,22 @@ setMethod(
             end.X <- c(end.X, next.part[,"x"][2])
             start.Y <- c(start.Y, next.part[,"y"][1])
             end.Y <- c(end.Y, next.part[,"y"][2])
+            # Calculate length of line part
+            part.lengths[j] <- sqrt((next.part[,"x"][2]-next.part[,"x"][1])^2 + (next.part[,"y"][2]-next.part[,"y"][1])^2)
           }
+          # Add total length info
+          tot.length <- c(tot.length, rep(sum(part.lengths), length(next.line)))
           # Increment transect ID counter
           transect.ID <- transect.ID + 1
         }
       }#loop over strata
       # Create samper table
-      x.diff <- end.X-start.X
-      y.diff <- end.Y-start.Y
       sampler.info <- data.frame(ID = ID, 
                                  start.X = start.X, 
                                  start.Y = start.Y, 
                                  end.X = end.X, 
                                  end.Y = end.Y, 
-                                 length = sqrt((x.diff^2 + y.diff^2)), 
+                                 length = tot.length, 
                                  region = region.name, 
                                  d7.length = rep(NA, length(ID)))
       # Create Line.Transect object
