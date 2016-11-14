@@ -5,8 +5,8 @@
 \title{Creates a Density object}
 \usage{
 make.density(region.obj = make.region(), density.surface = list(),
-  x.space = 5, y.space = NULL, buffer = numeric(0), constant = 1,
-  density.gam = NULL, dsm = NULL, formula = NULL)
+  x.space = 5, y.space = NULL, buffer = numeric(0),
+  constant = numeric(0), density.gam = NULL, dsm = NULL, formula = NULL)
 }
 \arguments{
 \item{region.obj}{the Region object in which the density grid will be created}
