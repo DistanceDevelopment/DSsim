@@ -125,7 +125,7 @@ make.region <- function(region.name = "region",
 #' }
 make.design <- function(transect.type = "line", design.details = "default", region.obj = "region", design.axis = 0, spacing = 100, nested.space = numeric(0), no.complex = numeric(0), angle = numeric(0), plus.sampling = logical(0), path = character(0)){
   # Set the design details if spcified as "default"
-  if(design.details == "default"){
+  if(design.details[1] == "default"){
     if(transect.type %in% c("line", "Line", "Line Transect", "line transect")){
       design.details <- c("parallel", "systematic")
     }else if(transect.type %in% c("Point", "point", "Point Transect", "point transect")){
@@ -247,11 +247,19 @@ make.design <- function(transect.type = "line", design.details = "default", regi
 #' plot(region, add = TRUE)
 #' 
 #' }
-make.density <- function(region.obj = make.region(), density.surface = list(), x.space = 5, y.space = NULL, buffer = numeric(0), constant = 1, density.gam = NULL, dsm = NULL, formula = NULL){
+make.density <- function(region.obj = make.region(), density.surface = list(), x.space = 5, y.space = NULL, buffer = numeric(0), constant = numeric(0), density.gam = NULL, dsm = NULL, formula = NULL){
+  # Find the number of strata
+  no.strata <- length(region.obj@strata.name)
   # Check the user has supplied the correct number of consants
-  if(!is.null(constant)){
-    if(length(region.obj@strata.name) > 0 & length(constant) != length(region.obj@strata.name)){
+  if(length(constant) > 0){
+    if(no.strata > 0 & length(constant) != length(region.obj@strata.name)){
       stop("The length of the constant vector does not correspond to the number of strata", call. = FALSE)
+    }
+  }else{
+    if(no.strata == 0){
+      constant <- 1
+    }else{
+      constant <- rep(1, no.strata)
     }
   }
   # Check if the user has supplied a y.space value
@@ -293,11 +301,25 @@ make.density <- function(region.obj = make.region(), density.surface = list(), x
 #' pop.description <- make.population.description(N = 1000, 
 #'  density.obj = pop.density, region = region, fixed.N = TRUE)
 #'  }
-make.population.description <- make.pop.description <- function(region.obj = make.region(), density.obj = make.density(), cluster.size.table = data.frame(NULL), size.distribution = character(0), size.param = numeric(0), N = 1000, fixed.N = TRUE, average.D = numeric(0)){
+make.population.description <- make.pop.description <- function(region.obj = make.region(), density.obj = make.density(), cluster.size.table = data.frame(NULL), size.distribution = character(0), size.param = numeric(0), N = numeric(0), fixed.N = TRUE, average.D = numeric(0)){
+  # Check cluster size input
   if(nrow(cluster.size.table) > 0 | length(size.distribution) > 0){   
     cluster.size <- TRUE
   }else{
     cluster.size <- FALSE
+  }
+  # Check population size input
+  no.strata <- length(region.obj@strata.name)
+  if(fixed.N){
+    if(length(N) == 0){
+      if(no.strata > 0){
+        N <- rep(1000, no.strata)  
+      }else{
+        N <- 1000
+      }
+    }else if(no.strata > 0  & length(N) != no.strata){
+      stop("You have not supplied the correct number of constants for population size N for each strata", call. = FALSE)
+    }
   }
   pop.description <- new(Class = "Population.Description", N = N, density = density.obj, region.obj = region.obj, size.table = cluster.size.table, size = cluster.size, gen.by.N = fixed.N)
   return(pop.description)
