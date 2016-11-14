@@ -22,7 +22,7 @@
 #' (coords) and optionally a list of polygons describing the areas to 
 #' be excluded (gaps). If area is not specified it will be calculated.
 #' @param region.name the region name
-#' @param strata.name the region name
+#' @param strata.name the strata names. If not supplied when there are 2 or mode strata default names of "A", "B", "C"... will be assigned.
 #' @param units the units given as a character (either 'm' or 'km')
 #' @param area the area of the region (optional - if not supplied it will be 
 #'   calculated for you)
@@ -61,6 +61,15 @@ make.region <- function(region.name = "region",
   if(length(gaps) == 0){
     for(i in seq(along = coords)){
       gaps[[i]] <- list()
+    }
+  }
+  # If there is more than one strata and the user has not specified strata.name
+  if(length(coords) > 1 & length(strata.name) == 0){
+    no.strata <- length(coords)
+    if(no.strata < 27){
+      strata.name <- LETTERS[1:no.strata]   
+    }else{
+      stop("Too many strata (>26) for strata names to be assigned default names.", call. = FALSE)
     }
   }
   # Call to make the region object

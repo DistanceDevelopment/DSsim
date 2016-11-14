@@ -12,7 +12,7 @@ make.region(region.name = "region", strata.name = character(0),
 \arguments{
 \item{region.name}{the region name}
 
-\item{strata.name}{the region name}
+\item{strata.name}{the strata names. If not supplied when there are 2 or mode strata default names of "A", "B", "C"... will be assigned.}
 
 \item{units}{the units given as a character (either 'm' or 'km')}
 
