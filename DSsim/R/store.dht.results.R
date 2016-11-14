@@ -4,7 +4,11 @@ store.dht.results <- function(results, dht.results, i, clusters, data, obs.tab){
   strata.names.ND <- as.character(dht.results$individual$N$Label)
   for(strat in seq(along = strata.names)){
     # Get the number of missed dists in strata
-    object.ids <- obs.tab$object[obs.tab$Region.Label == strata.names[strat]]
+    if(strata.names[strat] == "Total"){
+      object.ids <- obs.tab$object
+    }else{
+      object.ids <- obs.tab$object[obs.tab$Region.Label == strata.names[strat]]  
+    }
     strata.data <- data[data$object %in% object.ids,]
     data.miss.dists <- strata.data[is.na(strata.data),]
     if(clusters){
