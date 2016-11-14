@@ -46,10 +46,6 @@ test_that("Defaults work as expected", {
   expect_that(test2, is_identical_to(test))
   expect_that(nrow(test@population@population), equals(2000))
   
-  par(mfrow= c(1,2))
-  plot(test)
-  plot(test2)
-  
   set.seed(242)
   test.analysis <- run.analysis(sim, test, dht = TRUE)
   set.seed(242)
