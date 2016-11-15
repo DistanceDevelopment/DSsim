@@ -5,20 +5,20 @@
 \title{Creates a Population.Description object}
 \usage{
 make.population.description(region.obj = make.region(),
-  density.obj = make.density(), cluster.size.table = data.frame(NULL),
-  size.distribution = character(0), size.param = numeric(0),
-  N = numeric(0), fixed.N = TRUE, average.D = numeric(0))
+  density.obj = make.density(), covariates = list(), N = numeric(0),
+  fixed.N = TRUE, average.D = numeric(0))
 }
 \arguments{
 \item{region.obj}{the Region object in which this population exists.}
 
 \item{density.obj}{the Density object describing the distribution of the individuals / clusters.}
 
-\item{cluster.size.table}{- data.frame with two columns size (giving the cluster sizes) and prob (giving the probability that a cluster is of that size). prob must sum to 1.}
-
-\item{size.distribution}{- not yet implemented}
-
-\item{size.param}{- not yet implemented}
+\item{covariates}{Named list with one named entry per individual level covariate.
+Cluster sizes can be defined here. Each list entry will either be a data.frame 
+containing 2 columns, the first the level (level) and the second the probability 
+(prob). The cluster size entry in the list must be named 'size'. Alternatively the
+list element may be another list specifying the distribution in the first element
+and a named list in the second element with the distribution parameters.}
 
 \item{N}{the number of individuals / clusters in a population}
 
@@ -32,6 +32,21 @@ object of class Population.Description
 \description{
 Creates an object which describes a population. The values in this object 
 will be used to create instances of the population
+}
+\details{
+#' The \code{covariates} argument should specify a list with one named 
+element per covariate. If specifying the covariate values via a distribution
+this should be done in the form of a list. The first element should be one of 
+the following: 'normal', 'poisson', 'lognormal'. The corresponding parameters
+that you must supply are detailed below. These should be added to a named list
+(each element named with the parameter name) containing the parameter values.
+See examples for implementation.
+
+\tabular{lll}{ Distribution  \tab Parameters  \tab         \cr 
+               normal        \tab mu          \tab sigma   \cr
+               poisson       \tab lambda      \tab Random  \cr
+               lognormal     \tab mu          \tab sigma   \cr
+              }
 }
 \examples{
 # An example population can be created from the default values
