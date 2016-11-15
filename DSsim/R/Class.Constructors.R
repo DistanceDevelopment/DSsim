@@ -285,12 +285,29 @@ make.density <- function(region.obj = make.region(), density.surface = list(), x
 #' @description 
 #' Creates an object which describes a population. The values in this object 
 #' will be used to create instances of the population
+#' 
+#' @details #' The \code{covariates} argument should specify a list with one named 
+#' element per covariate. If specifying the covariate values via a distribution
+#' this should be done in the form of a list. The first element should be one of 
+#' the following: 'normal', 'poisson', 'lognormal'. The corresponding parameters
+#' that you must supply are detailed below. These should be added to a named list
+#' (each element named with the parameter name) containing the parameter values.
+#' See examples for implementation.
+#'
+#' \tabular{lll}{ Distribution  \tab Parameters  \tab         \cr 
+#'                normal        \tab mu          \tab sigma   \cr
+#'                poisson       \tab lambda      \tab Random  \cr
+#'                lognormal     \tab mu          \tab sigma   \cr
+#'               }
 #'
 #' @param region.obj the Region object in which this population exists.
 #' @param density.obj the Density object describing the distribution of the individuals / clusters.
-#' @param cluster.size.table - data.frame with two columns size (giving the cluster sizes) and prob (giving the probability that a cluster is of that size). prob must sum to 1. 
-#' @param size.distribution - not yet implemented
-#' @param size.param - not yet implemented
+#' @param covariates Named list with one named entry per individual level covariate.
+#' Cluster sizes can be defined here. Each list entry will either be a data.frame 
+#' containing 2 columns, the first the level (level) and the second the probability 
+#' (prob). The cluster size entry in the list must be named 'size'. Alternatively the
+#' list element may be another list specifying the distribution in the first element
+#' and a named list in the second element with the distribution parameters. 
 #' @param N the number of individuals / clusters in a population
 #' @param fixed.N a logical value. If TRUE the population is generated from the value of N otherwise it is generated from the density description.
 #' @param average.D not currently implemented.
@@ -310,23 +327,16 @@ make.density <- function(region.obj = make.region(), density.surface = list(), x
 #' pop.description <- make.population.description(N = 1000, 
 #'  density.obj = pop.density, region = region, fixed.N = TRUE)
 #'  }
-make.population.description <- make.pop.description <- function(region.obj = make.region(), density.obj = make.density(), cluster.size.table = data.frame(NULL), size.distribution = character(0), size.param = numeric(0), N = numeric(0), fixed.N = TRUE, average.D = numeric(0)){
-  # Check cluster size input
-  if(nrow(cluster.size.table) > 0 | length(size.distribution) > 0){   
-    cluster.size <- TRUE
-  }else{
-    cluster.size <- FALSE
-  }
+make.population.description <- make.pop.description <- function(region.obj = make.region(), density.obj = make.density(), covariates = list(), N = numeric(0), fixed.N = TRUE, average.D = numeric(0)){
+  # Get the number of strata
+  no.strata <- ifelse(length(region.obj@strata.name) > 0, length(region.obj@strata.name), 1)
+  # Check covariate input
+  covariates <- check.covariates(covariates, no.strata)
   # Check population size input
-  no.strata <- length(region.obj@strata.name)
   if(fixed.N){
     if(length(N) == 0){
-      if(no.strata > 0){
-        N <- rep(1000, no.strata)  
-      }else{
-        N <- 1000
-      }
-    }else if(no.strata > 0  & length(N) != no.strata){
+      N <- rep(1000, no.strata)  
+    }else if(length(N) != no.strata){
       stop("You have not supplied the correct number of constants for population size N for each strata", call. = FALSE)
     }
   }

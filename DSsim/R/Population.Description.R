@@ -15,12 +15,10 @@
 #' population density
 #' @slot region.name Object of class \code{"character"}; name of
 #' the region in which the population exists.
-#' @slot size Object of class \code{"logical"}; Indicating whether
-#' detections will be made on cluster (TRUE) or individuals (FALSE).
-#' @slot size.table Object of class \code{"data.frame"}; This must
-#' have 2 columns- \code{size} and \code{prob}. The first column gives the
-#' possible cluster sizes and the second describes the probabilities
-#' of each cluster size.
+#' @slot covariates Named list with one named entry per individual level covariate.
+#' Cluster sizes can be defined here. Each list entry will either be a data.frame 
+#' containing 2 columns, the first the level (level) and the second the probability 
+#' (prob). The cluster size entry in the list must be named 'size'.
 #' @slot gen.by.N Object of class \code{"logical"}; If \code{TRUE}
 #' N is fixed otherwise it is generated from a Poisson distribution.
 #' @slot D.dist Object of class \code{character}; Describes the
@@ -37,14 +35,13 @@
 setClass("Population.Description", representation(N           = "numeric",
                                                   density     = "Density",
                                                   region.name = "character",
-                                                  size        = "logical",
-                                                  size.table  = "data.frame",
+                                                  covariates  = "list"
                                                   gen.by.N    = "logical",
                                                   D.dist      = "character"))
 setMethod(
   f="initialize",
   signature="Population.Description",
-  definition=function(.Object, N, density, region.obj, size.table, size, gen.by.N = TRUE, D.dist = character(0)){
+  definition=function(.Object, N, density, region.obj, size.table, size, covariates = list(), gen.by.N = TRUE, D.dist = character(0)){
     #Input pre-processing
     if(!gen.by.N){
       ave.density <- NULL
@@ -58,8 +55,7 @@ setMethod(
     .Object@N           <- N
     .Object@density     <- density
     .Object@region.name <- region.obj@region.name
-    .Object@size.table  <- size.table
-    .Object@size        <- size
+    .Object@covariates  <- covariates
     .Object@gen.by.N    <- gen.by.N
     .Object@D.dist      <- D.dist
     #Check object is valid
@@ -126,6 +122,9 @@ setMethod(
     N <- nrow(all.grid.locations)
     #create population object
     population.dataframe <- data.frame(object = 1:nrow(all.grid.locations), x = all.grid.locations$x.coord, y = all.grid.locations$y.coord)
+    # Add covariate values
+    population.dataframe <- add.covariate.values(population.dataframe, object)
+    
     if(object@size){
       cluster.size <- sample(object@size.table$size, nrow(population.dataframe), replace = TRUE, prob = object@size.table$prob)
       population.dataframe$size <- cluster.size
