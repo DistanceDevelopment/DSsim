@@ -18,6 +18,8 @@
 #' @slot covariates Named list with one named entry per individual level covariate.
 #' Cluster sizes can be defined here. Each list entry will either be a data.frame 
 #' containing 2 columns, the first the level (level) and the second the probability 
+#' @slot size logical value indicating whether the population occurs in 
+#' clusters.
 #' (prob). The cluster size entry in the list must be named 'size'.
 #' @slot gen.by.N Object of class \code{"logical"}; If \code{TRUE}
 #' N is fixed otherwise it is generated from a Poisson distribution.
@@ -36,6 +38,7 @@ setClass("Population.Description", representation(N           = "numeric",
                                                   density     = "Density",
                                                   region.name = "character",
                                                   covariates  = "list",
+                                                  size        = "logical",
                                                   gen.by.N    = "logical",
                                                   D.dist      = "character"))
 setMethod(
@@ -51,11 +54,15 @@ setMethod(
       }
       N <- region.obj@area*ave.density
     }
+    # Check if there are clusters
+    cov.names <- names(covariates)
+    size <- "size" %in% cov.names
     #Set slots
     .Object@N           <- N
     .Object@density     <- density
     .Object@region.name <- region.obj@region.name
     .Object@covariates  <- covariates
+    .Object@size        <- size
     .Object@gen.by.N    <- gen.by.N
     .Object@D.dist      <- D.dist
     #Check object is valid

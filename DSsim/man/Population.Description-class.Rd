@@ -23,7 +23,10 @@ the region in which the population exists.}
 
 \item{\code{covariates}}{Named list with one named entry per individual level covariate.
 Cluster sizes can be defined here. Each list entry will either be a data.frame 
-containing 2 columns, the first the level (level) and the second the probability 
+containing 2 columns, the first the level (level) and the second the probability}
+
+\item{\code{size}}{logical value indicating whether the population occurs in 
+clusters.
 (prob). The cluster size entry in the list must be named 'size'.}
 
 \item{\code{gen.by.N}}{Object of class \code{"logical"}; If \code{TRUE}
