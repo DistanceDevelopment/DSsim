@@ -18,7 +18,9 @@ test_that("Checking of Covariate Input", {
   
   expect_error(check.covariates(covariate.list, 3), "You have supplied an incorrect number of covariate distributions for cov size the list should either be of length 1 or equal to the number of strata.")
   
+  covariate.list <- list()
   covariate.list[[1]] <- list(data.frame(level = c(1,2,3), prob = c(0.25,0.5,0.25)), data.frame(level = c(1,2,3), prob = c(0.2,0.6,0.2)))
+  covariate.list$height <- list(list("normal", list(mean = 1.8, sd = 0.1)))
   
   expect_error(check.covariates(covariate.list, 2), "Not all the elements of the covariate list are named. Please name all elements.")
   
@@ -26,7 +28,7 @@ test_that("Checking of Covariate Input", {
   covariate.list$size <- list(data.frame(level = c(1,2,3), prob = c(0.25,0.5,0.25)))
   covariate.list$height <- list(list("normal", list(lambda = 0.1)))
   
-  expect_error(check.covariates(covariate.list, 1), "The distribution parameters for covariate height and strata 1 should be mu and sigma.")
+  expect_error(check.covariates(covariate.list, 1), "The distribution parameters for covariate height and strata 1 should be mean and sd.")
   
   covariate.list$height <- list(list("poisson", list(lambda = 0.1)))
   expect_equal(check.covariates(covariate.list, 1), covariate.list)
