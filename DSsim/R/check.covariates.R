@@ -41,12 +41,12 @@ check.covariates <- function(covariate.list, no.strata){
         params <- next.element[[2]]
         param.names <- names(params)
         if(distribution == "normal"){
-          if(length(param.names) != 2 | !all(param.names %in% c("mu", "sigma"))){
-            stop(paste("The distribution parameters for covariate ", list.names[cov]," and strata ", strat," should be mu and sigma.", sep = ""), call. = FALSE)  
+          if(length(param.names) != 2 | !all(param.names %in% c("mean", "sd"))){
+            stop(paste("The distribution parameters for covariate ", list.names[cov]," and strata ", strat," should be mean and sd.", sep = ""), call. = FALSE)  
           }
         }else if(distribution  == "lognormal"){
-          if(length(param.names) != 2 | !all(param.names %in% c("mu", "sigma"))){
-            stop(paste("The distribution parameters for covariate ", list.names[cov]," and strata ", strat," should be mu and sigma.", sep = ""), call. = FALSE)  
+          if(length(param.names) != 2 | !all(param.names %in% c("logmean", "logsd"))){
+            stop(paste("The distribution parameters for covariate ", list.names[cov]," and strata ", strat," should be logmean and logsd.", sep = ""), call. = FALSE)  
           }
         }else if(distribution == "poisson"){
           if(length(param.names) != 1 | !all(param.names %in% c("lambda"))){

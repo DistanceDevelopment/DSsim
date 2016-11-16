@@ -35,13 +35,13 @@
 setClass("Population.Description", representation(N           = "numeric",
                                                   density     = "Density",
                                                   region.name = "character",
-                                                  covariates  = "list"
+                                                  covariates  = "list",
                                                   gen.by.N    = "logical",
                                                   D.dist      = "character"))
 setMethod(
   f="initialize",
   signature="Population.Description",
-  definition=function(.Object, N, density, region.obj, size.table, size, covariates = list(), gen.by.N = TRUE, D.dist = character(0)){
+  definition=function(.Object, N, density, region.obj, size.table, size, covariates, gen.by.N = TRUE, D.dist = character(0)){
     #Input pre-processing
     if(!gen.by.N){
       ave.density <- NULL
@@ -68,14 +68,6 @@ setValidity("Population.Description",
   function(object){
     if(length(object@N) > 0 & sum(object@N) <= 0){
       return("You must provide a positive, non-zero abundance")
-    }
-    if(object@size){
-      if(sum(object@size.table$prob) != 1){
-        return("Probabilities in cluster size table must sum to 1")
-      }
-      if(min(object@size.table$size) < 1){
-        return("Cannot have cluster sizes less than 1")
-      }
     }
     return(TRUE)
   }
@@ -120,15 +112,13 @@ setMethod(
 
     }
     N <- nrow(all.grid.locations)
-    #create population object
-    population.dataframe <- data.frame(object = 1:nrow(all.grid.locations), x = all.grid.locations$x.coord, y = all.grid.locations$y.coord)
+    # Make population data.frame
+    population.dataframe <- data.frame(object = 1:nrow(all.grid.locations), x = all.grid.locations$x.coord, y = all.grid.locations$y.coord, strata = all.grid.locations$strata)
     # Add covariate values
-    population.dataframe <- add.covariate.values(population.dataframe, object)
-    
-    if(object@size){
-      cluster.size <- sample(object@size.table$size, nrow(population.dataframe), replace = TRUE, prob = object@size.table$prob)
-      population.dataframe$size <- cluster.size
+    if(length(object@covariates) > 0){
+      population.dataframe <- add.covariate.values(population.dataframe, object@covariates)
     }
+    # Make population object
     population <- new(Class = "Population", region = object@region.name, strata.names = region.obj@region.name, N = N, D = N/region.obj@area, population = population.dataframe, detectability = detectability)
     return(population)
   }

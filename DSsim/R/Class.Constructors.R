@@ -340,7 +340,7 @@ make.population.description <- make.pop.description <- function(region.obj = mak
       stop("You have not supplied the correct number of constants for population size N for each strata", call. = FALSE)
     }
   }
-  pop.description <- new(Class = "Population.Description", N = N, density = density.obj, region.obj = region.obj, size.table = cluster.size.table, size = cluster.size, gen.by.N = fixed.N)
+  pop.description <- new(Class = "Population.Description", N = N, density = density.obj, region.obj = region.obj, covariates = covariates, gen.by.N = fixed.N)
   return(pop.description)
 }
 
