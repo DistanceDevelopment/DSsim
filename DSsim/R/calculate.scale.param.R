@@ -1,6 +1,7 @@
 calculate.scale.param <- function(pop.data, detectability, region){
 # This function calculates the scale parameters including any covariate effects
-# and adds these values to the population dataframe which is then returned.
+# and adds these values to the population dataframe which is then returned. Also
+# adds the shape parameter where appropriate.
 # ARGUMENTS:
 #   pop.data - population dataframe
 #   detectability - a detectablity object
@@ -112,6 +113,10 @@ calculate.scale.param <- function(pop.data, detectability, region){
     sum.params <- sum.of.factors + temp.multiply
     new.scale <- exp(log.scale + sum.params)
     strata.data$scale.param <- as.numeric(new.scale)
+    # If it is a hr function add shape param too
+    if(detectability@key.function == "hr"){
+      strata.data$shape.param <- rep(detectability@shape.param[strat], nrow(strata.data))
+    }
     list.data[[strata.ids[strat]]] <- as.data.frame(strata.data)
   }
   # Merge the datasets again
