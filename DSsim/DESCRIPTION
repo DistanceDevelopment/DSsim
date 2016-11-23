@@ -120,5 +120,4 @@ Collate:
     'single.simulation.loop.R'
     'store.ddf.results.R'
     'store.dht.results.R'
-    'uf.detect.R'
 RoxygenNote: 5.0.1
