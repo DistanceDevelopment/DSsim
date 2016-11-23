@@ -87,6 +87,7 @@ Collate:
     'calc.poss.detect.dists.lines.R'
     'calc.poss.detect.dists.points.R'
     'calculate.fitted.R'
+    'calculate.scale.param.R'
     'check.LinkID.order.R'
     'check.covariates.R'
     'check.intersection.R'
