@@ -51,7 +51,10 @@ setMethod(
     n.in.covered <- poss.distances$distance
     dist.data <- simulate.detections(poss.distances, population@detectability)
     dist.data <- rename.duplicates(dist.data)
-    dist.data <- dist.data[,c("object", "transect.ID", "distance", "x", "y")]    
+    # Get the covariate names
+    all.col.names <- names(object@population@population)
+    cov.param.names <- all.col.names[!all.col.names %in% c("object", "x", "y", "strata", "scale.param", "shape.param")]
+    dist.data <- dist.data[,c("object", "transect.ID", "distance", "x", "y", cov.param.names)]    
     ddf.data.obj <- new(Class = "Single.Obs.DDF.Data", data = dist.data)
     if(dht.tables){
       region.table <- create.region.table(object, ...)
