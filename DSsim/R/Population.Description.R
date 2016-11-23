@@ -108,7 +108,7 @@ setMethod(
   definition=function(object, detectability, region.obj = NULL){
     #If the user has not passed in the region object
     if(class(region.obj) != "Region"){
-      warning("Obtaining region object from the global workspace", call. = TRUE, immediate. = TRUE)
+      warning("Trying to obtain region object from the global workspace", call. = TRUE, immediate. = TRUE)
       region.obj <- get(object@region.name)
     }
     #If the population has fixed N
