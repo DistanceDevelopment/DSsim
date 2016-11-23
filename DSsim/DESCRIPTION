@@ -112,6 +112,7 @@ Collate:
     'is.gap.R'
     'modify.strata.for.analysis.R'
     'rename.duplicates.R'
+    'rtpois.R'
     'save.sim.results.R'
     'setcov.R'
     'simulate.detections.R'

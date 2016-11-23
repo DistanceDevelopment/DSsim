@@ -5,8 +5,7 @@
 \title{Creates a Detectablility object}
 \usage{
 make.detectability(key.function = "hn", scale.param = 25,
-  shape.param = numeric(0), covariates = character(0),
-  cov.param = numeric(0), truncation = 75)
+  shape.param = numeric(0), cov.param = list(), truncation = 75)
 }
 \arguments{
 \item{key.function}{specifies shape of the detection function (either 
@@ -16,9 +15,7 @@ half-normal "hn" or hazard rate "hr")}
 
 \item{shape.param}{parameter value associated with the detection function}
 
-\item{covariates}{not yet implemented}
-
-\item{cov.param}{not yet implemented}
+\item{cov.param}{named list with parameters for covariates}
 
 \item{truncation}{the maximum perpendicular (or radial) distance at which 
 objects may be detected from a line (or point) transect.}
