@@ -206,4 +206,32 @@ test_that("Check calculate.scale.param function", {
   sex.param <- ifelse(temp.A$sex == "female", -0.5, 0)
   expect_equal(temp.A$scale.param, exp(log(25) + temp.A$size*0.5 + sex.param))
   expect_equal(temp.B$scale.param, rep(exp(log(25) + 0.1),10))
+  
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # Test hr 
+  
+  # Set up covariates
+  covariate.list <- list()
+  covariate.list$size <- list(list("ztruncpois", list(mean = 5)),
+                              list("poisson", list(lambda = 30)))
+  covariate.list$height <- list(list("lognormal", list(meanlog = log(2), sdlog = log(1.25))))
+  covariate.list$sex <- list(data.frame(level = c("male", "female"), prob = c(0.45,0.55)), data.frame(level = c("male", "female"), prob = c(0,1)))
+  # Create covariate description
+  pop.desc <- make.population.description(region.obj = region, density.obj = density, covariates = covariate.list, N = c(10,10))
+  
+  # define covariate parameters
+  cov.params <- list(size = c(0.5,0), sex = data.frame(level = c("male", "female","male", "female"),
+                                                       strata = c("A", "A", "B", "B"),
+                                                       param = c(0, -0.5, 0, 0.1)))
+  detect <- make.detectability("hr", shape.param = c(2,3), cov.param = cov.params)
+  
+  # Generate population
+  pop <- generate.population(pop.desc, detect, region)
+  pop.data <- pop@population
+  
+  temp.A <- pop.data[pop.data$strata == 1,]
+  temp.B <- pop.data[pop.data$strata == 2,]
+  
+  expect_true(all(temp.A$shape == 2))
+  expect_true(all(temp.B$shape == 3))
 })
