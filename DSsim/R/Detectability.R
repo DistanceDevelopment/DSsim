@@ -25,8 +25,7 @@
 setClass("Detectability", representation(key.function    = "character",                 
                                          scale.param     = "numeric",
                                          shape.param     = "numeric",
-                                         covariates      = "character",
-                                         cov.param       = "numeric",
+                                         cov.param       = "list",
                                          truncation      = "numeric")) 
 setMethod(
   f="initialize",
@@ -37,7 +36,6 @@ setMethod(
     .Object@key.function <- key.function
     .Object@scale.param  <- scale.param
     .Object@shape.param  <- shape.param
-    .Object@covariates   <- covariates
     .Object@cov.param    <- cov.param
     .Object@truncation   <- truncation      
     #Check object is valid
@@ -69,6 +67,15 @@ setValidity("Detectability",
     }
     if(length(object@scale.param) > 1 & length(object@shape.param) > 1 & length(object@scale.param) != length(object@shape.param)){
       return("The same number of values must be provided for both the shape and scale parameters or only one value supplied for either the shape or scale parameter.")
+    }
+    cov.names <- names(object@cov.param)
+    if(any(cov.names == "")){
+      return("Not all the elements of the cov.param list are named. Please provide names for all elements.")
+    }
+    for(cov in seq(along = object@cov.param)){
+      if(length(object@cov.param[[cov]]) == 0){
+        return(paste("List element ", cov.names[cov], " of the cov.param list does not contain any values."), sep = "")
+      }
     }
     return(TRUE)
   }

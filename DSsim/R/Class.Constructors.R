@@ -353,8 +353,7 @@ make.population.description <- make.pop.description <- function(region.obj = mak
 #'   half-normal "hn" or hazard rate "hr")
 #' @param scale.param parameter value associated with the detection function
 #' @param shape.param parameter value associated with the detection function
-#' @param covariates not yet implemented
-#' @param cov.param not yet implemented
+#' @param cov.param named list with parameters for covariates
 #' @param truncation the maximum perpendicular (or radial) distance at which 
 #'   objects may be detected from a line (or point) transect.
 #' @return object of class Detectablility 
@@ -364,8 +363,8 @@ make.population.description <- make.pop.description <- function(region.obj = mak
 #' # The default values create a detectability object as follows:
 #' detect <- make.detectability(key.function = "hn", scale.param = 25,
 #'  truncation = 75) 
-make.detectability <- function(key.function = "hn", scale.param = 25, shape.param = numeric(0), covariates = character(0), cov.param = numeric(0), truncation = 75){
-  detectability <- new(Class = "Detectability", key.function = key.function, scale.param = scale.param, shape.param = shape.param, covariates = covariates, cov.param = cov.param, truncation = truncation)
+make.detectability <- function(key.function = "hn", scale.param = 25, shape.param = numeric(0), cov.param = list(), truncation = 75){
+  detectability <- new(Class = "Detectability", key.function = key.function, scale.param = scale.param, shape.param = shape.param, cov.param = cov.param, truncation = truncation)
   return(detectability)
 }
 
