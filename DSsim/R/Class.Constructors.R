@@ -289,32 +289,29 @@ make.density <- function(region.obj = make.region(), density.surface = list(), x
 #' @details #' The \code{covariates} argument should specify a list with one named 
 #' element per covariate. If specifying the covariate values via a distribution
 #' this should be done in the form of a list. The first element should be one of 
-#' the following: 'normal', 'poisson', 'lognormal'. The corresponding parameters
-#' that you must supply are detailed below. These should be added to a named list
-#' (each element named with the parameter name) containing the parameter values.
+#' the following: 'normal', 'poisson', 'ztruncpois' or 'lognormal'. The 'ztruncpois'
+#' distribution refers to a zero truncated Poisson distribution. The corresponding 
+#' parameters that you must supply are detailed below. These should be added to a named 
+#' list (each element named with the parameter name) containing the parameter values.
 #' See examples for implementation.
 #'
 #' \tabular{lll}{ Distribution  \tab Parameters  \tab         \cr 
 #'                normal        \tab mu          \tab sigma   \cr
-#'                poisson       \tab lambda      \tab Random  \cr
+#'                poisson       \tab lambda      \tab         \cr
+#'                ztruncpois    \tab mean        \tab         \cr
 #'                lognormal     \tab mu          \tab sigma   \cr
 #'               }
 #'
-#' @param region.obj the Region object in which this population exists.
-#' @param density.obj the Density object describing the distribution of the individuals / clusters.
-#' @param covariates Named list with one named entry per individual level covariate.
-#' Cluster sizes can be defined here. Each list entry will either be a data.frame 
-#' containing 2 columns, the first the level (level) and the second the probability 
-#' (prob). The cluster size entry in the list must be named 'size'. Alternatively the
-#' list element may be another list specifying the distribution in the first element
-#' and a named list in the second element with the distribution parameters. 
-#' @param N the number of individuals / clusters in a population
-#' @param fixed.N a logical value. If TRUE the population is generated from the value of N otherwise it is generated from the density description.
-#' @param average.D not currently implemented.
+#' @param region.obj the Region object in which this population exists (see \link{make.region}).
+#' @param density.obj the Density object describing the distribution of the individuals / clusters (see \link{make.density}).
+#' @param covariates Named list with one named entry per individual level covariate. Cluster sizes can be defined here. Each list entry should be another list with either one element or one element per strata allowing different population structures per strata. Each element of these lists should either be a data.frame containing 2 columns, the first the level (level) and the second the probability (prob). The cluster size entry in the list must be named 'size'. Alternatively the list element may be another list specifying the distribution in the first element and a named list in the second element with the distribution parameter.
+#' @param N the number of individuals / clusters in a population (1000 by default)
+#' @param fixed.N a logical value. If TRUE the population is generated from the value of N 
+#' otherwise it is generated from the density description.
 #' @return object of class Population.Description 
 #' @export
 #' @author Laura Marshall
-#' @seealso \code{\link{make.region}}, \code{\link{make.density}}
+#' @seealso \code{\link{make.region}}, \code{\link{make.density}}, \code{\link{make.detectability}}
 #' @examples
 #' # An example population can be created from the default values
 #' pop.desc <- make.population.description()
@@ -323,11 +320,39 @@ make.density <- function(region.obj = make.region(), density.surface = list(), x
 #' pop <- generate.population(pop.desc, make.detecability(), make.region())
 #' plot(pop)
 #' 
+#' # An example population with covariates which vary by strata
+#' # Make a multi strata region
+#' poly1 <- data.frame(x = c(0,0,100,100,0), y = c(0,100,100,0,0))
+#' poly2 <- data.frame(x = c(200,200,300,300,200), y = c(10,110,110,10,10))
+#' coords <- list(list(poly1), list(poly2))
+#' region <- make.region(coords = coords)
+#' density <- make.density(region)
+#' 
+#' # Cluzter size is a zero truncated poisson with mean = 5 in strata 1 and a poisson with lambda = 30 in strata 2.
+#' covatiate.list <- list()
+#' covariate.list$size <- list(list("ztruncpois", list(mean = 5)),
+#'                             list("poisson", list(lambda = 30)))
+#'                             
+#' # Animal height is generated from a lognormal distribution for both strata
+#' covariate.list$height <- list(list("lognormal", list(meanlog = log(2), sdlog = log(1.25))))
+#' 
+#' # Animal sex is discrete/categorical, there are more females than males in strata 1 and equal numbers in strata 2
+#' covariate.list$sex <- list(data.frame(level = c("male", "female"), prob = c(0.45,0.55)), 
+#'                            data.frame(level = c("male", "female"), prob = c(0.5,0.5)))
+#'                            
+#' # Create covariate description
+#' pop.desc <- make.population.description(region.obj = region, density.obj = density, covariates = covariate.list, N = c(10,10))
+#' 
+#' # To view the covariate values
+#' pop <- generate.population(pop.desc, detect = make.detecability(), region)
+#' pop@population 
+#' # Note that the covariate values have not affected the detectability (the scale parameter) to do this we need to set the cov.param argument in make.detectability. See ?make.detectability
+#' 
 #' \dontrun{
 #' pop.description <- make.population.description(N = 1000, 
 #'  density.obj = pop.density, region = region, fixed.N = TRUE)
 #'  }
-make.population.description <- make.pop.description <- function(region.obj = make.region(), density.obj = make.density(), covariates = list(), N = numeric(0), fixed.N = TRUE, average.D = numeric(0)){
+make.population.description <- make.pop.description <- function(region.obj = make.region(), density.obj = make.density(), covariates = list(), N = numeric(0), fixed.N = TRUE){
   # Get the number of strata
   no.strata <- ifelse(length(region.obj@strata.name) > 0, length(region.obj@strata.name), 1)
   # Check covariate input
@@ -350,10 +375,10 @@ make.population.description <- make.pop.description <- function(region.obj = mak
 #' class.
 #'
 #' @param key.function specifies shape of the detection function (either 
-#'   half-normal "hn" or hazard rate "hr")
-#' @param scale.param parameter value associated with the detection function
-#' @param shape.param parameter value associated with the detection function
-#' @param cov.param named list with parameters for covariates
+#'   half-normal "hn", hazard rate "hr" or uniform "uf")
+#' @param scale.param numeric vector with either a single value to be applied globally or a value for each strata. These should be supplied on the natural scale.
+#' @param shape.param numeric vector with either a single value to be applied globally or a value for each strata. These should be supplied on the natural scale.
+#' @param cov.param Named list with one named entry per individual level covariate. Covariate parameter values should be defined on the log scale (rather than the natural scale), this is the same scale as provided in the ddf output in mrds and also in the MCDS output in Distance. Cluster sizes parameter values can be defined here. Each list entry will either be a data.frame containing 2 or 3 columns: level, param and where desired strata. If the region has multiple strata but this column is omitted then the values will be assumed to apply globally. The cluster size entry in the list must be named 'size'. Alternatively the list element may a numeric vector with either a single value to be applied globally or a value for each strata.
 #' @param truncation the maximum perpendicular (or radial) distance at which 
 #'   objects may be detected from a line (or point) transect.
 #' @return object of class Detectablility 
@@ -361,9 +386,29 @@ make.population.description <- make.pop.description <- function(region.obj = mak
 #' @author Laura Marshall
 #' @examples
 #' # The default values create a detectability object as follows:
-#' detect <- make.detectability(key.function = "hn", scale.param = 25,
-#'  truncation = 75) 
-make.detectability <- function(key.function = "hn", scale.param = 25, shape.param = numeric(0), cov.param = list(), truncation = 75){
+#' detect <- make.detectability(key.function = "hn", scale.param = 25, truncation = 50) 
+#' 
+#' # To include covariate parameters which affect detecability
+#' # First you need to make sure the population has covariates defined see examples in ?make.population.description
+#' 
+#' # In this example height and sex have a global effect where as the effects of size on detectability vary by strata.
+#' cov.params <- list(size = c(log(1.6), log(1.8)), 
+#'                    height = log(1.2), 
+#'                    sex = data.frame(level = c("male", "female"), 
+#'                                     param = c(log(1), log(0.6))))
+#' 
+#' detect <- make.detectability(key.function = "hn", scale.param = 25, truncation = 50, cov.param = cov.params)
+#'                                     
+#' # If we want the effects of sex to be strata specific we can define detectability as follows:
+#' cov.params <- list(size = c(0.5, 0.6), 
+#'                    height = 0.2, 
+#'                    sex = data.frame(level = c("male", "female","male", "female"), 
+#'                                     strata = c("A", "A", "B", "B")
+#'                                     param = c(0,-0.5, 0.1, -0.25)))  
+#'                                                                        
+#' detect <- make.detectability(key.function = "hn", scale.param = c(25, 30), truncation = 60, cov.param = cov.params)
+#' 
+make.detectability <- function(key.function = "hn", scale.param = 25, shape.param = numeric(0), cov.param = list(), truncation = 50){
   detectability <- new(Class = "Detectability", key.function = key.function, scale.param = scale.param, shape.param = shape.param, cov.param = cov.param, truncation = truncation)
   return(detectability)
 }
