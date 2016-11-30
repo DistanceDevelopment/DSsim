@@ -3,7 +3,7 @@ get.surface.gam <- function(region, x.space, y.space, gam.model, buffer){
   
   # Check the value of the buffer
   if(length(buffer) == 0){
-    buffer <- max(x.space, y.space)
+    buffer <- min(x.space, y.space)
   }
   
   #Creates a density surface grid based on predictions from a gam object  

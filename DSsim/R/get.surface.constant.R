@@ -3,7 +3,7 @@ get.surface.constant <- function(region, x.space, y.space, constant, buffer){
   
   # Check the value of the buffer
   if(length(buffer) == 0){
-    buffer <- max(x.space, y.space)
+    buffer <- min(x.space, y.space)
   }
   
   #Creates a density surface with a constant value across the whole survey region
