@@ -34,13 +34,14 @@
 #' @keywords classes
 #' @export
 #' @seealso \code{\link{make.population.description}}
-setClass("Population.Description", representation(N           = "numeric",
-                                                  density     = "Density",
-                                                  region.name = "character",
-                                                  covariates  = "list",
-                                                  size        = "logical",
-                                                  gen.by.N    = "logical",
-                                                  D.dist      = "character"))
+setClass("Population.Description", representation(N            = "numeric",
+                                                  density      = "Density",
+                                                  region.name  = "character",
+                                                  strata.names = "character",
+                                                  covariates   = "list",
+                                                  size         = "logical",
+                                                  gen.by.N     = "logical",
+                                                  D.dist       = "character"))
 setMethod(
   f="initialize",
   signature="Population.Description",
@@ -58,13 +59,14 @@ setMethod(
     cov.names <- names(covariates)
     size <- "size" %in% cov.names
     #Set slots
-    .Object@N           <- N
-    .Object@density     <- density
-    .Object@region.name <- region.obj@region.name
-    .Object@covariates  <- covariates
-    .Object@size        <- size
-    .Object@gen.by.N    <- gen.by.N
-    .Object@D.dist      <- D.dist
+    .Object@N            <- N
+    .Object@density      <- density
+    .Object@region.name  <- region.obj@region.name
+    .Object@strata.names <- region.obj@strata.name
+    .Object@covariates   <- covariates
+    .Object@size         <- size
+    .Object@gen.by.N     <- gen.by.N
+    .Object@D.dist       <- D.dist
     #Check object is valid
     validObject(.Object)
     # return object
