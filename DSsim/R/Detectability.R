@@ -224,7 +224,6 @@ setMethod(
         }
       }#loop over strata
       # Add legend
-      legend.x <- 0.6*object@truncation
       strata.names <- pop.desc@strata.names
       if(factor){
         no.levels <- length(unique(cov.params$level))
@@ -232,10 +231,13 @@ setMethod(
         for(i in seq(along = strata.names)){
           new.strata.names <- c(new.strata.names, rep(strata.names[i], no.levels))
         }
-        legend.text <- paste(new.strata.names, ".", rep(unique(cov.params$level), no.strata), sep = "")
+        if(length(strata.names) > 0){
+          legend.text <- paste(new.strata.names, ".", rep(unique(cov.params$level), no.strata), sep = "")
+        }else{
+          legend.text <- cov.params$level
+        }
         ccol <- sort(rep(1:no.strata, length(scale.adjustments)))
         llty <- rep(1:length(scale.adjustments),no.strata)
-        legend(legend.x, 1.2,  col = ccol, lty = llty, legend = legend.text, bty = "n")
       }else{
         ccol <- sort(rep(1:no.strata, 2))
         llty <- rep(c(1,2), no.strata)
@@ -245,10 +247,17 @@ setMethod(
           new.strata.names <- c(new.strata.names, rep(strata.names[i], 2))
           description <- c(description, "mean", "95%ints")
         }
-        legend.text <- paste(new.strata.names, ".", description, sep = "")
-        legend(legend.x, 1.2,  col = ccol, lty = llty, legend = legend.text, bty = "n")
+        if(length(strata.names) > 0){
+          legend.text <- paste(new.strata.names, ".", description, sep = "")
+        }else{
+          legend.text <- c("mean", "95%ints")
+        }
+        
       }
+      legend(object@truncation, 1.2,  col = ccol, lty = llty, legend = legend.text, bty = "n", box.col = white, xjust = 1)
     }#loop over covariates
+    par(oldparams)
+    invisible(x)
   })
 
 
