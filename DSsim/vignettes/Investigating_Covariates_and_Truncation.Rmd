@@ -97,13 +97,13 @@ plot(detect, pop.desc)
 
 ### 1.3 Model Uncertainty and Pooling Robustness
 
-The concept of pooling robustness in distance sampling refers to...
+When we simulate data we have to provide the detection function in order to generate detections and we therefore know the underlying true detection function. When collecting data in the real world we will not have this information and so we will rely on some form of model selection. One method of model selection is to compare information criterion, DSsim allows the user to select either AIC, AICc or BIC as the model selection criteria. For these simulations we will use AIC and allow DSsim to select between a half-normal and a hazard rate model. 
 
-We have various options when running simulation on what to do about model selection. We can only allow DSsim to fit the model which we know to be the true model or we can allow DSsim to select the model which it considers the best fit based on some criteria. In reality we will never know the true detection function and so it would seem sensible to allow DSsim to select the best fitting model. In these simulations we allow DSsim to select between both a hazard rate and a half normal model
+In addition, if the probability of detection is affected by covariates then we may not only have a single underlying detection function but a combination of detction functions giving rise to our observed data. In this situation we can either model detectability as a function of these covariates or rely on a concept called pooling robustness. Pooling robustness refers to the fact that distance sampling techniques are robust to the pooling of multiple detection functions. This means that we do not necessarily need to include all the covariates which affect detectability in the detection function. Here we will test the concept of pooling robustness and check to see if it is affected by truncation distance. 
 
 ## 2. Methods
 
-This vignette will guide you through the steps to create and run a series of simulations to investigate the effects of varying truncation distance.
+This vignette will guide you through the steps to create and run a series of simulations to investigate the effects of varying truncation distance on both data generated from a simple half-normal model and from a model where detectability is affected by a covariate.
 
 ### 2.1 Setup
 
@@ -150,7 +150,7 @@ Next we must describe the population of interest. This first involves creating a
 ```{r density, warning=FALSE, message=FALSE, fig.width=4, fig.cap="Figure 6: The density surface."}
 
 # Create the density surface
-density <- make.density(region.obj = region, x.space = 10, y.space = 10, constant = 1)
+density <- make.density(region.obj = region, x.space = 100, y.space = 200, constant = 1)
 # The plot function allows plotting in km or m.
 plot(density, style = "blocks", plot.units = "km")
 plot(region, add = TRUE)
@@ -159,6 +159,12 @@ plot(region, add = TRUE)
 
 
 We can now combine this density object with other population parameters to create the full population description. We will use a fixed population size of N=250. We have chosen 250 because combined with the detection function we have selected this results in around 60 observations, the minimum number recommended for fitting a detection function, [@Buckland:2001vm].  
+
+```{r popdesc, warning=FALSE, message=FALSE, fig.width=4, fig.cap="Figure 6: The density surface."}
+
+
+
+```
 
 
 
