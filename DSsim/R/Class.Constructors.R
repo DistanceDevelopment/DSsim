@@ -38,7 +38,7 @@
 #' region <- make.region()
 #' plot(region)
 #' 
-#' # Here is an example of a study region with gaps
+#' # Here is an example of a 1000 x 1000 study region with a gap
 #' coords <- gaps <- list()
 #' coords[[1]] <- list(data.frame(x = c(0,1000,1000,0,0), y = c(0,0,
 #'  1000,1000,0)))
@@ -83,7 +83,7 @@ make.region <- function(region.name = "region",
 #' generate all the surveys as shapefiles in advance and supply the path to
 #' the directory which contains these shapefiles and only these shapefiles.
 #'
-#' The \code{design.details} argument should specify a character vector of either 1
+#' @details The \code{design.details} argument should specify a character vector of either 1
 #' or 2 elements. These options are described in the table below:
 #'
 #' \tabular{lll}{ Transect Type \tab Design Details \tab               \cr 
@@ -110,14 +110,19 @@ make.region <- function(region.name = "region",
 #' @export
 #' @author Laura Marshall
 #' @examples
-#' # DSsim can generate a systematic grid of point transects
+#' # DSsim can generate a systematic grid of point transects which by default have a spacing of 100
 #' design <- make.design("point")
+#' 
+#' # DSsim can generate a systematic set of parallel line transects which by default have a spacing of 100
+#' design <- make.design("line")
 #' 
 #' # The easiest way to generate the transect is by creating a simulation
 #' sim <- make.simulation(design.obj = make.design("point"))
 #' transects <- generate.transects(sim)
 #' plot(make.region())
 #' plot(transects)
+#' 
+#' # More complex designs can be defined in Distance for Windows. This software can then generate multiple survey instances and store them as shapefiles for use by DSsim. The shapefile below was generated in this way.
 #' 
 #' \dontrun{
 #' data(transects.shp)
@@ -230,12 +235,13 @@ make.design <- function(transect.type = "line", design.details = "default", regi
 #' @author Laura Marshall     
 #' @seealso \code{\link{make.region}}  
 #' @examples  
-#' # A simple density surface can be created within a rectangular region using 
+#' # A simple density surface with a constant value of 1 can be created within a rectangular region using 
 #' # the default values:
 #' density <- make.density()
 #' plot(density)
 #' plot(make.region(), add = TRUE)
-#'                 
+#'   
+#' # The example below shows hot to add high and low point to the density surface                             
 #' \dontrun{
 #' pop.density <- make.density(region.obj = region, x.space = 10, 
 #'  y.space = 10, constant = 0.5) 
@@ -385,11 +391,27 @@ make.population.description <- make.pop.description <- function(region.obj = mak
 #' @export
 #' @author Laura Marshall
 #' @examples
-#' # The default values create a detectability object as follows:
-#' detect <- make.detectability(key.function = "hn", scale.param = 25, truncation = 50) 
+#' # The default values create a detectability object with a half normal detection function with scale parameter 25 and truncation distance 50.
+#' detect <- make.detectability() 
+#' detect
 #' 
 #' # To include covariate parameters which affect detecability
 #' # First you need to make sure the population has covariates defined see examples in ?make.population.description
+#' # Multi-strata covariate example
+#' # Make a multi strata region
+#' poly1 <- data.frame(x = c(0,0,100,100,0), y = c(0,100,100,0,0))
+#' poly2 <- data.frame(x = c(200,200,300,300,200), y = c(10,110,110,10,10))
+#' coords <- list(list(poly1), list(poly2))
+#' region <- make.region(coords = coords)
+#' density <- make.density(region)
+#' # Create the population description
+#' covariate.list <- list()
+#' covariate.list$size <- list(list("ztruncpois", list(mean = 5)),
+#'                             list("poisson", list(lambda = 30)))
+#' covariate.list$height <- list(list("lognormal", list(meanlog = log(2), sdlog = log(1.25))))
+#' covariate.list$sex <- list(data.frame(level = c("male", "female"), prob = c(0.45,0.55)), 
+#'                            data.frame(level = c("male", "female"), prob = c(0.5,0.5)))
+#' pop.desc <- make.population.description(region.obj = region, density.obj = density, covariates = covariate.list, N = c(10,10))
 #' 
 #' # In this example height and sex have a global effect where as the effects of size on detectability vary by strata.
 #' cov.params <- list(size = c(log(1.6), log(1.8)), 
@@ -398,6 +420,8 @@ make.population.description <- make.pop.description <- function(region.obj = mak
 #'                                     param = c(log(1), log(0.6))))
 #' 
 #' detect <- make.detectability(key.function = "hn", scale.param = 25, truncation = 50, cov.param = cov.params)
+#' 
+#' plot(detect, pop.desc)
 #'                                     
 #' # If we want the effects of sex to be strata specific we can define detectability as follows:
 #' cov.params <- list(size = c(0.5, 0.6), 
@@ -407,6 +431,7 @@ make.population.description <- make.pop.description <- function(region.obj = mak
 #'                                     param = c(0,-0.5, 0.1, -0.25)))  
 #'                                                                        
 #' detect <- make.detectability(key.function = "hn", scale.param = c(25, 30), truncation = 60, cov.param = cov.params)
+#' plot(detect, pop.desc)
 #' 
 make.detectability <- function(key.function = "hn", scale.param = 25, shape.param = numeric(0), cov.param = list(), truncation = 50){
   detectability <- new(Class = "Detectability", key.function = key.function, scale.param = scale.param, shape.param = shape.param, cov.param = cov.param, truncation = truncation)
@@ -443,6 +468,7 @@ make.detectability <- function(key.function = "hn", scale.param = 25, shape.para
 #' # A simple half-normal "ds" model can be created using the default values
 #' ddf.analyses <- make.ddf.analysis.list()
 #' 
+#' # To incorporate model selection between a 'hn' and 'hr' model:
 #' ddf.analyses <- make.ddf.analysis.list(dsmodel = list(~cds(key = "hn",
 #'  formula = ~1),~cds(key = "hr", formula = ~1)), method = "ds", 
 #'  criteria = "AIC")

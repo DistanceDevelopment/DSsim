@@ -42,7 +42,7 @@ be excluded (gaps). If area is not specified it will be calculated.
 region <- make.region()
 plot(region)
 
-# Here is an example of a study region with gaps
+# Here is an example of a 1000 x 1000 study region with a gap
 coords <- gaps <- list()
 coords[[1]] <- list(data.frame(x = c(0,1000,1000,0,0), y = c(0,0,
  1000,1000,0)))

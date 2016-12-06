@@ -38,7 +38,8 @@ Currently surveys are only generated within the GIS in Distance. If you
 are running a simulation in R you will need to get Distance to 
 generate all the surveys as shapefiles in advance and supply the path to
 the directory which contains these shapefiles and only these shapefiles.
-
+}
+\details{
 The \code{design.details} argument should specify a character vector of either 1
 or 2 elements. These options are described in the table below:
 
@@ -53,14 +54,19 @@ or 2 elements. These options are described in the table below:
                Point         \tab Nested         \tab               \cr}
 }
 \examples{
-# DSsim can generate a systematic grid of point transects
+# DSsim can generate a systematic grid of point transects which by default have a spacing of 100
 design <- make.design("point")
+
+# DSsim can generate a systematic set of parallel line transects which by default have a spacing of 100
+design <- make.design("line")
 
 # The easiest way to generate the transect is by creating a simulation
 sim <- make.simulation(design.obj = make.design("point"))
 transects <- generate.transects(sim)
 plot(make.region())
 plot(transects)
+
+# More complex designs can be defined in Distance for Windows. This software can then generate multiple survey instances and store them as shapefiles for use by DSsim. The shapefile below was generated in this way.
 
 \dontrun{
 data(transects.shp)

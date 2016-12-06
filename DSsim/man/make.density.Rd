@@ -42,12 +42,13 @@ be created from these.
 }
 \examples{
  
-# A simple density surface can be created within a rectangular region using 
+# A simple density surface with a constant value of 1 can be created within a rectangular region using 
 # the default values:
 density <- make.density()
 plot(density)
 plot(make.region(), add = TRUE)
-                
+  
+# The example below shows hot to add high and low point to the density surface                             
 \dontrun{
 pop.density <- make.density(region.obj = region, x.space = 10, 
  y.space = 10, constant = 0.5) 
