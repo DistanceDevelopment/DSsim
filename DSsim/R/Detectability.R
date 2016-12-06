@@ -105,6 +105,11 @@ setMethod(
     # Find out how many covariates there are
     no.covariates <- length(object@cov.param)
     cov.names <- names(object@cov.param)
+    # Check if there are covariates in detectability that are not in pop.desc
+    pop.covs <- names(pop.desc@covariates)
+    if(any(!cov.names %in% pop.covs)){
+      stop("You have defined detectability for covariates that are not included in the population description.", call. = FALSE)
+    }
     # set mfrow storing old settings
     mfrow.value <- switch(as.character(no.covariates),
                           "0" = c(1,1),
@@ -128,8 +133,7 @@ setMethod(
     if(length(object@cov.param) > 0){
       # iterate through all the covariates and make plots
       for(cov in seq(along = object@cov.param)){
-        # set up initial plot 
-        plot(0,0, xlim = c(0,object@truncation + object@truncation*0.05), ylim = c(0,1.2), main = paste("Covariate: ", cov.names[cov], sep = ""), col = "white", xlab = "Distance", ylab = "Detection Probability")
+        
         cov.params <- object@cov.param[[cov]]
         if(class(object@cov.param[[cov]]) == "data.frame"){
           factor = TRUE
@@ -138,6 +142,13 @@ setMethod(
           factor = FALSE
           no.cov.strata <- length(cov.params)
         }
+        if(factor){
+          plot.title <- paste("Covariate: ", cov.names[cov], " (factor)", sep = "")
+        }else{
+          plot.title <- paste("Covariate: ", cov.names[cov], sep = "")
+        }
+        # set up initial plot 
+        plot(0,0, xlim = c(0,object@truncation + object@truncation*0.05), ylim = c(0,1.2), main = plot.title, col = "white", xlab = "Distance", ylab = "Detection Probability")
         no.strata <- max(length(scale.param), length(shape.param), no.cov.strata)
         # make up storage array
         if(factor){
@@ -216,13 +227,13 @@ setMethod(
             }
           }
           if(factor){
-            llty <- seq(along = y[,1,strat])  
+            llty <- seq(along = y[,1,strat]) + 1  
           }else{
             llty <- c(2,1,2)
           }
           # Add detection functions
           for(i in seq(along = y[,1,strat])){
-            lines(x, y[i,,strat], lty = llty[i], col = strat)
+            lines(x, y[i,,strat], lty = llty[i], col = strat, lwd = llwd)
           }
         }#loop over strata
         # Add legend
@@ -239,7 +250,7 @@ setMethod(
             legend.text <- cov.params$level
           }
           ccol <- sort(rep(1:no.strata, length(scale.adjustments)))
-          llty <- rep(1:length(scale.adjustments),no.strata)
+          llty <- rep(1:length(scale.adjustments),no.strata) + 1
         }else{
           ccol <- sort(rep(1:no.strata, 2))
           llty <- rep(c(1,2), no.strata)
@@ -265,9 +276,9 @@ setMethod(
       }else{
         strata.names <- pop.desc@region.name
       }
+      # set up initial plot 
+      plot(0,0, xlim = c(0,object@truncation + object@truncation*0.05), ylim = c(0,1.2), main = paste("Detection Function", cov.names[cov], sep = ""), col = "white", xlab = "Distance", ylab = "Detection Probability")
       for(strat in 1:no.strata){
-        # set up initial plot 
-        plot(0,0, xlim = c(0,object@truncation + object@truncation*0.05), ylim = c(0,1.2), main = paste("Detection Function", cov.names[cov], sep = ""), col = "white", xlab = "Distance", ylab = "Detection Probability")
         # basic scale param
         if(length(scale.param) == no.strata){
           scale.param.strat <- scale.param[strat]  
