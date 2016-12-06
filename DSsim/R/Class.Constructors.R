@@ -110,14 +110,19 @@ make.region <- function(region.name = "region",
 #' @export
 #' @author Laura Marshall
 #' @examples
-#' # DSsim can generate a systematic grid of point transects which by default have a spacing of 100
-#' design <- make.design("point")
-#' 
 #' # DSsim can generate a systematic set of parallel line transects which by default have a spacing of 100
 #' design <- make.design("line")
 #' 
-#' # The easiest way to generate the transect is by creating a simulation
-#' sim <- make.simulation(design.obj = make.design("point"))
+#' # The easiest way to generate the transect is by creating a simulation (default simulations create a line transect design)
+#' sim <- make.simulation()
+#' transects <- generate.transects(sim)
+#' plot(make.region())
+#' plot(transects, col = 4, lwd = 2)
+#' 
+#' # DSsim can generate a systematic grid of point transects which by default have a spacing of 100
+#' design <- make.design("point")
+#' 
+#' sim <- make.simulation(design.obj = design)
 #' transects <- generate.transects(sim)
 #' plot(make.region())
 #' plot(transects)
@@ -125,17 +130,34 @@ make.region <- function(region.name = "region",
 #' # More complex designs can be defined in Distance for Windows. This software can then generate multiple survey instances and store them as shapefiles for use by DSsim. The shapefile below was generated in this way.
 #' 
 #' \dontrun{
+#' 
+#' coords <- gaps <- list()
+#' coords[[1]] <- list(data.frame(x = c(0,1000,1000,0,0), y = c(0,0,
+#'  1000,1000,0)))
+#' gaps[[1]] <- list(data.frame(x = c(400,600,500,350,400), y = c(100,
+#'  250,600,120,100)))
+#' region <- make.region(region.name = "study.area", units = "m", 
+#'  coords = coords, gaps = gaps)
+#'  
 #' data(transects.shp)
 #' #Edit the pathway below to point to an empty folder where the
 #' #transect shapefile will be saved
 #' shapefile.pathway <- "C:/..."
+#' library(shapefiles)
 #' write.shapefile(transects.shp, paste(shapefile.pathway,"/transects_1",
 #'  sep = ""))
 #' 
+#' # This design was created in Distance for Windows in a region with the same dimensions as the deault make.region().
 #' parallel.design <- make.design(transect.type = "Line", 
 #'  design.details = c("Parallel","Systematic"), region = region, 
 #'  design.axis = 0, spacing = 100, plus.sampling =FALSE, 
 #'  path = shapefile.pathway)
+#'
+#' # As there is only one set of transects we have to set single.transect.set = TRUE
+#' sim <- make.simulation(single.transect.set = TRUE, design.obj = parallel.design)
+#' transects <- generate.transects(sim)
+#' plot(region)
+#' plot(transects, col = 4, lwd = 2)
 #' }
 make.design <- function(transect.type = "line", design.details = "default", region.obj = "region", design.axis = 0, spacing = 100, nested.space = numeric(0), no.complex = numeric(0), angle = numeric(0), plus.sampling = logical(0), path = character(0)){
   # Set the design details if spcified as "default"
@@ -257,8 +279,8 @@ make.design <- function(transect.type = "line", design.details = "default", regi
 #' plot(pop.density)
 #' plot(region, add = TRUE)
 #' 
-#' #Old style plotting
-#' plot(pop.density, contours = FALSE, old.style = TRUE)
+#' #Block style plotting
+#' plot(pop.density, contours = FALSE, style = "blocks")
 #' plot(region, add = TRUE)
 #' 
 #' }
@@ -319,11 +341,15 @@ make.density <- function(region.obj = make.region(), density.surface = list(), x
 #' @author Laura Marshall
 #' @seealso \code{\link{make.region}}, \code{\link{make.density}}, \code{\link{make.detectability}}
 #' @examples
-#' # An example population can be created from the default values
+#' # An example population can be created from the default values:
+#' # - the default region
+#' # - a constant density surface
+#' # - and a population size of 1000
 #' pop.desc <- make.population.description()
 #' 
 #' # To view an instance of this population
-#' pop <- generate.population(pop.desc, make.detecability(), make.region())
+#' pop <- generate.population(pop.desc, make.detectability(), make.region())
+#' plot(make.region())
 #' plot(pop)
 #' 
 #' # An example population with covariates which vary by strata
@@ -335,7 +361,7 @@ make.density <- function(region.obj = make.region(), density.surface = list(), x
 #' density <- make.density(region)
 #' 
 #' # Cluzter size is a zero truncated poisson with mean = 5 in strata 1 and a poisson with lambda = 30 in strata 2.
-#' covatiate.list <- list()
+#' covariate.list <- list()
 #' covariate.list$size <- list(list("ztruncpois", list(mean = 5)),
 #'                             list("poisson", list(lambda = 30)))
 #'                             
@@ -350,14 +376,9 @@ make.density <- function(region.obj = make.region(), density.surface = list(), x
 #' pop.desc <- make.population.description(region.obj = region, density.obj = density, covariates = covariate.list, N = c(10,10))
 #' 
 #' # To view the covariate values
-#' pop <- generate.population(pop.desc, detect = make.detecability(), region)
+#' pop <- generate.population(pop.desc, detect = make.detectability(), region)
 #' pop@population 
 #' # Note that the covariate values have not affected the detectability (the scale parameter) to do this we need to set the cov.param argument in make.detectability. See ?make.detectability
-#' 
-#' \dontrun{
-#' pop.description <- make.population.description(N = 1000, 
-#'  density.obj = pop.density, region = region, fixed.N = TRUE)
-#'  }
 make.population.description <- make.pop.description <- function(region.obj = make.region(), density.obj = make.density(), covariates = list(), N = numeric(0), fixed.N = TRUE){
   # Get the number of strata
   no.strata <- ifelse(length(region.obj@strata.name) > 0, length(region.obj@strata.name), 1)
@@ -391,12 +412,14 @@ make.population.description <- make.pop.description <- function(region.obj = mak
 #' @export
 #' @author Laura Marshall
 #' @examples
-#' # The default values create a detectability object with a half normal detection function with scale parameter 25 and truncation distance 50.
+#' # The default values create a detectability object with a half normal
+#' # detection function with scale parameter 25 and truncation distance 50.
 #' detect <- make.detectability() 
 #' detect
 #' 
-#' # To include covariate parameters which affect detecability
-#' # First you need to make sure the population has covariates defined see examples in ?make.population.description
+#' # To include covariate parameters which affect detecability,
+#' # first you need to make sure the population has covariates defined 
+#' # see examples in ?make.population.description
 #' # Multi-strata covariate example
 #' # Make a multi strata region
 #' poly1 <- data.frame(x = c(0,0,100,100,0), y = c(0,100,100,0,0))
@@ -406,31 +429,31 @@ make.population.description <- make.pop.description <- function(region.obj = mak
 #' density <- make.density(region)
 #' # Create the population description
 #' covariate.list <- list()
-#' covariate.list$size <- list(list("ztruncpois", list(mean = 5)),
-#'                             list("poisson", list(lambda = 30)))
+#' covariate.list$size <- list(list("ztruncpois", list(mean = 3)),
+#'                             list("ztruncpois", list(mean = 5)))
 #' covariate.list$height <- list(list("lognormal", list(meanlog = log(2), sdlog = log(1.25))))
 #' covariate.list$sex <- list(data.frame(level = c("male", "female"), prob = c(0.45,0.55)), 
 #'                            data.frame(level = c("male", "female"), prob = c(0.5,0.5)))
 #' pop.desc <- make.population.description(region.obj = region, density.obj = density, covariates = covariate.list, N = c(10,10))
 #' 
 #' # In this example height and sex have a global effect where as the effects of size on detectability vary by strata.
-#' cov.params <- list(size = c(log(1.6), log(1.8)), 
+#' cov.params <- list(size = c(log(1.05), log(1.1)), 
 #'                    height = log(1.2), 
 #'                    sex = data.frame(level = c("male", "female"), 
 #'                                     param = c(log(1), log(0.6))))
 #' 
-#' detect <- make.detectability(key.function = "hn", scale.param = 25, truncation = 50, cov.param = cov.params)
+#' detect <- make.detectability(key.function = "hn", scale.param = 20, truncation = 50, cov.param = cov.params)
 #' 
 #' plot(detect, pop.desc)
 #'                                     
 #' # If we want the effects of sex to be strata specific we can define detectability as follows:
-#' cov.params <- list(size = c(0.5, 0.6), 
+#' cov.params <- list(size = c(0.05, 0.1), 
 #'                    height = 0.2, 
 #'                    sex = data.frame(level = c("male", "female","male", "female"), 
-#'                                     strata = c("A", "A", "B", "B")
+#'                                     strata = c("A", "A", "B", "B"),
 #'                                     param = c(0,-0.5, 0.1, -0.25)))  
 #'                                                                        
-#' detect <- make.detectability(key.function = "hn", scale.param = c(25, 30), truncation = 60, cov.param = cov.params)
+#' detect <- make.detectability(key.function = "hn", scale.param = c(20, 25), truncation = 60, cov.param = cov.params)
 #' plot(detect, pop.desc)
 #' 
 make.detectability <- function(key.function = "hn", scale.param = 25, shape.param = numeric(0), cov.param = list(), truncation = 50){

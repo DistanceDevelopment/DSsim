@@ -64,8 +64,8 @@ pop.density <- add.hotspot(pop.density, centre = c(300, 100),
 plot(pop.density)
 plot(region, add = TRUE)
 
-#Old style plotting
-plot(pop.density, contours = FALSE, old.style = TRUE)
+#Block style plotting
+plot(pop.density, contours = FALSE, style = "blocks")
 plot(region, add = TRUE)
 
 }
