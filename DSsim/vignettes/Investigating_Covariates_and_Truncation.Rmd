@@ -107,20 +107,20 @@ This vignette will guide you through the steps to create and run a series of sim
 
 ### 2.1 Setup
 
-The package needs to be loaded and also the seed has been set so that the results in this vignette can be easily reproduced.  The package _shapefiles_ will also be required. 
+Here we load the DSsim library and set the random seed so that these results will be reproducible.
+
 ```{r setup, warning=FALSE, message=FALSE}
 library(DSsim)
-library(shapefiles)
 set.seed(4321)
 ```
 
 ## 2.2 Simulation Components
 
-We are now going to create the components relating to the blue rectangles in Figure 1. All constructor functions take the form _make.object_.
+As detailed in section 1.1 a simulation comprises of a number of components. DSsim is designed so that each of these components is defined individually before they are grouped together into a simulation. This helps keep the process clear and also allows reuse of simulation components between different simulations. Each of the functions to create a simulation component or simulation takes the form _make.<component>_.
 
 ### 2.2.1 Region
 
-Firstly we define the study region, a simple 20,000m by 5,000m rectangular region. As this is a simple study region with few verticies we can simply imput the coordinates. The structure of the coordinates is a list of data.frames for each strata.
+These simulations will use a rectangular study region of 5 km by 20 km. Survey regions can either be defined in km or m but all units must be the same throughout the different components of the simulation. Here we will define the coordinates in m. As this is a simple study region with few verticies we can simply imput the coordinates. The structure of the coordinates is a list of data.frames for each strata. In this example we only have one polygon (so one data.frame) and one strata. 
 
 ```{r region, warning=FALSE, message=FALSE, fig.width=4, fig.cap="Figure 5: The study region."}
 # Create a polgon
@@ -140,43 +140,120 @@ plot(region, plot.units = "km")
 
 ```
 
-To do this we will load a shapefile containing a polygon of these dimenstions to me passed to the _make.region_ function. To estimate the abundance in a region DSsim needs the area of the region. This can either be supplied by the user or if not supplied DSsim will calculate it automatically using the _areapl_ function from the _splancs_ package [@splancs-pkg]. The following code creates the region and diplays it in Figure 3:
-
-
 ### 2.2.2 Population
 
-Next we must describe the population of interest. This first involves creating a density map showing how the population is distributed within the survey region. For this study we will use a constant density over the whole surface. The value of this constant is not important in this simulation as we will later define a fixed population size so the density surface is only used to provide relative density values across the study area. The _x.space_ and _y.space_ arguments describe the spacing of the density surface grid points, as we have a constant density surface we can afford to make the grid fairly course. However, if the density surface varies then it may be wise to decrease the spacing between grid points to allow finer detail to be represented.  This code produces the density object and plots it over the region, Figure 4.
+We will now define our population within our study region. Firstly, we must describe the distribution of the population by defining a density grid. For these simulations we will assume a uniform distribution of animals throughout the study region. DSsim will generate this grid for us if we provide the x and y spacing and a constant density value for the grid. In this example the value of the constant is not important as we will generate animals based on a fixed population size rather than the density grid.
 
 ```{r density, warning=FALSE, message=FALSE, fig.width=4, fig.cap="Figure 6: The density surface."}
 
 # Create the density surface
-density <- make.density(region.obj = region, x.space = 100, y.space = 200, constant = 1)
+density <- make.density(region.obj = region, 
+                        x.space = 50, 
+                        y.space = 200, 
+                        constant = 1)
+
 # The plot function allows plotting in km or m.
 plot(density, style = "blocks", plot.units = "km")
 plot(region, add = TRUE)
 
 ```
 
+We can now define other aspects of the population. For the simple case (with no covariates) we only need to define a fixed population size and provide the region and density grid we created above.
 
-We can now combine this density object with other population parameters to create the full population description. We will use a fixed population size of N=250. We have chosen 250 because combined with the detection function we have selected this results in around 60 observations, the minimum number recommended for fitting a detection function, [@Buckland:2001vm].  
+```{r popdesc1, warning=FALSE, message=FALSE}
 
-```{r popdesc, warning=FALSE, message=FALSE, fig.width=4, fig.cap="Figure 6: The density surface."}
-
-
+# Create the population description, with a population size N = 200
+pop.desc.cov <- make.population.description(region.obj = region, 
+                                            density.obj = density, 
+                                            N = 200)
 
 ```
 
 
+For our simulations involving covariates we need to define how individuals will be allocated these covariate values. DSsim allows the user to either define their own discrete distribution or alternatively provide a distribution with associated parameters. For these simulation we will use sex as a covariate and assume that 50% of the population are female and 50% are male.
+
+*Blurb about why we chose this population size*
+
+
+```{r popdesc2, warning=FALSE, message=FALSE}
+
+# Create the covariate list
+covariate.list <- list()
+# The population will be 50% males and 50% females
+covariate.list$sex <- list(data.frame(level = c("female", "male"), prob = c(0.5,0.5)))
+
+# Create the population description, with a population size N = 200
+pop.desc.cov <- make.population.description(region.obj = region, 
+                                            density.obj = density, 
+                                            covariates = covariate.list, 
+                                            N = 200)
+
+```
+
 
 ### 2.2.3 Detectability
+
+Detectability refers to the detection function or functions we feed into the simulation to generate the observations. In the simple case we can set all animals to have the same probability of detection given their distance from the transect. Here we define a half-normal detection function with scale parameter 25 and truncation 50. The truncation distance defined here means that no detections will occur beyond this value. We can then plot this function to check we have defined it correctly. As we defined our survey region in m the scale parameter and truncation distance will also be assumed to be in metres.
+
+```{r detect1, warning=FALSE, message=FALSE, fig.width=4, fig.cap="Figure 7: The detection functions for males and females."}
+
+# Make a simple half normal detection function with a scale parameter of 10
+detect.hn <- make.detectability(key.function = "hn",
+                                 scale.param = 25, 
+                                 truncation = 50)
+
+# We can now visualise these detection functions
+plot(detect.hn, pop.desc)
+```
+
+When we have covariates in the population we may choose to vary the scale parameter of the detection function based on the covariate values. DSsim assumes that the scale parameter is a function of the covariates as follows:
+
+$$ \sigma = exp(\beta_0+\sum_{j=1}^{q}\beta_{j}z_{ij}) $$
+
+where $\beta_0$ is the log of the scale parameter supplied to make.detectability, $beta_j$ are the covariate parameters on the log scale and $z_{ij}$ is the ith value of the jth covariate. This formula was taken from Buck
 
 Detectability refers to how easy we think it will be to detect an object, this is just the detection function we feed in to the simulation in order to generate the detections. This detection function is used to calculate the probability each object in the population could be detected from each transect based on its distance to that transect. These probabilites are then turned into detections (or not) based on a Bernoulli distribution. These simulations generate data based on both a half-normal and a hazard-rate detection function. We can also specify a truncation distance which is the largest distance at which an animal may be detected, this is not necessarily the same as the truncation distance applied in the analysis stage.
 
 
 
+```{r detect2, warning=FALSE, message=FALSE, fig.width=4, fig.cap="Figure 8: The detection functions for males and females."}
+
+# Create the covariate parameter list
+cov.params <- list()
+# Note the covariate parameters are supplied on the log scale
+cov.params$sex = data.frame(level = c("female", "male"), 
+                            param = c(0, 0.9))
+
+# We want a scale parameter of around 10 for the females and 25 for the males
+# The scale parameter is supplied on the natural scale so...
+exp(log(10)+0.9)
+detect.cov <- make.detectability(scale.param = 10,  cov.param = cov.params, truncation = 50)
+
+# We can now visualise these detection functions
+plot(detect.cov, pop.desc)
+```
+
+
 ### 2.2.4 Design
 
 Currently DSsim requires that the surveys (teansects) have been pregenerated from a design and are stored in their own folder as shapefiles. We recommend this is done using the automated survey design engine in the Distance for Windows software [@Thomas:2010cf]. The arguments passed to the _make.design_ function therefore mainly only store a record of the parameters used to create the pregenerated surveys they will not affect the simulation. We generated surveys based on a systematic parallel line transect design with a spacing of 1000m between transects and orientated the lines vertically so that they were running across the narrower dimension of the study region giving 20 transects per survey. The recommended minimum number of transects for line transect studies is between 10 and 20 [@Buckland:2001vm].
+
+```{r design, warning=FALSE, message=FALSE}
+
+# Define the design
+design <- make.design(transect.type = "line",
+                      design.details = c("parallel", "systematic"),
+                      region.obj = region,
+                      spacing = 1000)
+
+```
+
+```{r transects, warning=FALSE, message=FALSE, echo = FALSE, fig.width=4, fig.cap="Figure 9: Example survey transects."}
+
+transects <- generate.transects(design, region = region)
+plot(region, plot.units = "km")
+plot(transects, col = 4, lwd = 2)
+```
 
 
 ### 2.2.5 Analysis
@@ -184,9 +261,9 @@ Currently DSsim requires that the surveys (teansects) have been pregenerated fro
 Finally we can define how to analyse the resulting distance samplig data. Below we restrict DSsim to only fitting a half-normal model with a truncation distance of 125m (1.25$\sigma$).
 
 ```{r analyses}
-#ddf.analyses <- make.ddf.analysis.list(dsmodel = list(~cds(key = "hn", formula = ~1)), 
-#                                       method = "ds", 
-#                                       truncation = 125)
+ddf.analyses <- make.ddf.analysis.list(dsmodel = list(~cds(key = "hn", formula = ~1)), 
+                                       method = "ds", 
+                                       truncation = 50)
 ```
 
 However, as discussed earlier we may wish to allow DSsim to perform model selection between a number of candidate models as we will not know in a real worl example what the true detection fucntion is. The code below can be used to allow DSsim to select between a half-normal and a hazard-rate model based on the minimum AIC value.  
