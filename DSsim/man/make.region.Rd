@@ -17,7 +17,7 @@ make.region(region.name = "region", strata.name = character(0),
 \item{units}{the units given as a character (either 'm' or 'km')}
 
 \item{area}{the area of the region (optional - if not supplied it will be 
-calculated for you)}
+calculated for you using \code{areapl} from the splancs library)}
 
 \item{shapefile}{a shapefile of the study region. These can be loaded using the \code{read.shapefile} function in the shapefiles library.}
 

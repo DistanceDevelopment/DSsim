@@ -25,7 +25,7 @@
 #' @param strata.name the strata names. If not supplied when there are 2 or mode strata default names of "A", "B", "C"... will be assigned.
 #' @param units the units given as a character (either 'm' or 'km')
 #' @param area the area of the region (optional - if not supplied it will be 
-#'   calculated for you)
+#'   calculated for you using \code{areapl} from the splancs library)
 #' @param shapefile a shapefile of the study region. These can be loaded using the \code{read.shapefile} function in the shapefiles library.
 #' @param coords A list with one element per strata. Each element in the list is a list of dataframes describing the polygon coordinates. This allows multiple regions in each strata. The corrdinates should start and finish with the same point. By default DSsim will create a rectangular study region 2000 m by 500 m.
 #' @param gaps A list with one element per strata. Each element in the list is a list of dataframes describing the polygon coordinates. This allows multiple gaps in each strata. The corrdinates should start and finish with the same point.
