@@ -233,7 +233,7 @@ setMethod(
           }
           # Add detection functions
           for(i in seq(along = y[,1,strat])){
-            lines(x, y[i,,strat], lty = llty[i], col = strat, lwd = llwd)
+            lines(x, y[i,,strat], lty = llty[i], col = strat)
           }
         }#loop over strata
         # Add legend
