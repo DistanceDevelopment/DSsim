@@ -105,7 +105,7 @@ In addition, if the probability of detection is affected by covariates then we m
 
 This vignette will guide you through the steps to create and run a series of simulations to investigate the effects of varying truncation distance on both data generated from a simple half-normal model and from a model where detectability is affected by a covariate.
 
-### 2.1 Setup
+## 2.1 Setup
 
 Here we load the DSsim library and set the random seed so that these results will be reproducible.
 
@@ -163,7 +163,7 @@ We can now define other aspects of the population. For the simple case (with no 
 ```{r popdesc1, warning=FALSE, message=FALSE}
 
 # Create the population description, with a population size N = 200
-pop.desc.cov <- make.population.description(region.obj = region, 
+pop.desc <- make.population.description(region.obj = region, 
                                             density.obj = density, 
                                             N = 200)
 
@@ -193,14 +193,16 @@ pop.desc.cov <- make.population.description(region.obj = region,
 
 ### 2.2.3 Detectability
 
-Detectability refers to the detection function or functions we feed into the simulation to generate the observations. In the simple case we can set all animals to have the same probability of detection given their distance from the transect. Here we define a half-normal detection function with scale parameter 25 and truncation 50. The truncation distance defined here means that no detections will occur beyond this value. We can then plot this function to check we have defined it correctly. As we defined our survey region in m the scale parameter and truncation distance will also be assumed to be in metres.
+Detectability refers to the detection function or functions we feed into the simulation to generate the observations. In the simple case we can set all animals to have the same probability of detection given their distance from the transect. Here we define a half-normal detection function with scale parameter 200 and truncation 600. The truncation distance defined here means that no detections will occur beyond this value. We can then plot this function to check we have defined it correctly. As we defined our survey region in m the scale parameter and truncation distance will also be assumed to be in metres.
+
+The scale parameter of 200 was selected as on average it gives around 100 detections out to a truncation distance of 600m where detectability is very low.
 
 ```{r detect1, warning=FALSE, message=FALSE, fig.width=4, fig.cap="Figure 7: The detection functions for males and females."}
 
 # Make a simple half normal detection function with a scale parameter of 10
 detect.hn <- make.detectability(key.function = "hn",
-                                 scale.param = 25, 
-                                 truncation = 50)
+                                 scale.param = 200, 
+                                 truncation = 600)
 
 # We can now visualise these detection functions
 plot(detect.hn, pop.desc)
@@ -210,11 +212,9 @@ When we have covariates in the population we may choose to vary the scale parame
 
 $$ \sigma = exp(\beta_0+\sum_{j=1}^{q}\beta_{j}z_{ij}) $$
 
-where $\beta_0$ is the log of the scale parameter supplied to make.detectability, $beta_j$ are the covariate parameters on the log scale and $z_{ij}$ is the ith value of the jth covariate. This formula was taken from Buck
+where $\beta_0$ is the log of the scale parameter supplied to make.detectability, $beta_j$ are the covariate parameters on the log scale and $z_{ij}$ is the ith value of the jth covariate. This formula was taken from @Buckland:2004ts.
 
-Detectability refers to how easy we think it will be to detect an object, this is just the detection function we feed in to the simulation in order to generate the detections. This detection function is used to calculate the probability each object in the population could be detected from each transect based on its distance to that transect. These probabilites are then turned into detections (or not) based on a Bernoulli distribution. These simulations generate data based on both a half-normal and a hazard-rate detection function. We can also specify a truncation distance which is the largest distance at which an animal may be detected, this is not necessarily the same as the truncation distance applied in the analysis stage.
-
-
+The covariate values were selected so that males had a higher probability of detection than females. These particular values again give a sample size of about 100 observations to which the detection function(s) can be fitted.
 
 ```{r detect2, warning=FALSE, message=FALSE, fig.width=4, fig.cap="Figure 8: The detection functions for males and females."}
 
@@ -222,21 +222,22 @@ Detectability refers to how easy we think it will be to detect an object, this i
 cov.params <- list()
 # Note the covariate parameters are supplied on the log scale
 cov.params$sex = data.frame(level = c("female", "male"), 
-                            param = c(0, 0.9))
+                            param = c(0, 1))
 
 # We want a scale parameter of around 10 for the females and 25 for the males
 # The scale parameter is supplied on the natural scale so...
-exp(log(10)+0.9)
-detect.cov <- make.detectability(scale.param = 10,  cov.param = cov.params, truncation = 50)
+exp(log(100) + 1)
+detect.cov <- make.detectability(scale.param = 110,  cov.param = cov.params, truncation = 600)
 
 # We can now visualise these detection functions
-plot(detect.cov, pop.desc)
+plot(detect.cov, pop.desc.cov)
 ```
-
 
 ### 2.2.4 Design
 
-Currently DSsim requires that the surveys (teansects) have been pregenerated from a design and are stored in their own folder as shapefiles. We recommend this is done using the automated survey design engine in the Distance for Windows software [@Thomas:2010cf]. The arguments passed to the _make.design_ function therefore mainly only store a record of the parameters used to create the pregenerated surveys they will not affect the simulation. We generated surveys based on a systematic parallel line transect design with a spacing of 1000m between transects and orientated the lines vertically so that they were running across the narrower dimension of the study region giving 20 transects per survey. The recommended minimum number of transects for line transect studies is between 10 and 20 [@Buckland:2001vm].
+DSsim-1.1.0 implements two basic designs, systematic parallel lines and systematic points, to generate transects. Other more complex designs can be used with the aid of the Distance for Windows software [@Thomas:2010cf]. This software allows more complex designs to be defined and can generate transects and store them in the form of shapefiles which DSsim can then read in. 
+
+For the purposes of this example we will use the parallel systematic line transect design built into DSsim. As the recommended minimum number of transects is between 10 and 20 [@Buckland:2001vm] we have set the spacing between the lines to be 1000 m.
 
 ```{r design, warning=FALSE, message=FALSE}
 
@@ -255,37 +256,105 @@ plot(region, plot.units = "km")
 plot(transects, col = 4, lwd = 2)
 ```
 
-
 ### 2.2.5 Analysis
 
-Finally we can define how to analyse the resulting distance samplig data. Below we restrict DSsim to only fitting a half-normal model with a truncation distance of 125m (1.25$\sigma$).
+The final stage of the simulation is to analyse the distance sampling data which has been generated. As discussed above when collecting data in the field we would not know the true underlying detection function, we will therefore incorporate some model uncertainty. We can ask the simulation to fit two models, a half-normal and a hazard rate, to the data and select the best model based on the minimum AIC as follows:
 
-```{r analyses}
-ddf.analyses <- make.ddf.analysis.list(dsmodel = list(~cds(key = "hn", formula = ~1)), 
-                                       method = "ds", 
-                                       truncation = 50)
+```{r analyses1}
+ddf.analyses <- make.ddf.analysis.list(dsmodel = list(~cds(key = "hn", formula = ~1),
+                                                      ~cds(key = "hr", formula = ~1)), 
+                                       method = "ds",
+                                       criteria = "AIC",
+                                       truncation = 500)
 ```
 
-However, as discussed earlier we may wish to allow DSsim to perform model selection between a number of candidate models as we will not know in a real worl example what the true detection fucntion is. The code below can be used to allow DSsim to select between a half-normal and a hazard-rate model based on the minimum AIC value.  
+In this code we have set the truncation distance to 500 but later we will vary this value to investigate the effects of truncation distance on our simulation results. Note that while the truncation distance can be set to any value, it should not exceed the truncation value defined in the detectability.
 
+In addition, in the field it may be possible to identify the covariates that affect detectability so we may wish to fit a detection function that accounts for this. In this example the following model would be appropriate:
+
+```{r analyses2}
+ddf.analyses.cov <- make.ddf.analysis.list(dsmodel = list(~mcds(key = "hn", formula = ~sex)), 
+                                           method = "ds",
+                                           truncation = 500)
+```
 
 ## 2.3 Simulations
 
-### 2.3.1 Running a single simulation
+The simulation is created by grouping all these components together. It is then a good idea to check that everything is as you indended. The function \code{check.sim.setup} provides a number of plots to help you do this. 
 
-Once all the individual parts of the simulation have been created they are grouped together inside a simulation object. The reason they are all grouped together is so that a summary can be provided of all the components and it is always clear which settings have been used to run the simulation. We will run this simulation 999 times using a different set of transects on each iteration.
+```{r check.sim, fig.height=5.5, fig.width=7.2, fig.cap="Figure 10: Example survey. Top left - the density suface with an example population. Top right - an example set of transects. Bottom left - the detections from the transects. Bottom right - A histogram of the distances from these observations to the transect it was detected."}
+sim <- make.simulation(reps = 999, 
+                       region.obj = region,
+                       design.obj = design,
+                       population.description.obj = pop.desc,
+                       detectability.obj = detect.hn,
+                       ddf.analyses.list = ddf.analyses)
 
-As simulations can take a long time to run it is often worth checking that the setup is right first. We can view an example population, an example transect set, an example survey and a histogram of example detection distances. These are shown in Figure 5.
+check.sim.setup(sim)
+```
+
+For the simulation with covatiates we can re-use the region, design and analysis components and then add in the new population description and detecability.
+
+```{r check.sim2, fig.height=5.5, fig.width=7.2, fig.cap="Figure 11: Example survey."}
+sim.cov <- make.simulation(reps = 999, 
+                       region.obj = region,
+                       design.obj = design,
+                       population.description.obj = pop.desc.cov,
+                       detectability.obj = detect.cov,
+                       ddf.analyses.list = ddf.analyses)
+```
+
+## 2.4 Running Multiple Simulations
+
+```{r check.sim3, eval = FALSE}
+
+truncation <- c(200, 400, 600)
+results.list <- list()
+summary.list <- list()
+
+for(tdist in seq(along= truncation)){
+  # Update analysis truncation distance
+  new.ddf.analyses <- make.ddf.analysis.list(dsmodel = list(~cds(key = "hn", formula = ~1),
+                                                            ~cds(key = "hr", formula = ~1)), 
+                                             method = "ds",
+                                             criteria = "AIC",
+                                             truncation = truncation[tdist])
+  # Update simulation
+  sim@ddf.analyses <- new.ddf.analyses
+  sim@reps <- 10
+  # Run Simulation
+  results.list[[tdist]] <- run(sim)
+  # Store simulation summaries
+  summary.list[[tdist]] <- summary(results.list[[tdist]], description.summary = FALSE)
+}
 
 
-If the setup has been done right the simulation can now be run but first we will reset the seed so that subsequent simulations use the same population:
+```
 
-### 2.3.1 Running multiple simulations
+```{r check.sim4, eval = FALSE}
 
-For our simulation we wanted to run similar simulations only changing the analysis truncation distance between runs. Here we give an example with no model uncertainty.
+truncation <- c(200, 400, 600)
+cov.results.list <- list()
+cov.summary.list <- list()
+
+for(tdist in seq(along= truncation)){
+  cat("Iteration: ", tdist, fill = TRUE)
+  # Update analysis truncation distance
+  new.ddf.analyses <- make.ddf.analysis.list(dsmodel = list(~cds(key = "hn", formula = ~1),
+                                                      ~cds(key = "hr", formula = ~1)), 
+                                       method = "ds",
+                                       criteria = "AIC",
+                                       truncation = truncation[tdist])
+  # Update simulation
+  sim.cov@ddf.analyses <- new.ddf.analyses
+  # Run Simulation
+  cov.results.list[[tdist]] <- run(sim.cov)
+  # Store simulation summaries
+  cov.summary.list[[tdist]] <- summary(cov.results.list[[tdist]], description.summary = FALSE)
+}
 
 
-Since these simulations take a long time to run we have run them in advance and saved the results as data in the DSsim package.  Each of these objects is a list of simulations with varying truncation distance relating to Table 1.  We can use the following code to load these results:
+```
 
 ## 3. Results
 
