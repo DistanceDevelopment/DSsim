@@ -107,11 +107,10 @@ This vignette will guide you through the steps to create and run a series of sim
 
 ## 2.1 Setup
 
-Here we load the DSsim library and set the random seed so that these results will be reproducible.
+Here we load the DSsim library.
 
 ```{r setup, warning=FALSE, message=FALSE}
 library(DSsim)
-set.seed(4321)
 ```
 
 ## 2.2 Simulation Components
@@ -202,7 +201,7 @@ The scale parameter of 200 was selected as on average it gives around 100 detect
 # Make a simple half normal detection function with a scale parameter of 10
 detect.hn <- make.detectability(key.function = "hn",
                                  scale.param = 200, 
-                                 truncation = 600)
+                                 truncation = 1000)
 
 # We can now visualise these detection functions
 plot(detect.hn, pop.desc)
@@ -222,12 +221,15 @@ The covariate values were selected so that males had a higher probability of det
 cov.params <- list()
 # Note the covariate parameters are supplied on the log scale
 cov.params$sex = data.frame(level = c("female", "male"), 
-                            param = c(0, 1))
+                            param = c(0, 1.2))
 
 # We want a scale parameter of around 10 for the females and 25 for the males
 # The scale parameter is supplied on the natural scale so...
 exp(log(100) + 1)
-detect.cov <- make.detectability(scale.param = 110,  cov.param = cov.params, truncation = 600)
+detect.cov <- make.detectability(key.function = "hn" ,
+                                 scale.param = 110,
+                                 cov.param = cov.params, 
+                                 truncation = 1000)
 
 # We can now visualise these detection functions
 plot(detect.cov, pop.desc.cov)
@@ -313,6 +315,7 @@ results.list <- list()
 summary.list <- list()
 
 for(tdist in seq(along= truncation)){
+  cat("\n Running for truncation = ", truncation[tdist], fill = T)
   # Update analysis truncation distance
   new.ddf.analyses <- make.ddf.analysis.list(dsmodel = list(~cds(key = "hn", formula = ~1),
                                                             ~cds(key = "hr", formula = ~1)), 
@@ -321,7 +324,7 @@ for(tdist in seq(along= truncation)){
                                              truncation = truncation[tdist])
   # Update simulation
   sim@ddf.analyses <- new.ddf.analyses
-  sim@reps <- 10
+  sim@reps <- 100
   # Run Simulation
   results.list[[tdist]] <- run(sim)
   # Store simulation summaries
@@ -331,22 +334,59 @@ for(tdist in seq(along= truncation)){
 
 ```
 
+Determinine candidate truncation distances for the simulation with covariates in is slightly more complex due to the fact that we have a mixture of detection functions. 
+
+```{r truncate, eval = TRUE, cache=TRUE, echo = FALSE, fig.width=4, fig.cap="histogram of data from covariate simulation."}
+set.seed(2323)
+temp <- sim.cov
+temp@population.description@N <- 5000
+eg.survey <- create.survey.results(temp)
+ddf.dat <- eg.survey@ddf.data@ddf.dat
+n <- nrow(ddf.dat)
+plot.title <- paste("Detection Distances (n=", n,")", sep = "")
+temp2 <- hist(ddf.dat$distance, breaks = 20, plot = FALSE)
+temp2$density <- temp2$density/temp2$density[1]
+plot(temp2, freq = FALSE, xlab = "Distance (m)", main = "Detection Distances")
+
+ddf.result.hn <- ddf(dsmodel = ~cds(key = "hn"), data = ddf.dat, meta.data = list(width = 1000))
+ddf.result.hr <- ddf(dsmodel = ~cds(key = "hr"), data = ddf.dat, meta.data = list(width = 1000))
+
+min.AIC <- min(ddf.result.hn$criterion, ddf.result.hr$criterion)
+index <- which(c(ddf.result.hn$criterion, ddf.result.hr$criterion) == min.AIC)
+
+x.vals <- seq(0, temp@detectability@truncation, length = 200)
+if(index ==1){
+  scale <- exp(ddf.result.hn$par)
+  y.vals <- exp(-x.vals^2/(2*scale^2))
+}else{
+  scale <- exp(ddf.result.hr$par[2])
+  shape <- exp(ddf.result.hr$par[1])
+  y.vals <- 1-exp(-(x.vals/scale)^-shape)
+}
+
+lines(x.vals, y.vals, lwd = 3)
+
+
+```
+
 ```{r check.sim4, eval = FALSE}
 
-truncation <- c(200, 400, 600)
+truncation <- c(200, 400, 600, 800, 1000)
 cov.results.list <- list()
 cov.summary.list <- list()
 
 for(tdist in seq(along= truncation)){
-  cat("Iteration: ", tdist, fill = TRUE)
+  # So we know how far through we are
+  cat("\n Running for truncation = ", truncation[tdist], fill = T)
   # Update analysis truncation distance
   new.ddf.analyses <- make.ddf.analysis.list(dsmodel = list(~cds(key = "hn", formula = ~1),
-                                                      ~cds(key = "hr", formula = ~1)), 
-                                       method = "ds",
-                                       criteria = "AIC",
-                                       truncation = truncation[tdist])
+                                                            ~cds(key = "hr", formula = ~1)), 
+                                             method = "ds",
+                                             criteria = "AIC",
+                                             truncation = truncation[tdist])
   # Update simulation
   sim.cov@ddf.analyses <- new.ddf.analyses
+  sim.cov@reps <- 100
   # Run Simulation
   cov.results.list[[tdist]] <- run(sim.cov)
   # Store simulation summaries
