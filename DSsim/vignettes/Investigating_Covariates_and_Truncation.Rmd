@@ -13,7 +13,9 @@ vignette: >
 
 ## 1. Introduction
 
-Distance Sampling is a process in which a study area is surveyed in order to estimate the size of the population within it. It can be thought of as an extension to plot sampling. However, while plot sampling assumes that all objects within the plots are detected, distance sampling relaxes this assumption. Note fo the purposes of distance sampling an object can either be an individual or a cluster or individuals. Distance sampling makes assumptions about the distribution of objects with respect to the transects which are based on randomly located transects. Then by fitting a detection function to the recorded distances between the objects and the transect they were detected from we can estimate how many objects were missed and hence the total number in the covered area. And example of a detection function is given in Figure 1.  
+Distance Sampling is a process in which a study area is surveyed in order to estimate the size of the population within it. It can be thought of as an extension to plot sampling. However, while plot sampling assumes that all objects within the plots are detected, distance sampling relaxes this assumption. To do this Distance sampling makes an assumptions about the distribution of objects with respect to the transects and to satisfy these assumptions the transects (the points or lines) must be randomly located with respect to the objects in the study region. Note that for the purposes of distance sampling an object can either be an individual or a cluster or individuals. 
+
+The next step in distance sampling is then to record the distances from each detected animal to the transect it was detected from and fit a detection function. From this function we can estimate how many objects were missed and hence the total number in the covered area. And example of a detection function is given in Figure 1. If our line transects have been placed at random within the study are then we would expect on average  
 
 ```{r detection function, warning=FALSE, message=FALSE, echo=FALSE, fig.width = 6, fig.cap="Figure 1: An Example detection function. The histogram shows example distances recorded from a line transect. The smooth curve is the detection function. The grey shaded area represents the number of detected objects and the diagonal hash region represents the number of objects in the covered region that were not detected."}
 x <- seq(0, 70, length = 200)
@@ -38,6 +40,8 @@ plot(temp, freq = FALSE, add = TRUE)
 
 
 The R package DSsim allows users to simulate distance sampling surveys and test out a range of design and analysis decisions specific to their population of interest. In order to simulate distance surveys the user must make some assuptions about the population of interest and the detection process giving rise to the observed distances. Simulations can be repeated over a range of assumptions so that the user can be confident that their chosen design will perform well despite any uncertainty.
+
+While these simulations focus on the the issue of truncation at the analysis stage, an example of using DSsim to compare survey designs can be found at <http://www.creem.st-and.ac.uk/DS.M&A/#survey-design-simulation-case-study>.
 
 ### 1.1 Introduction to DSsim
 
@@ -87,11 +91,12 @@ pop.desc <- make.population.description(covariates = covariate.list)
 cov.params <- list(size = c(0.015), 
                    sex = data.frame(level = c("male", "female"),
                                     param = c(0.9, -0.1)))
-detect <- make.detectability(scale.param = 10, cov.param = cov.params, truncation = 60)
+
+detect <- make.detectability(scale.param = 10, 
+                             cov.param = cov.params, 
+                             truncation = 60)
 
 plot(detect, pop.desc)
-
-
 
 ```
 
@@ -221,13 +226,13 @@ The covariate values were selected so that males had a higher probability of det
 cov.params <- list()
 # Note the covariate parameters are supplied on the log scale
 cov.params$sex = data.frame(level = c("female", "male"), 
-                            param = c(0, 1.2))
+                            param = c(0, 1.5))
 
 # We want a scale parameter of around 10 for the females and 25 for the males
 # The scale parameter is supplied on the natural scale so...
 exp(log(100) + 1)
 detect.cov <- make.detectability(key.function = "hn" ,
-                                 scale.param = 110,
+                                 scale.param = 120,
                                  cov.param = cov.params, 
                                  truncation = 1000)
 
@@ -304,6 +309,7 @@ sim.cov <- make.simulation(reps = 999,
                        population.description.obj = pop.desc.cov,
                        detectability.obj = detect.cov,
                        ddf.analyses.list = ddf.analyses)
+check.sim.setup(sim.cov)
 ```
 
 ## 2.4 Running Multiple Simulations
@@ -337,7 +343,7 @@ for(tdist in seq(along= truncation)){
 Determinine candidate truncation distances for the simulation with covariates in is slightly more complex due to the fact that we have a mixture of detection functions. 
 
 ```{r truncate, eval = TRUE, cache=TRUE, echo = FALSE, fig.width=4, fig.cap="histogram of data from covariate simulation."}
-set.seed(2323)
+set.seed(2320)
 temp <- sim.cov
 temp@population.description@N <- 5000
 eg.survey <- create.survey.results(temp)
@@ -355,16 +361,23 @@ min.AIC <- min(ddf.result.hn$criterion, ddf.result.hr$criterion)
 index <- which(c(ddf.result.hn$criterion, ddf.result.hr$criterion) == min.AIC)
 
 x.vals <- seq(0, temp@detectability@truncation, length = 200)
+trunc.vals <- c(200, 400, 600, 800, 1000)
 if(index ==1){
   scale <- exp(ddf.result.hn$par)
   y.vals <- exp(-x.vals^2/(2*scale^2))
+  trunc.y <- exp(-trunc.vals^2/(2*scale^2))
 }else{
   scale <- exp(ddf.result.hr$par[2])
   shape <- exp(ddf.result.hr$par[1])
   y.vals <- 1-exp(-(x.vals/scale)^-shape)
+  trunc.y <- 1-exp(-(trunc.vals/scale)^-shape)
 }
 
 lines(x.vals, y.vals, lwd = 3)
+
+for(i in seq(along = trunc.vals)){
+  lines(x = rep(trunc.vals[i],2), y = c(0,trunc.y[i]), lwd = 2, col = 2)
+}
 
 
 ```
@@ -396,7 +409,66 @@ for(tdist in seq(along= truncation)){
 
 ```
 
+## 2.4 Running Simulations to Check Detection Function Parameter Estimates
+
+If our interest lies more in learning how individual level covariates affect detecability rather than just if they affect our estimates of density and abundance then we require a slightly different setup. DSsim does not store the detection function parameter estimates therefore we need to do this manually. As before we create our simulation but then we need to manually run the analyses and store the parameter estimates we are interested in.
+
+```{r covsimulation, eval = FALSE}
+sim.cov <- make.simulation(reps = 100, 
+                       region.obj = region,
+                       design.obj = design,
+                       population.description.obj = pop.desc.cov,
+                       detectability.obj = detect.cov,
+                       ddf.analyses.list = ddf.analyses.cov)
+
+# To store values of interest
+sigma.est <- numeric(0)
+male.param <- numeric(0)
+N.est <- numeric(0)
+
+for(i in 1:sim.cov@reps){
+  # Simulates the survey process 
+  simulated.data <- create.survey.results(sim.cov, dht.tables = TRUE)
+  # Run analyses 
+  results <- run.analysis(sim.cov, simulated.data, dht = TRUE)
+  ddf.results <- results$ddf
+  dht.results <- results$dht
+  # Store values of interest
+  sigma.est[i] <- ddf.results$par[1]
+  male.param[i] <- ddf.results$par[2]
+  N.est[i] <- dht.results$individuals$N$Estimate
+}
+
+oldpar <- par(mfrow = c(2,2))
+hist(sigma.est, xlab = "Estimate of sigma", main = "Sigma")
+abline(v = sim.cov@detectability@scale.param, col = 2, lwd = 2)
+hist(male.param, xlab = "Estimate of male param", main = "Sex (Male)")
+abline(v = sim.cov@detectability@cov.param$sex$param[sim.cov@detectability@cov.param$sex$level == "male"], col = 2, lwd = 2)
+hist(N.est, xlab = "Estimate of N", main = "N")
+abline(v = sim.cov@population.description@N, col = 2, lwd = 2)
+par(oldpar)
+```
+
 ## 3. Results
+
+As these simulations take a substantial amount of time to run we have saved the results summaries into this package. They can be loaded and viewed as follows:
+
+```{r loadresults, eval = FALSE}
+
+sim.summaries <- data("trunc.hn.summaries.Robj")
+summary.t200 <- sim.summaries[[1]]
+summary.t400 <- sim.summaries[[2]]
+summary.t600 <- sim.summaries[[3]]
+
+sim.summaries <- data("trunc.cov.summaries.Robj")
+summary.cov.t200 <- sim.summaries[[1]]
+summary.cov.t400 <- sim.summaries[[2]]
+summary.cov.t600 <- sim.summaries[[3]]
+
+# We can then simply type the name of the summary that we wish to view
+summary.t200
+
+```
 
 ### 3.1 Extracting Result Statistics
 
@@ -404,10 +476,6 @@ If you have only run a single simulation then a summary of the description and r
 
 
 However, as this investigation involved running many simulations we provide a function to automate the extraction of results, assuming a number of simulations are stored in a list. It is not necessary to understand how these functions work, details are provided here for interested readers. If prefered the reader could just run the code and skip to the next section.
-
-
-This function is then then applied over the list of simulations to extract the desired results using _lapply_.
-
 
 ## 3.2 Simulation Results
 
