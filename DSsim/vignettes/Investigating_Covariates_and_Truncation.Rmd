@@ -411,9 +411,7 @@ for(tdist in seq(along= truncation)){
 }
 ```
 
-## 2.4 Running Simulations to Check Detection Function Parameter Estimates
-
-If our interest lies more in learning how individual level covariates affect detecability rather than just if they affect our estimates of density and abundance then we require a slightly different setup. DSsim does not store the detection function parameter estimates therefore we need to do this manually. As before we create our simulation but then we need to manually generate the data, run the analyses and store the parameter estimates we are interested in. DSsim does provide functions so that doing this is fairly straight forward.
+Finally we can run this simulation fitting the covariate model we used to generate the data.
 
 ```{r covsimulation, eval = FALSE}
 sim.cov <- make.simulation(reps = 999, 
@@ -423,23 +421,78 @@ sim.cov <- make.simulation(reps = 999,
                        detectability.obj = detect.cov,
                        ddf.analyses.list = ddf.analyses.cov)
 
-# To store values of interest
-sigma.est <- numeric(0)
-male.param <- numeric(0)
-N.est <- numeric(0)
+# Truncation distances to iterate over
+truncation <- c(200, 400, 600, 800, 1000)
 
-for(i in 1:sim.cov@reps){
-  # Simulates the survey process 
-  simulated.data <- create.survey.results(sim.cov, dht.tables = TRUE)
-  # Run analyses 
-  results <- run.analysis(sim.cov, simulated.data, dht = TRUE)
-  ddf.results <- results$ddf
-  dht.results <- results$dht
-  # Store values of interest
-  sigma.est[i] <- ddf.results$par[1]
-  male.param[i] <- ddf.results$par[2]
-  N.est[i] <- dht.results$individuals$N$Estimate
+# Storage space for results
+covmod.results.list <- list()
+covmod.summary.list <- list()
+
+for(tdist in seq(along= truncation)){
+  # Screen display to indicate how far through the simulations we are
+  cat("\n Running for truncation = ", truncation[tdist], fill = T)
+  # Update analysis truncation distance
+  new.ddf.analyses <- make.ddf.analysis.list(dsmodel = list(~mcds(key = "hn", formula = ~sex)), 
+                                             method = "ds",
+                                             criteria = "AIC",
+                                             truncation = truncation[tdist])
+  # Update simulation
+  sim.cov@ddf.analyses <- new.ddf.analyses
+  # Run Simulation
+  covmod.results.list[[tdist]] <- run(sim.cov)
+  # Store simulation summaries
+  covmod.summary.list[[tdist]] <- summary(covmod.results.list[[tdist]], description.summary = FALSE)
 }
+
+```
+
+## 2.4 Running Simulations to Check Detection Function Parameter Estimates
+
+If our interest lies more in learning how individual level covariates affect detecability rather than just if they affect our estimates of density and abundance then we require a slightly different setup. DSsim does not store the detection function parameter estimates therefore we need to do this manually. As before we create our simulation but then we need to manually generate the data, run the analyses and store the parameter estimates we are interested in. DSsim does provide functions so that doing this is fairly straight forward.
+
+```{r covsimulation2, eval = FALSE}
+sim.cov <- make.simulation(reps = 999, 
+                       region.obj = region,
+                       design.obj = design,
+                       population.description.obj = pop.desc.cov,
+                       detectability.obj = detect.cov,
+                       ddf.analyses.list = ddf.analyses.cov)
+
+# Truncation distances to iterate over
+truncation <- c(200, 400, 600, 800, 1000)
+reps <- sim.cov@reps
+
+# To store values of interest
+sigma.est <- male.param <- array(NA, 
+                                 dim = c(length(truncation), reps), 
+                                 dimnames = list(truncation, 1:reps))
+
+# Iterate over truncation distances
+for(tdist in seq(along = truncation)){
+  # Screen display to indicate how far through the simulations we are
+  cat("\n Running for truncation = ", truncation[tdist], fill = T)
+  # Update truncation distance
+  ddf.analyses.cov <- make.ddf.analysis.list(dsmodel = list(~mcds(key = "hn", formula = ~sex)), 
+                                           method = "ds",
+                                           truncation = truncation[tdist])
+  sim.cov@ddf.analyses <- ddf.analyses.cov
+  # Simulation repetitions
+  for(i in 1:reps){
+    cat("\r", i, " out of ", reps,  " reps \r")
+    # Simulates the survey process 
+    simulated.data <- create.survey.results(sim.cov, dht.tables = TRUE)
+    # Run analyses 
+    results <- run.analysis(sim.cov, simulated.data, dht = TRUE)
+    ddf.results <- results$ddf
+    dht.results <- results$dht
+    # Store values of interest
+    sigma.est[tdist,i] <- ddf.results$par[1]
+    male.param[tdist,i] <- ddf.results$par[2]
+  }
+}
+
+
+
 
 oldpar <- par(mfrow = c(2,2))
 hist(sigma.est, xlab = "Estimate of sigma", main = "Sigma")
