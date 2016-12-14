@@ -339,6 +339,11 @@ for(tdist in seq(along= truncation)){
   # Store simulation summaries
   summary.list[[tdist]] <- summary(results.list[[tdist]], description.summary = FALSE)
 }
+
+# Add names to the summary and results list
+names(results.list) <- paste("t", truncation, sep = "")
+names(summary.list) <- paste("t", truncation, sep = "")
+
 ```
 
 As the simulations including covariates mean that we have a mixture of detection functions, the easiest way to select candidate truncation distances for the analyses is to plot some example data. Figure 12 shows data generated from a population size of 5000, this increase in population size will increase the number of detections and make the shape of the resulting data less variable. From this histogram five candidate truncation distances were selected and are shown by the red vertical lines.
@@ -409,6 +414,9 @@ for(tdist in seq(along= truncation)){
   # Store simulation summaries
   cov.summary.list[[tdist]] <- summary(cov.results.list[[tdist]], description.summary = FALSE)
 }
+# Add names to the summary and results list
+names(cov.results.list) <- paste("t", truncation, sep = "")
+names(cov.summary.list) <- paste("t", truncation, sep = "")
 ```
 
 Finally we can run this simulation fitting the covariate model we used to generate the data.
@@ -443,7 +451,9 @@ for(tdist in seq(along= truncation)){
   # Store simulation summaries
   covmod.summary.list[[tdist]] <- summary(covmod.results.list[[tdist]], description.summary = FALSE)
 }
-
+# Add names to the summary and results list
+names(covmod.results.list) <- paste("t", truncation, sep = "")
+names(covmod.summary.list) <- paste("t", truncation, sep = "")
 ```
 
 ## 2.4 Running Simulations to Check Detection Function Parameter Estimates
@@ -498,28 +508,32 @@ for(tdist in seq(along = truncation)){
 
 As these simulations take a substantial amount of time to run we have saved the results summaries into this package as data. They can be loaded and individual summaries can be viewed as follows:
 
-```{r loadresults, eval = TRUE, echo = FALSE}
+```{r loadresults, eval = TRUE, echo = TRUE}
 
 # Simulations using a simple half normal detection function
 data(trunc_summary)
-summary.t200 <- summary.list[[1]]
-summary.t400 <- summary.list[[2]]
-summary.t600 <- summary.list[[3]]
 
 # Covartiate simulations
 data(trunc_cov_summary)
-summary.cov.t200 <- cov.summary.list[[1]]
-summary.cov.t400 <- cov.summary.list[[2]]
-summary.cov.t600 <- cov.summary.list[[3]]
-summary.cov.t800 <- cov.summary.list[[2]]
-summary.cov.t1000 <- cov.summary.list[[3]]
 
-# We can then simply type the name of the summary that we wish to view
-# For example:
-#summary.t200
-#summary.cov.t600
+# Covariate simulations with covariate model
+data(covmod_summary)
+data(cov_param)
+```
+
+The objects this has loaded into the workspace include \code{summary.list}, \code{cov.summary.list}, \code{covmod.summary.list} and \code{param.list}. \code{summary.list} is a list of 3 simulation summaries for the simple half normal simulations with truncation distances of 200, 400 and 600. \code{summary.list} is a list of 5 simulation summaries for the covariate simulations where detectability is affected by sex but sex is not included as a covariate in the detection function model. These simulations relate to truncation distances of 200, 400, 600, 800 and 1000. \code{covmod.summary.list} contains the results of the simulations with the same set up as the \code{covmod.summary.list} but with the analyses including the covariate sex in the detection function model. \code{param.list} contains the parameter estimates from the same simulation set up as \code{covmod.summary.list}. It is a list of 2 arrays the first containing parameter estimates for sigma for the five truncation distances and the second containing parameter estimates for the male sex parameter for each truncation distance. 
+
+```{r displaysummary, eval = FALSE, echo = TRUE}
+
+# To view the full summary for the simple half normal simulation with a truncation distance of 200:
+summary.list$t200
+
+# To view the full summary for the covariate simulation with a truncation distance of 600:
+cov.summary.list$t600
 
 ```
+
+To keep the size of the DSsim package down these objects only store the simulation summaries. Copies of the fill summaries can be found at... These follow the same structure as the summary list objects. These can be used to obtain histograms of the abundance / density estimates etc. if desired.
 
 ### 3.1 Extracting Result Statistics
 
