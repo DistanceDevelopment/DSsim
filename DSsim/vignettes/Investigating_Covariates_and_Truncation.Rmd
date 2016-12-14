@@ -492,16 +492,6 @@ for(tdist in seq(along = truncation)){
 }
 
 
-
-
-oldpar <- par(mfrow = c(2,2))
-hist(sigma.est, xlab = "Estimate of sigma", main = "Sigma")
-abline(v = sim.cov@detectability@scale.param, col = 2, lwd = 2)
-hist(male.param, xlab = "Estimate of male param", main = "Sex (Male)")
-abline(v = sim.cov@detectability@cov.param$sex$param[sim.cov@detectability@cov.param$sex$level == "male"], col = 2, lwd = 2)
-hist(N.est, xlab = "Estimate of N", main = "N")
-abline(v = sim.cov@population.description@N, col = 2, lwd = 2)
-par(oldpar)
 ```
 
 ## 3. Results
@@ -603,7 +593,7 @@ kable(sim.data,
 
 
 
-```{r maketables2, eval = TRUE, echo = FALSE}
+```{r maketables2, eval= TRUE, echo = FALSE}
 
 library(knitr)
 
@@ -631,6 +621,25 @@ kable(sim.data,
       table.placement="!h",
       format = "html")
 
+```
+
+
+
+```{r makeplots, eval= TRUE, echo = FALSE}
+oldpar <- par(mfrow = c(2,5))
+for(i in seq(along= truncation)){
+  # histogram of the sigma estimates
+  hist(exp(sigma.est[i,]), xlab = "Estimate of sigma", main = "Sigma")
+  abline(v = sim.cov@detectability@scale.param, col = 2, lwd = 2)
+  
+}
+for(i in seq(along= truncation)){
+# histogram of the male cov estimates
+  hist(male.param, xlab = "Estimate of male param", main = "Sex (Male)")
+  abline(v = sim.cov@detectability@cov.param$sex$param[sim.cov@detectability@cov.param$sex$level == "male"], col = 2, lwd = 2)
+}
+
+par(oldpar)
 ```
 
 ##4. Discussion
