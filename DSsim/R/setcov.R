@@ -15,7 +15,7 @@ setcov <- function(dmat, model){
     colnames(x) <- "(Intercept)"
     # Covariate Model
   }else{
-    x <- model.matrix(as.formula(model), data = dmat)
+    x <- stats::model.matrix(as.formula(model), data = dmat)
   }
   return(x)
 }
