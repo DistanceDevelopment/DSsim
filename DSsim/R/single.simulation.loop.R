@@ -1,4 +1,4 @@
-
+#' @importFrom utils flush.console
 #single.simulation.loop <- function(i, object){
 single.simulation.loop <- function(i, object, save.data, load.data, data.path = character(0)){
   # Input: i - integer representing the loop number

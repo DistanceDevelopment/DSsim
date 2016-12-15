@@ -8,6 +8,7 @@
 #' @param simulation A simulation object created by a call to \code{make.simulation}
 #' @return a invisible copy of the simulation
 #' @export
+#' @importFrom graphics par
 #' @author Eric Rexstad, Laura Marshall
 #' @examples 
 #' \dontrun{

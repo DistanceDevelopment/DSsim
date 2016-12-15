@@ -142,7 +142,7 @@ setValidity("Simulation",
 #'  explanation of the summary should be included
 #' @param ... not implemented
 #' @rdname summary.Simulation-methods
-#' @importFrom stats na.omit
+#' @importFrom stats na.omit qlnorm qnorm
 #' @export
 setMethod(
   f="summary",

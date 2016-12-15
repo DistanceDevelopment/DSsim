@@ -1,3 +1,5 @@
+#' @importFrom stats as.formula 
+#' @importFrom stats predict
 calculate.fitted <- function(ddf.model){
   # Calculates the new fitted values for the additional data points
   # These will have been added to the data and xmat parts of the ddf 

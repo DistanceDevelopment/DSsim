@@ -1,8 +1,9 @@
+#' @importFrom stats as.formula
 setcov <- function(dmat, model){
-  #' dmat: data matrix
-  #' model: model formula
-  #' returns a design matrix for the specified data and model
-  #' author: Jeff Laake
+  # dmat: data matrix
+  # model: model formula
+  # returns a design matrix for the specified data and model
+  # author: Jeff Laake
   # Null Model
   if(model=="~."){
     n <- 0
