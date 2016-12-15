@@ -50,15 +50,20 @@ covariate.list$size <- list(list("ztruncpois", list(mean = 3)),
 covariate.list$height <- list(list("lognormal", list(meanlog = log(2), sdlog = log(1.25))))
 covariate.list$sex <- list(data.frame(level = c("male", "female"), prob = c(0.45,0.55)), 
                            data.frame(level = c("male", "female"), prob = c(0.5,0.5)))
-pop.desc <- make.population.description(region.obj = region, density.obj = density, covariates = covariate.list, N = c(10,10))
+pop.desc <- make.population.description(region.obj = region, 
+                                        density.obj = density, 
+                                        covariates = covariate.list, 
+                                        N = c(10,10))
 
-# In this example height and sex have a global effect where as the effects of size on detectability vary by strata.
+# In this example height and sex have a global effect where as the effects of size on 
+# detectability vary by strata.
 cov.params <- list(size = c(log(1.05), log(1.1)), 
                    height = log(1.2), 
                    sex = data.frame(level = c("male", "female"), 
                                     param = c(log(1), log(0.6))))
 
-detect <- make.detectability(key.function = "hn", scale.param = 20, truncation = 50, cov.param = cov.params)
+detect <- make.detectability(key.function = "hn", scale.param = 20, 
+                             truncation = 50, cov.param = cov.params)
 
 plot(detect, pop.desc)
                                     
@@ -69,7 +74,8 @@ cov.params <- list(size = c(0.05, 0.1),
                                     strata = c("A", "A", "B", "B"),
                                     param = c(0,-0.5, 0.1, -0.25)))  
                                                                        
-detect <- make.detectability(key.function = "hn", scale.param = c(20, 25), truncation = 60, cov.param = cov.params)
+detect <- make.detectability(key.function = "hn", scale.param = c(20, 25), 
+                             truncation = 60, cov.param = cov.params)
 plot(detect, pop.desc)
 
 }

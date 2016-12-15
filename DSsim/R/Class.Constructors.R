@@ -110,10 +110,12 @@ make.region <- function(region.name = "region",
 #' @export
 #' @author Laura Marshall
 #' @examples
-#' # DSsim can generate a systematic set of parallel line transects which by default have a spacing of 100
+#' # DSsim can generate a systematic set of parallel line transects which by default have a 
+#' # spacing of 100
 #' design <- make.design("line")
 #' 
-#' # The easiest way to generate the transect is by creating a simulation (default simulations create a line transect design)
+#' # The easiest way to generate the transect is by creating a simulation (default simulations 
+#' #create a line transect design)
 #' sim <- make.simulation()
 #' transects <- generate.transects(sim)
 #' plot(make.region())
@@ -127,7 +129,9 @@ make.region <- function(region.name = "region",
 #' plot(make.region())
 #' plot(transects)
 #' 
-#' # More complex designs can be defined in Distance for Windows. This software can then generate multiple survey instances and store them as shapefiles for use by DSsim. The shapefile below was generated in this way.
+#' # More complex designs can be defined in Distance for Windows. This software can then generate
+#' # multiple survey instances and store them as shapefiles for use by DSsim. The shapefile below 
+#' # was generated in this way.
 #' 
 #' \dontrun{
 #' 
@@ -147,7 +151,8 @@ make.region <- function(region.name = "region",
 #' write.shapefile(transects.shp, paste(shapefile.pathway,"/transects_1",
 #'  sep = ""))
 #' 
-#' # This design was created in Distance for Windows in a region with the same dimensions as the deault make.region().
+#' # This design was created in Distance for Windows in a region with the same dimensions as the
+#' # deault make.region().
 #' parallel.design <- make.design(transect.type = "Line", 
 #'  design.details = c("Parallel","Systematic"), region = region, 
 #'  design.axis = 0, spacing = 100, plus.sampling =FALSE, 
@@ -257,13 +262,14 @@ make.design <- function(transect.type = "line", design.details = "default", regi
 #' @author Laura Marshall     
 #' @seealso \code{\link{make.region}}  
 #' @examples  
-#' # A simple density surface with a constant value of 1 can be created within a rectangular region using 
+#' # A simple density surface with a constant value of 1 can be created within a rectangular 
+#' # region using 
 #' # the default values:
 #' density <- make.density()
 #' plot(density)
 #' plot(make.region(), add = TRUE)
 #'   
-#' # The example below shows hot to add high and low point to the density surface                             
+#' # The example below shows hot to add high and low point to the density surface                   
 #' \dontrun{
 #' pop.density <- make.density(region.obj = region, x.space = 10, 
 #'  y.space = 10, constant = 0.5) 
@@ -360,7 +366,8 @@ make.density <- function(region.obj = make.region(), density.surface = list(), x
 #' region <- make.region(coords = coords)
 #' density <- make.density(region)
 #' 
-#' # Cluzter size is a zero truncated poisson with mean = 5 in strata 1 and a poisson with lambda = 30 in strata 2.
+#' # Cluzter size is a zero truncated poisson with mean = 5 in strata 1 and a poisson with 
+#' # lambda = 30 in strata 2.
 #' covariate.list <- list()
 #' covariate.list$size <- list(list("ztruncpois", list(mean = 5)),
 #'                             list("poisson", list(lambda = 30)))
@@ -368,17 +375,22 @@ make.density <- function(region.obj = make.region(), density.surface = list(), x
 #' # Animal height is generated from a lognormal distribution for both strata
 #' covariate.list$height <- list(list("lognormal", list(meanlog = log(2), sdlog = log(1.25))))
 #' 
-#' # Animal sex is discrete/categorical, there are more females than males in strata 1 and equal numbers in strata 2
+#' # Animal sex is discrete/categorical, there are more females than males in strata 1 and equal
+#' # numbers in strata 2
 #' covariate.list$sex <- list(data.frame(level = c("male", "female"), prob = c(0.45,0.55)), 
 #'                            data.frame(level = c("male", "female"), prob = c(0.5,0.5)))
 #'                            
 #' # Create covariate description
-#' pop.desc <- make.population.description(region.obj = region, density.obj = density, covariates = covariate.list, N = c(10,10))
+#' pop.desc <- make.population.description(region.obj = region, 
+#'                                         density.obj = density, 
+#'                                         covariates = covariate.list, 
+#'                                         N = c(10,10))
 #' 
 #' # To view the covariate values
 #' pop <- generate.population(pop.desc, detect = make.detectability(), region)
 #' pop@population 
-#' # Note that the covariate values have not affected the detectability (the scale parameter) to do this we need to set the cov.param argument in make.detectability. See ?make.detectability
+#' # Note that the covariate values have not affected the detectability (the scale parameter) to 
+#' # do this we need to set the cov.param argument in make.detectability. See ?make.detectability
 make.population.description <- make.pop.description <- function(region.obj = make.region(), density.obj = make.density(), covariates = list(), N = numeric(0), fixed.N = TRUE){
   # Get the number of strata
   no.strata <- ifelse(length(region.obj@strata.name) > 0, length(region.obj@strata.name), 1)
@@ -434,15 +446,20 @@ make.population.description <- make.pop.description <- function(region.obj = mak
 #' covariate.list$height <- list(list("lognormal", list(meanlog = log(2), sdlog = log(1.25))))
 #' covariate.list$sex <- list(data.frame(level = c("male", "female"), prob = c(0.45,0.55)), 
 #'                            data.frame(level = c("male", "female"), prob = c(0.5,0.5)))
-#' pop.desc <- make.population.description(region.obj = region, density.obj = density, covariates = covariate.list, N = c(10,10))
+#' pop.desc <- make.population.description(region.obj = region, 
+#'                                         density.obj = density, 
+#'                                         covariates = covariate.list, 
+#'                                         N = c(10,10))
 #' 
-#' # In this example height and sex have a global effect where as the effects of size on detectability vary by strata.
+#' # In this example height and sex have a global effect where as the effects of size on 
+#' # detectability vary by strata.
 #' cov.params <- list(size = c(log(1.05), log(1.1)), 
 #'                    height = log(1.2), 
 #'                    sex = data.frame(level = c("male", "female"), 
 #'                                     param = c(log(1), log(0.6))))
 #' 
-#' detect <- make.detectability(key.function = "hn", scale.param = 20, truncation = 50, cov.param = cov.params)
+#' detect <- make.detectability(key.function = "hn", scale.param = 20, 
+#'                              truncation = 50, cov.param = cov.params)
 #' 
 #' plot(detect, pop.desc)
 #'                                     
@@ -453,7 +470,8 @@ make.population.description <- make.pop.description <- function(region.obj = mak
 #'                                     strata = c("A", "A", "B", "B"),
 #'                                     param = c(0,-0.5, 0.1, -0.25)))  
 #'                                                                        
-#' detect <- make.detectability(key.function = "hn", scale.param = c(20, 25), truncation = 60, cov.param = cov.params)
+#' detect <- make.detectability(key.function = "hn", scale.param = c(20, 25), 
+#'                              truncation = 60, cov.param = cov.params)
 #' plot(detect, pop.desc)
 #' 
 make.detectability <- function(key.function = "hn", scale.param = 25, shape.param = numeric(0), cov.param = list(), truncation = 50){

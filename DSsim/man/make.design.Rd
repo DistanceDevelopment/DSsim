@@ -54,10 +54,12 @@ or 2 elements. These options are described in the table below:
                Point         \tab Nested         \tab               \cr}
 }
 \examples{
-# DSsim can generate a systematic set of parallel line transects which by default have a spacing of 100
+# DSsim can generate a systematic set of parallel line transects which by default have a 
+# spacing of 100
 design <- make.design("line")
 
-# The easiest way to generate the transect is by creating a simulation (default simulations create a line transect design)
+# The easiest way to generate the transect is by creating a simulation (default simulations 
+#create a line transect design)
 sim <- make.simulation()
 transects <- generate.transects(sim)
 plot(make.region())
@@ -71,7 +73,9 @@ transects <- generate.transects(sim)
 plot(make.region())
 plot(transects)
 
-# More complex designs can be defined in Distance for Windows. This software can then generate multiple survey instances and store them as shapefiles for use by DSsim. The shapefile below was generated in this way.
+# More complex designs can be defined in Distance for Windows. This software can then generate
+# multiple survey instances and store them as shapefiles for use by DSsim. The shapefile below 
+# was generated in this way.
 
 \dontrun{
 
@@ -91,7 +95,8 @@ library(shapefiles)
 write.shapefile(transects.shp, paste(shapefile.pathway,"/transects_1",
  sep = ""))
 
-# This design was created in Distance for Windows in a region with the same dimensions as the deault make.region().
+# This design was created in Distance for Windows in a region with the same dimensions as the
+# deault make.region().
 parallel.design <- make.design(transect.type = "Line", 
  design.details = c("Parallel","Systematic"), region = region, 
  design.axis = 0, spacing = 100, plus.sampling =FALSE, 
