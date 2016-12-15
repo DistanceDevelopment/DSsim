@@ -122,6 +122,7 @@ setMethod("add.hotspot","Density",
 #'  a coloured point at the centre of each grid cell where as 
 #'  blocks colours the entire cell.
 #' @param density.col the colours used to indicate density level
+#' @param main character plot title
 #' @param ... other general plot parameters
 #' @rdname plot.Density-methods
 #' @importFrom grDevices heat.colors rainbow terrain.colors topo.colors cm.colors

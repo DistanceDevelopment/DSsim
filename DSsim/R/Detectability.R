@@ -13,8 +13,6 @@
 #' parameter for the detection function.
 #' @slot shape.param Object of class \code{"numeric"}; The shape
 #' parameter for the detection function.
-#' @slot covariates Object of class \code{"character"}; The names
-#' of the covariates which affect detectability. Not yet implemented
 #' @slot cov.param Object of class \code{"numeric"}; The parameter
 #' values associated with the covariates. Not yet implemented
 #' @slot truncation Object of class \code{"numeric"}; The maximum 
@@ -83,7 +81,7 @@ setValidity("Detectability",
 
 # GENERIC METHODS DEFINITIONS --------------------------------------------
 
-
+#' @rdname plot.Detectability-methods
 #' @exportMethod plot
 setMethod(
   f="plot",
@@ -92,8 +90,22 @@ setMethod(
     cat("Please provide a population description as well as detectability to enable plotting.")
   })
 
-
-#' @importFrom graphics lines plot legend
+#' Plot
+#' 
+#' Plots an S4 object of class 'Detectability'
+#' 
+#' @param x object of class Detectability
+#' @param y object of class Population.Description
+#' @param add logical indicating whether it should be added to 
+#'  existing plot
+#' @param plot.units allows for units to be converted between m
+#'  and km
+#' @param region.col fill colour for the region
+#' @param gap.col fill colour for the gaps
+#' @param main character plot title
+#' @param ... other general plot parameters 
+#' @rdname plot.Detectability-methods
+#' @importFrom graphics polygon plot axTicks axis lines plot legend
 #' @importFrom stats quantile
 #' @exportMethod plot
 setMethod(

@@ -24,9 +24,6 @@ parameter for the detection function.}
 \item{\code{shape.param}}{Object of class \code{"numeric"}; The shape
 parameter for the detection function.}
 
-\item{\code{covariates}}{Object of class \code{"character"}; The names
-of the covariates which affect detectability. Not yet implemented}
-
 \item{\code{cov.param}}{Object of class \code{"numeric"}; The parameter
 values associated with the covariates. Not yet implemented}
 

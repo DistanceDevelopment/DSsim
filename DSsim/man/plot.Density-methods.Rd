@@ -29,6 +29,8 @@ blocks colours the entire cell.}
 
 \item{density.col}{the colours used to indicate density level}
 
+\item{main}{character plot title}
+
 \item{...}{other general plot parameters}
 }
 \description{

@@ -15,6 +15,7 @@
 #' population density
 #' @slot region.name Object of class \code{"character"}; name of
 #' the region in which the population exists.
+#' @slot strata.names Character vector giving the strata names for the study region.
 #' @slot covariates Named list with one named entry per individual level covariate.
 #' Cluster sizes can be defined here. Each list entry will either be a data.frame 
 #' containing 2 columns, the first the level (level) and the second the probability 

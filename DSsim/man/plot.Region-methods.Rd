@@ -23,6 +23,8 @@ and km}
 
 \item{gap.col}{fill colour for the gaps}
 
+\item{main}{character plot title}
+
 \item{...}{other general plot parameters}
 }
 \description{

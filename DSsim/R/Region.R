@@ -165,6 +165,7 @@ setMethod(
 #'  and km
 #' @param region.col fill colour for the region
 #' @param gap.col fill colour for the gaps
+#' @param main character plot title
 #' @param ... other general plot parameters 
 #' @rdname plot.Region-methods
 #' @importFrom graphics polygon plot axTicks axis
