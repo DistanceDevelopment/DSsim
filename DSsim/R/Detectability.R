@@ -266,7 +266,7 @@ setMethod(
             legend.text <- c("mean", "95%ints")
           }
         }
-        legend(object@truncation, 1.2,  col = ccol, lty = llty, legend = legend.text, bty = "n", box.col = white, xjust = 1)
+        legend(object@truncation, 1.2,  col = ccol, lty = llty, legend = legend.text, bty = "n", box.col = "white", xjust = 1)
       }#loop over covariates  
     }else{ #if there are no covariates
       # Find number of strata
@@ -299,7 +299,7 @@ setMethod(
                     "uf" = rep(scale.param.strat, length(x)))
         lines(x, y, col = strat, lwd = 2)
       }
-      legend(object@truncation, 1.2,  lty = 1, lwd = 2, col = 1:no.strata, legend = strata.names, bty = "n", box.col = white, xjust = 1)
+      legend(object@truncation, 1.2,  lty = 1, lwd = 2, col = 1:no.strata, legend = strata.names, bty = "n", box.col = "white", xjust = 1)
     }
     invisible(x)
   })
