@@ -64,9 +64,9 @@ setMethod(
       line.transect <- callNextMethod()
       return(line.transect)
     }else{
-      if(write.to.file){
-        warning("Write to file not currently implemented", call. = FALSE, immediate. = TRUE)
-      }
+      # if(write.to.file){
+      #   warning("Write to file not currently implemented", call. = FALSE, immediate. = TRUE)
+      # }
       # Storage vectors
       ID <- start.X <- start.Y <- end.X <- end.Y <- tot.length <- numeric(0)
       region.name <- character(0)
