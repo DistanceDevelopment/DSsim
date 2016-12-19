@@ -250,10 +250,11 @@ setMethod(
                                      sd.mean.ER = object@results$individuals$summary[,"ER","sd"])
     # Remove unnecessary columns
     if(all(individual.summary$mean.n.miss.dist == 0)){
-      individual.summary <- subset(individual.summary,select = -c("mean.n.miss.dist"))
+      # To keep CRAN check happy!
+      eval(parse(text = paste("individual.summary <- subset(individual.summary, select = -mean.n.miss.dist)")))
     }
     if(all(individual.summary$no.zero.n == 0)){
-      individual.summary <- subset(individual.summary,select = -c("no.zero.n"))
+      eval(parse(text = paste("individual.summary <- subset(individual.summary, select = -no.zero.n)")))
     }
     individual.N <- data.frame(Truth = true.N.individuals,
                                mean.Estimate = object@results$individuals$N[,"Estimate","mean"],
@@ -306,10 +307,10 @@ setMethod(
                                     sd.mean.ER = object@results$clusters$summary[,"ER","sd"])
       # Remove unnecessary columns
       if(all(cluster.summary$mean.n.miss.dist == 0)){
-        cluster.summary <- subset(cluster.summary,select = -c("mean.n.miss.dist"))
+        eval(parse(text = paste("cluster.summary <- subset(cluster.summary,select = -mean.n.miss.dist)")))
       }
       if(all(cluster.summary$no.zero.n == 0)){
-        cluster.summary <- subset(cluster.summary,select = -c("no.zero.n"))
+        eval(parse(text = paste("cluster.summary <- subset(cluster.summary,select = -no.zero.n)")))
       }
       cluster.N <- data.frame(Truth = true.N.clusters,
                               mean.Estimate = object@results$clusters$N[,"Estimate","mean"],
