@@ -32,7 +32,6 @@ setGeneric("generate.population", function(object, ...){standardGeneric ("genera
 #'   Survey.Design
 #' @param read.from.file if the transect details should be read in from file 
 #'   (currently must be TRUE)
-#' @param write.to.file not currently implemented
 #' @param region optional only required if object is of class Survey.Design.
 #' @param index specifies which set of transect should be loaded
 #' @param ... optional argument index if an object of class Survey.Design is 
@@ -41,7 +40,7 @@ setGeneric("generate.population", function(object, ...){standardGeneric ("genera
 #' @return an object of class Line.Transect
 #' @export
 #' @rdname generate.transects-methods
-setGeneric("generate.transects", function(object, read.from.file = TRUE, write.to.file = FALSE, region = NULL, ...){standardGeneric ("generate.transects")})
+setGeneric("generate.transects", function(object, read.from.file = TRUE, region = NULL, ...){standardGeneric ("generate.transects")})
 
 #' S4 generic method to generate a region table
 #'

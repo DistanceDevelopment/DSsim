@@ -461,7 +461,7 @@ setMethod(
 setMethod(
   f="generate.transects",
   signature="Simulation",
-  definition=function(object, read.from.file = TRUE, write.to.file = FALSE, region = NULL){
+  definition=function(object, read.from.file = TRUE, region = NULL){
     if(length(object@design@path) == 0 & read.from.file){
       read.from.file = FALSE
     }else if(length(object@design@path) > 0){

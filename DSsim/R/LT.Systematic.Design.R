@@ -52,7 +52,7 @@ setValidity("LT.Systematic.Design",
 setMethod(
   f="generate.transects",
   signature="LT.Systematic.Design",
-  definition=function(object, read.from.file = FALSE, write.to.file = FALSE, region = NULL, index = NULL, silent = FALSE){
+  definition=function(object, read.from.file = FALSE, region = NULL, index = NULL, silent = FALSE){
     if(is.null(region) | class(region) != "Region"){
       warning(paste("Attempting to obtain region object from the global environment. Region name: ", region, sep = ""),  call. = FALSE, immediate. = TRUE)
       region <- object@region.obj

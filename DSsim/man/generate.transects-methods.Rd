@@ -11,29 +11,25 @@
 \alias{generate.transects,Simulation-method}
 \title{S4 generic method to generate an instance of a design}
 \usage{
-generate.transects(object, read.from.file = TRUE, write.to.file = FALSE,
-  region = NULL, ...)
+generate.transects(object, read.from.file = TRUE, region = NULL, ...)
 
 \S4method{generate.transects}{PT.Design}(object, read.from.file = TRUE,
-  write.to.file = FALSE, region = NULL, index = NULL)
+  region = NULL, index = NULL)
 
 \S4method{generate.transects}{PT.Nested.Design}(object,
-  read.from.file = FALSE, write.to.file = FALSE, region = NULL,
-  index = NULL, silent = FALSE)
+  read.from.file = FALSE, region = NULL, index = NULL, silent = FALSE)
 
 \S4method{generate.transects}{PT.Systematic.Design}(object,
-  read.from.file = FALSE, write.to.file = FALSE, region = NULL,
-  index = NULL, silent = FALSE)
+  read.from.file = FALSE, region = NULL, index = NULL, silent = FALSE)
 
 \S4method{generate.transects}{LT.Design}(object, read.from.file = TRUE,
-  write.to.file = FALSE, region = NULL, index = NULL)
+  region = NULL, index = NULL)
 
 \S4method{generate.transects}{LT.Systematic.Design}(object,
-  read.from.file = FALSE, write.to.file = FALSE, region = NULL,
-  index = NULL, silent = FALSE)
+  read.from.file = FALSE, region = NULL, index = NULL, silent = FALSE)
 
 \S4method{generate.transects}{Simulation}(object, read.from.file = TRUE,
-  write.to.file = FALSE, region = NULL)
+  region = NULL)
 }
 \arguments{
 \item{object}{an object of class Simulation or a class which inherits from 
@@ -41,8 +37,6 @@ Survey.Design}
 
 \item{read.from.file}{if the transect details should be read in from file 
 (currently must be TRUE)}
-
-\item{write.to.file}{not currently implemented}
 
 \item{region}{optional only required if object is of class Survey.Design.}
 

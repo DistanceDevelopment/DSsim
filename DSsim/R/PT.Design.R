@@ -29,7 +29,7 @@ setClass(Class = "PT.Design",
 setMethod(
   f="generate.transects",
   signature="PT.Design",
-  definition=function(object, read.from.file = TRUE, write.to.file = FALSE, region = NULL, index = NULL){
+  definition=function(object, read.from.file = TRUE, region = NULL, index = NULL){
     if(is.null(region) | class(region) != "Region"){
       region <- object@region.obj
       region <- get(region, pos = 1)
