@@ -47,7 +47,7 @@ While these simulations focus on the the issue of data truncation at the analysi
 
 DSsim takes information from the user on the study region, population and detection process and uses it to generate distance sampling data. DSsim can then be asked to fit detection functions to this data and produce estimates of denisty, abundance and the associated uncertainty. DSsim splits this process into three stages. Firstly, it generates an instance of a population and a set of survey transects. Secondly, it simulates the distance sampling survey using the assumed detection function(s) provided by the user. Lastly, DSsim analyses the data from the survey. Figure 2 illustrates the simulation process and highlights the information which must be provided by the user.
 
-![Figure 2: Illustrates the simulation process. Blue rectangles indicate information supplied by the user. Green rectangles are objects created by DSsim in the simulation process. Orange diamonds indicate the processes carried out by DSsim.](images/SimulationDiagram.png)
+![Figure 2: Illustrates the simulation process. Blue rectangles indicate information supplied by the user. Green rectangles are objects created by DSsim in the simulation process. Orange diamonds indicate the processes carried out by DSsim.](../../vignette/images/SimulationDiagram.png)
 
 ### 1.2 Which Truncation Distance?
 
