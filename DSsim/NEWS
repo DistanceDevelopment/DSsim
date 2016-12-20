@@ -11,10 +11,11 @@ New Features
   * A vignette investigating the effects of truncation distance.
   * Individual level covariates at the data generation and model fitting stages.
   * Plotting functionality to show the effects of the covariates on detectability.
+  * Implements progress counter when running in serial and progress bar when running in parallel.
   
 Bug Fixes
 
-  *  Fixed bug in make.design which was looking to the global environment for an object called region.
+  * Fixed bug in make.design which was looking to the global environment for an object called region.
   * Ammended RMSE description in description summary
   
 
