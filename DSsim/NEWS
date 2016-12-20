@@ -5,12 +5,18 @@ New Features
 
   * Generates systematic point transect surveys (no need to generate survey shapefiles in Distance in advance).
   * Generates acoustic point transect surveys where the detectors are a mix of complex (record distance) and simple (only record detection no distance) nodes. The complex nodes can either be distributed as a nested grid or as a random sample of the systematic grid of simple nodes.
-  * Added a check.sim.setup function to allow easier checking of the simulation setup.
-  * Added default values so basic simulations can be run with minimal provision of arguments.
-
+  * A check.sim.setup function to allow easier checking of the simulation setup.
+  * Default values so basic simulations can be run with minimal provision of arguments.
+  * Generates systematic line transect surveys (no need to generate survey shapefiles in Distance in advance).
+  * A vignette investigating the effects of truncation distance.
+  * Individual level covariates at the data generation and model fitting stages.
+  * Plotting functionality to show the effects of the covariates on detectability.
+  
 Bug Fixes
 
   *  Fixed bug in make.design which was looking to the global environment for an object called region.
+  * Ammended RMSE description in description summary
+  
 
 DSsim 1.0.8
 -----------
