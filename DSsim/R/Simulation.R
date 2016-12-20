@@ -634,7 +634,7 @@ setMethod(
     }else{
       #Check that it wasn't trying to run parallel
       if(run.parallel){
-        warning("Could not run in parallel, library(parallel) or library(pbapply) is not installed.")
+        warning("Could not run in parallel, library(parallel) or library(pbapply) is not installed.", immediate. = TRUE, call. = FALSE)
       }
       #otherwise loop
       for(i in 1:object@reps){
