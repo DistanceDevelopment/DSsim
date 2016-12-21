@@ -35,7 +35,10 @@ setValidity("PT.Systematic.Design",
                 return("You must only specify one path. All transect shapefiles must be in the same folder.")
               }
               if(any(ifelse(object@design.axis != 0, TRUE, FALSE))){
-                warning("Only a design axis of 0 is currently implemented, other values will be ignored at present.", call. = FALSE, immediate. = TRUE)
+                if(length(object@path) == 0){
+                  # warning only relevant if DSsim is generating the transects
+                  warning("Only a design axis of 0 is currently implemented, other values will be ignored at present.", call. = FALSE, immediate. = TRUE)
+                }
               }
               #Check that design axes are both 0
               return(TRUE)
@@ -52,11 +55,17 @@ setValidity("PT.Systematic.Design",
 setMethod(
   f="generate.transects",
   signature="PT.Systematic.Design",
-  definition=function(object, read.from.file = FALSE, region = NULL, index = NULL, silent = FALSE){
+  definition=function(object, region = NULL, index = NULL, silent = FALSE){
     if(is.null(region) | class(region) != "Region"){
       region <- object@region.obj
       region <- get(region, pos = 1)
       warning("Obtaining region object from the global environment.", call. = FALSE, immediate. = TRUE)
+    }
+    # Decide whether to read from file or generate survey
+    if(length(object@path) == 0){
+      read.from.file = FALSE
+    }else if(length(object@path) > 0){
+      read.from.file = TRUE
     }
     #Input pre-processing
     if(read.from.file){

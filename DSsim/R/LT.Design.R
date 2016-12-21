@@ -28,10 +28,16 @@ setClass(Class = "LT.Design",
 setMethod(
   f="generate.transects",
   signature="LT.Design",
-  definition=function(object, read.from.file = TRUE, region = NULL, index = NULL){
+  definition=function(object, region = NULL, index = NULL){
     if(is.null(region) | class(region) != "Region"){
       region <- object@region.obj
       region <- get(region, pos = 1)
+    }
+    # Check that user has supplied a path to shapefiles
+    if(length(object@path) == 0){
+      read.from.file = FALSE
+    }else if(length(object@path) > 0){
+      read.from.file = TRUE
     }
     file.index <- ifelse(is.null(index), object@file.index, index)
     #Input pre-processing
@@ -63,7 +69,7 @@ setMethod(
       }
       line.transect <- new(Class = "Line.Transect", region = region, shapefile = shapefile, meta = meta)
     }else{
-      stop("Only pre-generated surveys are currently implemented", call. = FALSE)
+      stop("Only pre-generated surveys are currently implemented for this design.", call. = FALSE)
     }
     return(line.transect)
   }

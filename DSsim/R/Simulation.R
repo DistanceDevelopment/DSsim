@@ -462,14 +462,9 @@ setMethod(
 setMethod(
   f="generate.transects",
   signature="Simulation",
-  definition=function(object, read.from.file = TRUE, region = NULL){
-    if(length(object@design@path) == 0 & read.from.file){
-      read.from.file = FALSE
-    }else if(length(object@design@path) > 0){
-      read.from.file = TRUE
-    }
+  definition=function(object, region = NULL){
     region <- object@region
-    transect <- generate.transects(object@design, read.from.file = read.from.file, region = region)
+    transect <- generate.transects(object@design, region = region)
     return(transect)
   }
 )

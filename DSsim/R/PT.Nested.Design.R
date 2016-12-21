@@ -63,11 +63,17 @@ setValidity("PT.Nested.Design",
 setMethod(
   f="generate.transects",
   signature="PT.Nested.Design",
-  definition=function(object, read.from.file = FALSE, region = NULL, index = NULL, silent = FALSE){
+  definition=function(object, region = NULL, index = NULL, silent = FALSE){
     if(is.null(region) | class(region) != "Region"){
       region <- object@region.obj
       region <- get(region, pos = 1)
       warning("Obtaining region object from the global environment.", call. = FALSE, immediate. = TRUE)
+    }
+    # Decide whether to read from file or generate survey
+    if(length(object@path) == 0){
+      read.from.file = FALSE
+    }else if(length(object@path) > 0){
+      read.from.file = TRUE
     }
     #Input pre-processing
     if(read.from.file){

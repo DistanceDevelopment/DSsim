@@ -52,11 +52,17 @@ setValidity("LT.Systematic.Design",
 setMethod(
   f="generate.transects",
   signature="LT.Systematic.Design",
-  definition=function(object, read.from.file = FALSE, region = NULL, index = NULL, silent = FALSE){
+  definition=function(object, region = NULL, index = NULL, silent = FALSE){
     if(is.null(region) | class(region) != "Region"){
       warning(paste("Attempting to obtain region object from the global environment. Region name: ", region, sep = ""),  call. = FALSE, immediate. = TRUE)
       region <- object@region.obj
       region <- get(region, pos = 1)
+    }
+    # Decide whether to read from file or generate survey
+    if(length(object@path) == 0){
+      read.from.file = FALSE
+    }else if(length(object@path) > 0){
+      read.from.file = TRUE
     }
     #Input pre-processing
     if(read.from.file){

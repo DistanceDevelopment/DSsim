@@ -29,7 +29,7 @@ test_that("Defaults work as expected", {
   design2 <- make.design("point", "systematic")
   expect_that(design2, is_identical_to(design))
   
-  transects <- generate.transects(design, FALSE, region = region)
+  transects <- generate.transects(design, region = region)
   expect_that(nrow(transects@sampler.info), equals(100))
   
   analyses <- make.ddf.analysis.list(dsmodel = list(~cds(key = "hn", formula = ~1)), method = "ds", truncation = 60)

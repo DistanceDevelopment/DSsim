@@ -77,12 +77,10 @@ test_that("Can perform nested point transect simulations", {
   #Generate transects
   set.seed(747)
   expect_that(point.transect <- generate.transects(design,
-                                                   read.from.file = FALSE,
                                                    region = region),
               is_a("Point.Transect"))
   set.seed(747)
-  expect_that(point.transect2 <- generate.transects(my.sim,
-                                                   read.from.file = FALSE),
+  expect_that(point.transect2 <- generate.transects(my.sim),
               is_a("Point.Transect"))
   expect_that(point.transect, is_identical_to(point.transect2))
   

@@ -515,7 +515,7 @@ for(tdist in seq(along = truncation)){
 
 ## 3. Results
 
-As these simulations take a substantial amount of time to run we have saved the results summaries into this package as data. They can be loaded as follows:
+As these simulations take a substantial amount of time to run we have saved the results summaries into this package as data. Running one of these simulations with 999 repetitions for one truncation distance takes about 11 minutes on an i7-2600K 3.40GHz processor when running in parallel across 7 threads. They results can be loaded as follows:
 
 ```{r loadresults, eval = TRUE, echo = TRUE}
 
