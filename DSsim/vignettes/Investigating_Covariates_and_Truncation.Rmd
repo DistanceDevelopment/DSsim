@@ -15,7 +15,7 @@ vignette: >
 
 Distance Sampling is a process in which a study area is surveyed in order to estimate the size of the population within it. It can be thought of as an extension to plot sampling. However, while plot sampling assumes that all objects within the plots are detected, distance sampling relaxes this assumption. To do this Distance sampling makes an assumptions about the distribution of objects with respect to the transects and to satisfy these assumptions the transects (the points or lines) must be randomly located within the study region. Note that for the purposes of distance sampling an object can either be an individual or a cluster or individuals. 
 
-The next step in distance sampling is then to record the distances from each detected object to the transect it was detected from and fit a detection function. From this function we can estimate how many objects were missed and hence the total number in the covered area. An example of a detection function is given in Figure 1. If our line transects have been placed at random within the study region then we would expect on average the same number of object to occur at any given distance from the transect. Therefore the drop in number of detection with increasing distance from the line can be attributed to a failure to detect all objects. We can therefore estimate from this detetection function that the probability of seeing an object within the covered region out to the truncation distance is the area under the curve (shaded grey) divided by the area of the rectangle.   
+The next step in distance sampling is then to record the distances from each detected object to the transect it was detected from and fit a detection function. From this function we can estimate how many objects were missed and hence the total number in the covered area. For example, Figure 1 shows histograms of distances that might be collected on a line transect survey, with a fitted detection function. If the lines have been placed at random within the study region then we would expect on average the same number of object to occur at any given distance from the transect. Therefore the drop in number of detection with increasing distance from the line can be attributed to a failure to detect all objects. We can therefore estimate from this detetection function that the probability of seeing an object within the covered region out to a chosen truncation distance is the area under the curve (shaded grey) divided by the area of the rectangle.   
 
 ```{r detection function, warning=FALSE, message=FALSE, echo=FALSE, fig.width = 6, fig.cap="Figure 1: An Example detection function. The histogram shows example distances recorded from a line transect. The smooth curve is the detection function. The grey shaded area represents the number of detected objects and the diagonal hash region represents the number of objects in the covered region that were not detected."}
 x <- seq(0, 70, length = 200)
@@ -39,9 +39,9 @@ plot(temp, freq = FALSE, add = TRUE)
 ```
 
 
-The R package DSsim [@dssim-pkg] allows users to simulate distance sampling surveys and test out a range of design and analysis decisions specific to their population of interest. In order to simulate distance surveys the user must make some assuptions about the population of interest and the detection process giving rise to the observed distances. Simulations can be repeated over a range of assumptions so that the user can be confident that their chosen design will perform well despite any uncertainty.
+The R package DSsim [@dssim-pkg] allows users to simulate both point and line transect surveys, and test out a range of design and analysis decisions specific to their population of interest. In order to simulate surveys the user must make some assuptions about the population of interest and the detection process giving rise to the observed distances. Simulations can be repeated over a range of assumptions so that the user can be confident that their chosen design will perform well despite any uncertainty.
 
-While these simulations focus on the the issue of data truncation at the analysis stage, an example of using DSsim to compare survey designs can be found at <http://www.creem.st-and.ac.uk/DS.M&A/#survey-design-simulation-case-study>.
+While these simulations focus on the the issue of data truncation at the analysis stage, an example of using DSsim to compare survey designs can be found at <http://www.creem.st-andrews.ac.uk/DS.M&A/#survey-design-simulation-case-study>.
 
 ### 1.1 Introduction to DSsim
 
@@ -49,15 +49,17 @@ DSsim takes information from the user on the study region, population and detect
 
 ![Figure 2: Illustrates the simulation process. Blue rectangles indicate information supplied by the user. Green rectangles are objects created by DSsim in the simulation process. Orange diamonds indicate the processes carried out by DSsim.](images/SimulationDiagram.png)
 
-### 1.2 Which Truncation Distance?
+**Say something about DSsim using S4 classes**
 
-It is usual in distance sampling studies to truncate the data at some distance from the transect. This is because the observations far away from the transect are of lesser importance when fitting the detection function and these sparse observations at large distances could have high influence on model selection and possibly increase variability in estimated abundance / density.
+### 1.2 Example Simulation Study: Which Truncation Distance?
 
-[@Buckland:2001vm] suggests truncating the data where the probability of detection is around 0.15 as a general rule of thumb. However, distance sampling data is often costly to obtain and discarding some of the data points can feel counter intuitive. In this vignette we investigate truncation distance in distance sampling analyses. We will do this through a series of three simulations outlined below.
+It is usual in distance sampling studies to truncate the data at some distance from the transect. This is because the observations far away from the transect are of lesser importance when fitting the detection function and also these sparse observations at large distances could have high influence on model selection and possibly increase variability in estimated abundance / density.
 
-Firstly, this vignette will investigate data generated assuming a simple half normal detection function where every object has the same probability of detection at a specific distance from the transect. Figure 3 shows a simple half normal detection function with three possible truncation distances at $1*\sigma$, $2*\sigma$ and $3*\sigma$. The truncation distance at $2*\sigma$ gives a probability of detection of 0.135 so close to the 0.15 rule of thumb
+@Buckland:2001vm suggest truncating the data where the probability of detection is around 0.15 as a general rule of thumb. However, distance sampling data is often costly to obtain and discarding some of the data points can feel counter intuitive. In this vignette we investigate truncation distance in distance sampling analyses. We will do this through a series of three simulations outlined below.
 
-```{r trunc dists1, warning=FALSE, message=FALSE, echo=FALSE, fig.width = 6, fig.cap="Figure 3: Half-normal detection function showing 3 proposed truncation distances at 1* $sigma$, 2* $sigma$ and 3* $sigma$. The truncation distance at twice sigma gives a probability of detection of 0.135 so close to the 0.15 rule of thumb."}
+Firstly, this vignette will investigate data generated assuming a simple half normal detection function where every object has the same probability of detection at a specific distance from the transect. Figure 3 shows a simple half normal detection function with three possible truncation distances at $1*\sigma$, $2*\sigma$ and $3*\sigma$ where $\sigma$ is the scale parameter of the half normal distribution. The truncation distance at $2*\sigma$ gives a probability of detection of 0.135 so close to the 0.15 rule of thumb.
+
+```{r trunc dists1, warning=FALSE, message=FALSE, echo=FALSE, fig.width = 6, fig.cap="Figure 3: Half-normal detection function showing 3 proposed truncation distances at $1*\\sigma$, $2*\\sigma$ and $3*\\sigma$. The truncation distance at twice sigma gives a probability of detection of 0.135 so close to the 0.15 rule of thumb."}
 
 x <- seq(0, 80, length = 200)
 scale <- 25
@@ -103,7 +105,7 @@ plot(detect, pop.desc)
 
 ### 1.3 Model Uncertainty and Pooling Robustness
 
-When we simulate data we have to provide the detection function to generate detections and we therefore know the underlying true detection function. When collecting data in the field we will not have this information and so we will have to rely on some form of model selection. One method of model selection is to compare information criterion, DSsim allows the user to select either AIC, AICc or BIC as the model selection criteria. For these simulations we will use AIC and allow DSsim to select between a half-normal and a hazard rate model. 
+When we simulate data, we have to provide the detection function to generate detections, and we therefore know the underlying true detection function. When collecting data in the field, we will not have this information, and so we will have to rely on some form of model selection. One method of model selection is to compare information criterion, DSsim allows the user to select either AIC, AICc or BIC as the model selection criteria. For these simulations we will use AIC and allow DSsim to select between a half-normal and a hazard rate model. 
 
 In addition, if the probability of detection is affected by covariates then we may not only have a single underlying detection function but a combination of detction functions giving rise to our observed data. In this situation we can either model detectability as a function of these covariates or rely on a concept called pooling robustness. Pooling robustness refers to the fact that distance sampling techniques are robust to the pooling of multiple detection functions into one. This means that we do not necessarily need to include all the covariates which affect detectability in the detection function to estimate density / abundance. This vignette will examine the concept of pooling robustness to see if it is affected by truncation distance. 
 
@@ -121,7 +123,7 @@ library(DSsim)
 
 ## 2.2 Simulation Components
 
-As detailed in section 1.1 a simulation comprises of a number of components. DSsim is designed so that each of these components is defined individually before they are grouped together into a simulation. This helps keep the process clear and also allows reuse of simulation components between different simulations. Each of the function names to create a simulation component or simulation takes the form *make.<component>*.
+As detailed in section 1.1 a simulation comprises of a number of components. DSsim is designed so that each of these components is defined individually before they are grouped together into a simulation. This helps keep the process clear and also allows reuse of simulation components between different simulations. Each of the function names to create a simulation component or simulation takes the form *make.\<component\>*.
 
 ### 2.2.1 Region
 
@@ -157,8 +159,25 @@ density <- make.density(region.obj = region,
                         y.space = 200, 
                         constant = 1)
 
-# The plot function allows plotting in km or m.
-plot(density, style = "blocks")
+# Plot the density surface (can be in m or km)
+# Note that if converting units the values of the density surface are also converted
+# In this example they are plotted in animals per square km
+plot(density, style = "blocks", plot.units = "km")
+plot(region, add = TRUE)
+```
+
+As an aside, if we wished to add areas of higher or lower density to our density surface we could do this using the add.hotspot() function in DSsim. This function adds these hot or low spots based on a Gaussian decay function. We have to provide the central co-oordinates and a sigma value to tell DSsim about the location and shape of the hot/low spot. The amplitude argument gives the value of the hot or low spot at it's centre and is combined with the exisitng density surface through addition.
+
+```{r density2, warning=FALSE, message=FALSE, fig.width=4, fig.cap="Figure 6: The density surface."}
+
+# Add a hotspot to the density surface, centre located at x = 15000, y = 4000 with 
+# a Gaussian decay parameter sigma = 1500. The value at the centre point will now 
+# be 1 (the current value of the density surface defined above) + 0.5 = 1.5
+eg.density <- add.hotspot(density, centre = c(15000,4000), sigma = 1500, amplitude = 0.5)
+# Add a lowspot to this new density surface (eg.density)
+eg.density <- add.hotspot(eg.density, centre = c(10000,3000), sigma = 1000, amplitude = -0.25)
+# Plot the density surface
+plot(eg.density, style = "blocks", plot.units = "m")
 plot(region, add = TRUE)
 
 ```
@@ -255,7 +274,7 @@ design <- make.design(transect.type = "line",
 
 ```
 
-```{r transects, warning=FALSE, message=FALSE, echo = FALSE, fig.width=4, fig.cap="Figure 9: Example survey transects."}
+```{r transects, warning=FALSE, message=FALSE, echo = TRUE, fig.width=4, fig.cap="Figure 9: Example survey transects."}
 
 transects <- generate.transects(design, region = region)
 plot(region, plot.units = "km")
@@ -264,7 +283,7 @@ plot(transects, col = 4, lwd = 2)
 
 ### 2.2.5 Analysis
 
-The final stage of the simulation is to analyse the distance sampling data which has been generated. As discussed above when collecting data in the field we would not know the true underlying detection function, we will therefore incorporate model uncertainty. We can ask the simulation to fit two models, a half-normal and a hazard rate, to the data and select the best model based on the minimum AIC as follows:
+The final stage of the simulation is to analyse the distance sampling data that has been generated. As discussed above, when collecting data in the field we would not know the true underlying detection function will therefore incorporate model uncertainty. We can ask the simulation to fit two models, a half-normal and a hazard rate, to the data and select the best model based on the minimum AIC as follows:
 
 ```{r analyses1}
 ddf.analyses <- make.ddf.analysis.list(dsmodel = list(~cds(key = "hn", formula = ~1),
@@ -286,7 +305,7 @@ ddf.analyses.cov <- make.ddf.analysis.list(dsmodel = list(~mcds(key = "hn", form
 
 ## 2.3 Simulations
 
-The simulation is created by grouping all these components together. It is then a good idea to check that everything is as you indended. The function *check.sim.setup* provides a number of plots to help you do this. 
+The simulation is created by grouping all these components together. It is then a good idea to check that everything is as you indended. The function *check.sim.setup* provides a number of plots to help you do this (Figures 10 and 11). 
 
 ```{r set.seed, echo = FALSE, eval = TRUE}
 set.seed(474)
@@ -299,6 +318,7 @@ sim <- make.simulation(reps = 999,
                        population.description.obj = pop.desc,
                        detectability.obj = detect.hn,
                        ddf.analyses.list = ddf.analyses)
+# Produce simulation setup plots
 check.sim.setup(sim)
 ```
 
@@ -311,6 +331,7 @@ sim.cov <- make.simulation(reps = 999,
                        population.description.obj = pop.desc.cov,
                        detectability.obj = detect.cov,
                        ddf.analyses.list = ddf.analyses)
+# Produce simulation setup plots
 check.sim.setup(sim.cov)
 ```
 
@@ -318,7 +339,7 @@ check.sim.setup(sim.cov)
 
 To investigate the effects of varying the truncation distance during analyses we do not simply need to run one simulation, but one for each truncation distance. The following code shows how we iterated over a number of different truncation distances and stored the results and summaries of all these simulations as lists. 
 
-```{r check.sim3, eval = FALSE}
+```{r run.sim1, eval = FALSE}
 
 # Truncation distances to iterate over
 truncation <- c(200, 400, 600)
@@ -356,7 +377,9 @@ names(summary.list) <- paste("t", truncation, sep = "")
 
 As the simulations including covariates mean that we have a mixture of detection functions, the easiest way to select candidate truncation distances for the analyses is to plot some example data. Figure 12 shows data generated from a population size of 5000, this increase in population size will increase the number of detections and make the shape of the resulting data less variable. From this histogram five candidate truncation distances were selected and are shown by the red vertical lines. These were selected so that the truncation distances represented a range of values for the probability of detection starting at about 0.6 for the shortest truncation distance.
 
-```{r truncate, eval = TRUE, echo = FALSE, fig.width=4, fig.cap="Figure 12: Histogram of data from covariate simulation with an increased population size of 5000. The detection function shows the best fit to the data (the code was allowed to select between a half normal and hazard rate based on minimum AIC). The red lines indicate the selected candidate truncation distances"}
+```{r covtruncation, eval = TRUE, cache = TRUE, echo = FALSE, fig.path = "images/", fig.keep = 'last', fig.show = 'asis', dev = 'png', fig.width=4, fig.cap="Figure 12: Histogram of data from covariate simulation with an increased population size of 5000. The detection function shows the best fit to the data (the code was allowed to select between a half normal and hazard rate based on minimum AIC). The red lines indicate the selected candidate truncation distances."}
+# This code was used to generate the image above. It takes a long time to 
+# run so saving the image seemed preferable to running ofr each recompile
 set.seed(2320)
 temp <- sim.cov
 temp@population.description@N <- 5000
@@ -366,7 +389,10 @@ n <- nrow(ddf.dat)
 plot.title <- paste("Detection Distances (n=", n,")", sep = "")
 temp2 <- hist(ddf.dat$distance, breaks = 20, plot = FALSE)
 temp2$density <- temp2$density/temp2$density[1]
-plot(temp2, freq = FALSE, xlab = "Distance (m)", main = "Detection Distances")
+
+#png(filename = "CovTruncation.png", width = 4.5, height = 3, units = "in", res = 200)
+
+plot(temp2, freq = FALSE, xlab = "Distance (m)", ylab = "Probability of Detection", main = "Detection Distances")
 
 ddf.result.hn <- ddf(dsmodel = ~cds(key = "hn"), data = ddf.dat, meta.data = list(width = 1000))
 ddf.result.hr <- ddf(dsmodel = ~cds(key = "hr"), data = ddf.dat, meta.data = list(width = 1000))
@@ -385,6 +411,7 @@ if(index ==1){
   shape <- exp(ddf.result.hr$par[1])
   y.vals <- 1-exp(-(x.vals/scale)^-shape)
   trunc.y <- 1-exp(-(trunc.vals/scale)^-shape)
+  rm(shape)
 }
 
 lines(x.vals, y.vals, lwd = 3)
@@ -393,7 +420,9 @@ for(i in seq(along = trunc.vals)){
   lines(x = rep(trunc.vals[i],2), y = c(0,trunc.y[i]), lwd = 3, col = 2)
 }
 
+rm(temp, temp2, ddf.result.hn, ddf.result.hr, eg.survey, n, ddf.dat, plot.title, min.AIC, trunc.vals, scale, y.vals, trunc.y, x.vals, i)
 
+#dev.off()
 ```
 
 We can now feed these candidate truncation distances into our covariate simulations in the same way as we did for the simple half normal simulation and again store the results and summaries as lists.
@@ -467,7 +496,7 @@ names(covmod.summary.list) <- paste("t", truncation, sep = "")
 
 ## 2.4 Running Simulations to Check Detection Function Parameter Estimates
 
-The above simulations concentrate on the question of how accurately and precisely we can estimate the abundance and density of a population. However, we may also be interested in learning how individual level covariates affect detecability. To do this we require a different and slightly more advanced setup. DSsim does not currently store the detection function parameter estimates therefore we need to do this manually, however DSsim does provide functions so that doing this is fairly straight forward. As before we create our simulation but then we need to get DSsim to give us the survey data so that we can run the analyses and obtain the parameter estimates. Please note that the extraction of the parameter estimates from the ddf model is specific to this model, if you are adapting this code you will need to check the ddf documentation to understand the parameters for different models.
+The above simulations concentrate on the question of how accurately and precisely we can estimate the abundance and density of a population. However, we may also be interested in learning how individual level covariates affect detecability. To do this we require a different and slightly more advanced setup. DSsim does not currently store the detection function parameter estimates therefore we need to do this manually, however DSsim does provide functionality so that doing this is fairly straight forward. As before we create our simulation but then we need to get DSsim to give us the survey data so that we can run the analyses and obtain the parameter estimates. Please note that the extraction of the parameter estimates from the ddf model is specific to this model, if you are adapting this code you will need to check the ddf documentation to understand the parameters for different models.
 
 ```{r covsimulation2, eval = FALSE}
 sim.cov <- make.simulation(reps = 999, 
@@ -515,7 +544,14 @@ for(tdist in seq(along = truncation)){
 
 ## 3. Results
 
-As these simulations take a substantial amount of time to run we have saved the results summaries into this package as data. Running one of these simulations with 999 repetitions for one truncation distance takes about 11 minutes on an i7-2600K 3.40GHz processor when running in parallel across 7 threads. They results can be loaded as follows:
+As these simulations take a substantial amount of time to run we have saved the results summaries into this package as data. Running one of these simulations with 999 repetitions for one truncation distance takes about 11 minutes on an i7-2600K 3.40GHz processor when running in parallel across 7 threads. When running in parallel the maximum number of cores (or threads) permitted is one less than the number on the machine, this is the default number used unless max.cores specifies a lower number.
+
+```{r runparallel, eval = FALSE, echo = TRUE}
+# Running simulations in parallel
+run(sim.cov, run.parallel = TRUE, max.cores = 7)
+```
+
+The results summaries can be loaded as follows:
 
 ```{r loadresults, eval = TRUE, echo = TRUE}
 
@@ -542,7 +578,7 @@ cov.summary.list$t600
 
 ```
 
-To keep the size of the DSsim package down these objects only store the simulation summaries not the full simulation objects with the complete results from each iteration. Copies of the full summaries can be found at **???[where shall we put these?]**. These follow the same naming and structure as the summary list objects with the word summary replaced with results. These can be used to obtain histograms of the abundance / density estimates etc. if desired.
+To keep the size of the DSsim package down these objects only store the simulation summaries not the full simulation objects with the complete results from each iteration. Copies of the simulation objects with the full results can be downloaded at <https://github.com/DistanceDevelopment/DSsim/tree/master/Vignette%20Results/Truncation_Covariate_Results>. These follow the same naming and structure as the summary list objects with the word summary replaced with results. These can be used to obtain histograms of the abundance / density estimates, etc., if desired.
 
 ### 3.1 Extracting Result Statistics
 
@@ -723,7 +759,7 @@ The effects of truncation distance on estimated abundance precision are interest
 
 * Truncation can help ensure the concept of pooling robustness holds when there are large differences in the detection functions of the individuals in the population and the covariates affecting detecability are not modelled.
 * The estimates of abundance are more accurate and precise when the covariate affecting detectability is incuded in the detection function model.
-* Larger truncation distances or no truncation is preferable when trying to obtain the parameters for the covariates which affect detectability.
+* Larger truncation distances or no truncation is preferable when trying to obtain the parameters for the covariates that affect detectability.
 
 ##6. References
 
