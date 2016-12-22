@@ -184,12 +184,14 @@ setMethod(
     if(plot.units != x@units){
       #convert units
       if(x@units == "m" & plot.units == "km"){ 
-        if(contours){
-          z.matrix <- z.matrix * 1000000  
+        if(contours| style == "blocks"){
+          z.matrix <- z.matrix * 1000000 
+          densities <- densities * 1000000
         }
       }else if(x@units == "km" & plot.units == "m"){
-        if(contours){
+        if(contours| style == "blocks"){
           z.matrix <- z.matrix/1000000
+          densities <- densities/1000000
         }
       }else{
         warning("The requested conversion of units is not currently supported, this option will be ignored.", call. = FALSE, immediate. = TRUE)
@@ -207,21 +209,7 @@ setMethod(
       if(contours){
         contour(x.vals, y.vals, z.matrix, add = TRUE, ...)  
       }
-    #OLD STLYE PLOTTING
     }else{
-#       #If the range < 1
-#       if(zlim[2] - zlim[1] < 1){
-#         #Multiply them by (1/minimum density)*10
-#         multiplier <- (1/zlim[1])*10
-#       }else{
-#         #otherwise no scaling
-#         multiplier <- 1
-#       }
-#       #Create the colour lookup
-#       zlim <- range(densities*multiplier)
-#       zlen <- zlim[2] - zlim[1] + 1
-#       colorlut <- heat.colors(zlen) 
-#       colorlut <- colorlut[length(colorlut):1]
       #Set up plot
       if(!add){
         plot(range(x.vals), range(y.vals), col = "white", xlab = xlabel, ylab = ylabel, main = main, yaxt = "n", xaxt = "n")
