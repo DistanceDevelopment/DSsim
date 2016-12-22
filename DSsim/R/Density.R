@@ -208,6 +208,10 @@ setMethod(
       fields::quilt.plot(x = x.vals.orig, y = y.vals.orig, z = densities, nx = nx, ny = ny, yaxt = "n", xaxt = "n", xlab = xlabel, ylab = ylabel, main = main, col = density.col)
       if(contours){
         contour(x.vals, y.vals, z.matrix, add = TRUE, ...)  
+      }else{
+        x.min <- min(x.vals)
+        y.min <- min(y.vals)
+        points(x.min - 100000, y.min - 100000)
       }
     }else{
       #Set up plot
@@ -242,7 +246,7 @@ setMethod(
     if(plot.units != x@units){
       #convert units
       if(x@units == "m" & plot.units == "km"){ 
-        axis(1, at = xticks, labels = xticks/1000)
+        axis(1, at = xticks, labels = xticks/1000, col.ticks = 1)
         axis(2, at = yticks, labels = yticks/1000)
       }else if(x@units == "km" & plot.units == "m"){
         axis(1, at = xticks, labels = xticks*1000)
