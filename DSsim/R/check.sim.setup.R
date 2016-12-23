@@ -37,6 +37,6 @@ check.sim.setup <- function(simulation) {
   plot(eg.survey@transects)
   plot(eg.survey@ddf.data)
   x.label <- paste("Distance (", simulation@region@units, ")", sep = "")
-  hist(dist.data$distance, xlab = x.label, main = "Distance Data")
+  hist(dist.data$distance, xlab = x.label, main = "Example Distance Data")
   invisible(simulation)
 }
