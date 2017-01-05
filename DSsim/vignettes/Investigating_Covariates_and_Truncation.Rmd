@@ -93,8 +93,6 @@ While the first set of simulations assume a simple half normal detection functio
 
 ```{r trunc dists2, warning=FALSE, message=FALSE, echo=FALSE, fig.width = 7.2, fig.cap="Figure 4: Half-normal detection function which varies based on cluster size and animal sex."}
 
-library(DSsim)
-
 covariate.list <- list()
 covariate.list$size <- list(list("poisson", list(lambda = 35)))
 covariate.list$sex <- list(data.frame(level = c("male", "female"), 
@@ -171,16 +169,16 @@ density <- make.density(region.obj = region,
                         y.space = 200, 
                         constant = 1)
 
-# Plot the density surface (can be in m or km)
+# Plot the density surface (can be in 'm' or 'km')
 # Note that if converting units the values of the density surface are also converted
-# In this example they are plotted in animals per square km
+# In this example they are plotted in animals per square km instead of per square m.
 plot(density, style = "blocks", plot.units = "km")
 plot(region, add = TRUE)
 ```
 
 As an aside, if we wished to add areas of higher or lower density to our density surface we could do this using the add.hotspot() function in DSsim. This function adds these hot or low spots based on a Gaussian decay function. We have to provide the central co-oordinates and a sigma value to tell DSsim about the location and shape of the hot/low spot. The amplitude argument gives the value of the hot or low spot at it's centre and is combined with the exisitng density surface through addition.
 
-```{r density2, warning=FALSE, message=FALSE, fig.width=4, fig.cap="Figure 6: The density surface."}
+```{r density2, warning=FALSE, message=FALSE, fig.width=4, fig.cap="Figure 7: The density surface."}
 
 # Add a hotspot to the density surface, centre located at x = 15000, y = 4000 with 
 # a Gaussian decay parameter sigma = 1500. The value at the centre point will now 
@@ -229,7 +227,7 @@ Detectability refers to the detection function or functions we feed into the sim
 
 The scale parameter of 200 was selected as on average it gives around 100 detections out to a truncation distance of 1000m with our chosen population size of 200.
 
-```{r detect1, warning=FALSE, message=FALSE, fig.width=4, fig.cap="Figure 7: The detection functions for males and females."}
+```{r detect1, warning=FALSE, message=FALSE, fig.width=4, fig.cap="Figure 8: The detection functions for males and females."}
 
 # Make a simple half normal detection function with a scale parameter of 200
 detect.hn <- make.detectability(key.function = "hn",
@@ -248,7 +246,7 @@ where $\beta_0$ is the log of the scale parameter supplied to make.detectability
 
 The covariate values were selected so that males had a higher probability of detection than females. The values selected in this example give a sample size of around 150 observations out to the 1000m truncation value for our population of 200.
 
-```{r detect2, warning=FALSE, message=FALSE, fig.width=4, fig.cap="Figure 8: The detection functions for males and females."}
+```{r detect2, warning=FALSE, message=FALSE, fig.width=4, fig.cap="Figure 9: The detection functions for males and females."}
 
 # Create the covariate parameter list
 cov.params <- list()
@@ -286,7 +284,7 @@ design <- make.design(transect.type = "line",
 
 ```
 
-```{r transects, warning=FALSE, message=FALSE, echo = TRUE, fig.width=4, fig.cap="Figure 9: Example survey transects."}
+```{r transects, warning=FALSE, message=FALSE, echo = TRUE, fig.width=4, fig.cap="Figure 10: Example survey transects."}
 
 transects <- generate.transects(design, region = region)
 plot(region, plot.units = "km")
@@ -323,7 +321,7 @@ The simulation is created by grouping all these components together. It is then 
 set.seed(474)
 ```
 
-```{r check.sim, fig.height=5.5, fig.width=7.2, fig.cap="Figure 10: Example survey. Top left - the density suface with an example population. Top right - an example set of transects. Bottom left - the detections from the transects. Bottom right - A histogram of the distances from these observations to the transect it was detected."}
+```{r check.sim, fig.height=5.5, fig.width=7.2, fig.cap="Figure 11: Example survey. Top left - the density suface with an example population. Top right - an example set of transects. Bottom left - the detections from the transects. Bottom right - A histogram of the distances from these observations to the transect it was detected."}
 sim <- make.simulation(reps = 999, 
                        region.obj = region,
                        design.obj = design,
@@ -336,7 +334,7 @@ check.sim.setup(sim)
 
 We will now create a second simulation object for the simulations with covariates. We can re-use the region and design components and then add in the new population description and detectability to include the sex covariate. Here we include the same non-covariate analyses but for the final set of simulations we will ammend this to fit the covariate detection function model.
 
-```{r check.sim2, fig.height=5.5, fig.width=7.2, fig.cap="Figure 11: Example survey."}
+```{r check.sim2, fig.height=5.5, fig.width=7.2, fig.cap="Figure 12: Example survey."}
 sim.cov <- make.simulation(reps = 999, 
                        region.obj = region,
                        design.obj = design,
@@ -389,12 +387,13 @@ names(summary.list) <- paste("t", truncation, sep = "")
 
 As the simulations including covariates mean that we have a mixture of detection functions, the easiest way to select candidate truncation distances for the analyses is to plot some example data. Figure 12 shows data generated from a population size of 5000, this increase in population size will increase the number of detections and make the shape of the resulting data less variable. From this histogram five candidate truncation distances were selected and are shown by the red vertical lines. These were selected so that the truncation distances represented a range of values for the probability of detection starting at about 0.6 for the shortest truncation distance.
 
-```{r covtruncation, eval = TRUE, cache = TRUE, echo = FALSE, fig.path = "images/", fig.keep = 'last', fig.show = 'asis', dev = 'png', fig.width=4, fig.cap="Figure 12: Histogram of data from covariate simulation with an increased population size of 5000. The detection function shows the best fit to the data (the code was allowed to select between a half normal and hazard rate based on minimum AIC). The red lines indicate the selected candidate truncation distances."}
+```{r covtruncation, eval = TRUE, echo = FALSE, fig.width=4, fig.cap="Figure 13: Histogram of data from covariate simulation with an increased population size of 5000. The detection function shows the best fit to the data (the code was allowed to select between a half normal and hazard rate based on minimum AIC). The red lines indicate the selected candidate truncation distances."}
+#{r covtruncation, eval = TRUE, echo = FALSE, fig.path = "images/", fig.keep = #'last', fig.show = 'asis', dev = 'png', fig.width=4, fig.cap="Figure 13: Histogram #of data from covariate simulation with an increased population size of 5000. The #detection function shows the best fit to the data (the code was allowed to select #between a half normal and hazard rate based on minimum AIC). The red lines indicate #the selected candidate truncation distances."}
 # This code was used to generate the image above. It takes a long time to 
 # run so saving the image seemed preferable to running ofr each recompile
 set.seed(2320)
 temp <- sim.cov
-temp@population.description@N <- 5000
+temp@population.description@N <- 2500
 eg.survey <- create.survey.results(temp)
 ddf.dat <- eg.survey@ddf.data@ddf.dat
 n <- nrow(ddf.dat)
@@ -733,7 +732,7 @@ kable(sim.data,
 
 ```
 
-```{r makeplots, eval= TRUE, echo = FALSE, fig.width=7.2, fig.cap="Figure 13: Histograms of the parameter estimates for sigma and sex.male for three of the five truncation distances investigated."}
+```{r makeplots, eval= TRUE, echo = FALSE, fig.width=7.2, fig.cap="Figure 14: Histograms of the parameter estimates for sigma and sex.male for three of the five truncation distances investigated."}
 truncation <- c("200" , "600" , "1000" )
 oldpar <- par(mfrow = c(2,length(truncation)))
 
