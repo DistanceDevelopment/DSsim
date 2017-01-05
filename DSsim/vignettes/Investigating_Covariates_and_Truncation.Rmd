@@ -49,7 +49,19 @@ DSsim takes information from the user on the study region, population and detect
 
 ![Figure 2: Illustrates the simulation process. Blue rectangles indicate information supplied by the user. Green rectangles are objects created by DSsim in the simulation process. Orange diamonds indicate the processes carried out by DSsim.](images/SimulationDiagram.png)
 
-**Say something about DSsim using S4 classes**
+DSsim is written using the S4 object orientated system in R. The S4 system is a more formal and rigourous style of object orientated programming than the more commonly implemented S3. The process of defining a simulation involves the specification of many variables relating to the survey region, population, survey design and finally the analysis. The design of DSsim is based around each of these descriptions being contained in its own class and the formal S4 class definition procedure ensures that the objects created are of the correct format for the simulation. As the objects created by DSsim are instances of S4 classes, if the user wishes to access infomation within them the symbol is slightly different. To access named parts of S3 objects the "$" symbol would be used, while for S4 objects the "@" symbol must be used. The following code demonstrates this.
+
+```{r S4eg, warning=FALSE, message=FALSE, echo=TRUE}
+
+# load DSsim
+library(DSsim)
+# Make a default region object
+eg.region <- make.region()
+# Let's check the structure of the object we have created
+str(eg.region)
+# If we wanted to extract the area of the region we would use
+eg.region@area
+```
 
 ### 1.2 Example Simulation Study: Which Truncation Distance?
 
