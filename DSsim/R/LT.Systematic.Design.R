@@ -35,7 +35,7 @@ setValidity("LT.Systematic.Design",
               if(length(object@path) > 1){
                 return("You must only specify one path. All transect shapefiles must be in the same folder.")
               }
-              if(any(ifelse(object@design.axis != 0, TRUE, FALSE))){
+              if(any(ifelse(object@design.axis != 0, TRUE, FALSE)) & length(object@path) == 0){
                 warning("Only a design axis of 0 is currently implemented, other values will be ignored at present.", call. = FALSE, immediate. = TRUE)
               }
               return(TRUE)
