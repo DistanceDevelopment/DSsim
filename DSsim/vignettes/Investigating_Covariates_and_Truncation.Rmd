@@ -41,7 +41,7 @@ plot(temp, freq = FALSE, add = TRUE)
 
 The R package DSsim [@dssim-pkg] allows users to simulate both point and line transect surveys, and test out a range of design and analysis decisions specific to their population of interest. In order to simulate surveys the user must make some assuptions about the population of interest and the detection process giving rise to the observed distances. Simulations can be repeated over a range of assumptions so that the user can be confident that their chosen design will perform well despite any uncertainty.
 
-While these simulations focus on the the issue of data truncation at the analysis stage, an example of using DSsim to compare survey designs can be found at <http://www.creem.st-andrews.ac.uk/DS.M&A/#survey-design-simulation-case-study>.
+While these simulations focus on the the issue of data truncation at the analysis stage, an example of using DSsim to compare survey designs can be found at <http://www.creem.st-andrews.ac.uk/DS.M&A/#survey-design-simulation-case-study>. Other example simulations can be found in the DSsim wiki at <https://github.com/DistanceDevelopment/DSsim/wiki>.
 
 ### 1.1 Introduction to DSsim
 
@@ -49,7 +49,7 @@ DSsim takes information from the user on the study region, population and detect
 
 ![Figure 2: Illustrates the simulation process. Blue rectangles indicate information supplied by the user. Green rectangles are objects created by DSsim in the simulation process. Orange diamonds indicate the processes carried out by DSsim.](images/SimulationDiagram.png)
 
-DSsim is written using the S4 object orientated system in R. The S4 system is a more formal and rigourous style of object orientated programming than the more commonly implemented S3. The process of defining a simulation involves the specification of many variables relating to the survey region, population, survey design and finally the analysis. The design of DSsim is based around each of these descriptions being contained in its own class and the formal S4 class definition procedure ensures that the objects created are of the correct format for the simulation. As the objects created by DSsim are instances of S4 classes, if the user wishes to access infomation within them the symbol is slightly different. To access named parts of S3 objects the "$" symbol would be used, while for S4 objects the "@" symbol must be used. The following code demonstrates this.
+DSsim is written using the S4 object orientated system in R. The S4 system is a more formal and rigorous style of object orientated programming than the more commonly implemented S3. The process of defining a simulation involves the specification of many variables relating to the survey region, population, survey design and finally the analysis. The design of DSsim is based around each of these descriptions being contained in its own class and the formal S4 class definition procedure ensures that the objects created are of the correct format for the simulation. As the objects created by DSsim are instances of S4 classes, if the user wishes to access infomation within them the symbol used is slightly different. To access named parts of S3 objects the "$" symbol would be used, while for S4 objects the "@" symbol must be used. The following code demonstrates this.
 
 ```{r S4eg, warning=FALSE, message=FALSE, echo=TRUE}
 
@@ -69,7 +69,7 @@ It is usual in distance sampling studies to truncate the data at some distance f
 
 @Buckland:2001vm suggest truncating the data where the probability of detection is around 0.15 as a general rule of thumb. However, distance sampling data is often costly to obtain and discarding some of the data points can feel counter intuitive. In this vignette we investigate truncation distance in distance sampling analyses. We will do this through a series of three simulations outlined below.
 
-Firstly, this vignette will investigate data generated assuming a simple half normal detection function where every object has the same probability of detection at a specific distance from the transect. Figure 3 shows a simple half normal detection function with three possible truncation distances at $1*\sigma$, $2*\sigma$ and $3*\sigma$ where $\sigma$ is the scale parameter of the half normal distribution. The truncation distance at $2*\sigma$ gives a probability of detection of 0.135 so close to the 0.15 rule of thumb.
+Firstly, this vignette will investigate data generated assuming a simple half normal detection function where every object has the same probability of detection at a specific distance from the transect. Figure 3 shows a simple half normal detection function with three possible truncation distances at $1*\sigma$, $2*\sigma$ and $3*\sigma$ where $\sigma$ is the scale parameter of the half normal detection function. The truncation distance at $2*\sigma$ gives a probability of detection of 0.135 so close to the 0.15 rule of thumb.
 
 ```{r trunc dists1, warning=FALSE, message=FALSE, echo=FALSE, fig.width = 6, fig.cap="Figure 3: Half-normal detection function showing 3 proposed truncation distances at $1*\\sigma$, $2*\\sigma$ and $3*\\sigma$. The truncation distance at twice sigma gives a probability of detection of 0.135 so close to the 0.15 rule of thumb."}
 
@@ -176,7 +176,7 @@ plot(density, style = "blocks", plot.units = "km")
 plot(region, add = TRUE)
 ```
 
-As an aside, if we wished to add areas of higher or lower density to our density surface we could do this using the add.hotspot() function in DSsim. This function adds these hot or low spots based on a Gaussian decay function. We have to provide the central co-oordinates and a sigma value to tell DSsim about the location and shape of the hot/low spot. The amplitude argument gives the value of the hot or low spot at it's centre and is combined with the exisitng density surface through addition.
+As an aside, if we wished to add areas of higher or lower density to our density surface we could do this using the *add.hotspot* function in DSsim. This function adds these hot or low spots based on a Gaussian decay function. We have to provide the central co-oordinates and a sigma value to tell DSsim about the location and shape of the hot/low spot. The amplitude argument gives the value of the hot or low spot at it's centre and is combined with the exisitng density surface through addition.
 
 ```{r density2, warning=FALSE, message=FALSE, fig.width=4, fig.cap="Figure 7: The density surface."}
 
@@ -242,7 +242,7 @@ When we have covariates in the population we may choose to vary the scale parame
 
 $$ \sigma = exp(\beta_0+\sum_{j=1}^{q}\beta_{j}z_{ij}) $$
 
-where $\beta_0$ is the log of the scale parameter supplied to make.detectability, the $\beta_j$'s are the covariate parameters on the log scale and $z_{ij}$ is the ith value of the jth covariate. This formula was taken from @Buckland:2004ts.
+where $\beta_0$ is the log of the scale parameter supplied to *make.detectability*, the $\beta_j$'s are the covariate parameters supplied on the log scale and $z_{ij}$ is the ith value of the jth covariate. This formula was taken from @Buckland:2004ts.
 
 The covariate values were selected so that males had a higher probability of detection than females. The values selected in this example give a sample size of around 150 observations out to the 1000m truncation value for our population of 200.
 
@@ -293,7 +293,7 @@ plot(transects, col = 4, lwd = 2)
 
 ### 2.2.5 Analysis
 
-The final stage of the simulation is to analyse the distance sampling data that has been generated. As discussed above, when collecting data in the field we would not know the true underlying detection function will therefore incorporate model uncertainty. We can ask the simulation to fit two models, a half-normal and a hazard rate, to the data and select the best model based on the minimum AIC as follows:
+The final stage of the simulation is to analyse the distance sampling data that has been generated. As discussed above, when collecting data in the field we would not know the true underlying detection function and will therefore incorporate model uncertainty. We can ask the simulation to fit two models, a half-normal and a hazard rate, to the data and select the best model based on the minimum AIC as follows:
 
 ```{r analyses1}
 ddf.analyses <- make.ddf.analysis.list(dsmodel = list(~cds(key = "hn", formula = ~1),
@@ -305,7 +305,7 @@ ddf.analyses <- make.ddf.analysis.list(dsmodel = list(~cds(key = "hn", formula =
 
 In this code we have set the truncation distance to 600 but later we will vary this value to investigate the effects of truncation distance on our simulation results. Note that while the truncation distance can be set to any value, it should not exceed the truncation value defined in the detectability as no observations will be made beyond this value.
 
-In addition, in the field it may be possible to identify the covariates that affect detectability so we may wish to fit a detection function that accounts for this. In this example the following model would be appropriate:
+In addition, in the field it may be possible to identify the covariates that affect detectability so we may wish to fit a detection function that incorporates this. In this example the following model would be appropriate:
 
 ```{r analyses2}
 ddf.analyses.cov <- make.ddf.analysis.list(dsmodel = list(~mcds(key = "hn", formula = ~sex)), 
@@ -315,7 +315,7 @@ ddf.analyses.cov <- make.ddf.analysis.list(dsmodel = list(~mcds(key = "hn", form
 
 ## 2.3 Simulations
 
-The simulation is created by grouping all these components together. It is then a good idea to check that everything is as you indended. The function *check.sim.setup* provides a number of plots to help you do this (Figures 10 and 11). 
+The simulation is created by grouping all these components together. It is then a good idea to check that everything is as you indended. The function *check.sim.setup* provides a number of plots to help you do this (Figures 11 and 12). 
 
 ```{r set.seed, echo = FALSE, eval = TRUE}
 set.seed(474)
@@ -332,7 +332,7 @@ sim <- make.simulation(reps = 999,
 check.sim.setup(sim)
 ```
 
-We will now create a second simulation object for the simulations with covariates. We can re-use the region and design components and then add in the new population description and detectability to include the sex covariate. Here we include the same non-covariate analyses but for the final set of simulations we will ammend this to fit the covariate detection function model.
+We will now create a second simulation object for the simulations with covariates. We can re-use the region and design components and then add in the new population description and detectability to include the sex covariate. Here we include the same non-covariate analyses but for the final set of simulations we will change this to fit the covariate detection function model.
 
 ```{r check.sim2, fig.height=5.5, fig.width=7.2, fig.cap="Figure 12: Example survey."}
 sim.cov <- make.simulation(reps = 999, 
@@ -385,9 +385,9 @@ names(summary.list) <- paste("t", truncation, sep = "")
 
 ```
 
-As the simulations including covariates mean that we have a mixture of detection functions, the easiest way to select candidate truncation distances for the analyses is to plot some example data. Figure 12 shows data generated from a population size of 5000, this increase in population size will increase the number of detections and make the shape of the resulting data less variable. From this histogram five candidate truncation distances were selected and are shown by the red vertical lines. These were selected so that the truncation distances represented a range of values for the probability of detection starting at about 0.6 for the shortest truncation distance.
+As the simulations including covariates mean that we have a mixture of detection functions, the easiest way to select candidate truncation distances for the analyses is to plot some example data. Figure 12 shows data generated from a population size of 2500, this increase in population size will increase the number of detections and make the shape of the resulting data less variable. From this histogram five candidate truncation distances were selected and are shown by the red vertical lines. These were selected so that the truncation distances represented a range of values for the probability of detection starting at about 0.6 for the shortest truncation distance.
 
-```{r covtruncation, eval = TRUE, echo = FALSE, fig.width=4, fig.cap="Figure 13: Histogram of data from covariate simulation with an increased population size of 5000. The detection function shows the best fit to the data (the code was allowed to select between a half normal and hazard rate based on minimum AIC). The red lines indicate the selected candidate truncation distances."}
+```{r covtruncation, eval = TRUE, echo = FALSE, fig.width=4, fig.cap="Figure 13: Histogram of data from covariate simulation with an increased population size of 2500. The detection function shows the best fit to the data (the code was allowed to select between a half normal and hazard rate based on minimum AIC). The red lines indicate the manually selected candidate truncation distances."}
 #{r covtruncation, eval = TRUE, echo = FALSE, fig.path = "images/", fig.keep = #'last', fig.show = 'asis', dev = 'png', fig.width=4, fig.cap="Figure 13: Histogram #of data from covariate simulation with an increased population size of 5000. The #detection function shows the best fit to the data (the code was allowed to select #between a half normal and hazard rate based on minimum AIC). The red lines indicate #the selected candidate truncation distances."}
 # This code was used to generate the image above. It takes a long time to 
 # run so saving the image seemed preferable to running ofr each recompile
@@ -507,7 +507,7 @@ names(covmod.summary.list) <- paste("t", truncation, sep = "")
 
 ## 2.4 Running Simulations to Check Detection Function Parameter Estimates
 
-The above simulations concentrate on the question of how accurately and precisely we can estimate the abundance and density of a population. However, we may also be interested in learning how individual level covariates affect detecability. To do this we require a different and slightly more advanced setup. DSsim does not currently store the detection function parameter estimates therefore we need to do this manually, however DSsim does provide functionality so that doing this is fairly straight forward. As before we create our simulation but then we need to get DSsim to give us the survey data so that we can run the analyses and obtain the parameter estimates. Please note that the extraction of the parameter estimates from the ddf model is specific to this model, if you are adapting this code you will need to check the ddf documentation to understand the parameters for different models.
+The above simulations concentrate on the question of how accurately and precisely we can estimate the abundance and density of a population. However, we may also be interested in learning how individual level covariates affect detectability. To do this we require a different and slightly more advanced setup. DSsim does not currently store the detection function parameter estimates therefore we need to do this manually, however DSsim does provide functionality so that doing this is fairly straight forward. As before we create our simulation but then we need to get DSsim to give us the survey data so that we can run the analyses and obtain the parameter estimates. Please note that the extraction of the parameter estimates from the ddf model is specific to this model, if you are adapting this code you will need to check the ddf documentation in mrds to understand the parameters for different models.
 
 ```{r covsimulation2, eval = FALSE}
 sim.cov <- make.simulation(reps = 999, 
@@ -620,7 +620,7 @@ kable(sim.data,
       col.names = c("$Truncation$", "$mean\\ n$", "$mean\\ \\hat{N}$", "$mean\\ se$", "$SD(\\hat{N})$", "$\\% Bias$", "$RMSE$", "$\\%\\ CI\\ Coverage$"),
       row.names = FALSE,
       align = c('c', 'c', 'c', 'c', 'c', 'c', 'c', 'c'),
-      caption = "Simulation Results for the simple half normal detection probability: The truncation distance, mean number of detections, mean estimated population size (N), mean standard error of $\\hat{N}$, the standard deviation of the $\\hat{N}$, percentage bias, root mean squared error, percentage of times the true value of N was captured in the confidence intervals.",
+      caption = "Simulation Results for the simple half normal detection probability: The truncation distance, mean number of detections, mean estimated population size (N), mean standard error of $\\hat{N}$, the standard deviation of $\\hat{N}$, percentage bias, root mean squared error, percentage of times the true value of N was captured in the confidence intervals.",
       table.placement="!h",
       format = "html")
 
@@ -657,7 +657,7 @@ kable(sim.data,
       col.names = c("$Truncation$", "$mean\\ n$", "$mean\\ \\hat{N}$", "$mean\\ se$", "$SD(\\hat{N})$", "$\\% Bias$", "$RMSE$", "$\\%\\ CI\\ Coverage$"),
       row.names = FALSE,
       align = c('c', 'c', 'c', 'c', 'c', 'c', 'c', 'c'),
-      caption = "Table 1: Simulation Results for the simple half normal detection probability. The truncation distance, mean number of detections, mean estimated population size (N), mean standard error of $\\hat{N}$, the standard deviation of the $\\hat{N}$, percentage bias, root mean squared error, percentage of times the true value of N was captured in the 95% confidence intervals.",
+      caption = "Table 1: Simulation Results for the simple half normal detection probability. The truncation distance, mean number of detections, mean estimated population size (N), mean standard error of $\\hat{N}$, the standard deviation of $\\hat{N}$, percentage bias, root mean squared error, percentage of times the true value of N was captured in the 95% confidence intervals.",
       table.placement="!h",
       format = "html")
 
@@ -691,7 +691,7 @@ kable(sim.data,
       col.names = c("$Truncation$", "$mean\\ n$", "$mean\\ \\hat{N}$", "$mean\\ se$", "$SD(\\hat{N})$", "$\\% Bias$", "$RMSE$", "$\\%\\ CI\\ Coverage$"),
       row.names = FALSE,
       align = c('c', 'c', 'c', 'c', 'c', 'c', 'c', 'c'),
-      caption = "Table 2: Simulation Results for the covariate detection probability, where detectability is affected by sex but the candidate models (half-normal and hazard rate) do not contain covariates. The truncation distance, mean number of detections, mean estimated population size (N), mean standard error of $\\hat{N}$, the standard deviation of the $\\hat{N}$, percentage bias, root mean squared error, percentage of times the true value of N was captured in the 95% confidence intervals.",
+      caption = "Table 2: Simulation Results for the covariate detection probability, where detectability is affected by sex but the candidate models (half-normal and hazard rate) do not contain covariates. The truncation distance, mean number of detections, mean estimated population size (N), mean standard error of $\\hat{N}$, the standard deviation of $\\hat{N}$, percentage bias, root mean squared error, percentage of times the true value of N was captured in the 95% confidence intervals.",
       table.placement="!h",
       format = "html")
 
@@ -701,7 +701,7 @@ kable(sim.data,
 
 Finally we ran simulations and fitted the model we used to generate the data. In these simulations truncation distance had little influence on the accuracy of the estimates of abundance, there is a small amount of bias for the smaller truncation distance, Table 3. The 95% confidence intervals captured the true abundance at least 95% of the time for all truncation distances. It is interesting to note that for these simulations the mean of the estimated standard errors is always higher than the standard deviation of the estimates, which could explain the high coverage rates for the confidence intervals.  
 
-While the estimates of abundance are not greatly affected by truncation distance for these simulations, the same cannot be said for the parameter estimates. Figure 13, suggests that parameter estimation is most accurate and reliable at maximum truncation distance. The unstable parameter estimates for the smallest truncation distance leading to sometimes very large estimates of sigma and a bimodal distribution for sex.male could explain the slightly great bias in abundance estimates for this truncation distance seen in Table 2. It is hoped that in practise this strange behavour if it indeed was associated with a poor fit to the data would be identified and these estimates rejected based on model selection criteria.
+While the estimates of abundance are not greatly affected by truncation distance for these simulations, the same cannot be said for the parameter estimates. Figure 14, suggests that parameter estimation is most accurate and reliable at maximum truncation distance. The unstable parameter estimates for the smallest truncation distance leading to sometimes very large estimates of sigma and a bimodal distribution for sex.male could explain the slighte bias in abundance estimates for this truncation distance seen in Table 2. It is hoped that in practise this strange behavour if it indeed was associated with a poor fit to the data would be identified and these estimates rejected based on model selection criteria.
 
 ```{r maketables3, eval= TRUE, echo = FALSE}
 
@@ -758,7 +758,7 @@ par(oldpar)
 
 In these simulations we have pushed the concept of pooling robustness quite far in that our two detection functions for males and females were very distinct from one another. This would have increased the potential for spiked data in our simulations, that is when the number of detections falls away quickly at small distances. The recommendation when performing distance sampling surveys is to review your data frequently in the field as it is being collected. If you detect spiked data then field methods should be adapted to acheive a wider shoulder in the detection function. This practise will likely help ensure that pooling robustness holds. In addition, pooling robustness may be more tolerant of high levels of variability in the underlying detection functions for larger sample sizes.
 
-In addition, the model selection (if any) applied in these simulations was done purely on the basis of AIC. In practise the AIC value is one of a number of diagnostic techniques researchers rely on to select an appropriate detection function model. It is likely, especially due to the potential for spiked data, that some of the models in these simulations were not good fits to the data and would not have been selected by a researcher. If model selection would have been manual then a researcher may have chosen to include adjustment terms in the half-normal or hazard rate models which may have improved the model fit and associated estimate of abundance.
+The model selection (if any) applied in these simulations was done purely on the basis of AIC. In practise the AIC value is one of a number of diagnostic techniques researchers rely on to select an appropriate detection function model. It is likely, especially due to the potential for spiked data, that some of the models in these simulations were not good fits to the data and would not have been selected by a researcher. If model selection would have been manual then a researcher may have chosen to include adjustment terms in the half-normal or hazard rate models which may have improved the model fit and associated estimate of abundance.
 
 These simulations do suggest that there is little cost to the researcher in truncating the data, even at what seem like quite harsh levels. In fact, truncation may be beneficial if there are large differences in the underlying detection functions due to a covariate which have not been included in the detection function models.
 
