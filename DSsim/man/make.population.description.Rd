@@ -38,10 +38,10 @@ list (each element named with the parameter name) containing the parameter value
 See examples for implementation.
 
 \tabular{lll}{ Distribution  \tab Parameters  \tab         \cr 
-               normal        \tab mu          \tab sigma   \cr
+               normal        \tab mean        \tab sd      \cr
                poisson       \tab lambda      \tab         \cr
                ztruncpois    \tab mean        \tab         \cr
-               lognormal     \tab mu          \tab sigma   \cr
+               lognormal     \tab meanlog     \tab sdlog   \cr
               }
 }
 \examples{

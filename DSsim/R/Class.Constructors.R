@@ -330,10 +330,10 @@ make.density <- function(region.obj = make.region(), density.surface = list(), x
 #' See examples for implementation.
 #'
 #' \tabular{lll}{ Distribution  \tab Parameters  \tab         \cr 
-#'                normal        \tab mu          \tab sigma   \cr
+#'                normal        \tab mean        \tab sd      \cr
 #'                poisson       \tab lambda      \tab         \cr
 #'                ztruncpois    \tab mean        \tab         \cr
-#'                lognormal     \tab mu          \tab sigma   \cr
+#'                lognormal     \tab meanlog     \tab sdlog   \cr
 #'               }
 #'
 #' @param region.obj the Region object in which this population exists (see \link{make.region}).
