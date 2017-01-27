@@ -638,9 +638,14 @@ make.ddf.analysis.list <- function(dsmodel = list(~cds(key = "hn", formula = ~1)
 #' }
 #' 
 make.simulation <- function(reps = 10, single.transect.set = FALSE, double.observer = FALSE, region.obj = make.region(), design.obj = make.design(), population.description.obj = make.population.description(), detectability.obj = make.detectability(), ddf.analyses.list = make.ddf.analysis.list()){
-  #Make the results arrays and store in a list
+  # Check to see if the analysis truncation distance is larger than the
+  # detectability trunation distance
+  if(ddf.analyses.list[[1]]@truncation > detectability.obj@truncation){
+    warning("The truncation distance for analysis is larger than the truncation distance for data generation, this will likely cause biased results.", immediate. = TRUE, call. = FALSE)
+  }
+  # Make the results arrays and store in a list
   no.strata <- ifelse(length(region.obj@strata.name) > 0, length(region.obj@strata.name)+1, 1) 
-  #Check to see if the strata are grouped in the analyses
+  # Check to see if the strata are grouped in the analyses
   new.strata.names <- NULL
   if(nrow(ddf.analyses.list[[1]]@analysis.strata) > 0){
     new.strata.names <- unique(ddf.analyses.list[[1]]@analysis.strata$analysis.id)  
