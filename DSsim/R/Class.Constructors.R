@@ -514,7 +514,7 @@ make.detectability <- function(key.function = "hn", scale.param = 25, shape.para
 #'  formula = ~1),~cds(key = "hr", formula = ~1)), method = "ds", 
 #'  criteria = "AIC")
 #'
-make.ddf.analysis.list <- function(dsmodel = list(~cds(key = "hn", formula = ~1)), mrmodel = NULL, method = "ds", criteria = "AIC", analysis.strata = data.frame(), truncation = 75, binned.data = FALSE, cutpoints = numeric(0)){
+make.ddf.analysis.list <- function(dsmodel = list(~cds(key = "hn", formula = ~1)), mrmodel = NULL, method = "ds", criteria = "AIC", analysis.strata = data.frame(), truncation = 50, binned.data = FALSE, cutpoints = numeric(0)){
   ddf.analyses <- list()
   if(method == "ds"){
     for(a in seq(along = dsmodel)){

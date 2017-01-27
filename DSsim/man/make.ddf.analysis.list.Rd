@@ -6,7 +6,7 @@
 \usage{
 make.ddf.analysis.list(dsmodel = list(~cds(key = "hn", formula = ~1)),
   mrmodel = NULL, method = "ds", criteria = "AIC",
-  analysis.strata = data.frame(), truncation = 75, binned.data = FALSE,
+  analysis.strata = data.frame(), truncation = 50, binned.data = FALSE,
   cutpoints = numeric(0))
 }
 \arguments{
