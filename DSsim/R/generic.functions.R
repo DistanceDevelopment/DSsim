@@ -129,7 +129,8 @@ setGeneric(name = "add.hotspot", def = function(object, centre, sigma, amplitude
 #' @param load.data logical allows the datasets to be loaded from file rather than
 #' simulated afresh.
 #' @param data.path character file path to the data files.
-#' @param ... allows the three previous optional arguments to be specified
+#' @param counter logical can be used to turn off simulation counter when running in serial.
+#' @param ... allows the four previous optional arguments to be specified
 #' @return an object of class simulation which now includes the results
 #' @export
 #' @rdname run-methods

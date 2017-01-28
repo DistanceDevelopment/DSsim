@@ -1,13 +1,15 @@
 #' @importFrom utils flush.console
 #single.simulation.loop <- function(i, object){
-single.simulation.loop <- function(i, object, save.data, load.data, data.path = character(0)){
+single.simulation.loop <- function(i, object, save.data, load.data, data.path = character(0), counter){
   # Input: i - integer representing the loop number
   #        object - an object of class Simulation
   #
   # Output: the updated Simulation object 
   #
   # Display to the user the progress of the simulation
-  cat("\r", i, " out of ", object@reps,  " reps \r")
+  if(counter){
+    cat("\r", i, " out of ", object@reps,  " reps \r")  
+  }
   flush.console()
   if(!load.data){
     #generate population

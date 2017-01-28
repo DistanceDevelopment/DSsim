@@ -598,7 +598,7 @@ setMethod(
 setMethod(
   f="run",
   signature="Simulation",
-  definition=function(object, run.parallel = FALSE, max.cores = NA, save.data = FALSE, load.data = FALSE, data.path = character(0)){
+  definition=function(object, run.parallel = FALSE, max.cores = NA, save.data = FALSE, load.data = FALSE, data.path = character(0), counter = TRUE){
     #Note options save.data, load.data, data.path are not implemented in simulations run in parallel.
     #check the data.path ends in "/"
     if(length(data.path) > 0){
@@ -633,7 +633,7 @@ setMethod(
       }
       #otherwise loop
       for(i in 1:object@reps){
-        object@results <- single.simulation.loop(i, object, save.data = save.data, load.data = load.data, data.path = data.path)
+        object@results <- single.simulation.loop(i, object, save.data = save.data, load.data = load.data, data.path = data.path, counter = counter)
       }
     }
     object@results <- add.summary.results(object@results)
