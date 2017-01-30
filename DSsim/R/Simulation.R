@@ -210,10 +210,31 @@ setMethod(
       #If there are clusters
       true.N.clusters <- N
       #calculate expected cluster size
-      size.table <- object@population.description@size.table
-      true.expected.s <- sum(size.table$size*size.table$prob)
+      true.expected.s <- numeric()
+      size.list <- object@population.description@covariates[["size"]]
+      for(i in seq(along = size.list)){
+        if(class(size.list[[i]]) == "data.frame"){
+          true.expected.s[i] <- sum(size.list[[i]]$level*size.list[[i]]$prob)
+        }else{
+          size.dist <- size.list[[i]]
+          dist <- size.dist[[1]]
+          dist.param <- size.dist[[2]]
+          if(dist == "ztruncpois"){
+            temp <- rtpois(999, mean = dist.param$mean)
+            true.expected.s[i] <- quantile(temp, 0.5)
+          }else{
+            true.expected.s[i] <- switch(dist,
+                                "normal" = qnorm(0.5, dist.param$mean, dist.param$sd),
+                                "poisson" = qpois(0.5, dist.param$lambda),
+                                "lognormal" = qlnorm(0.5, dist.param$meanlog, dist.param$sdlog))
+          }
+        }
+      }
+      if(length(size.list) > 1){
+        true.expected.s <- c(true.expected.s, sum(true.N.clusters[1:length(true.expected.s)]*true.expected.s)/sum(true.N.clusters[1:length(true.expected.s)]))  
+      }
       #calculate expected number of individuals
-      true.N.individuals <- true.N.clusters*true.expected.s
+      true.N.individuals <- true.N.clusters*true.expected.s  
       true.D.individuals <- true.N.individuals/areas
       true.D.clusters <- true.N.clusters/areas
     }
