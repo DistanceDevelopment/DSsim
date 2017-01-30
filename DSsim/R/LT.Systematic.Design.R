@@ -85,9 +85,16 @@ setMethod(
         strata.names <- region@region.name
         strata.no <- 1
       }
+      # Check that the number of spacing parameters is correct
+      if(length(object@spacing) != strata.no){
+        if(length(object@spacing) > 1){
+          warning("Number of spacing values not equal to number of strata. Using first value only.", immediate. = TRUE, call. = FALSE)  
+        }
+        object@spacing <- rep(object@spacing[1], strata.no)
+      }
       # For each strata
       for(strat in seq(along = region@coords)){   
-        spacing <- object@spacing
+        spacing <- object@spacing[strat]
         # Find x and y coordinate limits
         x.lim <- c(region@box[["xmin"]], region@box[["xmax"]])
         y.lim <- c(region@box[["ymin"]], region@box[["ymax"]])

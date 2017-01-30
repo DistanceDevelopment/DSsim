@@ -73,12 +73,20 @@ setMethod(
       point.transect <- callNextMethod()
       return(point.transect)
     }else{
+      # Get strata names
       if(length(region@strata.name) > 0){
         strata.names <- region@strata.name
         strata.no <- length(region@strata.name)
       }else{
         strata.names <- region@region.name
         strata.no <- 1
+      }
+      # Check that the number of spacing parameters is correct
+      if(length(object@spacing) != strata.no){
+        if(length(object@spacing) > 1){
+          warning("Number of spacing values not equal to number of strata. Using first value only.", immediate. = TRUE, call. = FALSE)  
+        }
+        object@spacing <- rep(object@spacing[1], strata.no)
       }
       #Main grid generation
       for (strat in seq(along = region@coords)) {
