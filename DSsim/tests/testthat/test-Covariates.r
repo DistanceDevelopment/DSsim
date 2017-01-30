@@ -235,3 +235,125 @@ test_that("Check calculate.scale.param function", {
   expect_true(all(temp.A$shape == 2))
   expect_true(all(temp.B$shape == 3))
 })
+
+
+test_that("Check cluster size simulations correctly estimate expected cluster size (and run without error)", {
+  
+  # Check that simualtion with cluster size in works
+  region <- make.region()
+  density <- make.density()
+  
+  covariate.list <- list()
+  covariate.list$size <- list(data.frame(level = c(3,3), 
+                                         prob = c(0.5,0.5)))
+  
+  pop.desc <- make.population.description(region, 
+                                          density,
+                                          covariate.list)
+  sim <- make.simulation(reps = 1,
+                         region.obj = region,
+                         population.description.obj = pop.desc)
+  
+ sim <- run(sim, counter = FALSE) 
+ # Check that the expected cluster size is 3
+ expect_equal(sim@results$expected.size[1,1,1], 3)
+ 
+ #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ covariate.list$size <- list(data.frame(level = c(10,10), 
+                                        prob = c(0.5,0.5)))
+ pop.desc <- make.population.description(region, 
+                                         density,
+                                         covariate.list)
+ sim <- make.simulation(reps = 1,
+                        region.obj = region,
+                        population.description.obj = pop.desc)
+ sim <- run(sim, counter = FALSE) 
+ # Check that the expected cluster size is 10
+ expect_equal(sim@results$expected.size[1,1,1], 10)
+ 
+ #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ covariate.list$size <- list(list("normal", list(mean = 15, sd = 0)))
+ pop.desc <- make.population.description(region, 
+                                         density,
+                                         covariate.list)
+ sim <- make.simulation(reps = 1,
+                        region.obj = region,
+                        population.description.obj = pop.desc)
+ sim <- run(sim, counter = FALSE) 
+ # Check that the expected cluster size is 15
+ expect_equal(sim@results$expected.size[1,1,1], 15)
+ 
+ #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ # Test for multi-strata with lines
+ 
+ poly1 <- data.frame(x = c(0,0,100,100,0), y = c(0,100,100,0,0))
+ poly2 <- data.frame(x = c(200,200,300,300,200), y = c(10,110,110,10,10))
+ coords <- list(list(poly1), list(poly2))
+ region <- make.region(coords = coords)
+ density <- make.density(region)
+ 
+ covariate.list <- list()
+ covariate.list$size <- list(list("normal", list(mean = 5, sd = 0)),
+                             list("normal", list(mean = 10, sd = 0)))
+ 
+ pop.desc <- make.population.description(region, 
+                                         density,
+                                         covariate.list,
+                                         N = c(100,200))
+ 
+ design <- make.design(transect.type = "line",
+                       region.obj = region,
+                        spacing = c(15,15))
+ 
+ detect <- make.detectability(scale.param = 5, truncation = 10)
+ 
+ ddf.analyses <- make.ddf.analysis.list(truncation = 10)
+   
+ sim <- make.simulation(reps = 1,
+                        region.obj = region,
+                        design.obj = design,
+                        population.description.obj = pop.desc,
+                        detectability.obj = detect,
+                        ddf.analyses.list = ddf.analyses)
+ 
+ test <- create.survey.results(sim)
+ 
+ sim <- run(sim, counter = FALSE) 
+ # Check that the expected cluster size is 5 and 10
+ expect_equal(as.numeric(sim@results$expected.size[1:2,1,1]), c(5,10))
+ 
+ #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ # Test for multi-strata with points
+ 
+ poly1 <- data.frame(x = c(0,0,100,100,0), y = c(0,100,100,0,0))
+ poly2 <- data.frame(x = c(200,200,300,300,200), y = c(10,110,110,10,10))
+ coords <- list(list(poly1), list(poly2))
+ region <- make.region(coords = coords)
+ density <- make.density(region)
+ 
+ covariate.list <- list()
+ covariate.list$size <- list(list("normal", list(mean = 5, sd = 0)),
+                             list("normal", list(mean = 10, sd = 0)))
+ 
+ design <- make.design(transect.type = "point",
+                       region.obj = region,
+                       spacing = 15)
+ 
+ detect <- make.detectability(scale.param = 5, truncation = 10)
+ 
+ ddf.analyses <- make.ddf.analysis.list(truncation = 10)
+ 
+ sim <- make.simulation(reps = 1,
+                        region.obj = region,
+                        design.obj = design,
+                        population.description.obj = pop.desc,
+                        detectability.obj = detect,
+                        ddf.analyses.list = ddf.analyses)
+ 
+ test <- create.survey.results(sim)
+ 
+ sim <- run(sim, counter = FALSE) 
+ # Check that the expected cluster size is 5 and 10
+ expect_equal(as.numeric(sim@results$expected.size[1:2,1,1]), c(5,10))
+    
+})
