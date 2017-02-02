@@ -10,14 +10,16 @@ make.region(region.name, strata.name = character(0), units,
 \arguments{
 \item{region.name}{the region name}
 
-\item{strata.name}{the region name}
+\item{strata.name}{the stratum names (character vector, same length as the 
+number of areas in the \code{shapefile} or \code{coords} arguments)}
 
-\item{units}{the units given as a character (either 'm' or 'km')}
+\item{units}{measurement units; either \code{"m"} for metres or \code{"km"} for 
+kilometres}
 
 \item{area}{the area of the region (optional - if not supplied it will be 
 calculated for you)}
 
-\item{shapefile}{a shapefile of the region}
+\item{shapefile}{path to a shapefile of the region}
 
 \item{coords}{list of polygons describing the areas of interest}
 
@@ -27,11 +29,12 @@ calculated for you)}
 object of class Region
 }
 \description{
-This creates an instance of the Region class. If the user supplied a 
-shapefile all information will be extracted from here. Otherwise the user
-needs to specify a list of polygons describing the areas of interest 
-(coords) and optionally a list of polygons describing the areas to 
-be excluded (gaps). If area is not specified it will be calculated.
+This creates an instance of the Region class. If the
+\code{shapefile} argument is supplied, all information will be extracted from
+there. Otherwise, the a list of polygons describing the areas of interest needs 
+to be supplied (\code{coords}) and optionally a list of polygons describing the 
+areas to be excluded (\code{gaps}). If \code{area} is not specified it will be 
+calculated.
 }
 \examples{
 coords <- gaps <- list()

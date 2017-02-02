@@ -11,17 +11,20 @@
 
 
 #' @title Creates a Region object
-#' @description This creates an instance of the Region class. If the user supplied a 
-#' shapefile all information will be extracted from here. Otherwise the user
-#' needs to specify a list of polygons describing the areas of interest 
-#' (coords) and optionally a list of polygons describing the areas to 
-#' be excluded (gaps). If area is not specified it will be calculated.
+#' @description This creates an instance of the Region class. If the
+#' \code{shapefile} argument is supplied, all information will be extracted from
+#' there. Otherwise, the a list of polygons describing the areas of interest needs 
+#' to be supplied (\code{coords}) and optionally a list of polygons describing the 
+#' areas to be excluded (\code{gaps}). If \code{area} is not specified it will be 
+#' calculated.
 #' @param region.name the region name
-#' @param strata.name the region name
-#' @param units the units given as a character (either 'm' or 'km')
+#' @param strata.name the stratum names (character vector, same length as the 
+#'   number of areas in the \code{shapefile} or \code{coords} arguments)
+#' @param units measurement units; either \code{"m"} for metres or \code{"km"} for 
+#'   kilometres
 #' @param area the area of the region (optional - if not supplied it will be 
 #'   calculated for you)
-#' @param shapefile a shapefile of the region
+#' @param shapefile path to a shapefile of the region
 #' @param coords list of polygons describing the areas of interest
 #' @param gaps list of polygons describing the areas to be excluded
 #' @return object of class Region 
