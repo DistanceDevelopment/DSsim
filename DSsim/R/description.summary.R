@@ -22,8 +22,10 @@ description.summary <- function(){
   cat("\n   mean.Effort     : mean effort across simulation.")
   cat("\n   mean.n          : mean number of observed objects across 
                      simulation.")
+  cat("\n   mean.n.miss.dist: mean number of observed objects where no distance 
+                    was recorded (only displayed if value > 0).")
   cat("\n   no.zero.n       : number of surveys in simulation where 
-                     nothing was detected.")
+                     nothing was detected (only displayed if value > 0).")
   cat("\n   mean.ER         : mean encounter rate across simulation.") 
   cat("\n   mean.se.ER      : mean standard error of the encounter rates 
                      across simulation.") 
@@ -35,6 +37,7 @@ description.summary <- function(){
                       population sizes across simulation for Poisson N.")
   cat("\n   mean.Estimate    : mean estimate of abundance across simulation.") 
   cat("\n   percent.bias     : the percentage of bias in the estimates.")
+  cat("\n   RMSE             : root mean squared error/no. successful reps")
   cat("\n   CI.coverage.prob : proportion of times the 95% confidence interval 
                       contained the true value.")
   cat("\n   mean.se          : the mean standard error of the estimates of 
@@ -45,6 +48,7 @@ description.summary <- function(){
   cat("\n   Truth            : true average density.")
   cat("\n   mean.Estimate    : mean estimate of density across simulation.") 
   cat("\n   percent.bias     : the percentage of bias in the estimates.")
+  cat("\n   RMSE             : root mean squared error/no. successful reps")
   cat("\n   CI.coverage.prob : proportion of times the 95% confidence interval 
                       contained the true value.")
   cat("\n   mean.se          : the mean standard error of the estimates.")

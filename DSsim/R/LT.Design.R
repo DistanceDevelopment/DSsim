@@ -7,10 +7,6 @@
 #' line transect design.
 #' @name LT.Design-class
 #' @title S4 Class "LT.Design"
-#' @slot design.axis Object of class \code{"numeric"}; the angle of
-#'  the design axis.
-#' @slot spacing Object of class \code{"numeric"}; the spacing of
-#'  the design.
 #' @section Methods:
 #' \describe{
 #'  \item{\code{generate.transects}}{\code{signature=(object = "LT.Design", ...)}:
@@ -20,44 +16,8 @@
 #' @seealso \code{\link{make.design}}
 #' @export
 setClass(Class = "LT.Design",
-         representation = representation(design.axis = "numeric",
-                                         spacing = "numeric", "VIRTUAL"),
+         representation = representation("VIRTUAL"),
          contains = "Survey.Design"
-)
-
-setMethod(
-  f="initialize",
-  signature="LT.Design",
-  definition=function(.Object, region, spacing, design.axis, plus.sampling, path = character(0), ...){
-    filenames <- character(0)
-    file.index <- numeric(0)
-    if(length(path) > 0){
-      filenames  <- get.shapefile.names(path)
-      file.index <- 1
-    }
-    #Set slots
-    .Object@region.obj    <- region
-    .Object@plus.sampling <- plus.sampling
-    .Object@spacing       <- spacing
-    .Object@design.axis   <- design.axis
-    .Object@path          <- path
-    .Object@filenames     <- filenames
-    .Object@file.index    <- file.index
-    #Check object is valid
-    validObject(.Object)
-    # return object
-    return(.Object)
-  }
-)
-
-setValidity("LT.Design",
-  function(object){
-    if(length(object@path) > 1){
-      return("You must only specify one path. All transect shapefiles must be in the same folder.")
-      #return(FALSE)
-    }
-    return(TRUE)
-  }
 )
 
 # GENERIC METHODS DEFINITIONS --------------------------------------------
@@ -68,22 +28,34 @@ setValidity("LT.Design",
 setMethod(
   f="generate.transects",
   signature="LT.Design",
-  definition=function(object, read.from.file = TRUE, write.to.file = FALSE, region = NULL, index = NULL){
+  definition=function(object, region = NULL, index = NULL){
     if(is.null(region) | class(region) != "Region"){
       region <- object@region.obj
       region <- get(region, pos = 1)
+    }
+    # Check that user has supplied a path to shapefiles
+    if(length(object@path) == 0){
+      read.from.file = FALSE
+    }else if(length(object@path) > 0){
+      read.from.file = TRUE
     }
     file.index <- ifelse(is.null(index), object@file.index, index)
     #Input pre-processing
     if(read.from.file){
       #Load the shapefle
-      shapefile <- read.shapefile(paste(object@path, "/", object@filenames[file.index], sep=""))
+      shapefile <- shapefiles::read.shapefile(paste(object@path, "/", object@filenames[file.index], sep=""))
+      if(length(shapefile$shp$shp) == 0){
+        warning("Survey transect shapefile has no transects.", call. = FALSE, immediate. = TRUE)
+        dd <- data.frame(Id=c(1,1),X=c(1,1),Y=c(1,1))
+        dd.table <- data.frame(Id=c(1),Name=c("1"))
+        shapefile <- shapefiles::convert.to.shapefile(dd, dd.table, "Id", 3)
+        meta <- data.frame(V1 = as.factor(object@filenames[file.index]), V2 = 1, V3 = 1)  
       #Check the shapefile is the correct type
-      if(!shapefile$shp$header$shape.type %in% c(3,13,23)){
+      }else if(!shapefile$shp$header$shape.type %in% c(3,13,23)){
         warning("Survey transect shapefile of wrong shapefile type (not lines) cannot load survey.", call. = FALSE, immediate. = TRUE)
         dd <- data.frame(Id=c(1,1),X=c(1,1),Y=c(1,1))
         dd.table <- data.frame(Id=c(1),Name=c("1"))
-        shapefile <- convert.to.shapefile(dd, dd.table, "Id", 3)
+        shapefile <- shapefiles::convert.to.shapefile(dd, dd.table, "Id", 3)
         meta <- data.frame(V1 = as.factor(object@filenames[file.index]), V2 = 1, V3 = 1)
       }else{
         #Load the meta file if it exists - describes which transects are in which strata
@@ -97,7 +69,7 @@ setMethod(
       }
       line.transect <- new(Class = "Line.Transect", region = region, shapefile = shapefile, meta = meta)
     }else{
-      stop("Only pre-generated surveys are currently implemented", call. = FALSE)
+      stop("Only pre-generated surveys are currently implemented for this design.", call. = FALSE)
     }
     return(line.transect)
   }

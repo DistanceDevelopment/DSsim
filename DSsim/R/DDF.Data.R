@@ -24,12 +24,17 @@ setClass(Class = "DDF.Data", representation(ddf.dat = "data.frame", "VIRTUAL"))
 #' @param ... other general plot parameters 
 #' @rdname plot.DDF.Data-methods
 #' @importFrom graphics points
-#' @exportMethod 
+#' @exportMethod plot
 setMethod(
   f="plot",
   signature="DDF.Data",
   definition=function(x, y, ...){
-    points(x@ddf.dat$x, x@ddf.dat$y, col = 5, pch = 20, cex = 1.5, ...) 
+    # Colour code by missing distances
+    points(x@ddf.dat$x, x@ddf.dat$y, col = "white", pch = 20, cex = 1, ...)
+    pch <- ifelse(is.na(x@ddf.dat$distance), 1, 19)
+    ccol <- ifelse(is.na(x@ddf.dat$distance), "cyan4", 5)
+    points(x@ddf.dat$x, x@ddf.dat$y, col = ccol, pch = pch, cex = 1, ...) 
+    points(x@ddf.dat$x, x@ddf.dat$y, col = "cyan4", pch = 1, cex = 1, ...)
     invisible(x)
   }    
 )

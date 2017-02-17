@@ -1,8 +1,5 @@
 #' @import methods 
-#' @import mgcv 
 #' @import mrds
-#' @import splancs
-#' @import shapefiles
 NULL
 
 #' S4 generic method to generate an instance of a population
@@ -33,9 +30,6 @@ setGeneric("generate.population", function(object, ...){standardGeneric ("genera
 #'
 #' @param object an object of class Simulation or a class which inherits from 
 #'   Survey.Design
-#' @param read.from.file if the transect details should be read in from file 
-#'   (currently must be TRUE)
-#' @param write.to.file not currently implemented
 #' @param region optional only required if object is of class Survey.Design.
 #' @param index specifies which set of transect should be loaded
 #' @param ... optional argument index if an object of class Survey.Design is 
@@ -44,7 +38,7 @@ setGeneric("generate.population", function(object, ...){standardGeneric ("genera
 #' @return an object of class Line.Transect
 #' @export
 #' @rdname generate.transects-methods
-setGeneric("generate.transects", function(object, read.from.file = TRUE, write.to.file = FALSE, region = NULL, ...){standardGeneric ("generate.transects")})
+setGeneric("generate.transects", function(object, region = NULL, ...){standardGeneric ("generate.transects")})
 
 #' S4 generic method to generate a region table
 #'
@@ -135,7 +129,8 @@ setGeneric(name = "add.hotspot", def = function(object, centre, sigma, amplitude
 #' @param load.data logical allows the datasets to be loaded from file rather than
 #' simulated afresh.
 #' @param data.path character file path to the data files.
-#' @param ... allows the three previous optional arguments to be specified
+#' @param counter logical can be used to turn off simulation counter when running in serial.
+#' @param ... allows the four previous optional arguments to be specified
 #' @return an object of class simulation which now includes the results
 #' @export
 #' @rdname run-methods

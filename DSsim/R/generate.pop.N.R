@@ -1,4 +1,5 @@
 #' @importFrom stats runif
+#' @importFrom splancs as.points
 generate.pop.N <- function(population.description, region.obj){
 #This function generates a Population based on a fixed population size
   N <- population.description@N
@@ -25,9 +26,13 @@ generate.pop.N <- function(population.description, region.obj){
       grid.locations <- grid.locations[grid.locations$in.region,]
       grid.locations <- grid.locations[!grid.locations$in.gaps,]
       if(nrow(grid.locations) < N[strat]){
-        warning("DSsim is unable to generate the requested sample size. We recommend you check the spacing of the density grid is appropriate, it may need reducing.")
+        warning(paste("DSsim is unable to generate the requested population size for strata ", strat, ". We recommend you check the spacing of the density grid is appropriate, it may need reducing. Population size requested = ", N[strat], ", Population size generated = ", nrow(grid.locations),".", sep = ""), call. = FALSE)
+      }else{
+        grid.locations <- grid.locations[1:N[strat],]
       }
-      grid.locations <- grid.locations[1:N[strat],]
+      # Add strata ID
+      grid.locations$strata <- rep(strat, nrow(grid.locations))
+      # Accumulate all location
       if(first){
         all.grid.locations <- grid.locations
         first <- FALSE

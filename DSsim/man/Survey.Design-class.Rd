@@ -16,6 +16,12 @@ advance.
 \section{Slots}{
 
 \describe{
+\item{\code{design.axis}}{Object of class \code{"numeric"}; the angle of
+the design axis.}
+
+\item{\code{spacing}}{Object of class \code{"numeric"}; the spacing of
+the design.}
+
 \item{\code{region.obj}}{Object of class \code{"character"}; The name of
 the region which the survey design has been made for.}
 

@@ -1,4 +1,4 @@
-get.sampler.info <- function(shapefile, region.obj, meta = NULL){
+get.line.sampler.info <- function(shapefile, region.obj, meta = NULL){
 #Extracts the transect corrdinates and other information from the survey
 #shapefiles
   ID <- start.X <- start.Y <- end.X <- end.Y <- tot.length <- d7.length <- region <- NULL
@@ -54,7 +54,7 @@ get.sampler.info <- function(shapefile, region.obj, meta = NULL){
         strata.id <- ifelse(strata.temp == 3, strat, strata.id)   
       }
       if(length(which(is.na(strata.id))) > 0){
-       warning("Transect cannot be allocated to strata debug get.sampler.info (possible that part of a transect falls outwith study region)", call. = FALSE, immediate. = TRUE)
+       warning("Transect cannot be allocated to strata debug get.line.sampler.info (possible that part of a transect falls outwith study region)", call. = FALSE, immediate. = TRUE)
       return(NULL)
       }
       strata.names <- region.obj@strata.name[strata.id]

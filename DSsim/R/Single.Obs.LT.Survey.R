@@ -19,7 +19,7 @@ setMethod(
   definition=function(.Object, population, line.transect, perp.truncation){
     #Input pre-processing
     .Object@population    <- population
-    .Object@line.transect <- line.transect
+    .Object@transect      <- line.transect
     .Object@perpendicular.truncation <- perp.truncation
     #Check object is valid
     validObject(.Object)
@@ -42,12 +42,19 @@ setMethod(
   signature="Single.Obs.LT.Survey",
   definition=function(object, dht.tables = FALSE, ...){
     population <- object@population
-    line.transect <- object@line.transect
-    poss.distances <- calc.poss.detect.dists(population, line.transect, perp.truncation = object@perpendicular.truncation)
+    line.transect <- try(object@transect, silent = TRUE)
+    #Check for backwards compatability
+    if(class(line.transect) == "try-error"){
+      line.transect <- object@line.transect
+    }
+    poss.distances <- calc.poss.detect.dists.lines(population, line.transect, perp.truncation = object@perpendicular.truncation)
     n.in.covered <- poss.distances$distance
     dist.data <- simulate.detections(poss.distances, population@detectability)
     dist.data <- rename.duplicates(dist.data)
-    dist.data <- dist.data[,c("object", "transect.ID", "distance", "x", "y")]    
+    # Get the covariate names
+    all.col.names <- names(object@population@population)
+    cov.param.names <- all.col.names[!all.col.names %in% c("object", "x", "y", "strata", "scale.param", "shape.param")]
+    dist.data <- dist.data[,c("object", "transect.ID", "distance", "x", "y", cov.param.names)]    
     ddf.data.obj <- new(Class = "Single.Obs.DDF.Data", data = dist.data)
     if(dht.tables){
       region.table <- create.region.table(object, ...)

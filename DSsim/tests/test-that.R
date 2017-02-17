@@ -1,5 +1,5 @@
 library(testthat)
 library(DSsim)
 
-test_package("DSsim")
+#test_check("DSsim")
 

@@ -12,12 +12,13 @@
 }
 \arguments{
 \item{object}{object of class Simulation.Summary}
-
-\item{object}{object of class Simulation.Summary}
 }
 \description{
 Displays the simulation summary
 
 Displays the simulation summary
+}
+\details{
+#@param object object of class Simulation.Summary
 }
 

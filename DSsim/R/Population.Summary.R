@@ -5,7 +5,7 @@
 #' is called. If it is not assigned to a variable the object will be 
 #' displayed via the \code{show} method. 
 #'
-#' @name Populatin.Summary-class
+#' @name Population.Summary-class
 #' @title S4 Class "Population.Summary"
 #' @docType class
 #' @keywords classes

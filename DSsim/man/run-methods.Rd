@@ -9,7 +9,8 @@
 run(object, run.parallel = FALSE, max.cores = NA, ...)
 
 \S4method{run}{Simulation}(object, run.parallel = FALSE, max.cores = NA,
-  save.data = FALSE, load.data = FALSE, data.path = character(0))
+  save.data = FALSE, load.data = FALSE, data.path = character(0),
+  counter = TRUE)
 }
 \arguments{
 \item{object}{an object of class Simulation}
@@ -19,7 +20,7 @@ run(object, run.parallel = FALSE, max.cores = NA, ...)
 \item{max.cores}{integer maximum number of cores to use, if not specified then
 one less than the number available will be used.}
 
-\item{...}{allows the three previous optional arguments to be specified}
+\item{...}{allows the four previous optional arguments to be specified}
 
 \item{save.data}{logical allows the datasets from the simulation to be 
 saved to file}
@@ -28,6 +29,8 @@ saved to file}
 simulated afresh.}
 
 \item{data.path}{character file path to the data files.}
+
+\item{counter}{logical can be used to turn off simulation counter when running in serial.}
 }
 \value{
 an object of class simulation which now includes the results

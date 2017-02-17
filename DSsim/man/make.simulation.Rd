@@ -4,9 +4,12 @@
 \alias{make.simulation}
 \title{Creates a Simulation object}
 \usage{
-make.simulation(reps, single.transect.set = FALSE, double.observer = FALSE,
-  region.obj, design.obj, population.description.obj, detectability.obj,
-  ddf.analyses.list)
+make.simulation(reps = 10, single.transect.set = FALSE,
+  double.observer = FALSE, region.obj = make.region(),
+  design.obj = make.design(),
+  population.description.obj = make.population.description(),
+  detectability.obj = make.detectability(),
+  ddf.analyses.list = make.ddf.analysis.list())
 }
 \arguments{
 \item{reps}{number of times the simulation should be repeated}
@@ -16,24 +19,62 @@ be kept the same throughout the simulation.}
 
 \item{double.observer}{not currently implemented.}
 
-\item{region.obj}{an object of class Region}
+\item{region.obj}{an object of class Region created by a call to
+\link{make.region}}
 
-\item{design.obj}{an object of class Survey.Design}
+\item{design.obj}{an object of class Survey.Design created by a call to
+\link{make.design}}
 
-\item{population.description.obj}{an object of class Population.Description}
+\item{population.description.obj}{an object of class Population.Description
+created by a call to \link{make.population.description}}
 
-\item{detectability.obj}{and object of class Detectabolity}
+\item{detectability.obj}{and object of class Detectabolity created by a call to
+\link{make.detectability}}
 
-\item{ddf.analyses.list}{a list of objects of class DDF.Analysis}
+\item{ddf.analyses.list}{a list of objects of class DDF.Analysis created by 
+a call to\link{make.ddf.analysis.list}}
 }
 \value{
 object of class Simulation
 }
 \description{
-This creates a simulation object which groups together all the objects 
-needed to complete the simulation.
+This creates a simulation with all the information necessary for DSsim
+to generate a population, create or read in transects, simulate the survey process
+and fit detection functions and estimate density / abundance. This function can be
+used by itself based on default values to create a simple line transect example, see
+Examples below. To create more comples simulations it is advisable to define the 
+different parts of the simulation individually before grouping them together. See
+the Arguments for links to the functions which make the definitions for the 
+individual simulation components. Example simulations can also be found at
+<https://github.com/DistanceDevelopment/DSsim/wiki>.
+}
+\details{
+The \code{make.simulation} function is now set up so that by
+ default (with the exception of specifying point transects rather than
+  line) it can run a simple simulation example. See examples.
 }
 \examples{
+\dontrun{
+# A basic line transect simulation example
+sim <- make.simulation()
+check.sim.setup(sim)
+sim <- run(sim) 
+summary(sim)
+
+# A basic point transect simulation example
+sim <- make.simulation(design.obj = make.design("point"))
+check.sim.setup(sim)
+sim <- run(sim) 
+summary(sim)
+# Note \% bias levels will vary due to low number of repetitions 
+# set by default in these examples
+
+# To increase the number of repetitions
+sim <- make.simulation(reps = 100)
+sim <- run(sim) 
+summary(sim)
+}
+
 coords <- gaps <- list()
 coords[[1]] <- list(data.frame(x = c(0,1000,1000,0,0), y = c(0,0,
  1000,1000,0)))

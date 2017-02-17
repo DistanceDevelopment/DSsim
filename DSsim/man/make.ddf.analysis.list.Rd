@@ -4,9 +4,10 @@
 \alias{make.ddf.analysis.list}
 \title{Creates a list of DDF.Analysis objects}
 \usage{
-make.ddf.analysis.list(dsmodel, mrmodel = NULL, method, criteria = "AIC",
-  analysis.strata = data.frame(), truncation = numeric(0),
-  binned.data = FALSE, cutpoints = numeric(0))
+make.ddf.analysis.list(dsmodel = list(~cds(key = "hn", formula = ~1)),
+  mrmodel = NULL, method = "ds", criteria = "AIC",
+  analysis.strata = data.frame(), truncation = 50, binned.data = FALSE,
+  cutpoints = numeric(0))
 }
 \arguments{
 \item{dsmodel}{list of distance sampling model formula specifying the detection function (see \code{?ddf} for further details)}
@@ -37,7 +38,16 @@ a model to fit to the distance data. The simulation will fit each of these
 models to the data generated in the simulation and select the model with 
 the minimum criteria value.
 }
+\details{
+By default this function creates a half-normal detection
+ function model \code{dsmodel = list(~cds(key = "hn",
+ formula = ~1))} with a truncation distance of 75.
+}
 \examples{
+# A simple half-normal "ds" model can be created using the default values
+ddf.analyses <- make.ddf.analysis.list()
+
+# To incorporate model selection between a 'hn' and 'hr' model:
 ddf.analyses <- make.ddf.analysis.list(dsmodel = list(~cds(key = "hn",
  formula = ~1),~cds(key = "hr", formula = ~1)), method = "ds", 
  criteria = "AIC")

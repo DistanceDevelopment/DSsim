@@ -15,12 +15,13 @@
 #' population density
 #' @slot region.name Object of class \code{"character"}; name of
 #' the region in which the population exists.
-#' @slot size Object of class \code{"logical"}; Indicating whether
-#' detections will be made on cluster (TRUE) or individuals (FALSE).
-#' @slot size.table Object of class \code{"data.frame"}; This must
-#' have 2 columns- \code{size} and \code{prob}. The first column gives the
-#' possible cluster sizes and the second describes the probabilities
-#' of each cluster size.
+#' @slot strata.names Character vector giving the strata names for the study region.
+#' @slot covariates Named list with one named entry per individual level covariate.
+#' Cluster sizes can be defined here. Each list entry will either be a data.frame 
+#' containing 2 columns, the first the level (level) and the second the probability 
+#' @slot size logical value indicating whether the population occurs in 
+#' clusters.
+#' (prob). The cluster size entry in the list must be named 'size'.
 #' @slot gen.by.N Object of class \code{"logical"}; If \code{TRUE}
 #' N is fixed otherwise it is generated from a Poisson distribution.
 #' @slot D.dist Object of class \code{character}; Describes the
@@ -34,17 +35,18 @@
 #' @keywords classes
 #' @export
 #' @seealso \code{\link{make.population.description}}
-setClass("Population.Description", representation(N           = "numeric",
-                                                  density     = "Density",
-                                                  region.name = "character",
-                                                  size        = "logical",
-                                                  size.table  = "data.frame",
-                                                  gen.by.N    = "logical",
-                                                  D.dist      = "character"))
+setClass("Population.Description", representation(N            = "numeric",
+                                                  density      = "Density",
+                                                  region.name  = "character",
+                                                  strata.names = "character",
+                                                  covariates   = "list",
+                                                  size         = "logical",
+                                                  gen.by.N     = "logical",
+                                                  D.dist       = "character"))
 setMethod(
   f="initialize",
   signature="Population.Description",
-  definition=function(.Object, N, density, region.obj, size.table, size, gen.by.N = TRUE, D.dist = character(0)){
+  definition=function(.Object, N, density, region.obj, size.table, size, covariates, gen.by.N = TRUE, D.dist = character(0)){
     #Input pre-processing
     if(!gen.by.N){
       ave.density <- NULL
@@ -54,14 +56,18 @@ setMethod(
       }
       N <- region.obj@area*ave.density
     }
+    # Check if there are clusters
+    cov.names <- names(covariates)
+    size <- "size" %in% cov.names
     #Set slots
-    .Object@N           <- N
-    .Object@density     <- density
-    .Object@region.name <- region.obj@region.name
-    .Object@size.table  <- size.table
-    .Object@size        <- size
-    .Object@gen.by.N    <- gen.by.N
-    .Object@D.dist      <- D.dist
+    .Object@N            <- N
+    .Object@density      <- density
+    .Object@region.name  <- region.obj@region.name
+    .Object@strata.names <- region.obj@strata.name
+    .Object@covariates   <- covariates
+    .Object@size         <- size
+    .Object@gen.by.N     <- gen.by.N
+    .Object@D.dist       <- D.dist
     #Check object is valid
     validObject(.Object)
     # return object
@@ -72,14 +78,6 @@ setValidity("Population.Description",
   function(object){
     if(length(object@N) > 0 & sum(object@N) <= 0){
       return("You must provide a positive, non-zero abundance")
-    }
-    if(object@size){
-      if(sum(object@size.table$prob) != 1){
-        return("Probabilities in cluster size table must sum to 1")
-      }
-      if(min(object@size.table$size) < 1){
-        return("Cannot have cluster sizes less than 1")
-      }
     }
     return(TRUE)
   }
@@ -113,7 +111,7 @@ setMethod(
   definition=function(object, detectability, region.obj = NULL){
     #If the user has not passed in the region object
     if(class(region.obj) != "Region"){
-      warning("Obtaining region object from the global workspace", call. = TRUE, immediate. = TRUE)
+      warning("Trying to obtain region object from the global workspace", call. = TRUE, immediate. = TRUE)
       region.obj <- get(object@region.name)
     }
     #If the population has fixed N
@@ -124,12 +122,15 @@ setMethod(
 
     }
     N <- nrow(all.grid.locations)
-    #create population object
-    population.dataframe <- data.frame(object = 1:nrow(all.grid.locations), x = all.grid.locations$x.coord, y = all.grid.locations$y.coord)
-    if(object@size){
-      cluster.size <- sample(object@size.table$size, nrow(population.dataframe), replace = TRUE, prob = object@size.table$prob)
-      population.dataframe$size <- cluster.size
+    # Make population data.frame
+    population.dataframe <- data.frame(object = 1:nrow(all.grid.locations), x = all.grid.locations$x.coord, y = all.grid.locations$y.coord, strata = all.grid.locations$strata)
+    # Add covariate values
+    if(length(object@covariates) > 0){
+      population.dataframe <- add.covariate.values(population.dataframe, object@covariates)
     }
+    # Add scale parameter values
+    population.dataframe <- calculate.scale.param(population.dataframe, detectability, region.obj)
+    # Make population object
     population <- new(Class = "Population", region = object@region.name, strata.names = region.obj@region.name, N = N, D = N/region.obj@area, population = population.dataframe, detectability = detectability)
     return(population)
   }

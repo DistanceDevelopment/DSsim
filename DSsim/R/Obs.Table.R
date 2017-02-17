@@ -1,11 +1,10 @@
-#' Class "Obs.Table" 
+#' @title Class "Obs.Table" 
 #' 
-#' Class \code{"Obs.Table"} is an S4 class containing an 
+#' @description Class \code{"Obs.Table"} is an S4 class containing an 
 #' observation table which is required for Hortvitz-Thompson estimation of 
 #' density and abundance.
 #'
 #' @name Obs.Table-class
-#' @title S4 Class "Obs.Table"
 #' @slot obs.table data.frame for dht
 #' @section Objects from the Class: Objects can be created by calls to the 
 #' function \code{create.survey.results(simulation, dht.table = TRUE)} 

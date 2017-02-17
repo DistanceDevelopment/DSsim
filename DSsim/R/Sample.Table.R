@@ -1,11 +1,10 @@
-#' Class "Sample.Table" 
+#' @title Class "Sample.Table" 
 #' 
-#' Class \code{"Sample.Table"} is an S4 class containing a 
+#' @description Class \code{"Sample.Table"} is an S4 class containing a 
 #' region table which is required for Hortvitz-Thompson estimation of 
 #' density and abundance.
 #'
 #' @name Sample.Table-class
-#' @title S4 Class "Sample.Table"
 #' @slot sample.table data.frame which is the sample table for dht
 #' @section Objects from the Class: Objects can be created by calls to the 
 #' function \code{create.survey.results(simulation, dht.table = TRUE)} 

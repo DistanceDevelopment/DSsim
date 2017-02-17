@@ -21,23 +21,26 @@
 #' @keywords classes
 #' @seealso \code{\link{make.density}}
 #' @export
-setClass("Density", representation(region.name = "character", strata.name = "character", density.surface = "list", x.space = "numeric", y.space = "numeric", units = "character"))
+setClass("Density", representation(region.name = "character", 
+                                   strata.name = "character", 
+                                   density.surface = "list", 
+                                   x.space = "numeric", 
+                                   y.space = "numeric", 
+                                   units = "character"))
 
 setMethod(
   f="initialize",
   signature="Density",
-  definition=function(.Object, region, strata.name = character(0), density.surface = list(), x.space, y.space, constant = NULL, density.gam = NULL, jit = 1){
+  definition=function(.Object, region, strata.name = character(0), density.surface = list(), x.space, y.space, constant = NULL, density.gam = NULL, buffer = numeric(0)){
     #Input pre-processing
     if(length(density.surface) == 0){
-      if(!is.null(constant)){
-        #Create density surface with constant density within strata
-        density.surface <- get.surface.constant(region, x.space, y.space, constant, jit)
-      }else if(!is.null(density.gam)){
+      if(!is.null(density.gam)){
         #Create density surface from gam
-        density.surface <- get.surface.gam(region, x.space, y.space, gam.model = density.gam)
+        density.surface <- get.surface.gam(region, x.space, y.space, density.gam, buffer)
       }else{
-        density.surface <- list(data.frame(x = NULL, y = NULL, density = NULL))    
-      }
+        #Create density surface with constant density within strata
+        density.surface <- get.surface.constant(region, x.space, y.space, constant, buffer)
+      } 
     }
     #Set slots
     .Object@region.name <- region@region.name
@@ -119,15 +122,21 @@ setMethod("add.hotspot","Density",
 #'  a coloured point at the centre of each grid cell where as 
 #'  blocks colours the entire cell.
 #' @param density.col the colours used to indicate density level
+#' @param main character plot title
 #' @param ... other general plot parameters
 #' @rdname plot.Density-methods
 #' @importFrom grDevices heat.colors rainbow terrain.colors topo.colors cm.colors
 #' @importFrom graphics image contour plot points axTicks axis
-#' @exportMethod  
+#' @importFrom fields quilt.plot
+#' @exportMethod plot
 setMethod(
   f = "plot",
   signature = "Density",
-  definition = function(x, y, add = FALSE, plot.units = character(0), contours = TRUE, style = "points", density.col = heat.colors(12), ...){
+  definition = function(x, y, add = FALSE, plot.units = character(0), contours = TRUE, style = "points", density.col = heat.colors(12), main = "", ...){
+    # If main is not supplied then take it from the object
+    if(main == ""){
+      main <- x@region.name
+    }
     #Check a valid style has been requested
     if(!style %in% c("points", "blocks")){
       stop("You have requested an unsupported plot style", call. = FALSE)
@@ -142,6 +151,9 @@ setMethod(
       x.vals <- c(x.vals, density.surface[[strat]]$x)
       y.vals <- c(y.vals, density.surface[[strat]]$y)
     }
+    # keep a copy of all the x and y values
+    x.vals.orig <- x.vals
+    y.vals.orig <- y.vals
     #define plot.units if it was not specified
     if(length(plot.units) == 0){
       plot.units <- x@units
@@ -172,12 +184,14 @@ setMethod(
     if(plot.units != x@units){
       #convert units
       if(x@units == "m" & plot.units == "km"){ 
-        if(contours){
-          z.matrix <- z.matrix * 1000000  
+        if(contours| style == "blocks"){
+          z.matrix <- z.matrix * 1000000 
+          densities <- densities * 1000000
         }
       }else if(x@units == "km" & plot.units == "m"){
-        if(contours){
+        if(contours| style == "blocks"){
           z.matrix <- z.matrix/1000000
+          densities <- densities/1000000
         }
       }else{
         warning("The requested conversion of units is not currently supported, this option will be ignored.", call. = FALSE, immediate. = TRUE)
@@ -186,37 +200,33 @@ setMethod(
     #If a contour plot is requested
     if(style == "blocks"){
       #Create the image
-      image(x.vals, y.vals, z.matrix, yaxt = "n", xaxt = "n", xlab = xlabel, ylab = ylabel, main = x@region.name, col = density.col)
+      #image(x.vals, y.vals, z.matrix, yaxt = "n", xaxt = "n", xlab = xlabel, ylab = ylabel, main = x@region.name, col = density.col)
+      # Get the number of intervals in each direction
+      nx <- (range(x.vals)[2]-range(x.vals)[1])/x@x.space
+      ny <- (range(y.vals)[2]-range(y.vals)[1])/x@y.space
+      # Use quilt plot to avoid stretching between polygons
+      fields::quilt.plot(x = x.vals.orig, y = y.vals.orig, z = densities, nx = nx, ny = ny, yaxt = "n", xaxt = "n", xlab = xlabel, ylab = ylabel, main = main, col = density.col)
       if(contours){
         contour(x.vals, y.vals, z.matrix, add = TRUE, ...)  
+      }else{
+        x.min <- min(x.vals)
+        y.min <- min(y.vals)
+        points(x.min - 100000, y.min - 100000)
       }
-    #OLD STLYE PLOTTING
     }else{
-#       #If the range < 1
-#       if(zlim[2] - zlim[1] < 1){
-#         #Multiply them by (1/minimum density)*10
-#         multiplier <- (1/zlim[1])*10
-#       }else{
-#         #otherwise no scaling
-#         multiplier <- 1
-#       }
-#       #Create the colour lookup
-#       zlim <- range(densities*multiplier)
-#       zlen <- zlim[2] - zlim[1] + 1
-#       colorlut <- heat.colors(zlen) 
-#       colorlut <- colorlut[length(colorlut):1]
       #Set up plot
       if(!add){
-        plot(range(x.vals), range(y.vals), col = "white", xlab = xlabel, ylab = ylabel, main = x@region.name, yaxt = "n", xaxt = "n")
+        plot(range(x.vals), range(y.vals), col = "white", xlab = xlabel, ylab = ylabel, main = main, yaxt = "n", xaxt = "n")
       }
+      #Find the range of densities
+      #zlim <- range(strat.density) 
+      zlim <- range(densities) 
+      #Find the break points
+      breaks <- seq(zlim[1], zlim[2], length = length(density.col)+1)
       #Add the points for each strata
       for(strat in seq(along = density.surface)){
         #col <- colorlut[density.surface[[strat]]$density*multiplier-zlim[1]+1]
         strat.density <- density.surface[[strat]]$density
-        #Find the range of densities
-        zlim <- range(strat.density) 
-        #Find the break points
-        breaks <- seq(zlim[1], zlim[2], length = length(density.col)+1)
         #Set up a vector for the colours
         colours <- rep(NA, length = length(strat.density))
         #Fill in colours
@@ -236,7 +246,7 @@ setMethod(
     if(plot.units != x@units){
       #convert units
       if(x@units == "m" & plot.units == "km"){ 
-        axis(1, at = xticks, labels = xticks/1000)
+        axis(1, at = xticks, labels = xticks/1000, col.ticks = 1)
         axis(2, at = yticks, labels = yticks/1000)
       }else if(x@units == "km" & plot.units == "m"){
         axis(1, at = xticks, labels = xticks*1000)

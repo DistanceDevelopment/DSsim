@@ -1,4 +1,5 @@
 #' @importFrom stats rpois runif
+#' @importFrom splancs as.points
 generate.pop.D <- function(population.description, region.obj){
 #this function generates a population based on the values in the 
 #Density object grid (not from a fixed population size)
@@ -30,6 +31,8 @@ generate.pop.D <- function(population.description, region.obj){
       #Find which animals are in the region
       grid.locations <- grid.locations[grid.locations$in.region,]
       grid.locations <- grid.locations[!grid.locations$in.gaps,]
+      #Record strata ID
+      grid.locations$strata <- rep(strat, nrow(grid.locations))
       if(strat == 1){
         all.grid.locations <- grid.locations
       }else{

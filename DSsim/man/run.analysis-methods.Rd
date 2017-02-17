@@ -5,17 +5,17 @@
 \alias{run.analysis}
 \alias{run.analysis,DDF.Analysis,DDF.Data-method}
 \alias{run.analysis,Simulation,DDF.Data-method}
-\alias{run.analysis,Simulation,LT.Survey.Results-method}
+\alias{run.analysis,Simulation,Survey.Results-method}
 \title{S4 generic method to run analyses}
 \usage{
 run.analysis(object, data, ...)
 
-\S4method{run.analysis}{DDF.Analysis,DDF.Data}(object, data, dht = FALSE)
+\S4method{run.analysis}{DDF.Analysis,DDF.Data}(object, data, dht = FALSE,
+  point = FALSE)
 
-\S4method{run.analysis}{Simulation,LT.Survey.Results}(object, data,
-  dht = TRUE)
+\S4method{run.analysis}{Simulation,Survey.Results}(object, data, dht = FALSE)
 
-\S4method{run.analysis}{Simulation,DDF.Data}(object, data, dht = TRUE)
+\S4method{run.analysis}{Simulation,DDF.Data}(object, data, dht = FALSE)
 }
 \arguments{
 \item{object}{an object of class Simulation or DDF.Analysis}
@@ -25,6 +25,8 @@ run.analysis(object, data, ...)
 \item{...}{optional arguments including the following:}
 
 \item{dht}{logical whether density should be estimated after fitting the model}
+
+\item{point}{logical indicating whether it is a point transect survey}
 }
 \value{
 a list containing an S3 ddf object and optionally an S3 dht object relating to the model with the miminum criteria.

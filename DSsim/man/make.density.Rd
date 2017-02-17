@@ -4,7 +4,8 @@
 \alias{make.density}
 \title{Creates a Density object}
 \usage{
-make.density(region.obj, density.surface = list(), x.space, y.space,
+make.density(region.obj = make.region(), density.surface = list(),
+  x.space = 5, y.space = NULL, buffer = numeric(0),
   constant = numeric(0), density.gam = NULL, dsm = NULL, formula = NULL)
 }
 \arguments{
@@ -17,6 +18,8 @@ data.frame for each strata.}
 \item{x.space}{the intervals in the grid in the x direction}
 
 \item{y.space}{the intervals in the grid in the y direction}
+
+\item{buffer}{the width of the buffer region for generating the density grid. If not supplied DSsim will use the maximum value provided for the x.space or y.space.}
 
 \item{constant}{a value describing a constant density across the surface.}
 
@@ -38,7 +41,15 @@ also supply a \code{mgcv gam} object and x, y spacings and the density grid will
 be created from these.
 }
 \examples{
-                 
+ 
+# A simple density surface with a constant value of 1 can be created within a rectangular 
+# region using 
+# the default values:
+density <- make.density()
+plot(density)
+plot(make.region(), add = TRUE)
+  
+# The example below shows hot to add high and low point to the density surface                   
 \dontrun{
 pop.density <- make.density(region.obj = region, x.space = 10, 
  y.space = 10, constant = 0.5) 
@@ -54,8 +65,8 @@ pop.density <- add.hotspot(pop.density, centre = c(300, 100),
 plot(pop.density)
 plot(region, add = TRUE)
 
-#Old style plotting
-plot(pop.density, contours = FALSE, old.style = TRUE)
+#Block style plotting
+plot(pop.density, contours = FALSE, style = "blocks")
 plot(region, add = TRUE)
 
 }
