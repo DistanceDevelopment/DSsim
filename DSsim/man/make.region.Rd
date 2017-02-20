@@ -12,18 +12,20 @@ make.region(region.name = "region", strata.name = character(0),
 \arguments{
 \item{region.name}{the region name}
 
-\item{strata.name}{the strata names. If not supplied when there are 2 or mode strata default names of "A", "B", "C"... will be assigned.}
+\item{strata.name}{the stratum names (character vector, same length as the 
+number of areas in the \code{shapefile} or \code{coords} arguments). If not supplied "A", "B", "C", ... will be assigned.}
 
-\item{units}{the units given as a character (either 'm' or 'km')}
+\item{units}{measurement units; either \code{"m"} for metres or \code{"km"} for 
+kilometres.}
 
 \item{area}{the area of the region (optional - if not supplied it will be 
-calculated for you using \code{areapl} from the splancs library)}
+calculated for you)}
 
-\item{shapefile}{a shapefile of the study region. These can be loaded using the \code{read.shapefile} function in the shapefiles library.}
+\item{shapefile}{path to a shapefile of the region}
 
-\item{coords}{A list with one element per strata. Each element in the list is a list of dataframes describing the polygon coordinates. This allows multiple regions in each strata. The corrdinates should start and finish with the same point. By default DSsim will create a rectangular study region 2000 m by 500 m.}
+\item{coords}{A list with one element per stratum. Each element in the list is a list of dataframes describing the polygon coordinates. This allows multiple regions in each strata. The corrdinates should start and finish with the same point. By default DSsim will create a rectangular study region 2000 m by 500 m.}
 
-\item{gaps}{A list with one element per strata. Each element in the list is a list of dataframes describing the polygon coordinates. This allows multiple gaps in each strata. The corrdinates should start and finish with the same point.}
+\item{gaps}{A list with one element per stratum giving the areas to be excluded from the study area (the "holes"). Each element in the list is a list of \code{data.frame}s describing the polygon coordinates. This allows multiple gaps in each stratum. The corrdinates should start and finish with the same point.}
 
 \item{check.LinkID}{boolean to check the order of the LinkID value in the attribute table. This is important if this shapefile was used in Distance to create the survey shapefiles as Distance would have re-ordered the strata in this way. Failing to re-order the strata will mean that the strata in DSsim will not match the transect strata ID values created by Distance. If you have created your surveys outside Distance you can turn this option off.}
 }
@@ -31,11 +33,12 @@ calculated for you using \code{areapl} from the splancs library)}
 object of class Region
 }
 \description{
-This creates an instance of the Region class. If the user supplied a 
-shapefile all information will be extracted from here. Otherwise the user
-needs to specify a list of polygons describing the areas of interest 
-(coords) and optionally a list of polygons describing the areas to 
-be excluded (gaps). If area is not specified it will be calculated.
+This creates an instance of the Region class. If the
+\code{shapefile} argument is supplied, all information will be extracted from
+there. Otherwise, the a list of polygons describing the areas of interest needs 
+to be supplied (\code{coords}) and optionally a list of polygons describing the 
+areas to be excluded (\code{gaps}). If \code{area} is not specified it will be 
+calculated.
 }
 \examples{
 # A basic study region of 2000m by 500m is created using the defaults

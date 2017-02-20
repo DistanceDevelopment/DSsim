@@ -117,7 +117,7 @@ setValidity("Region",
         temp <- strata.name[-i]
         for(j in seq(along = temp)){
           if(strata.name[i] == temp[j]){
-            return("Strata names must be unique")
+            return("Stratum names must be unique")
           }
         }
       }
@@ -129,7 +129,7 @@ setValidity("Region",
       return("The lengths of the coords and gaps lists differ, these must be the same and equal to the number of strata.")
     }
     if(length(object@coords) > 1 & length(object@coords) != length(object@strata.name)){
-      return("Number of strata names differs to number of strata in the shapefile.")
+      return("Number of stratum names differs to number of strata in the shapefile.")
     }
     return(TRUE)
   }
