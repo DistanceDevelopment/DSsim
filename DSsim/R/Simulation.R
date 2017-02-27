@@ -643,8 +643,11 @@ setMethod(
       clusterEvalQ(myCluster, {
         require(DSsim)
       })
-      results <- pbapply::pblapply(X= as.list(1:object@reps), FUN = single.simulation.loop, object = object, save.data = save.data, load.data = load.data, data.path = data.path, cl = myCluster)
-      #results <- parLapply(myCluster, X = as.list(1:object@reps), fun = single.simulation.loop, object = object, save.data = save.data, load.data = load.data, data.path = data.path)
+      if(counter){
+        results <- pbapply::pblapply(X= as.list(1:object@reps), FUN = single.simulation.loop, object = object, save.data = save.data, load.data = load.data, data.path = data.path, cl = myCluster, counter = FALSE)  
+      }else{
+        results <- parLapply(myCluster, X = as.list(1:object@reps), fun = single.simulation.loop, object = object, save.data = save.data, load.data = load.data, data.path = data.path, counter = FALSE) 
+      }
       object <- accumulate.PP.results(simulation = object, results = results)
       stopCluster(myCluster)
     }else{
