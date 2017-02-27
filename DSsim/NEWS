@@ -1,3 +1,10 @@
+DSsim 1.1.2
+-----------
+
+Bug Fixes
+
+  * Fixed bug when running simulations in parallel. Introduced by turning off simulation counter when running in serial.
+
 DSsim 1.1.1
 -----------
 
