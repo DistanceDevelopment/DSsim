@@ -21,7 +21,7 @@ kilometres.}
 \item{area}{the area of the region (optional - if not supplied it will be 
 calculated for you)}
 
-\item{shapefile}{path to a shapefile of the region}
+\item{shapefile}{a shapefile object of the region loaded into R using \code{read.shapefile(shape.name)} from the shapefiles library.}
 
 \item{coords}{A list with one element per stratum. Each element in the list is a list of dataframes describing the polygon coordinates. This allows multiple regions in each strata. The corrdinates should start and finish with the same point. By default DSsim will create a rectangular study region 2000 m by 500 m.}
 

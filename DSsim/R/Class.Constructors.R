@@ -29,7 +29,7 @@
 #'   kilometres.
 #' @param area the area of the region (optional - if not supplied it will be 
 #'   calculated for you)
-#' @param shapefile path to a shapefile of the region
+#' @param shapefile a shapefile object of the region loaded into R using \code{read.shapefile(shape.name)} from the shapefiles library.
 #' @param coords A list with one element per stratum. Each element in the list is a list of dataframes describing the polygon coordinates. This allows multiple regions in each strata. The corrdinates should start and finish with the same point. By default DSsim will create a rectangular study region 2000 m by 500 m.
 #' @param gaps A list with one element per stratum giving the areas to be excluded from the study area (the "holes"). Each element in the list is a list of \code{data.frame}s describing the polygon coordinates. This allows multiple gaps in each stratum. The corrdinates should start and finish with the same point.
 #' @param check.LinkID boolean to check the order of the LinkID value in the attribute table. This is important if this shapefile was used in Distance to create the survey shapefiles as Distance would have re-ordered the strata in this way. Failing to re-order the strata will mean that the strata in DSsim will not match the transect strata ID values created by Distance. If you have created your surveys outside Distance you can turn this option off.
