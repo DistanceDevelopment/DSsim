@@ -355,5 +355,5 @@ test_that("Check cluster size simulations correctly estimate expected cluster si
  sim <- run(sim, counter = FALSE) 
  # Check that the expected cluster size is 5 and 10
  expect_equal(as.numeric(sim@results$expected.size[1:2,1,1]), c(5,10))
-    
+ 
 })
