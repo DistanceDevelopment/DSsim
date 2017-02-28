@@ -632,12 +632,23 @@ setMethod(
     #set the transect index to 1
     orig.file.index <- object@design@file.index
     object@design@file.index <- 1
-    if(run.parallel & requireNamespace('parallel', quietly = TRUE) & requireNamespace('pbapply', quietly = TRUE)){
-      # counts the number of cores you have
-      nCores <- getOption("cl.cores", detectCores())
-      if(!is.na(max.cores)){
-        nCores <- min(nCores - 1, max.cores)
+    if(run.parallel){
+      if(!requireNamespace('parallel', quietly = TRUE) | !requireNamespace('pbapply', quietly = TRUE)){
+        warning("Could not run in parallel, library(pbapply) or library(parallel) is not installed.", immediate. = TRUE, call. = FALSE)  
+        run.parallel = FALSE
+      }else{
+        # counts the number of cores you have
+        nCores <- getOption("cl.cores", detectCores())
+        if(!is.na(max.cores)){
+          nCores <- min(nCores - 1, max.cores)
+        }
+        if(nCores <= 1){
+          warning("Could not run in parallel only one core available/requested (DSsim limits running in parallel to 1 less than the number of cores on the machine).", immediate. = TRUE, call. = FALSE)
+          run.parallel = FALSE
+        }  
       }
+    }
+    if(run.parallel){
       # intitialise the cluster
       myCluster <- makeCluster(nCores)
       clusterEvalQ(myCluster, {
@@ -651,11 +662,8 @@ setMethod(
       }
       object <- accumulate.PP.results(simulation = object, results = results)
       stopCluster(myCluster)
-    }else{
-      #Check that it wasn't trying to run parallel
-      if(run.parallel){
-        warning("Could not run in parallel, library(parallel) or library(pbapply) is not installed.", immediate. = TRUE, call. = FALSE)
-      }
+    }
+    if(!run.parallel){
       #otherwise loop
       for(i in 1:object@reps){
         object@results <- single.simulation.loop(i, object, save.data = save.data, load.data = load.data, data.path = data.path, counter = counter)
