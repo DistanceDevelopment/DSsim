@@ -307,7 +307,7 @@ setMethod(
           zero.n[i, strat] <- ifelse(object@results$clusters$summary[strat, "n", i] == 0, TRUE, FALSE)
         }
       }
-      percent.capture <- (apply(capture, 2, sum, na.rn = TRUE)/nrow(na.omit(capture)))*100
+      percent.capture <- (apply(capture, 2, sum, na.rm = TRUE)/nrow(na.omit(capture)))*100
       percent.capture.D <- (apply(capture.D, 2, sum, na.rm = TRUE)/nrow(na.omit(capture.D)))*100
       zero.n <- apply(zero.n, 2, sum)
       if(length(true.N.clusters) == 1){
