@@ -145,25 +145,30 @@ setMethod(
     if(length(object@cov.param) > 0){
       # iterate through all the covariates and make plots
       for(cov in seq(along = object@cov.param)){
-        
         cov.params <- object@cov.param[[cov]]
+        cov.dist <- pop.desc@covariates[[cov.names[cov]]]
         if(class(object@cov.param[[cov]]) == "data.frame"){
-          factor = TRUE
+          param.type = "categorical"
           no.cov.strata <- ifelse(is.null(cov.params$strata), 1, length(unique(cov.params$strata)))
+        }else if(class(cov.dist[[1]]) == "data.frame"){ 
+          param.type = "discrete"
+          no.cov.strata <- length(cov.params)
         }else{
-          factor = FALSE
+          param.type = "continuous"
           no.cov.strata <- length(cov.params)
         }
-        if(factor){
+        if(param.type == "categorical"){
           plot.title <- paste("Covariate: ", cov.names[cov], " (factor)", sep = "")
+        }else if(param.type == "discrete"){
+          plot.title <- paste("Covariate: ", cov.names[cov], " (discrete)", sep = "")
         }else{
-          plot.title <- paste("Covariate: ", cov.names[cov], sep = "")
+          plot.title <- paste("Covariate: ", cov.names[cov], " (continuous)", sep = "")
         }
         # set up initial plot 
         plot(0,0, xlim = c(0,object@truncation + object@truncation*0.05), ylim = c(0,1.2), main = plot.title, col = "white", xlab = "Distance", ylab = "Detection Probability")
         no.strata <- max(length(scale.param), length(shape.param), no.cov.strata)
         # make up storage array
-        if(factor){
+        if(param.type == "categorical"){
           nlevels <- length(unique(cov.params$level))
         }else{
           nlevels <- 3
@@ -185,7 +190,7 @@ setMethod(
               shape.param.strat <- shape.param[1]  
             }
           }
-          if(factor){
+          if(param.type == "categorical"){
             # get scale adjustment for each level
             if(!is.null(cov.params$strata)){
               scale.adjustments <- cov.params$param[cov.params$strata == pop.desc@strata.names[strat]]  
@@ -202,24 +207,36 @@ setMethod(
                                     "uf" = rep(new.scale.params[i], length(x)))
             }
           }else{
-            # get 2.5% and 97.5% quantiles for covariate values
-            cov.dist <- pop.desc@covariates[[cov.names[cov]]]
-            if(length(cov.dist) == no.strata){
-              cov.dist <- cov.dist[[strat]]
-            }else{
-              cov.dist <- cov.dist[[1]]
-            }
-            dist.param <- cov.dist[[2]]
-            dist <- cov.dist[[1]]
-            int <- c(0.025, 0.5, 0.975)
-            if(dist == "ztruncpois"){
-              temp <- rtpois(999, mean = dist.param$mean)
-              quantiles <- quantile(temp, int)
-            }else{
-              quantiles <- switch(dist,
-                                  "normal" = qnorm(int, dist.param$mean, dist.param$sd),
-                                  "poisson" = qpois(int, dist.param$lambda),
-                                  "lognormal" = qlnorm(int, dist.param$meanlog, dist.param$sdlog))
+            # if the covariate distribution is discrete but not categorical
+            if(param.type == "discrete"){
+              if(length(cov.dist) == no.strata){
+                temp.dist <- cov.dist[[strat]]
+              }else{
+                temp.dist <- cov.dist[[1]] 
+              }
+              dist.mean <- sum(temp.dist$level*temp.dist$prob)
+              dist.min <- min(temp.dist$level)
+              dist.max <- max(temp.dist$level)
+              quantiles <- c(dist.min, dist.mean, dist.max)
+            }else if(param.type == "continuous"){
+              # get 2.5% and 97.5% quantiles for covariate values
+              if(length(cov.dist) == no.strata){
+                cov.dist <- cov.dist[[strat]]
+              }else{
+                cov.dist <- cov.dist[[1]]
+              }
+              dist.param <- cov.dist[[2]]
+              dist <- cov.dist[[1]]
+              int <- c(0.025, 0.5, 0.975)
+              if(dist == "ztruncpois"){
+                temp <- rtpois(999, mean = dist.param$mean)
+                quantiles <- quantile(temp, int)
+              }else{
+                quantiles <- switch(dist,
+                                    "normal" = qnorm(int, dist.param$mean, dist.param$sd),
+                                    "poisson" = qpois(int, dist.param$lambda),
+                                    "lognormal" = qlnorm(int, dist.param$meanlog, dist.param$sdlog))
+              }  
             }
             # get adjustment paramters
             if(length(cov.params) == no.strata){
@@ -238,7 +255,7 @@ setMethod(
                                     "uf" = rep(new.scale.params[i], length(x)))
             }
           }
-          if(factor){
+          if(param.type == "categorical"){
             llty <- seq(along = y[,1,strat]) + 1  
           }else{
             llty <- c(2,1,2)
@@ -250,7 +267,12 @@ setMethod(
         }#loop over strata
         # Add legend
         strata.names <- pop.desc@strata.names
-        if(factor){
+        if(param.type == "discrete"){
+          desc.ints <- "min,max"
+        }else if(param.type == "continuous"){
+          desc.ints <- "95%ints"
+        }
+        if(param.type == "categorical"){
           no.levels <- length(unique(cov.params$level))
           new.strata.names <- character(0)
           for(i in seq(along = strata.names)){
@@ -270,12 +292,12 @@ setMethod(
           description <- character(0)
           for(i in seq(along = strata.names)){
             new.strata.names <- c(new.strata.names, rep(strata.names[i], 2))
-            description <- c(description, "mean", "95%ints")
+            description <- c(description, "mean", desc.ints)
           }
           if(length(strata.names) > 0){
             legend.text <- paste(new.strata.names, ".", description, sep = "")
           }else{
-            legend.text <- c("mean", "95%ints")
+            legend.text <- c("mean", desc.ints)
           }
         }
         legend(object@truncation, 1.2,  col = ccol, lty = llty, legend = legend.text, bty = "n", box.col = "white", xjust = 1)
