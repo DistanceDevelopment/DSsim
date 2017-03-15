@@ -253,7 +253,7 @@ setMethod(
     #Calculates the percentage of times the true value is whithin the confidence intervals
     percent.capture <- (apply(capture, 2, sum, na.rm = TRUE)/nrow(na.omit(capture)))*100
     percent.capture.D <- (apply(capture.D, 2, sum, na.rm = TRUE)/nrow(na.omit(capture)))*100
-    zero.n <- apply(zero.n, 2, sum)
+    zero.n <- apply(zero.n, 2, sum, na.rm = TRUE)
     if(length(true.N.individuals) == 1){
       RMSE.N = apply(cbind(t(as.matrix(object@results$individuals$N[, "Estimate", 1:reps])), true.N.individuals), 1, calc.RMSE, reps = reps)
       RMSE.D = apply(cbind(t(as.matrix(object@results$individuals$D[, "Estimate", 1:reps])), true.D.individuals), 1, calc.RMSE, reps = reps)
@@ -309,7 +309,7 @@ setMethod(
       }
       percent.capture <- (apply(capture, 2, sum, na.rm = TRUE)/nrow(na.omit(capture)))*100
       percent.capture.D <- (apply(capture.D, 2, sum, na.rm = TRUE)/nrow(na.omit(capture.D)))*100
-      zero.n <- apply(zero.n, 2, sum)
+      zero.n <- apply(zero.n, 2, sum, na.rm = TRUE)
       if(length(true.N.clusters) == 1){
         RMSE.N = apply(cbind(t(as.matrix(object@results$clusters$N[, "Estimate", 1:reps])), true.N.clusters), 1, calc.RMSE, reps = reps)
         RMSE.D = apply(cbind(t(as.matrix(object@results$clusters$D[, "Estimate", 1:reps])), true.D.clusters), 1, calc.RMSE, reps = reps)
