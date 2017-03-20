@@ -4,6 +4,8 @@ DSsim 1.1.2
 Bug Fixes
 
   * Fixed bug when running simulations in parallel. Introduced by turning off simulation counter when running in serial.
+  * Fixed bug in summary when some simulation iterations fail
+  * Fixed detectability plot for discrete covariate distribution with continuous relationship with scale param of the detection function.
 
 DSsim 1.1.1
 -----------
