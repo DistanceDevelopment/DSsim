@@ -256,8 +256,8 @@ make.design <- function(transect.type = "line", design.details = "default", regi
 #' @param x.space the intervals in the grid in the x direction
 #' @param y.space the intervals in the grid in the y direction
 #' @param buffer the width of the buffer region for generating the density grid. If not supplied DSsim will use the maximum value provided for the x.space or y.space.
-#' @param constant a value describing a constant density across the surface.
-#' @param density.gam \code{gam} object created using \code{mgcv}
+#' @param constant a value describing a constant density across the surface. If not supplied a default value of 1 is used for all strata.
+#' @param density.gam \code{gam} object created using \code{mgcv} with only x and y as explanatory covariates.
 #' @param dsm not currently implemented
 #' @param formula not currently implemented
 #' @return object of class Density 
