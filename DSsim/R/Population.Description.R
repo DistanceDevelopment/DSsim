@@ -46,7 +46,7 @@ setClass("Population.Description", representation(N            = "numeric",
 setMethod(
   f="initialize",
   signature="Population.Description",
-  definition=function(.Object, N, density, region.obj, size.table, size, covariates, gen.by.N = TRUE, D.dist = character(0)){
+  definition=function(.Object, N, density, region.obj, size, covariates, gen.by.N = TRUE, D.dist = character(0)){
     #Input pre-processing
     if(!gen.by.N){
       ave.density <- NULL

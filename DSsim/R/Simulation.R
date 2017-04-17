@@ -270,7 +270,10 @@ setMethod(
                                      mean.se.ER = object@results$individuals$summary[,"se.ER","mean"],
                                      sd.mean.ER = object@results$individuals$summary[,"ER","sd"])
     # Remove unnecessary columns
-    if(all(individual.summary$mean.n.miss.dist == 0)){
+    if(all(is.na(individual.summary$mean.n.miss.dist))){
+      # To keep CRAN check happy!
+      eval(parse(text = paste("individual.summary <- subset(individual.summary, select = -mean.n.miss.dist)")))  
+    }else if(all(individual.summary$mean.n.miss.dist == 0)){
       # To keep CRAN check happy!
       eval(parse(text = paste("individual.summary <- subset(individual.summary, select = -mean.n.miss.dist)")))
     }
@@ -327,7 +330,9 @@ setMethod(
                                     mean.se.ER = object@results$clusters$summary[,"se.ER","mean"],
                                     sd.mean.ER = object@results$clusters$summary[,"ER","sd"])
       # Remove unnecessary columns
-      if(all(cluster.summary$mean.n.miss.dist == 0)){
+      if(all(is.na(cluster.summary$mean.n.miss.dist))){
+        eval(parse(text = paste("cluster.summary <- subset(cluster.summary,select = -mean.n.miss.dist)")))  
+      }else if(all(cluster.summary$mean.n.miss.dist == 0)){
         eval(parse(text = paste("cluster.summary <- subset(cluster.summary,select = -mean.n.miss.dist)")))
       }
       if(all(cluster.summary$no.zero.n == 0)){
@@ -370,7 +375,7 @@ setMethod(
     #Model selection table
     tab.model.selection <- table(object@results$Detection[,"SelectedModel",1:object@reps])
     #Create detectabilty summary
-    detectability.summary <- list(key.function = object@detectability@key.function, scale.param = object@detectability@scale.param, shape.param = object@detectability@shape.param, truncation = object@detectability@truncation)
+    detectability.summary <- list(key.function = object@detectability@key.function, scale.param = object@detectability@scale.param, shape.param = object@detectability@shape.param, cov.param = object@detectability@cov.param, truncation = object@detectability@truncation)
     #Create analysis summary
     analysis.summary <- list(dsmodels = list(), criteria = object@ddf.analyses[[1]]@criteria, truncation = object@ddf.analyses[[1]]@truncation)
     #Create design summary
@@ -408,9 +413,9 @@ setMethod(
       analysis.summary$dsmodels[[i]] <- object@ddf.analyses[[i]]@dsmodel
     }
     if(!is.null(object@results$clusters)){
-      summary.x <- new(Class = "Simulation.Summary", region.name = object@region@region.name, total.reps = object@reps, failures = no.fails, individuals = individuals, clusters = clusters, expected.size = expected.size, detection = detection, model.selection = tab.model.selection, design.summary = design.summary, detectability.summary = detectability.summary, analysis.summary = analysis.summary)
+      summary.x <- new(Class = "Simulation.Summary", region.name = object@region@region.name, strata.name = object@region@strata.name, total.reps = object@reps, failures = no.fails, individuals = individuals, clusters = clusters, expected.size = expected.size, population.covars = object@population.description@covariates, detection = detection, model.selection = tab.model.selection, design.summary = design.summary, detectability.summary = detectability.summary, analysis.summary = analysis.summary)
     }else{
-      summary.x <- new(Class = "Simulation.Summary", region.name = object@region@region.name, total.reps = object@reps, failures = no.fails, individuals = individuals, detection = detection, model.selection = tab.model.selection, design.summary = design.summary, detectability.summary = detectability.summary, analysis.summary = analysis.summary)
+      summary.x <- new(Class = "Simulation.Summary", region.name = object@region@region.name, strata.name = object@region@strata.name, total.reps = object@reps, failures = no.fails, individuals = individuals, population.covars = object@population.description@covariates, detection = detection, model.selection = tab.model.selection, design.summary = design.summary, detectability.summary = detectability.summary, analysis.summary = analysis.summary)
     }
     return(summary.x)
   }
@@ -443,16 +448,21 @@ setMethod(
 #' @export
 histogram.N.ests <- function(x, ...){
   reps <- x@reps
-  index <- dim(x@results$individuals$N)[1]
-  true.N <- sum(x@population.description@N)
-  if(!is.null(x@results$clusters)){
-    ests <- x@results$clusters$N[index, "Estimate", 1:reps]
-    hist(ests, main = "Histogram of Estimates", xlab = "Estimated Abundance of Clusters", ...) 
+  sum.sim <- summary(x, description.summary = FALSE)
+  if(sum.sim@failures == reps){
+    warning("None of the simulation repetitions were successful, cannot plot histogram of estimates.", immediate. = TRUE, call. = TRUE)
   }else{
-    ests <- x@results$individuals$N[index, "Estimate", 1:reps]
-    hist(ests, main = "Histogram of Estimates", xlab = "Estimated Abundance of Individuals", ...)  
+    index <- dim(x@results$individuals$N)[1]
+    true.N <- sum(x@population.description@N)
+    if(!is.null(x@results$clusters)){
+      ests <- x@results$clusters$N[index, "Estimate", 1:reps]
+      hist(ests, main = "Histogram of Estimates", xlab = "Estimated Abundance of Clusters", ...) 
+    }else{
+      ests <- x@results$individuals$N[index, "Estimate", 1:reps]
+      hist(ests, main = "Histogram of Estimates", xlab = "Estimated Abundance of Individuals", ...)  
+    }
+    abline(v = true.N, col = 2, lwd = 3, lty = 2)
   }
-  abline(v = true.N, col = 2, lwd = 3, lty = 2)
   invisible(x)
 }
 
@@ -655,6 +665,7 @@ setMethod(
         require(DSsim)
         require(shapefiles)
       })
+      on.exit(stopCluster(myCluster))
       if(counter){
         results <- pbapply::pblapply(X= as.list(1:object@reps), FUN = single.simulation.loop, object = object, save.data = save.data, load.data = load.data, data.path = data.path, cl = myCluster, counter = FALSE)  
       }else{
@@ -662,6 +673,7 @@ setMethod(
       }
       object <- accumulate.PP.results(simulation = object, results = results)
       stopCluster(myCluster)
+      on.exit()
     }
     if(!run.parallel){
       #otherwise loop

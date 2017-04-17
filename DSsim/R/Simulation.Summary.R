@@ -15,11 +15,13 @@
 #'  the contents of the object in a user friendly format.}
 #'  }
 setClass("Simulation.Summary", representation(region.name = "character",
+                                      strata.name = "character",
                                       total.reps = "numeric",
                                       failures = "numeric",
                                       individuals = "list",
                                       clusters = "list",
                                       expected.size = "data.frame", 
+                                      population.covars = "list",
                                       detection = "data.frame",
                                       model.selection = "table",
                                       design.summary = "Design.Summary",
@@ -32,14 +34,16 @@ setClass("Simulation.Summary", representation(region.name = "character",
 setMethod(
   f="initialize",   
   signature="Simulation.Summary",
-  definition=function(.Object, region.name, total.reps, failures, individuals, clusters = list(), expected.size = data.frame(NULL), detection, model.selection, design.summary = list(), detectability.summary = list(), analysis.summary = list(), include.glossary = FALSE){
+  definition=function(.Object, region.name, strata.name, total.reps, failures, individuals, clusters = list(), expected.size = data.frame(NULL), population.covars, detection, model.selection, design.summary = list(), detectability.summary = list(), analysis.summary = list(), include.glossary = FALSE){
     #Set slots
     .Object@region.name     <- region.name
+    .Object@strata.name     <- strata.name
     .Object@total.reps      <- total.reps
     .Object@failures        <- failures
     .Object@individuals     <- individuals    
     .Object@clusters        <- clusters
     .Object@expected.size   <- expected.size
+    .Object@population.covars <- population.covars
     .Object@detection       <- detection
     .Object@model.selection <- model.selection
     .Object@design.summary  <- design.summary
@@ -74,15 +78,88 @@ setMethod(
   f="show",   
   signature="Simulation.Summary",
   definition=function(object){  
+    #Check if it has been run yet
+    not.run <- all(is.na(object@individuals$summary))
+    #Get strata names
+    if(length(object@strata.name) == 0){
+      strata.names <- object@region.name
+    }else{
+      strata.names <- object@strata.name  
+    }
     #Display summaries
-    cat("\nRegion: ", object@region.name) 
+    cat("\n\nRegion: ", object@region.name) 
     cat("\nNo. Repetitions: ", object@total.reps)
-    cat("\nNo. Failures: ", object@failures, fill = TRUE)
+    if(not.run){
+      cat("\nNo. Failures: NA", fill = TRUE)
+    }else{
+      cat("\nNo. Failures: ", object@failures, fill = TRUE)  
+    }
     show(object@design.summary)
+    cov.names <- names(object@population.covars)
+    if(length(cov.names) > 0){
+      cat("\nIndividual Level Covariate Summary:")
+    }
+    for(i in seq(along = cov.names)){
+      temp <- object@population.covars[[cov.names[i]]]
+      if (length(temp) == 1) {
+        cat("\n   ", cov.names[i], ":", sep = "")
+        if(class(temp[[1]]) == "data.frame"){
+          cat("\n")
+          print(temp[[1]], row.names = FALSE)  
+        }else{
+          dist <- temp[[1]][[1]]
+          param.names <- names(temp[[1]][[2]])
+          param.values <- unlist(temp[[1]][[2]])
+          cat(dist, ", ")
+          cat(param.names[1], " = ", param.values[1])
+          if(length(param.names) > 1){
+            for(k in 2:length(param.names)){
+              cat(", ", param.names[k], " = ", param.values[k])
+            }  
+          }  
+        }
+      } else{
+        cat("\n   ", cov.names[i], ":", sep = "")
+        for (j in seq(along = temp)) {
+          if(class(temp[[j]]) == "data.frame"){
+            if(j == 1){
+              cat("\n")
+            }
+            cat("Strata ", strata.names[j], ": \n", sep = "")
+            print(temp[[j]], row.names = FALSE)  
+          }else{
+            dist <- temp[[j]][[1]]
+            param.names <- names(temp[[j]][[2]])
+            param.values <- unlist(temp[[j]][[2]])
+            cat("\n      Strata ", strata.names[j], ": ", dist, ", ", sep = "")
+            cat(param.names[1], " = ", param.values[1], sep = "")
+            if(length(param.names) > 1){
+              for(k in 2:length(param.names)){
+                cat(", ", param.names[k], " = ", param.values[k])
+              }  
+            }  
+          }
+        }
+      }
+    }
     cat("\nPopulation Detectability Summary:", fill = TRUE)
     for(i in seq(along = object@detectability.summary)){
-      if(length(object@detectability.summary[[i]]) > 0){
+      if(length(object@detectability.summary[[i]]) > 0 & names(object@detectability.summary)[i] != "cov.param"){
         cat("   ",names(object@detectability.summary)[i], " = ", object@detectability.summary[[i]], fill = TRUE)  
+      }
+    }
+    detect.cov.names <- names(object@detectability.summary$cov.param)
+    if(length(detect.cov.names) > 0){
+      cat("\nCovariate Detectability Summary (params on log scale):", fill = TRUE)
+      for(i in seq(along = detect.cov.names)){
+        cat("   ", detect.cov.names[i], " parameters: \n", sep = "")
+        temp <- object@detectability.summary$cov.param[[detect.cov.names[i]]]
+        if(class(temp) == "data.frame"){
+          print(temp, row.names = FALSE)  
+        }else{
+          names(temp) <- paste("Strata ", strata.names, sep = "")
+          print(temp)   
+        }
       }
     }
     cat("\nAnalysis Summary:")  
@@ -100,35 +177,40 @@ setMethod(
         cat("  ",names(object@analysis.summary)[i], " = ", object@analysis.summary[[i]], fill = TRUE)
       }
     }
-    cat("\nSummary for Individuals")      
-    cat("\n\nSummary Statistics\n\n")
-    print(object@individuals$summary)
-    cat("\n     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-    cat("\nEstimates of Abundance (N)\n\n")
-    print(round(object@individuals$N,2))
-    cat("\n     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-    cat("\nEstimates of Density (D)\n\n")
-    print(object@individuals$D)
-    cat("\n     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-    cat("\n     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-    if(length(object@clusters) > 0){
-      cat("\n\nSummary for Clusters")      
+    # Check to see if simulation has been run
+    if(!not.run){
+      cat("\nSummary for Individuals")      
       cat("\n\nSummary Statistics\n\n")
-      print(object@clusters$summary)
+      print(object@individuals$summary)
       cat("\n     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
       cat("\nEstimates of Abundance (N)\n\n")
-      print(round(object@clusters$N,2))
+      print(round(object@individuals$N,2))
       cat("\n     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
       cat("\nEstimates of Density (D)\n\n")
-      print(object@clusters$D)
-      cat("\n     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~") 
-      cat("\nEstimates of Expected Cluster Size\n\n")
-      print(round(object@expected.size,2))
+      print(object@individuals$D)
       cat("\n     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
       cat("\n     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+      if(length(object@clusters) > 0){
+        cat("\n\nSummary for Clusters")      
+        cat("\n\nSummary Statistics\n\n")
+        print(object@clusters$summary)
+        cat("\n     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        cat("\nEstimates of Abundance (N)\n\n")
+        print(round(object@clusters$N,2))
+        cat("\n     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        cat("\nEstimates of Density (D)\n\n")
+        print(object@clusters$D)
+        cat("\n     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~") 
+        cat("\nEstimates of Expected Cluster Size\n\n")
+        print(round(object@expected.size,2))
+        cat("\n     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        cat("\n     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+      }
+      cat("\n\nDetection Function Values\n\n")
+      print(round(object@detection,2))  
+    }else{
+      cat("\n No results to display yet... simulation has not been run.")
     }
-    cat("\n\nDetection Function Values\n\n")
-    print(round(object@detection,2))
     invisible(NULL)    
   }
 )                                  
