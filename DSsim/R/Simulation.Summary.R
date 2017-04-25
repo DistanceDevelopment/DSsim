@@ -81,10 +81,15 @@ setMethod(
     #Check if it has been run yet
     not.run <- all(is.na(object@individuals$summary))
     #Get strata names
-    if(length(object@strata.name) == 0){
-      strata.names <- object@region.name
+    test <- try(object@strata.name, silent = T)
+    if(class(test) != "try-error"){ #backwards compatibility
+      if(length(object@strata.name) == 0){
+        strata.names <- object@region.name
+      }else{
+        strata.names <- object@strata.name  
+      }  
     }else{
-      strata.names <- object@strata.name  
+      strata.names <- object@region.name  
     }
     #Display summaries
     cat("\n\nRegion: ", object@region.name) 
@@ -95,52 +100,57 @@ setMethod(
       cat("\nNo. Failures: ", object@failures, fill = TRUE)  
     }
     show(object@design.summary)
-    cov.names <- names(object@population.covars)
-    if(length(cov.names) > 0){
-      cat("\nIndividual Level Covariate Summary:")
-    }
-    for(i in seq(along = cov.names)){
-      temp <- object@population.covars[[cov.names[i]]]
-      if (length(temp) == 1) {
-        cat("\n   ", cov.names[i], ":", sep = "")
-        if(class(temp[[1]]) == "data.frame"){
-          cat("\n")
-          print(temp[[1]], row.names = FALSE)  
-        }else{
-          dist <- temp[[1]][[1]]
-          param.names <- names(temp[[1]][[2]])
-          param.values <- unlist(temp[[1]][[2]])
-          cat(dist, ", ")
-          cat(param.names[1], " = ", param.values[1])
-          if(length(param.names) > 1){
-            for(k in 2:length(param.names)){
-              cat(", ", param.names[k], " = ", param.values[k])
-            }  
-          }  
-        }
-      } else{
-        cat("\n   ", cov.names[i], ":", sep = "")
-        for (j in seq(along = temp)) {
-          if(class(temp[[j]]) == "data.frame"){
-            if(j == 1){
-              cat("\n")
-            }
-            cat("Strata ", strata.names[j], ": \n", sep = "")
-            print(temp[[j]], row.names = FALSE)  
+    # for backwards compatibility
+    test <- try(object@population.covars, silent = T)
+    if(class(test) != "try-error"){
+      # Display population covariate info
+      cov.names <- names(object@population.covars)
+      if(length(cov.names) > 0){
+        cat("\nIndividual Level Covariate Summary:")
+      }
+      for(i in seq(along = cov.names)){
+        temp <- object@population.covars[[cov.names[i]]]
+        if (length(temp) == 1) {
+          cat("\n   ", cov.names[i], ":", sep = "")
+          if(class(temp[[1]]) == "data.frame"){
+            cat("\n")
+            print(temp[[1]], row.names = FALSE)  
           }else{
-            dist <- temp[[j]][[1]]
-            param.names <- names(temp[[j]][[2]])
-            param.values <- unlist(temp[[j]][[2]])
-            cat("\n      Strata ", strata.names[j], ": ", dist, ", ", sep = "")
-            cat(param.names[1], " = ", param.values[1], sep = "")
+            dist <- temp[[1]][[1]]
+            param.names <- names(temp[[1]][[2]])
+            param.values <- unlist(temp[[1]][[2]])
+            cat(dist, ", ")
+            cat(param.names[1], " = ", param.values[1])
             if(length(param.names) > 1){
               for(k in 2:length(param.names)){
                 cat(", ", param.names[k], " = ", param.values[k])
               }  
             }  
           }
+        } else{
+          cat("\n   ", cov.names[i], ":", sep = "")
+          for (j in seq(along = temp)) {
+            if(class(temp[[j]]) == "data.frame"){
+              if(j == 1){
+                cat("\n")
+              }
+              cat("Strata ", strata.names[j], ": \n", sep = "")
+              print(temp[[j]], row.names = FALSE)  
+            }else{
+              dist <- temp[[j]][[1]]
+              param.names <- names(temp[[j]][[2]])
+              param.values <- unlist(temp[[j]][[2]])
+              cat("\n      Strata ", strata.names[j], ": ", dist, ", ", sep = "")
+              cat(param.names[1], " = ", param.values[1], sep = "")
+              if(length(param.names) > 1){
+                for(k in 2:length(param.names)){
+                  cat(", ", param.names[k], " = ", param.values[k])
+                }  
+              }  
+            }
+          }
         }
-      }
+      }  
     }
     cat("\nPopulation Detectability Summary:", fill = TRUE)
     for(i in seq(along = object@detectability.summary)){
