@@ -221,12 +221,12 @@ setMethod(
             }else if(param.type == "continuous"){
               # get 2.5% and 97.5% quantiles for covariate values
               if(length(cov.dist) == no.strata){
-                cov.dist <- cov.dist[[strat]]
+                cov.strat.dist <- cov.dist[[strat]]
               }else{
-                cov.dist <- cov.dist[[1]]
+                cov.strat.dist <- cov.dist[[1]]
               }
-              dist.param <- cov.dist[[2]]
-              dist <- cov.dist[[1]]
+              dist.param <- cov.strat.dist[[2]]
+              dist <- cov.strat.dist[[1]]
               int <- c(0.025, 0.5, 0.975)
               if(dist == "ztruncpois"){
                 temp <- rtpois(999, mean = dist.param$mean)
