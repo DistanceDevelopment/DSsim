@@ -11,6 +11,15 @@ data.for.distance <- function(object, file = NULL){
   obs.table <- object@obs.table@obs.table
   sample.table <- object@sample.table@sample.table
   region.table <- object@region.table@region.table
+  # get covariate names (assume they are after x-y coordinates)
+  dat.names <- names(ddf.dat)
+  start.index <- which(dat.names == "y") + 1
+  end.index <- ncol(ddf.dat)
+  if(end.index >= start.index){
+    cov.names <- dat.names[start.index:end.index]  
+  }else{
+    cov.names = ""
+  }
   # merge data tables
   temp <- merge(obs.table, ddf.dat, by = "object")
   temp2 <- merge(sample.table, temp, by = c("Sample.Label", "Region.Label"))
@@ -19,7 +28,7 @@ data.for.distance <- function(object, file = NULL){
   index <- order(dist.data$Sample.Label)
   dist.data <- dist.data[index,]
   # Only keep certain columns (remove duplicates)
-  col.index <- which(names(dist.data) %in% c("Region.Label", "Area", "Sample.Label", "Effort", "length", "distance"))
+  col.index <- which(names(dist.data) %in% c("Region.Label", "Area", "Sample.Label", "Effort", "length", "distance", cov.names))
   dist.data <- dist.data[,col.index]
   # Save if requested or return
   if(is.null(file)){
