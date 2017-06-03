@@ -41,7 +41,7 @@ plot(temp, freq = FALSE, add = TRUE)
 
 The R package DSsim [@dssim-pkg] allows users to simulate both point and line transect surveys, and test out a range of design and analysis decisions specific to their population of interest. In order to simulate surveys the user must make some assuptions about the population of interest and the detection process giving rise to the observed distances. Simulations can be repeated over a range of assumptions so that the user can be confident that their chosen design will perform well despite any uncertainty.
 
-While these simulations focus on the the issue of data truncation at the analysis stage, an example of using DSsim to compare survey designs can be found at <http://www.creem.st-andrews.ac.uk/DS.M&A/#survey-design-simulation-case-study>. Other example simulations can be found in the DSsim wiki at <https://github.com/DistanceDevelopment/DSsim/wiki>.
+While these simulations focus on the the issue of data truncation at the analysis stage, an example of using DSsim to compare survey designs can be found at <https://synergy.st-andrews.ac.uk/ds-manda/#survey-design-simulation-case-study>. Other example simulations can be found in the DSsim wiki at <https://github.com/DistanceDevelopment/DSsim/wiki>.
 
 ### 1.1 Introduction to DSsim
 
