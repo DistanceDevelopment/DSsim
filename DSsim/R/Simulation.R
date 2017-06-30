@@ -349,7 +349,7 @@ setMethod(
                               sd.of.means = object@results$clusters$N[,"Estimate","sd"])
       cluster.D <- data.frame(Truth = true.D.clusters,
                               mean.Estimate = object@results$clusters$D[,"Estimate","mean"],
-                              percent.bias = abs(object@results$clusters$D[,"Estimate","mean"] - true.D.clusters)/true.D.clusters*100,
+                              percent.bias = (object@results$clusters$D[,"Estimate","mean"] - true.D.clusters)/true.D.clusters*100,
                               RMSE = RMSE.D,
                               #lcl = object@results$clusters$N[,"lcl","mean"],
                               #ucl = object@results$clusters$N[,"ucl","mean"],
