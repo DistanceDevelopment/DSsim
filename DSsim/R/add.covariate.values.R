@@ -36,5 +36,11 @@ add.covariate.values <- function(pop.data, covariates){
       new.pop.data <- rbind(new.pop.data, list.data[[strata.ids[strat]]])
     }
   }
+  #Check if -ve cluster sizes were generated
+  if(!is.null(new.pop.data$size)){
+    if(any(new.pop.data$size <= 0)){
+      warning("Cluster size values <= 0 were generated.", immediate. = TRUE, call. = FALSE)
+    }
+  }
   return(new.pop.data)    
 }
