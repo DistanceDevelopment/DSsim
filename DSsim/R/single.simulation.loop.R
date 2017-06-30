@@ -89,8 +89,13 @@ single.simulation.loop <- function(i, object, save.data, load.data, data.path = 
     #Compute density / abundance estimates
     compute.dht = TRUE
     if(compute.dht){
-      dht.results <- dht(ddf.results, region.table@region.table, sample.table@sample.table, obs.table@obs.table)
-      object@results <- store.dht.results(object@results, dht.results, i, object@population.description@size, ddf.data@ddf.dat, obs.table@obs.table)         }
+      dht.results <- try(dht(ddf.results, region.table@region.table, sample.table@sample.table, obs.table@obs.table), silent = TRUE)
+      if(class(dht.results) == "try-error"){
+        warning(paste("Problem", strsplit(dht.results[1], "Error")[[1]][2], " dht results not being recorded for iteration ", i, sep=""), call. = FALSE, immediate. = TRUE)
+      }else{
+        object@results <- store.dht.results(object@results, dht.results, i, object@population.description@size, ddf.data@ddf.dat, obs.table@obs.table)  
+      }
+    }
   }
   object@results$filename <- object@design@filenames[object@design@file.index] 
   return(object@results)
