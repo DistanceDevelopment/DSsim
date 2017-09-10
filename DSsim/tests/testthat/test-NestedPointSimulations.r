@@ -10,7 +10,7 @@ test_that("Can perform nested point transect simulations", {
   coords[[1]] <- list(data.frame(x = c(0,0,5,5,0), y = c(0,5,5,0,0)))
   coords[[2]] <- list(data.frame(x = c(5,5,20,20,5), y = c(0,5,5,0,0)))
   gaps[[1]] <- list()
-  gaps[[2]] <- list(data.frame(x = c(10,15,11.5), y = c(1,3,4)))
+  gaps[[2]] <- list(data.frame(x = c(10,15,11.5,10), y = c(1,3,4,1)))
   expect_that(region <- make.region(region.name = "Region", 
                                     strata.name = c("A", "B"), 
                                     units = "km", coords = coords, gaps = gaps),
