@@ -19,7 +19,7 @@ Suggests:
 VignetteBuilder: knitr
 Type: Package
 Title: Distance Sampling Simulations
-Version: 1.1.2
+Version: 1.1.3
 LazyLoad: yes
 Author: Laura Marshall <lhm@st-and.ac.uk>
 Maintainer: Laura Marshall <lhm@st-and.ac.uk>
@@ -121,4 +121,4 @@ Collate:
     'single.simulation.loop.R'
     'store.ddf.results.R'
     'store.dht.results.R'
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1
