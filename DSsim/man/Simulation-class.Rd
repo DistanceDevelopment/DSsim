@@ -48,6 +48,7 @@ parameters associated with the detection function.}
 the estimated of abundance and density as well as other measures
 of interest.}
 }}
+
 \section{Methods}{
 
 \describe{
@@ -75,8 +76,8 @@ of interest.}
  the whole simulation for the specified number of repetitions.}
 }
 }
+
 \seealso{
 \code{\link{make.simulation}}
 }
 \keyword{classes}
-

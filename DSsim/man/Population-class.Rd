@@ -27,6 +27,7 @@ individuals/clusters and any population covariates.}
 \item{\code{detectability}}{Object of class \code{"Detectability"}; describes how
 easily the individuals/clusters can be detected.}
 }}
+
 \section{Methods}{
 
 \describe{
@@ -34,8 +35,8 @@ easily the individuals/clusters can be detected.}
  of the individuals/clusters.}
 }
 }
+
 \seealso{
 \code{\link{make.population.description}}, \code{\link{make.detectability}}
 }
 \keyword{classes}
-

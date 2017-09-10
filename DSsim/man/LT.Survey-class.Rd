@@ -14,8 +14,8 @@ and a set of transects.
 \item{\code{perpendicular.truncation}}{Object of class \code{"numeric"}; the
 maximum distance from the transect at which animals may be detected.}
 }}
+
 \seealso{
 \code{\link{make.design}}
 }
 \keyword{classes}
-

@@ -138,4 +138,3 @@ summary(my.simulation)
 \author{
 Laura Marshall
 }
-

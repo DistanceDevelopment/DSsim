@@ -19,4 +19,3 @@ Plots an S4 object of class 'LT.Survey.Results'. Plots the
 region, the transects, the population and colour codes the 
 detections
 }
-

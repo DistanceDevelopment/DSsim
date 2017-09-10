@@ -21,4 +21,3 @@ Displays the simulation summary
 \details{
 #@param object object of class Simulation.Summary
 }
-

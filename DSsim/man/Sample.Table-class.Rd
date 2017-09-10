@@ -14,12 +14,13 @@ density and abundance.
 \describe{
 \item{\code{sample.table}}{data.frame which is the sample table for dht}
 }}
+
 \section{Objects from the Class}{
  Objects can be created by calls to the 
 function \code{create.survey.results(simulation, dht.table = TRUE)}
 }
+
 \seealso{
 \code{\link{create.survey.results}}
 }
 \keyword{classes}
-

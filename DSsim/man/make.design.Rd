@@ -112,4 +112,3 @@ plot(transects, col = 4, lwd = 2)
 \author{
 Laura Marshall
 }
-

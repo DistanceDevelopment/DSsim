@@ -20,4 +20,3 @@ associated region has already been plotted. This function adds
 the locations of the individuals/clusters in the population who
 were detected.
 }
-

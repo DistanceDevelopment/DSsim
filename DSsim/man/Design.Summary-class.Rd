@@ -20,5 +20,5 @@ displayed via the \code{show} method.
  the contents of the object in a user friendly format.}
  }
 }
-\keyword{classes}
 
+\keyword{classes}

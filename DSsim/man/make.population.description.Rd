@@ -90,10 +90,9 @@ pop@population
 # Note that the covariate values have not affected the detectability (the scale parameter) to 
 # do this we need to set the cov.param argument in make.detectability. See ?make.detectability
 }
-\author{
-Laura Marshall
-}
 \seealso{
 \code{\link{make.region}}, \code{\link{make.density}}, \code{\link{make.detectability}}
 }
-
+\author{
+Laura Marshall
+}

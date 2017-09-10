@@ -27,12 +27,11 @@ this value. The information for the duplicates is also added to the obs.table
 \note{
 Internal function not intended to be called by user.
 }
-\author{
-Laura Marshall
-}
 \seealso{
 \code{resample.data}
 }
+\author{
+Laura Marshall
+}
 \keyword{data}
 \keyword{manipulation}
-

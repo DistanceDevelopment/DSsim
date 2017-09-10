@@ -14,4 +14,3 @@ histogram.N.ests(x, ...)
 \description{
 Plots a histogram of the estimates abundances
 }
-

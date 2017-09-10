@@ -25,4 +25,3 @@ Plots an S4 object of class 'Point.Transect'. Requires that the
 associated region has already been plotted. This function adds 
 the transect lines.
 }
-

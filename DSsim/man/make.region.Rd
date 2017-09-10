@@ -60,4 +60,3 @@ plot(region)
 \author{
 Laura Marshall
 }
-

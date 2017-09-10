@@ -14,5 +14,5 @@ Class "Line.Transect" contains an instance of a Line Transect Survey
  transects.}
 }
 }
-\keyword{classes}
 
+\keyword{classes}

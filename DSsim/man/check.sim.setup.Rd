@@ -29,4 +29,3 @@ check.sim.setup(sim)
 \author{
 Eric Rexstad, Laura Marshall
 }
-

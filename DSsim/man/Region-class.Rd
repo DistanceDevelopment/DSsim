@@ -38,6 +38,7 @@ polygons defining the region.}
 element for each strata. Each of these list elements contains a list of 
 gaps in the region}
 }}
+
 \section{Objects from the Class}{
  Objects can be created by calls of the form
 \code{make.region(region.name = "region.name", shapefile = region.shapefile)}
@@ -52,8 +53,8 @@ gaps in the region}
  the survey region defined by the object.}
 }
 }
+
 \seealso{
 \code{\link{make.region}}
 }
 \keyword{classes}
-

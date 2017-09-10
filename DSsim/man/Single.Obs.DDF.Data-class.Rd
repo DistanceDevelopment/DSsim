@@ -8,4 +8,3 @@
 DDF data resulting from a single observer survey.
 }
 \keyword{classes}
-

@@ -17,5 +17,5 @@ correct format for mrds.
 \item{\code{ddf.dat}}{Object of class \code{"data.frame"}; dataframe with
 all the necessary column to fit a detection function using mrds.}
 }}
-\keyword{classes}
 
+\keyword{classes}

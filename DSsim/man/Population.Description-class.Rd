@@ -37,6 +37,7 @@ N is fixed otherwise it is generated from a Poisson distribution.}
 \item{\code{D.dist}}{Object of class \code{character}; Describes the
 density distribution (currently not implemented).}
 }}
+
 \section{Methods}{
 
 \describe{
@@ -45,8 +46,8 @@ density distribution (currently not implemented).}
  \item{\code{generate.population}}{\code{signature=(object = "Population.Description")}: generates a single realisation of the population.}
 }
 }
+
 \seealso{
 \code{\link{make.population.description}}
 }
 \keyword{classes}
-

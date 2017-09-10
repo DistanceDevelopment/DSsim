@@ -15,8 +15,8 @@ line transect design.
  loads a set of transects from a shapefile.}
 }
 }
+
 \seealso{
 \code{\link{make.design}}
 }
 \keyword{classes}
-

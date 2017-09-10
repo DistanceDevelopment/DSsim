@@ -29,8 +29,8 @@ gridpoints described in the density data.frames in the y-direction.}
 \item{\code{units}}{Object of class \code{"numeric"}; The units of the grid 
 points.}
 }}
+
 \seealso{
 \code{\link{make.density}}
 }
 \keyword{classes}
-

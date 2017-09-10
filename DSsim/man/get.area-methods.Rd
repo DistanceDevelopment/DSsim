@@ -19,4 +19,3 @@ numeric value specifying the area of the region
 \description{
 Returns the area of the region
 }
-

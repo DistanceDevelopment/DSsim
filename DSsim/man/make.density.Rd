@@ -71,10 +71,9 @@ plot(region, add = TRUE)
 
 }
 }
-\author{
-Laura Marshall
-}
 \seealso{
 \code{\link{make.region}}
 }
-
+\author{
+Laura Marshall
+}

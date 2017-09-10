@@ -36,4 +36,3 @@ blocks colours the entire cell.}
 \description{
 Plots an S4 object of class 'Density'
 }
-

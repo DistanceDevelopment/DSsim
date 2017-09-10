@@ -53,10 +53,9 @@ ddf.analyses <- make.ddf.analysis.list(dsmodel = list(~cds(key = "hn",
  criteria = "AIC")
 
 }
-\author{
-Laura Marshall
-}
 \seealso{
 \code{ddf} in \code{library(mrds)}
 }
-
+\author{
+Laura Marshall
+}

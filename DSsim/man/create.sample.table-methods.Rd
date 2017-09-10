@@ -20,4 +20,3 @@ an object of class Sample.Table
 This function is called internally to generates a sample table required to
 estimate abundance /  density via the Hortvitz-Thompson estimator.
 }
-

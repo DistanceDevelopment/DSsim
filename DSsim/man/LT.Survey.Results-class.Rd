@@ -29,6 +29,7 @@ ddf data for \code{ddf}.
  @slot region.table Object of class \code{"Region.Table"}; One of
  the tables for \code{dht}.}
 }}
+
 \section{Methods}{
 
 \describe{
@@ -38,5 +39,5 @@ ddf data for \code{ddf}.
  \item{\code{get.distance.data}}{\code{signature=(object = "LT.Survey.Results")}: returns the ddf data as a dataframe..}
 }
 }
-\keyword{classes}
 
+\keyword{classes}

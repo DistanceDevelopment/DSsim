@@ -16,6 +16,7 @@ of the design object which generated the transects.}
 \item{\code{sampler.info}}{Object of class \code{"data.frame"}; the sampler 
 coordinates.}
 }}
+
 \section{Methods}{
 
 \describe{
@@ -23,5 +24,5 @@ coordinates.}
  transects.}
 }
 }
-\keyword{classes}
 
+\keyword{classes}

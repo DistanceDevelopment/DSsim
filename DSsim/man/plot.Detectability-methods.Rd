@@ -36,4 +36,3 @@ and km}
 \description{
 Plots an S4 object of class 'Detectability'
 }
-

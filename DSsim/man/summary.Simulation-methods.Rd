@@ -18,4 +18,3 @@ explanation of the summary should be included}
 \description{
 Provides a summary of the simulation results.
 }
-

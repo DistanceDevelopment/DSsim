@@ -43,4 +43,3 @@ one less than the number of cores / threads on your machine.
 \seealso{
 \code{\link{make.simulation}}
 }
-

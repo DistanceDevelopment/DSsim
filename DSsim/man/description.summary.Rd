@@ -16,4 +16,3 @@ Prints a list of the terms used in the simulation summary.
 \author{
 Laura Marshall
 }
-

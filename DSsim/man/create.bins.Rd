@@ -21,4 +21,3 @@ This is a service routine and shouldn't be necessary in normal analyses.
 \author{
 David L. Miller
 }
-

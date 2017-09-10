@@ -19,4 +19,3 @@ numeric value of the population size
 \description{
 Returns the population size
 }
-

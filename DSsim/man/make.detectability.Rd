@@ -82,4 +82,3 @@ plot(detect, pop.desc)
 \author{
 Laura Marshall
 }
-

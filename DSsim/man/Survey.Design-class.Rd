@@ -38,8 +38,8 @@ when the object is created using all the files in the specified path.}
 \item{\code{file.index}}{Object of class \code{"numeric"}; Keeps track
 of which shapefile is to be loaded.}
 }}
+
 \seealso{
 \code{\link{make.design}}
 }
 \keyword{classes}
-

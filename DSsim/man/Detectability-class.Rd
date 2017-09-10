@@ -30,8 +30,8 @@ values associated with the covariates. Not yet implemented}
 \item{\code{truncation}}{Object of class \code{"numeric"}; The maximum 
 distance at which objects may be detected.}
 }}
+
 \seealso{
 \code{\link{make.detectability}}
 }
 \keyword{classes}
-

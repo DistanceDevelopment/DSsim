@@ -16,6 +16,7 @@ a population.}
 \item{\code{transect}}{Object of class \code{"Transect"}; the
 transects.}
 }}
+
 \section{Methods}{
 
 \describe{
@@ -25,5 +26,5 @@ transects.}
  creates a sample table for \code{dht}.}
 }
 }
-\keyword{classes}
 
+\keyword{classes}

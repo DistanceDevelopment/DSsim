@@ -29,4 +29,3 @@ density grid.
 \seealso{
 \code{\link{make.density}}
 }
-

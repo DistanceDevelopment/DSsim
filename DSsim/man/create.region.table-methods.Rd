@@ -22,4 +22,3 @@ an object of class Region.Table
 This function is called internally to generate a region table required to
 estimate abundance /  density via the Hortvitz-Thompson estimator.
 }
-

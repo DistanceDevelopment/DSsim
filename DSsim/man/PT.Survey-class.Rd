@@ -17,6 +17,7 @@ transects.}
 \item{\code{radial.truncation}}{Object of class \code{"numeric"}; the
 maximum distance from the transect at which animals may be detected.}
 }}
+
 \section{Methods}{
 
 \describe{
@@ -24,8 +25,8 @@ maximum distance from the transect at which animals may be detected.}
  creates a sample table for \code{dht}.}
 }
 }
+
 \seealso{
 \code{\link{make.design}}
 }
 \keyword{classes}
-

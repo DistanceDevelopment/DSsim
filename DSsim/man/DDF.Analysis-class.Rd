@@ -34,6 +34,7 @@ be grouped (into less strata) for the analyses}
 \item{\code{ddf.result}}{Object of class \code{"list"}; object of S3 class
 ddf.}
 }}
+
 \section{Methods}{
 
 \describe{
@@ -42,8 +43,8 @@ ddf.}
  data provided.}
 }
 }
+
 \seealso{
 \code{\link{make.ddf.analysis.list}}
 }
 \keyword{classes}
-
