@@ -50,7 +50,7 @@ calc.poss.detect.dists.lines.largeN <- function(population, survey, perp.truncat
   #Main function begins
   #Extract info from objects
   sampler.info <- survey@sampler.info
-  pop.data <- pop@population
+  pop.data <- population@population
   #get all possible detection distances
   all.poss.detects <- lapply(1:nrow(sampler.info), 
                              FUN = subset.buff.func, 
