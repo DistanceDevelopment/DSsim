@@ -1,14 +1,32 @@
 #' @importFrom utils flush.console
 #single.simulation.loop <- function(i, object){
-single.simulation.loop <- function(i, object, save.data, load.data, data.path = character(0), counter){
+single.simulation.loop <- function(i, object, save.data, load.data, data.path = character(0), counter, progress.file = "", in.parallel = FALSE){
   # Input: i - integer representing the loop number
   #        object - an object of class Simulation
   #
   # Output: the updated Simulation object 
   #
-  # Display to the user the progress of the simulation
+  # Display/write to file the progress of the simulation
   if(counter){
-    cat("\r", i, " out of ", object@reps,  " reps \r")  
+    if(progress.file == ""){
+      # Write to terminal
+      cat("\r", i, " out of ", object@reps,  " reps \r")  
+    }else{
+      # Calculate progress as an integer %
+      progress <- round(i/object@reps*100)
+      # Check if being run in parallel
+      if(in.parallel){
+        #If so load file to check if progress should be updated 
+        old.progress <- try(scan(progress.file, what=integer()), silent = TRUE)
+        if(class(old.progress) == "integer"){
+          #Only update if this is the latest progress (when running in parallel things may not be processed in exactly the right order)
+          if(progress > old.progress){
+            try(cat(progress, file = progress.file), silent = TRUE) 
+          } 
+        }
+      }
+      cat(progress, file = progress.file)  
+    }
   }
   flush.console()
   if(!load.data){
