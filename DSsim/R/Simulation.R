@@ -629,7 +629,7 @@ setMethod(
 setMethod(
   f="run",
   signature="Simulation",
-  definition=function(object, run.parallel = FALSE, max.cores = NA, save.data = FALSE, load.data = FALSE, data.path = character(0), counter = TRUE){
+  definition=function(object, run.parallel = FALSE, max.cores = NA, save.data = FALSE, load.data = FALSE, data.path = character(0), counter = TRUE, progress.file = ""){
     #Note options save.data, load.data, data.path are not implemented in simulations run in parallel.
     #check the data.path ends in "/"
     if(length(data.path) > 0){
@@ -667,7 +667,13 @@ setMethod(
       })
       on.exit(stopCluster(myCluster))
       if(counter){
-        results <- pbapply::pblapply(X= as.list(1:object@reps), FUN = single.simulation.loop, object = object, save.data = save.data, load.data = load.data, data.path = data.path, cl = myCluster, counter = FALSE)  
+        if(progress.file != ""){
+          # Set up progress file
+          cat(0, file = progress.file) 
+          results <- pbapply::pblapply(X= as.list(1:object@reps), FUN = single.simulation.loop, object = object, save.data = save.data, load.data = load.data, data.path = data.path, cl = myCluster, counter = TRUE, progress.file = progress.file, in.parallel = TRUE) 
+        }else{
+          results <- pbapply::pblapply(X= as.list(1:object@reps), FUN = single.simulation.loop, object = object, save.data = save.data, load.data = load.data, data.path = data.path, cl = myCluster, counter = FALSE) 
+        }
       }else{
         results <- parLapply(myCluster, X = as.list(1:object@reps), fun = single.simulation.loop, object = object, save.data = save.data, load.data = load.data, data.path = data.path, counter = FALSE) 
       }
@@ -678,7 +684,7 @@ setMethod(
     if(!run.parallel){
       #otherwise loop
       for(i in 1:object@reps){
-        object@results <- single.simulation.loop(i, object, save.data = save.data, load.data = load.data, data.path = data.path, counter = counter)
+        object@results <- single.simulation.loop(i, object, save.data = save.data, load.data = load.data, data.path = data.path, counter = counter, progress.file = progress.file)
       }
     }
     object@results <- add.summary.results(object@results)

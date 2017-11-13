@@ -130,7 +130,8 @@ setGeneric(name = "add.hotspot", def = function(object, centre, sigma, amplitude
 #' simulated afresh.
 #' @param data.path character file path to the data files.
 #' @param counter logical can be used to turn off simulation counter when running in serial.
-#' @param ... allows the four previous optional arguments to be specified
+#' @param progress.file character file to output progress to for Distance for Windows
+#' @param ... allows the five previous optional arguments to be specified
 #' @return an object of class simulation which now includes the results
 #' @export
 #' @rdname run-methods

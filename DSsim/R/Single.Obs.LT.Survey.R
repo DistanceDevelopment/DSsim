@@ -47,7 +47,12 @@ setMethod(
     if(class(line.transect) == "try-error"){
       line.transect <- object@line.transect
     }
-    poss.distances <- calc.poss.detect.dists.lines(population, line.transect, perp.truncation = object@perpendicular.truncation)
+    #call different methods depending on population size
+    if(sum(population@N) > 2000){
+      poss.distances <- calc.poss.detect.dists.lines.largeN(population, line.transect, perp.truncation = object@perpendicular.truncation)  
+    }else{
+      poss.distances <- calc.poss.detect.dists.lines(population, line.transect, perp.truncation = object@perpendicular.truncation)  
+    }
     n.in.covered <- poss.distances$distance
     dist.data <- simulate.detections(poss.distances, population@detectability)
     dist.data <- rename.duplicates(dist.data)
