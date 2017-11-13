@@ -6,7 +6,7 @@
 #' @description An S4 class containing an instance of a population
 #' and a set of transects. 
 #'
-#' @name Single.Obs.LT.Survey-class
+#' @name Single.Obs.PT.Survey-class
 #' @title S4 Class "Single.Obs.LT.Survey"
 #' @keywords classes         
 setClass(Class = "Single.Obs.PT.Survey",
