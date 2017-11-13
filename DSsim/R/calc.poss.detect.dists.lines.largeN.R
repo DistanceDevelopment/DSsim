@@ -39,11 +39,15 @@ calc.poss.detect.dists.lines.largeN <- function(population, survey, perp.truncat
     #calculate the perpendicular distance (the opposite side of the RA triangle)
     perp.dists  <- hyp*sin(delta.angle) 
     #Check intersection (might be faster to calculate rectangles around transects rather than buffer and therefore can exclude this part!)
-    intersects.transects <- apply(data.frame(x = sub.pop$x, y = sub.pop$y), 1, FUN = check.intersection, transect = transect)
-    #Make new dataset
-    new.data <- data.frame(object = sub.pop$object, transect.ID = rep(transect$ID, nrow(sub.pop)), distance = perp.dists, available = rep(TRUE, nrow(sub.pop)), x = sub.pop$x, y = sub.pop$y, strata = sub.pop$strata, scale.param = sub.pop$scale.param)
-    #Subset based on intersection results
-    new.data <- new.data[intersects.transects,]
+    if(nrow(sub.pop) > 0){
+      intersects.transects <- apply(data.frame(x = sub.pop$x, y = sub.pop$y, p.dist = perp.dists), 1, FUN = check.intersection.PT, transect = transect)
+      #Make new dataset
+      new.data <- data.frame(object = sub.pop$object, transect.ID = rep(transect$ID, nrow(sub.pop)), distance = perp.dists, available = rep(TRUE, nrow(sub.pop)), x = sub.pop$x, y = sub.pop$y, strata = sub.pop$strata, scale.param = sub.pop$scale.param)
+      #Subset based on intersection results
+      new.data <- new.data[intersects.transects,]  
+    }else{
+      new.data <- NULL
+    }
     return(new.data)
   }  
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -57,17 +61,21 @@ calc.poss.detect.dists.lines.largeN <- function(population, survey, perp.truncat
                              pop = pop.data, 
                              sampler.info = sampler.info, 
                              perp.truncation = perp.truncation)
-  #Build up into a sinlge data.frame
+  #Build up into a single data.frame
   sub.pop.size <- 0
   for(i in seq(along = all.poss.detects)){
-    sub.pop.size <- sub.pop.size + nrow(all.poss.detects[[i]])
+    if(!is.null(all.poss.detects[[i]]) && nrow(all.poss.detects[[i]]) > 0){
+      sub.pop.size <- sub.pop.size + nrow(all.poss.detects[[i]])  
+    }
   }
   temp <- rep(NA, sub.pop.size)
   new.dataframe <- data.frame(object = temp, transect.ID = temp, distance = temp, available = temp, x = temp, y = temp, strata = temp, scale.param = temp)
   index <- 1
   for(i in seq(along = all.poss.detects)){
-    new.dataframe[index:(index+nrow(all.poss.detects[[i]])-1),] <- all.poss.detects[[i]]
-    index <- index + nrow(all.poss.detects[[i]])
+    if(!is.null(all.poss.detects[[i]]) && nrow(all.poss.detects[[i]]) > 0){
+      new.dataframe[index:(index+nrow(all.poss.detects[[i]])-1),] <- all.poss.detects[[i]]
+      index <- index + nrow(all.poss.detects[[i]])
+    }
   } 
   return(new.dataframe)
 }

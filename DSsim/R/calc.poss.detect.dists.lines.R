@@ -16,7 +16,7 @@ calc.poss.detect.dists.lines <- function(population, survey, perp.truncation, pl
     #calculate the perpendicular distance (the opposite side of the RA triangle)
     all.perp.dists  <- hyp*sin(delta.angle)   
     #check to see if the perpendicular line intersects the transect or not
-    intersects.transects <- apply(cbind(transects[,c("start.X", "start.Y", "end.X", "end.Y", "length")], p.dist = all.perp.dists), 1, FUN = check.intersection, point = data.frame(x = x.coord, y = y.coord), display.diagnostics = FALSE)
+    intersects.transects <- apply(cbind(transects[,c("start.X", "start.Y", "end.X", "end.Y", "length")], p.dist = all.perp.dists), 1, FUN = check.intersection.TP, point = data.frame(x = x.coord, y = y.coord), display.diagnostics = FALSE)
     #if they are within the range of the transect
     perp.dists <- ifelse(intersects.transects & all.perp.dists < perp.truncation, TRUE, FALSE)
     detect.dists <- data.frame(object = rep(individuals[i,"object"], length(transects$ID)), transect.ID = transects$ID, distance = all.perp.dists, available = perp.dists)

@@ -39,49 +39,49 @@ test_that("Correctly identifies intersections", {
   #Test 1 - all TRUE
   point <- c(x = 1, y = 2)
   p.dist <- get.perp.dists(transects, individual = point)
-  test.results <- apply(cbind(transects[,c("start.X", "start.Y", "end.X", "end.Y", "length")], p.dist = p.dist), 1, FUN = check.intersection, point = data.frame(x = point['x'], y = point['y']), display.diagnostics = FALSE)
+  test.results <- apply(cbind(transects[,c("start.X", "start.Y", "end.X", "end.Y", "length")], p.dist = p.dist), 1, FUN = check.intersection.TP, point = data.frame(x = point['x'], y = point['y']), display.diagnostics = FALSE)
   expect_that(test.results, is_identical_to(rep(TRUE,5)))
   
   #Test 2 - FALSE, FALSE, TRUE, TRUE, TRUE
   point <- c(x = 1, y = 3.1)
   p.dist <- get.perp.dists(transects, individual = point)
-  test.results <- apply(cbind(transects[,c("start.X", "start.Y", "end.X", "end.Y", "length")], p.dist = p.dist), 1, FUN = check.intersection, point = data.frame(x = point['x'], y = point['y']), display.diagnostics = FALSE)
+  test.results <- apply(cbind(transects[,c("start.X", "start.Y", "end.X", "end.Y", "length")], p.dist = p.dist), 1, FUN = check.intersection.TP, point = data.frame(x = point['x'], y = point['y']), display.diagnostics = FALSE)
   expect_that(test.results, is_identical_to(c(rep(FALSE,2), rep(TRUE,3))))
   
   #Test 3 - TRUE, FALSE, TRUE, TRUE, TRUE
   point <- c(x = 1, y = 3)
   p.dist <- get.perp.dists(transects, individual = point)
-  test.results <- apply(cbind(transects[,c("start.X", "start.Y", "end.X", "end.Y", "length")], p.dist = p.dist), 1, FUN = check.intersection, point = data.frame(x = point['x'], y = point['y']), display.diagnostics = FALSE)
+  test.results <- apply(cbind(transects[,c("start.X", "start.Y", "end.X", "end.Y", "length")], p.dist = p.dist), 1, FUN = check.intersection.TP, point = data.frame(x = point['x'], y = point['y']), display.diagnostics = FALSE)
   expect_that(test.results, is_identical_to(c(TRUE, FALSE, rep(TRUE,3))))
   
   #Test 4 - all TRUE
   point <- c(x = 1, y = 0)
   p.dist <- get.perp.dists(transects, individual = point)
-  test.results <- apply(cbind(transects[,c("start.X", "start.Y", "end.X", "end.Y", "length")], p.dist = p.dist), 1, FUN = check.intersection, point = data.frame(x = point['x'], y = point['y']), display.diagnostics = FALSE)
+  test.results <- apply(cbind(transects[,c("start.X", "start.Y", "end.X", "end.Y", "length")], p.dist = p.dist), 1, FUN = check.intersection.TP, point = data.frame(x = point['x'], y = point['y']), display.diagnostics = FALSE)
   expect_that(test.results, is_identical_to(rep(TRUE,5)))
   
   #Test 5 - all TRUE
   point <- c(x = 0, y = 0)
   p.dist <- get.perp.dists(transects, individual = point)
-  test.results <- apply(cbind(transects[,c("start.X", "start.Y", "end.X", "end.Y", "length")], p.dist = p.dist), 1, FUN = check.intersection, point = data.frame(x = point['x'], y = point['y']), display.diagnostics = FALSE)
+  test.results <- apply(cbind(transects[,c("start.X", "start.Y", "end.X", "end.Y", "length")], p.dist = p.dist), 1, FUN = check.intersection.TP, point = data.frame(x = point['x'], y = point['y']), display.diagnostics = FALSE)
   expect_that(test.results, is_identical_to(rep(TRUE,5)))
   
   #Test 6 - TRUE, FALSE, TRUE, FALSE, TRUE
   point <- c(x = 3, y = 3)
   p.dist <- get.perp.dists(transects, individual = point)
-  test.results <- apply(cbind(transects[,c("start.X", "start.Y", "end.X", "end.Y", "length")], p.dist = p.dist), 1, FUN = check.intersection, point = data.frame(x = point['x'], y = point['y']), display.diagnostics = FALSE)
+  test.results <- apply(cbind(transects[,c("start.X", "start.Y", "end.X", "end.Y", "length")], p.dist = p.dist), 1, FUN = check.intersection.TP, point = data.frame(x = point['x'], y = point['y']), display.diagnostics = FALSE)
   expect_that(test.results, is_identical_to(c(TRUE, FALSE, TRUE, FALSE, TRUE)))
   
   #Test 7 - all FALSE
   point <- c(x = 1, y = 1.00000001)
   p.dist <- get.perp.dists(transects, individual = point)
-  test.results <- apply(cbind(transects[,c("start.X", "start.Y", "end.X", "end.Y", "length")], p.dist = p.dist), 1, FUN = check.intersection, point = data.frame(x = point['x'], y = point['y']), display.diagnostics = FALSE)
+  test.results <- apply(cbind(transects[,c("start.X", "start.Y", "end.X", "end.Y", "length")], p.dist = p.dist), 1, FUN = check.intersection.TP, point = data.frame(x = point['x'], y = point['y']), display.diagnostics = FALSE)
   expect_that(test.results, is_identical_to(rep(TRUE,5)))
   
   #Test 8 - all FALSE
   point <- c(x = -0.00000001, y = -0.00000001)
   p.dist <- get.perp.dists(transects, individual = point)
-  test.results <- apply(cbind(transects[,c("start.X", "start.Y", "end.X", "end.Y", "length")], p.dist = p.dist), 1, FUN = check.intersection, point = data.frame(x = point['x'], y = point['y']), display.diagnostics = FALSE)
+  test.results <- apply(cbind(transects[,c("start.X", "start.Y", "end.X", "end.Y", "length")], p.dist = p.dist), 1, FUN = check.intersection.TP, point = data.frame(x = point['x'], y = point['y']), display.diagnostics = FALSE)
   expect_that(test.results, is_identical_to(rep(FALSE,5)))
   
   #Create transects
@@ -107,31 +107,31 @@ test_that("Correctly identifies intersections", {
   #Test 9 - TRUE, TRUE, FALSE, TRUE, FALSE
   point <- c(x = 0, y = 0)
   p.dist <- get.perp.dists(transects, individual = point)
-  test.results <- apply(cbind(transects[,c("start.X", "start.Y", "end.X", "end.Y", "length")], p.dist = p.dist), 1, FUN = check.intersection, point = data.frame(x = point['x'], y = point['y']), display.diagnostics = FALSE)
+  test.results <- apply(cbind(transects[,c("start.X", "start.Y", "end.X", "end.Y", "length")], p.dist = p.dist), 1, FUN = check.intersection.TP, point = data.frame(x = point['x'], y = point['y']), display.diagnostics = FALSE)
   expect_that(test.results, is_identical_to(c(TRUE, TRUE, FALSE, TRUE, FALSE)))
   
   #Test 10 - FALSE, TRUE, FALSE, TRUE, TRUE
   point <- c(x = 1, y = -1)
   p.dist <- get.perp.dists(transects, individual = point)
-  test.results <- apply(cbind(transects[,c("start.X", "start.Y", "end.X", "end.Y", "length")], p.dist = p.dist), 1, FUN = check.intersection, point = data.frame(x = point['x'], y = point['y']), display.diagnostics = FALSE)
+  test.results <- apply(cbind(transects[,c("start.X", "start.Y", "end.X", "end.Y", "length")], p.dist = p.dist), 1, FUN = check.intersection.TP, point = data.frame(x = point['x'], y = point['y']), display.diagnostics = FALSE)
   expect_that(test.results, is_identical_to(c(FALSE, TRUE, FALSE, TRUE, TRUE)))
   
   #Test 11 - TRUE, TRUE, FALSE, TRUE, FALSE
   point <- c(x = -0.999999, y = 0)
   p.dist <- get.perp.dists(transects, individual = point)
-  test.results <- apply(cbind(transects[,c("start.X", "start.Y", "end.X", "end.Y", "length")], p.dist = p.dist), 1, FUN = check.intersection, point = data.frame(x = point['x'], y = point['y']), display.diagnostics = FALSE)
+  test.results <- apply(cbind(transects[,c("start.X", "start.Y", "end.X", "end.Y", "length")], p.dist = p.dist), 1, FUN = check.intersection.TP, point = data.frame(x = point['x'], y = point['y']), display.diagnostics = FALSE)
   expect_that(test.results, is_identical_to(c(TRUE, TRUE, FALSE, TRUE, FALSE)))
   
   #Test 12 - FALSE, TRUE, FALSE, FALSE, FALSE
   point <- c(x = -4, y = 2)
   p.dist <- get.perp.dists(transects, individual = point)
-  test.results <- apply(cbind(transects[,c("start.X", "start.Y", "end.X", "end.Y", "length")], p.dist = p.dist), 1, FUN = check.intersection, point = data.frame(x = point['x'], y = point['y']), display.diagnostics = FALSE)
+  test.results <- apply(cbind(transects[,c("start.X", "start.Y", "end.X", "end.Y", "length")], p.dist = p.dist), 1, FUN = check.intersection.TP, point = data.frame(x = point['x'], y = point['y']), display.diagnostics = FALSE)
   expect_that(test.results, is_identical_to(c(FALSE, TRUE, FALSE, FALSE, FALSE)))
   
   #Test 13 - TRUE, FALSE, FALSE, TRUE, FALSE
   point <- c(x = 1, y = 0.000001)
   p.dist <- get.perp.dists(transects, individual = point)
-  test.results <- apply(cbind(transects[,c("start.X", "start.Y", "end.X", "end.Y", "length")], p.dist = p.dist), 1, FUN = check.intersection, point = data.frame(x = point['x'], y = point['y']), display.diagnostics = FALSE)
+  test.results <- apply(cbind(transects[,c("start.X", "start.Y", "end.X", "end.Y", "length")], p.dist = p.dist), 1, FUN = check.intersection.TP, point = data.frame(x = point['x'], y = point['y']), display.diagnostics = FALSE)
   expect_that(test.results, is_identical_to(c(TRUE, FALSE, FALSE, TRUE, FALSE)))
   
 })

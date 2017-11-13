@@ -1,7 +1,7 @@
 library(DSsim)
 library(testthat)
 
-context("Distance checks")
+context("Detection distance checks")
 
 test_that("Tests calc.poss.detect.dists.lines functions", {
   
@@ -17,7 +17,7 @@ test_that("Tests calc.poss.detect.dists.lines functions", {
   region <- make.region(region.name = "study.area", units = "m", 
                         coords = coords, gaps = gaps)
   
-  popn = make.pop.description(region.obj = region, 
+  popn = make.population.description(region.obj = region, 
                               density.obj = make.density(region.obj = region, x.space = 10), 
                               N = c(2000,2000))
   popn@density <- add.hotspot(popn@density, c(500,500), 700, 1)
@@ -47,16 +47,32 @@ test_that("Tests calc.poss.detect.dists.lines functions", {
   expect_equal(test1, test2)
   
   # Test which points should be retained
-  popn@population <- popn@population[1:10,] 
-  popn@population$x <- c()
+  popn@population <- popn@population[1:8,] 
+  popn@population$x <- c(1100,1100,290,290,400,392,100,1500)
+  popn@population$y <- c(95,105,50,205,305,302,200,100)
+  # Expected r, k, k, r, k, r, r, r
   
   survey@sampler.info <- survey@sampler.info[2:6,]
   survey@sampler.info[1,2:6] <- c(1100,100,1400,400,424.2641)
   survey@sampler.info$region[1] <- "B"
   
-  plot(region)
-  plot(popn)
-  plot(survey)
+  test.new <- calc.poss.detect.dists.lines.largeN(population = popn, survey = survey, perp.truncation = 20)
+  
+  test.orig <- calc.poss.detect.dists.lines(population = popn, survey = survey, perp.truncation = 20)
+  
+  expect_equal(test.new, test.orig)
+  expect_equal(test.new$object, c(2,3,5))
+  
+  # Test what happens when there are no possible detections
+  popn@population <- popn@population[1:4,] 
+  popn@population$x <- c(100,600,1500,1001)
+  popn@population$y <- c(200,100,100,400)
+  
+  test.new <- calc.poss.detect.dists.lines.largeN(population = popn, survey = survey, perp.truncation = 20)
+  
+  test.orig <- calc.poss.detect.dists.lines(population = popn, survey = survey, perp.truncation = 20)
+  
+  expect_equal(nrow(test.new), nrow(test.orig))
   
 })
   
