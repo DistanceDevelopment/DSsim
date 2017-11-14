@@ -1,6 +1,11 @@
 DSsim 1.1.3
 -----------
 
+New Features
+
+  *Now has a more efficient algorithm for population sizes >2000
+  *Writes % complete to file for Distance for Windows
+
 Bug Fixes
 
   *Now includes transects with no observations in distance data created using data.for.distance 
