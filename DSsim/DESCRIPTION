@@ -82,6 +82,7 @@ Collate:
     'accumulate.PP.results.R'
     'add.covariate.values.R'
     'add.dist.error.R'
+    'add.g0.values.R'
     'add.miss.dists.R'
     'add.summary.results.R'
     'calc.area.R'

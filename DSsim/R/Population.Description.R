@@ -128,6 +128,8 @@ setMethod(
     if(length(object@covariates) > 0){
       population.dataframe <- add.covariate.values(population.dataframe, object@covariates)
     }
+    # Add g0 values
+    population.dataframe <- add.g0.values(population.dataframe, detectability@g0)
     # Add scale parameter values
     population.dataframe <- calculate.scale.param(population.dataframe, detectability, region.obj)
     # Make population object

@@ -24,16 +24,18 @@ setClass("Detectability", representation(key.function    = "character",
                                          scale.param     = "numeric",
                                          shape.param     = "numeric",
                                          cov.param       = "list",
+                                         g0              = "numeric",
                                          truncation      = "numeric")) 
 setMethod(
   f="initialize",
   signature="Detectability",
-  definition=function(.Object, key.function, scale.param, shape.param = numeric(0), covariates = character(0), cov.param = numeric(0), truncation = numeric(0)){
+  definition=function(.Object, key.function, scale.param, shape.param = numeric(0), covariates = character(0), g0 = 1, cov.param = numeric(0), truncation = numeric(0)){
     #Input pre-processing
     #Set slots
     .Object@key.function <- key.function
     .Object@scale.param  <- scale.param
     .Object@shape.param  <- shape.param
+    .Object@g0           <- g0
     .Object@cov.param    <- cov.param
     .Object@truncation   <- truncation      
     #Check object is valid

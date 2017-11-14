@@ -2,9 +2,9 @@
 simulate.detections <- function(poss.distances, detectability){
   #calculate.probability of detection
   probs <- switch(detectability@key.function,
-    "hn" = hn.detect(poss.distances$distance, poss.distances$scale.param),
-    "hr" = hr.detect(poss.distances$distance, poss.distances$scale.param, poss.distances$shape.param),
-    "uf" = poss.distances$scale.param              
+    "hn" = hn.detect(poss.distances$distance, poss.distances$scale.param, poss.distances$g0),
+    "hr" = hr.detect(poss.distances$distance, poss.distances$scale.param, poss.distances$shape.param, poss.distances$g0),
+    "uf" = poss.distances$scale.param*poss.distances$g0              
   )
   detected <- numeric(0)
   for(i in seq(along = probs)){

@@ -5,7 +5,7 @@
 \title{Creates a Detectablility object}
 \usage{
 make.detectability(key.function = "hn", scale.param = 25,
-  shape.param = numeric(0), cov.param = list(), truncation = 50)
+  shape.param = numeric(0), cov.param = list(), g0 = 1, truncation = 50)
 }
 \arguments{
 \item{key.function}{specifies shape of the detection function (either 
@@ -16,6 +16,8 @@ half-normal "hn", hazard rate "hr" or uniform "uf")}
 \item{shape.param}{numeric vector with either a single value to be applied globally or a value for each strata. These should be supplied on the natural scale.}
 
 \item{cov.param}{Named list with one named entry per individual level covariate. Covariate parameter values should be defined on the log scale (rather than the natural scale), this is the same scale as provided in the ddf output in mrds and also in the MCDS output in Distance. Cluster sizes parameter values can be defined here. Each list entry will either be a data.frame containing 2 or 3 columns: level, param and where desired strata. If the region has multiple strata but this column is omitted then the values will be assumed to apply globally. The cluster size entry in the list must be named 'size'. Alternatively the list element may a numeric vector with either a single value to be applied globally or a value for each strata.}
+
+\item{g0}{detection probability on the transect, the whole detection function will be multiplied by this value.}
 
 \item{truncation}{the maximum perpendicular (or radial) distance at which 
 objects may be detected from a line (or point) transect.}
