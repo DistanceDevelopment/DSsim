@@ -635,6 +635,7 @@ setMethod(
     if(length(data.path) > 0){
       temp.path <- strsplit(data.path, split = "")
       if(temp.path[length(temp.path)] != "/"){
+        # if not add it
         data.path <- paste(data.path, "/", sep = "")
       }
       rm(temp.path)
@@ -648,9 +649,9 @@ setMethod(
         run.parallel = FALSE
       }else{
         # counts the number of cores you have
-        nCores <- getOption("cl.cores", detectCores())
+        nCores <- getOption("cl.cores", detectCores()) - 1
         if(!is.na(max.cores)){
-          nCores <- min(nCores - 1, max.cores)
+          nCores <- min(nCores, max.cores)
         }
         if(nCores <= 1){
           warning("Could not run in parallel only one core available/requested (DSsim limits running in parallel to 1 less than the number of cores on the machine).", immediate. = TRUE, call. = FALSE)
