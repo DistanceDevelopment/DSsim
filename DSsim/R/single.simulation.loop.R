@@ -24,8 +24,9 @@ single.simulation.loop <- function(i, object, save.data, load.data, data.path = 
             try(cat(progress, file = progress.file), silent = TRUE) 
           } 
         }
+      }else{
+        cat(progress, file = progress.file)  
       }
-      cat(progress, file = progress.file)  
     }
   }
   flush.console()
