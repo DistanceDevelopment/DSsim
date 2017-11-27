@@ -123,13 +123,15 @@ setMethod(
     }
     N <- nrow(all.grid.locations)
     # Make population data.frame
-    population.dataframe <- data.frame(object = 1:nrow(all.grid.locations), x = all.grid.locations$x.coord, y = all.grid.locations$y.coord, strata = all.grid.locations$strata)
+    population.dataframe <- data.frame(object = seq_along(all.grid.locations$x.coord), x = all.grid.locations$x.coord, y = all.grid.locations$y.coord, strata = all.grid.locations$strata)
     # Add covariate values
     if(length(object@covariates) > 0){
       population.dataframe <- add.covariate.values(population.dataframe, object@covariates)
     }
     # Add scale parameter values
-    population.dataframe <- calculate.scale.param(population.dataframe, detectability, region.obj)
+    if(N > 0){
+      population.dataframe <- calculate.scale.param(population.dataframe, detectability, region.obj)  
+    }
     # Make population object
     population <- new(Class = "Population", region = object@region.name, strata.names = region.obj@region.name, N = N, D = N/region.obj@area, population = population.dataframe, detectability = detectability)
     return(population)
