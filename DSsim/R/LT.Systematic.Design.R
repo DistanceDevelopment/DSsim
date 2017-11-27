@@ -101,7 +101,7 @@ setMethod(
         # Generate a start point between 0 and the spacing value
         start.space <- runif(1, 0, spacing)
         # Generate a sequence of x values with correct spacing till end of study region
-        x.coords <- seq(start.space, x.lim[2], by = spacing)
+        x.coords <- seq(x.lim[1]+start.space, x.lim[2], by = spacing)
         # Check there will be some lines
         if(length(x.coords) == 0){
           stop("There are no transects in the study region. Please check your design. ", call. = FALSE)
