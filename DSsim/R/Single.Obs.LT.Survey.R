@@ -48,7 +48,7 @@ setMethod(
       line.transect <- object@line.transect
     }
     #call different methods depending on population size
-    if(sum(population@N) > 2000){
+    if(sum(population@N) >= 2000){
       poss.distances <- calc.poss.detect.dists.lines.largeN(population, line.transect, perp.truncation = object@perpendicular.truncation)  
     }else{
       poss.distances <- calc.poss.detect.dists.lines(population, line.transect, perp.truncation = object@perpendicular.truncation)  
