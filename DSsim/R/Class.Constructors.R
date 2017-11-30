@@ -345,6 +345,8 @@ make.density <- function(region.obj = make.region(), density.surface = list(), x
 #' @param N the number of individuals / clusters in a population (1000 by default)
 #' @param fixed.N a logical value. If TRUE the population is generated from the value of N 
 #' otherwise it is generated from the density description.
+#' @param N.gen.multiplier Can be used to increase the multiplier to > 2 if the user
+#' is warned that DSsim is unable to generate requested population size.
 #' @return object of class Population.Description 
 #' @export
 #' @author Laura Marshall
@@ -394,7 +396,7 @@ make.density <- function(region.obj = make.region(), density.surface = list(), x
 #' pop@population 
 #' # Note that the covariate values have not affected the detectability (the scale parameter) to 
 #' # do this we need to set the cov.param argument in make.detectability. See ?make.detectability
-make.population.description <- make.pop.description <- function(region.obj = make.region(), density.obj = make.density(), covariates = list(), N = numeric(0), fixed.N = TRUE){
+make.population.description <- make.pop.description <- function(region.obj = make.region(), density.obj = make.density(), covariates = list(), N = numeric(0), fixed.N = TRUE, N.gen.multiplier = 2){
   # Get the number of strata
   no.strata <- ifelse(length(region.obj@strata.name) > 0, length(region.obj@strata.name), 1)
   # Check covariate input
@@ -407,7 +409,7 @@ make.population.description <- make.pop.description <- function(region.obj = mak
       stop("You have not supplied the correct number of constants for population size N for each strata", call. = FALSE)
     }
   }
-  pop.description <- new(Class = "Population.Description", N = N, density = density.obj, region.obj = region.obj, covariates = covariates, gen.by.N = fixed.N)
+  pop.description <- new(Class = "Population.Description", N = N, density = density.obj, region.obj = region.obj, covariates = covariates, gen.by.N = fixed.N, N.gen.multiplier = N.gen.multiplier)
   return(pop.description)
 }
 

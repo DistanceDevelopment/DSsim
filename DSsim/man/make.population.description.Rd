@@ -6,7 +6,7 @@
 \usage{
 make.population.description(region.obj = make.region(),
   density.obj = make.density(), covariates = list(), N = numeric(0),
-  fixed.N = TRUE)
+  fixed.N = TRUE, N.gen.multiplier = 2)
 }
 \arguments{
 \item{region.obj}{the Region object in which this population exists (see \link{make.region}).}
@@ -19,6 +19,9 @@ make.population.description(region.obj = make.region(),
 
 \item{fixed.N}{a logical value. If TRUE the population is generated from the value of N 
 otherwise it is generated from the density description.}
+
+\item{N.gen.multiplier}{Can be used to increase the multiplier to > 2 if the user
+is warned that DSsim is unable to generate requested population size.}
 }
 \value{
 object of class Population.Description

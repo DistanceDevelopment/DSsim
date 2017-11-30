@@ -34,6 +34,11 @@ clusters.
 \item{\code{gen.by.N}}{Object of class \code{"logical"}; If \code{TRUE}
 N is fixed otherwise it is generated from a Poisson distribution.}
 
+\item{\code{N.gen.multiplier}}{DSsim multiplies N by this number to allow it to generate 
+enough individuals/clusters within the density grid to give the required number
+within the study region. Most users will not need to use this. This should be used 
+if you get a warning saying DSsim was unable to generate requested N.}
+
 \item{\code{D.dist}}{Object of class \code{character}; Describes the
 density distribution (currently not implemented).}
 }}

@@ -24,6 +24,10 @@
 #' (prob). The cluster size entry in the list must be named 'size'.
 #' @slot gen.by.N Object of class \code{"logical"}; If \code{TRUE}
 #' N is fixed otherwise it is generated from a Poisson distribution.
+#' @slot N.gen.multiplier DSsim multiplies N by this number to allow it to generate 
+#' enough individuals/clusters within the density grid to give the required number
+#' within the study region. Most users will not need to use this. This should be used 
+#' if you get a warning saying DSsim was unable to generate requested N.
 #' @slot D.dist Object of class \code{character}; Describes the
 #' density distribution (currently not implemented).
 #' @section Methods:
@@ -42,11 +46,12 @@ setClass("Population.Description", representation(N            = "numeric",
                                                   covariates   = "list",
                                                   size         = "logical",
                                                   gen.by.N     = "logical",
+                                                  N.gen.multiplier = "numeric",
                                                   D.dist       = "character"))
 setMethod(
   f="initialize",
   signature="Population.Description",
-  definition=function(.Object, N, density, region.obj, size, covariates, gen.by.N = TRUE, D.dist = character(0)){
+  definition=function(.Object, N, density, region.obj, size, covariates, gen.by.N = TRUE, N.gen.multiplier = 2, D.dist = character(0)){
     #Input pre-processing
     if(!gen.by.N){
       ave.density <- NULL
@@ -67,6 +72,7 @@ setMethod(
     .Object@covariates   <- covariates
     .Object@size         <- size
     .Object@gen.by.N     <- gen.by.N
+    .Object@N.gen.multiplier <- N.gen.multiplier
     .Object@D.dist       <- D.dist
     #Check object is valid
     validObject(.Object)
