@@ -40,10 +40,6 @@ test_that("Tests calc.poss.detect.dists.lines functions", {
   test1 <- calc.poss.detect.dists.lines.largeN(population = popn, survey = survey, perp.truncation = 20)
   test2 <- calc.poss.detect.dists.lines(population = popn, survey = survey, perp.truncation = 20)
   
-  index <- order(test1$object)
-  test1 <- test1[index,]
-  row.names(test1) <- 1:nrow(test1)
-  
   expect_equal(test1, test2)
   
   # Test which points should be retained
@@ -73,6 +69,66 @@ test_that("Tests calc.poss.detect.dists.lines functions", {
   test.orig <- calc.poss.detect.dists.lines(population = popn, survey = survey, perp.truncation = 20)
   
   expect_equal(nrow(test.new), nrow(test.orig))
+  
+  #-----------------------------------------------------------
+  # Test what happens for covariates and hr detection function
+  poly1 <- data.frame(x = c(0,0,20000,20000,0), y = c(0,5000,5000,0,0))
+  # Create an empty list
+  coords <- list()
+  # Store the polygon inside a list in the first element of the coords list referring to strata 1.
+  coords[[1]] <- list(poly1)
+  # Create the survey region
+  region <- make.region(region.name = "study area", 
+                        units = "m",
+                        coords = coords)
+  # Create the density surface
+  density <- make.density(region.obj = region, 
+                          x.space = 50, 
+                          y.space = 200, 
+                          constant = 1)
+  # Create the covariate list
+  covariate.list <- list()
+  # The population will be 50% males and 50% females
+  covariate.list$sex <- list(data.frame(level = c("female", "male"), prob = c(0.5,0.5)))
+  # Create the population description, with a population size N = 200
+  pop.desc.cov <- make.population.description(region.obj = region, 
+                                              density.obj = density, 
+                                              covariates = covariate.list, 
+                                              N = 2500)
+  # Create the covariate parameter list
+  cov.params <- list()
+  # Note the covariate parameters are supplied on the log scale
+  cov.params$sex = data.frame(level = c("female", "male"), 
+                              param = c(0, 1.5))
+  detect.cov <- make.detectability(key.function = "hr" ,
+                                   scale.param = 120,
+                                   shape.param = 3,
+                                   cov.param = cov.params, 
+                                   truncation = 1000)
+  design <- make.design(transect.type = "line",
+                        design.details = c("parallel", "systematic"),
+                        region.obj = region,
+                        spacing = 1000)
+  ddf.analyses <- make.ddf.analysis.list(dsmodel = list(~cds(key = "hn", formula = ~1),
+                                                        ~cds(key = "hr", formula = ~1)), 
+                                         method = "ds",
+                                         criteria = "AIC",
+                                         truncation = 600)
+  sim.cov <- make.simulation(reps = 999, 
+                             region.obj = region,
+                             design.obj = design,
+                             population.description.obj = pop.desc.cov,
+                             detectability.obj = detect.cov,
+                             ddf.analyses.list = ddf.analyses)
+  
+  set.seed(2320)
+  population <- generate.population(sim.cov)
+  line.transect  <- generate.transects(sim.cov)
+  perp.truncation <- sim.cov@detectability@truncation
+  
+  poss.distances <- calc.poss.detect.dists.lines.largeN(population, line.transect, perp.truncation)
+  poss.distances2 <- calc.poss.detect.dists.lines(population, line.transect, perp.truncation)  
+  expect_equal(poss.distances, poss.distances2)
   
 })
   
