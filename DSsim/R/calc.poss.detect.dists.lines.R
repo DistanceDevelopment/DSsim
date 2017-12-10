@@ -39,5 +39,10 @@ calc.poss.detect.dists.lines <- function(population, survey, perp.truncation, pl
       points(poss.detect.dists$x[poss.detect.dists$transect.ID == transect.IDs[i]], poss.detect.dists$y[poss.detect.dists$transect.ID == transect.IDs[i]], col = i) 
     }
   }
+  if(nrow(poss.detect.dists) > 0){
+    index <- order(poss.detect.dists$object)
+    poss.detect.dists <- poss.detect.dists[index,]
+    row.names(poss.detect.dists) <- 1:nrow(poss.detect.dists)  
+  }
   return(poss.detect.dists)
 }

@@ -42,7 +42,8 @@ calc.poss.detect.dists.lines.largeN <- function(population, survey, perp.truncat
     if(nrow(sub.pop) > 0){
       intersects.transects <- apply(data.frame(x = sub.pop$x, y = sub.pop$y, p.dist = perp.dists), 1, FUN = check.intersection.PT, transect = transect)
       #Make new dataset
-      new.data <- data.frame(object = sub.pop$object, transect.ID = rep(transect$ID, nrow(sub.pop)), distance = perp.dists, available = rep(TRUE, nrow(sub.pop)), x = sub.pop$x, y = sub.pop$y, strata = sub.pop$strata, scale.param = sub.pop$scale.param)
+      new.data <- cbind(sub.pop, transect.ID = rep(transect$ID, nrow(sub.pop)), distance = perp.dists, available = rep(TRUE, nrow(sub.pop)))
+      #new.data <- data.frame(object = sub.pop$object, transect.ID = rep(transect$ID, nrow(sub.pop)), distance = perp.dists, available = rep(TRUE, nrow(sub.pop)), x = sub.pop$x, y = sub.pop$y, strata = sub.pop$strata, scale.param = sub.pop$scale.param)
       #Subset based on intersection results
       new.data <- new.data[intersects.transects,]  
     }else{
@@ -68,16 +69,59 @@ calc.poss.detect.dists.lines.largeN <- function(population, survey, perp.truncat
       sub.pop.size <- sub.pop.size + nrow(all.poss.detects[[i]])  
     }
   }
-  temp <- rep(NA, sub.pop.size)
-  new.dataframe <- data.frame(object = temp, transect.ID = temp, distance = temp, available = temp, x = temp, y = temp, strata = temp, scale.param = temp)
-  index <- 1
-  for(i in seq(along = all.poss.detects)){
-    if(!is.null(all.poss.detects[[i]]) && nrow(all.poss.detects[[i]]) > 0){
-      new.dataframe[index:(index+nrow(all.poss.detects[[i]])-1),] <- all.poss.detects[[i]]
-      index <- index + nrow(all.poss.detects[[i]])
-    }
-  } 
-  return(new.dataframe)
+  #Create new data frame
+   cov.param.names <- names(pop.data)[!names(pop.data) %in% c("object", "x", "y", "strata","scale.param", "shape.param")]
+   data.names <- c("object", "transect.ID", "distance", "available", "x", "y", "strata", cov.param.names, "scale.param")
+   if("shape.param" %in% names(pop.data)){
+     data.names <- c(data.names, "shape.param")
+   }
+   new.dataframe <- NULL
+   for(i in seq(along = all.poss.detects)){
+     if(!is.null(all.poss.detects[[i]]) && nrow(all.poss.detects[[i]]) > 0){
+       if(is.null(new.dataframe)){
+         new.dataframe <- all.poss.detects[[i]][, data.names]  
+       }else{
+         new.dataframe <- rbind(new.dataframe, all.poss.detects[[i]][, data.names])  
+       }
+     }
+   }
+   #Ugly fix been struggling with coersion
+   if(is.null(new.dataframe)){
+     new.dataframe <- data.frame()
+   }
+   if(nrow(new.dataframe) > 0){
+     index <- order(new.dataframe$object)
+     new.dataframe <- new.dataframe[index,]
+     row.names(new.dataframe) <- 1:nrow(new.dataframe)  
+   }
+   return(new.dataframe)
+  # new.data <- matrix(NA, nrow = sub.pop.size, ncol = length(data.names), dimnames = list(NULL, data.names))
+  # new.dataframe <- as.data.frame(new.data)
+  # #
+  # factors <- character(0)
+  # for(i in seq(along = data.names)){
+  #   if(class(pop.data[[data.names[i]]]) == "factor"){
+  #     class(new.dataframe[,i]) <- "character"
+  #     factors <- c(factors, data.names[i])
+  #   }else{
+  #     class(new.dataframe[,i]) <- class(pop.data[[data.names[i]]]) 
+  #   }
+  # }
+  # #Now set other classes
+  # class(new.dataframe[,"transect.ID"]) <- "numeric"
+  # class(new.dataframe[,"distance"]) <- "numeric"
+  # #Fill in data
+  # index <- 1
+  # for(i in seq(along = all.poss.detects)){
+  #   if(!is.null(all.poss.detects[[i]]) && nrow(all.poss.detects[[i]]) > 0){
+  #     new.dataframe[index:(index+nrow(all.poss.detects[[i]])-1),] <- all.poss.detects[[i]][, data.names]
+  #     index <- index + nrow(all.poss.detects[[i]])
+  #   }
+  # } 
+  # #Now turn factors into factors
+  # for(i in seq(along = factors)){
+  #   class(new.dataframe[,factors[i]]) <- "factor"  
+  # }
 }
 
 
