@@ -5,6 +5,7 @@
 #' @param file path and filename if the user would like the results saved to file. Should contain the .txt file extension.
 #' @param round the amount of decimal places to round the distances to
 #' @param sep the field separator string for writing to file
+#' @importFrom utils write.table
 #' @export
 #' @author L Marshall
 data.for.distance <- function(object, file = NULL, round = 2, sep = "\t"){
