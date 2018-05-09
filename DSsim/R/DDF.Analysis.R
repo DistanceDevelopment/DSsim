@@ -123,14 +123,9 @@ setMethod(
     #Set warning to NULL
     W <- NULL
     # Fit model
-    #old.ops <- options(show.error.messages = FALSE)
-    #on.exit(options(old.opts), add = TRUE)
-    cat("Before model fit", fill = TRUE)
     ddf.result <- withCallingHandlers(tryCatch(eval(parse(text = model.fit)), 
                                                error=function(e) e), 
                                       warning=function(w){W <<- w; invokeRestart("muffleWarning")})
-    cat("After model fit", fill = TRUE)
-    #options(old.opts)
     #check if there was an error, warning or non-convergence
     if(any(class(ddf.result) == "error")){
       warnings <- message.handler(warnings, paste("Error: ", ddf.result$message, sep = ""))
