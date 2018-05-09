@@ -47,6 +47,8 @@ parameters associated with the detection function.}
 \item{\code{results}}{A \code{"list"} of \code{"arrays"}; stores
 the estimated of abundance and density as well as other measures
 of interest.}
+
+\item{\code{warnings}}{A \code{"list"} to store warning and error messages}
 }}
 
 \section{Methods}{

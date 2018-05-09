@@ -77,11 +77,13 @@ setValidity("DDF.Analysis",
  
 #' @rdname run.analysis-methods
 #' @param point logical indicating whether it is a point transect survey
+#' @param warnings a list of warnings and how many times they arose
 #' @export
 setMethod(
   f="run.analysis",
   signature=c("DDF.Analysis","DDF.Data"),
-  definition=function(object, data, dht = FALSE, point = FALSE){
+  definition=function(object, data, dht = FALSE, point = FALSE, warnings = list()){
+    #Get distance data
     dist.data <- data@ddf.dat
     # Strip out missing distances
     dist.data <- dist.data[!is.na(dist.data),]
@@ -93,59 +95,53 @@ setMethod(
       #binned data
       dist.data <- dist.data[dist.data$distance <= max(object@cutpoints),]
       dist.data <- create.bins(dist.data, cutpoints = object@cutpoints)
-      #Make sure error messages are surpressed
-      old.opts <- options(show.error.messages = FALSE)
-      on.exit(options(old.opts), add = TRUE)
       #Try to fit ddf model
       if(point){
-        ddf.result <- try(eval(parse(text = paste("ddf(dsmodel = ~", as.character(object@dsmodel)[2] ,", data = dist.data, method = 'ds', meta.data = list(width = ", max(object@cutpoints), ", point = TRUE, binned = TRUE, breaks = ", object@cutpoints ,"))", sep = ""))), silent = TRUE)
+        fit.model <- paste("ddf(dsmodel = ~", as.character(object@dsmodel)[2] ,", data = dist.data, method = 'ds', meta.data = list(width = ", max(object@cutpoints), ", point = TRUE, binned = TRUE, breaks = ", object@cutpoints ,"))", sep = "")
       }else{
-        ddf.result <- try(eval(parse(text = paste("ddf(dsmodel = ~", as.character(object@dsmodel)[2] ,", data = dist.data, method = 'ds', meta.data = list(width = ", max(object@cutpoints), ", binned = TRUE, breaks = ", object@cutpoints ,"))", sep = ""))), silent = TRUE)
-      }
-      options(old.opts)
-      #Check if it was successful
-      if(any(class(ddf.result) == "try-error")){
-        #If not
-        call <- paste(object@dsmodel)[2]
-        cutpoints <- paste(object@cutpoints, collapse = ',')
-        ddf.result <- NA
-      }else if(ddf.result$ds$converge != 0){
-        #If it didn't converge
-        ddf.result <- NA
+        fit.model <- paste("ddf(dsmodel = ~", as.character(object@dsmodel)[2] ,", data = dist.data, method = 'ds', meta.data = list(width = ", max(object@cutpoints), ", binned = TRUE, breaks = ", object@cutpoints ,"))", sep = "")
       }
     }else{
       #exact distances
       if(length(object@truncation) == 0){
         #If there is no truncation distance specified
-        #Make sure error messages are surpressed
-        options(show.error.messages = FALSE)
-        #Try to fit ddf model
         if(point){
-          ddf.result <- try(eval(parse(text = paste("ddf(dsmodel = ~", as.character(object@dsmodel)[2] ,", data = dist.data, method = 'ds', meta.data = list(point = TRUE))", sep = ""))), silent = TRUE)
+          model.fit <- paste("ddf(dsmodel = ~", as.character(object@dsmodel)[2] ,", data = dist.data, method = 'ds', meta.data = list(point = TRUE))", sep = "") 
         }else{
-          ddf.result <- try(eval(parse(text = paste("ddf(dsmodel = ~", as.character(object@dsmodel)[2] ,", data = dist.data, method = 'ds')", sep = ""))), silent = TRUE)
+          model.fit <- paste("ddf(dsmodel = ~", as.character(object@dsmodel)[2] ,", data = dist.data, method = 'ds')", sep = "")
         }
-        
-        options(show.error.messages = TRUE)
       }else{
         #If there is a truncation distance 
-        options(show.error.messages = FALSE)
         if(point){
-          ddf.result <- try(eval(parse(text = paste("ddf(dsmodel = ~", as.character(object@dsmodel)[2] ,", data = dist.data, method = 'ds', meta.data = list(point = TRUE, width = ", object@truncation,"))", sep = ""))), silent = TRUE)
+          model.fit <- paste("ddf(dsmodel = ~", as.character(object@dsmodel)[2] ,", data = dist.data, method = 'ds', meta.data = list(point = TRUE, width = ", object@truncation,"))", sep = "")
         }else{
-          ddf.result <- try(eval(parse(text = paste("ddf(dsmodel = ~", as.character(object@dsmodel)[2] ,", data = dist.data, method = 'ds', meta.data = list(width = ", object@truncation,"))", sep = ""))), silent = TRUE)
+          model.fit <- paste("ddf(dsmodel = ~", as.character(object@dsmodel)[2] ,", data = dist.data, method = 'ds', meta.data = list(width = ", object@truncation,"))", sep = "")
         }
-        options(show.error.messages = TRUE)
-      }
-      #check if there was an error
-      if(class(ddf.result)[1] == "try-error"){
-        ddf.result <- NA
-      #if it did not converge
-      }else if(ddf.result$ds$converge != 0){
-        ddf.result <- NA
       }
     }
-    return(ddf.result)
+    
+    #Set warning to NULL
+    W <- NULL
+    # Fit model
+    #old.ops <- options(show.error.messages = FALSE)
+    #on.exit(options(old.opts), add = TRUE)
+    cat("Before model fit", fill = TRUE)
+    ddf.result <- withCallingHandlers(tryCatch(eval(parse(text = model.fit)), 
+                                               error=function(e) e), 
+                                      warning=function(w){W <<- w; invokeRestart("muffleWarning")})
+    cat("After model fit", fill = TRUE)
+    #options(old.opts)
+    #check if there was an error, warning or non-convergence
+    if(any(class(ddf.result) == "error")){
+      warnings <- message.handler(warnings, paste("Error: ", ddf.result$message, sep = ""))
+      ddf.result <- NA
+    }else if(!is.null(W)){
+      warnings <- message.handler(warnings, W)
+    } 
+    if(ddf.result$ds$converge != 0){
+      ddf.result <- NA
+    }
+    return(list(ddf.result = ddf.result, warnings = warnings))
   }    
 ) 
 

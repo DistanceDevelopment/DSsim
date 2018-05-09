@@ -41,6 +41,7 @@
 #' @slot results A \code{"list"} of \code{"arrays"}; stores
 #'  the estimated of abundance and density as well as other measures
 #'  of interest.
+#' @slot warnings A \code{"list"} to store warning and error messages
 #' @section Methods:
 #' \describe{
 #'  \item{\code{add.hotspot}}{\code{signature=(object = "Simulation")}: adds
@@ -79,7 +80,8 @@ setClass("Simulation", representation(reps = "numeric",
                                       ddf.analyses = "list",
                                       dsm.analysis = "DSM.Analysis",
                                       ddf.param.ests = "array",
-                                      results = "list"))
+                                      results = "list",
+                                      warnings = "list"))
 
 setMethod(
   f="initialize",
@@ -542,7 +544,9 @@ setMethod(
   f="run.analysis",
   signature=c("Simulation","Survey.Results"),
   definition=function(object, data, dht = FALSE){
-    best.model <- run.analysis(object, data@ddf.data)
+    analysis.results <- run.analysis(object, data@ddf.data)
+    best.model <- analysis.results$best.model
+    object@warnings <- analysis.results$warnings
     #If dht is true but tables have not been provided
     if(dht & nrow(data@region.table@region.table) == 0){
       warning("dht tables have not been provided please re-run create.survey.results with dht.tables = TRUE if you would like density/abundance estimates in addition to ddf results.", immediate. = TRUE, call. = FALSE)
@@ -564,10 +568,15 @@ setMethod(
         best.model <- add.miss.dists(missing.dists, best.model)
       }
       #Calculate density/abundance
-      dht.results <- dht(best.model, data@region.table@region.table, data@sample.table@sample.table, data@obs.table@obs.table)
-      return(list(ddf = best.model, dht = dht.results))
+      dht.options <- list()
+      # if it is a point transect design
+      if(inherits(object@design, "PT.Design")){
+        dht.options$ervar <- "P3"  
+      }
+      dht.results <- dht(best.model, data@region.table@region.table, data@sample.table@sample.table, data@obs.table@obs.table, options = dht.options)
+      return(list(ddf = best.model, dht = dht.results, warnings = object@warnings))
     }
-    return(list(ddf = best.model))
+    return(list(ddf = best.model, warnings = object@warnings))
   }
 )
 
@@ -583,7 +592,10 @@ setMethod(
     results <- list()
     point <- inherits(object@design, "PT.Design")
     for(a in seq(along = ddf.analyses)){
-      results[[a]] <- run.analysis(ddf.analyses[[a]], data, point = point)
+      temp <- run.analysis(ddf.analyses[[a]], data, point = point, warnings = object@warnings)
+      #run analysis returns the result and any warnings
+      results[[a]] <- temp$ddf.result
+      object@warnings <- temp$warnings
       if(!is.na(results[[a]][1])){
         #Get information to calculate selection criteria
         lnl <- results[[a]]$lnl 
@@ -614,9 +626,9 @@ setMethod(
         delta.criteria <- sorted.criteria[2] - sorted.criteria[1]
         best.model$delta.criteria <- delta.criteria
       }
-      return(best.model)
+      return(list(best.model = best.model, warnings = object@warnings))
     }else{
-      return(NULL)
+      return(list(best.model = NULL, warnings = object@warnings))
     }
   }
 )
@@ -671,25 +683,38 @@ setMethod(
         if(progress.file != ""){
           # Set up progress file
           cat(0, file = progress.file) 
-          results <- pbapply::pblapply(X= as.list(1:object@reps), FUN = single.simulation.loop, object = object, save.data = save.data, load.data = load.data, data.path = data.path, cl = myCluster, counter = TRUE, progress.file = progress.file, in.parallel = TRUE) 
+          results <- pbapply::pblapply(X = as.list(1:object@reps), FUN = single.simulation.loop, object = object, save.data = save.data, load.data = load.data, data.path = data.path, cl = myCluster, counter = TRUE, progress.file = progress.file, in.parallel = TRUE) 
         }else{
           results <- pbapply::pblapply(X= as.list(1:object@reps), FUN = single.simulation.loop, object = object, save.data = save.data, load.data = load.data, data.path = data.path, cl = myCluster, counter = FALSE) 
         }
       }else{
         results <- parLapply(myCluster, X = as.list(1:object@reps), fun = single.simulation.loop, object = object, save.data = save.data, load.data = load.data, data.path = data.path, counter = FALSE) 
       }
-      object <- accumulate.PP.results(simulation = object, results = results)
+      #Extract results and warnings
+      sim.results <- sim.warnings <- list()
+      for(i in seq(along = results)){
+        sim.results[[i]] <- results[[i]]$results
+        sim.warnings[[i]] <- results[[i]]$warnings
+      }
+      object <- accumulate.PP.results(simulation = object, results = sim.results)
+      object@warnings <- accumulate.warnings(sim.warnings)
       stopCluster(myCluster)
       on.exit()
     }
     if(!run.parallel){
       #otherwise loop
       for(i in 1:object@reps){
-        object@results <- single.simulation.loop(i, object, save.data = save.data, load.data = load.data, data.path = data.path, counter = counter, progress.file = progress.file)
+        results <- single.simulation.loop(i, object, save.data = save.data, load.data = load.data, data.path = data.path, counter = counter, progress.file = progress.file)
+        object@results <- results$results
+        object@warnings <- results$warnings
       }
     }
     object@results <- add.summary.results(object@results)
     object@design@file.index <- orig.file.index
+    #Process warnings
+    for(i in seq(along = object@warnings$message)){
+      message(paste(object@warnings$message[[i]], " (occured ", object@warnings$counter[[i]], " times)"))
+    }
     return(object)
   }
 )

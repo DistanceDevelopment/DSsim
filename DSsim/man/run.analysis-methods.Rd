@@ -12,7 +12,7 @@
 run.analysis(object, data, ...)
 
 \S4method{run.analysis}{DDF.Analysis,DDF.Data}(object, data, dht = FALSE,
-  point = FALSE)
+  point = FALSE, warnings = list())
 
 \S4method{run.analysis}{Simulation,Survey.Results}(object, data, dht = FALSE)
 
@@ -28,6 +28,8 @@ run.analysis(object, data, ...)
 \item{dht}{logical whether density should be estimated after fitting the model}
 
 \item{point}{logical indicating whether it is a point transect survey}
+
+\item{warnings}{a list of warnings and how many times they arose}
 }
 \value{
 a list containing an S3 ddf object and optionally an S3 dht object relating to the model with the miminum criteria.
