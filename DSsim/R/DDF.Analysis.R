@@ -97,25 +97,25 @@ setMethod(
       dist.data <- create.bins(dist.data, cutpoints = object@cutpoints)
       #Try to fit ddf model
       if(point){
-        fit.model <- paste("ddf(dsmodel = ~", as.character(object@dsmodel)[2] ,", data = dist.data, method = 'ds', meta.data = list(width = ", max(object@cutpoints), ", point = TRUE, binned = TRUE, breaks = ", object@cutpoints ,"))", sep = "")
+        fit.model <- paste("ddf(dsmodel = ~", as.character(object@dsmodel)[2] ,", data = dist.data, method = 'ds', meta.data = list(width = ", max(object@cutpoints), ", point = TRUE, binned = TRUE, breaks = ", object@cutpoints ,"), control = list(silent = TRUE))", sep = "")
       }else{
-        fit.model <- paste("ddf(dsmodel = ~", as.character(object@dsmodel)[2] ,", data = dist.data, method = 'ds', meta.data = list(width = ", max(object@cutpoints), ", binned = TRUE, breaks = ", object@cutpoints ,"))", sep = "")
+        fit.model <- paste("ddf(dsmodel = ~", as.character(object@dsmodel)[2] ,", data = dist.data, method = 'ds', meta.data = list(width = ", max(object@cutpoints), ", binned = TRUE, breaks = ", object@cutpoints ,"), control = list(silent = TRUE))", sep = "")
       }
     }else{
       #exact distances
       if(length(object@truncation) == 0){
         #If there is no truncation distance specified
         if(point){
-          model.fit <- paste("ddf(dsmodel = ~", as.character(object@dsmodel)[2] ,", data = dist.data, method = 'ds', meta.data = list(point = TRUE))", sep = "") 
+          model.fit <- paste("ddf(dsmodel = ~", as.character(object@dsmodel)[2] ,", data = dist.data, method = 'ds', meta.data = list(point = TRUE), control = list(silent = TRUE))", sep = "") 
         }else{
-          model.fit <- paste("ddf(dsmodel = ~", as.character(object@dsmodel)[2] ,", data = dist.data, method = 'ds')", sep = "")
+          model.fit <- paste("ddf(dsmodel = ~", as.character(object@dsmodel)[2] ,", data = dist.data, method = 'ds', control = list(silent = TRUE))", sep = "")
         }
       }else{
         #If there is a truncation distance 
         if(point){
-          model.fit <- paste("ddf(dsmodel = ~", as.character(object@dsmodel)[2] ,", data = dist.data, method = 'ds', meta.data = list(point = TRUE, width = ", object@truncation,"))", sep = "")
+          model.fit <- paste("ddf(dsmodel = ~", as.character(object@dsmodel)[2] ,", data = dist.data, method = 'ds', meta.data = list(point = TRUE, width = ", object@truncation,"), control = list(silent = TRUE))", sep = "")
         }else{
-          model.fit <- paste("ddf(dsmodel = ~", as.character(object@dsmodel)[2] ,", data = dist.data, method = 'ds', meta.data = list(width = ", object@truncation,"))", sep = "")
+          model.fit <- paste("ddf(dsmodel = ~", as.character(object@dsmodel)[2] ,", data = dist.data, method = 'ds', meta.data = list(width = ", object@truncation,"), control = list(silent = TRUE))", sep = "")
         }
       }
     }
@@ -124,18 +124,21 @@ setMethod(
     W <- NULL
     # Fit model
     ddf.result <- withCallingHandlers(tryCatch(eval(parse(text = model.fit)), 
-                                               error=function(e) e), 
+                                               error=function(e)e), 
                                       warning=function(w){W <<- w; invokeRestart("muffleWarning")})
     #check if there was an error, warning or non-convergence
     if(any(class(ddf.result) == "error")){
       warnings <- message.handler(warnings, paste("Error: ", ddf.result$message, sep = ""))
       ddf.result <- NA
-    }else if(!is.null(W)){
+    }else if(ddf.result$ds$converge != 0){
+      ddf.result <- NA
+    }else if(ddf.result$Nhat < 0){
+      ddf.result <- NA
+      warnings <- message.handler(warnings, "Negative Nhat estimate, excluding this result")
+    } 
+    if(!is.null(W)){
       warnings <- message.handler(warnings, W)
     } 
-    if(ddf.result$ds$converge != 0){
-      ddf.result <- NA
-    }
     return(list(ddf.result = ddf.result, warnings = warnings))
   }    
 ) 
