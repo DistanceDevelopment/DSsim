@@ -316,8 +316,6 @@ test_that("Check cluster size simulations correctly estimate expected cluster si
                         detectability.obj = detect,
                         ddf.analyses.list = ddf.analyses)
  
- test <- create.survey.results(sim)
- 
  sim <- run(sim, counter = FALSE) 
  # Check that the expected cluster size is 5 and 10
  expect_equal(as.numeric(sim@results$expected.size[1:2,1,1]), c(5,10))
@@ -349,9 +347,7 @@ test_that("Check cluster size simulations correctly estimate expected cluster si
                         population.description.obj = pop.desc,
                         detectability.obj = detect,
                         ddf.analyses.list = ddf.analyses)
- 
- test <- create.survey.results(sim)
- 
+
  sim <- run(sim, counter = FALSE) 
  # Check that the expected cluster size is 5 and 10
  expect_equal(as.numeric(sim@results$expected.size[1:2,1,1]), c(5,10))
