@@ -642,6 +642,9 @@ setMethod(
   f="run",
   signature="Simulation",
   definition=function(object, run.parallel = FALSE, max.cores = NA, save.data = FALSE, load.data = FALSE, data.path = character(0), counter = TRUE, progress.file = ""){
+    #reset the error/warning message
+    object@warnings$message <- list()
+    object@warnings$counter <- list()
     #Note options save.data, load.data, data.path are not implemented in simulations run in parallel.
     #check the data.path ends in "/"
     if(length(data.path) > 0){
