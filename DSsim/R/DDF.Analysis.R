@@ -132,9 +132,9 @@ setMethod(
       ddf.result <- NA
     }else if(ddf.result$ds$converge != 0){
       ddf.result <- NA
-    }else if(ddf.result$Nhat < 0){
+    }else if(any(predict(ddf.result)$fitted < 0)){
       ddf.result <- NA
-      warnings <- message.handler(warnings, "Negative Nhat estimate, excluding this result")
+      warnings <- message.handler(warnings, "Negative predictions, excluding these results")
     } 
     if(!is.null(W)){
       warnings <- message.handler(warnings, W)
