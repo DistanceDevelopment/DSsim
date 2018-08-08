@@ -266,7 +266,7 @@ setMethod(
     individual.summary <- data.frame(mean.Cover.Area = object@results$individuals$summary[,"CoveredArea","mean"],
                                      mean.Effort = object@results$individuals$summary[,"Effort","mean"],
                                      mean.n = object@results$individuals$summary[,"n","mean"],
-                                     mean.n.miss.dist = object@results$individuals$summary[,"n.miss.dist","mean"],
+                                     mean.n.miss.dist = ifelse("n.miss.dist" %in% dimnames(object@results$individuals$summary)[[2]], object@results$individuals$summary[,"n.miss.dist","mean"], NA),
                                      no.zero.n = zero.n,
                                      mean.ER = object@results$individuals$summary[,"ER","mean"],
                                      mean.se.ER = object@results$individuals$summary[,"se.ER","mean"],
@@ -286,8 +286,6 @@ setMethod(
                                mean.Estimate = object@results$individuals$N[,"Estimate","mean"],
                                percent.bias = (object@results$individuals$N[,"Estimate","mean"] - true.N.individuals)/true.N.individuals*100,
                                RMSE = RMSE.N,
-                               #lcl = object@results$individuals$N[,"lcl","mean"],
-                               #ucl = object@results$individuals$N[,"ucl","mean"],
                                CI.coverage.prob = percent.capture/100,
                                mean.se = object@results$individuals$N[,"se","mean"],
                                sd.of.means = object@results$individuals$N[,"Estimate","sd"])
@@ -295,8 +293,6 @@ setMethod(
                                mean.Estimate = object@results$individuals$D[,"Estimate","mean"],
                                percent.bias = (object@results$individuals$D[,"Estimate","mean"] - true.D.individuals)/true.D.individuals*100,
                                RMSE = RMSE.D,
-                               #lcl = object@results$individuals$N[,"lcl","mean"],
-                               #ucl = object@results$individuals$N[,"ucl","mean"],
                                CI.coverage.prob = percent.capture.D/100,
                                mean.se = object@results$individuals$D[,"se","mean"],
                                sd.of.means = object@results$individuals$D[,"Estimate","sd"])
@@ -325,7 +321,7 @@ setMethod(
       cluster.summary <- data.frame(mean.Cover.Area = object@results$clusters$summary[,"CoveredArea","mean"],
                                     mean.Effort = object@results$clusters$summary[,"Effort","mean"],
                                     mean.n = object@results$clusters$summary[,"n","mean"],
-                                    mean.n.miss.dist = object@results$clusters$summary[,"n.miss.dist","mean"],
+                                    mean.n.miss.dist = ifelse("n.miss.dist" %in% dimnames(object@results$clusters$summary)[[2]], object@results$clusters$summary[,"n.miss.dist","mean"], NA),
                                     no.zero.n = zero.n,
                                     mean.k = object@results$clusters$summary[,"k","mean"],
                                     mean.ER = object@results$clusters$summary[,"ER","mean"],
@@ -414,10 +410,14 @@ setMethod(
     for(i in seq(along = object@ddf.analyses)){
       analysis.summary$dsmodels[[i]] <- object@ddf.analyses[[i]]@dsmodel
     }
+    #For backwards compatibility
+    pop.covars <- try(object@population.description@covariates, silent = TRUE)
+    pop.covars <- ifelse(class(pop.covars) == "try-error", list(), pop.covars)
+    #Create simulation summary object
     if(!is.null(object@results$clusters)){
-      summary.x <- new(Class = "Simulation.Summary", region.name = object@region@region.name, strata.name = object@region@strata.name, total.reps = object@reps, failures = no.fails, individuals = individuals, clusters = clusters, expected.size = expected.size, population.covars = object@population.description@covariates, detection = detection, model.selection = tab.model.selection, design.summary = design.summary, detectability.summary = detectability.summary, analysis.summary = analysis.summary)
+      summary.x <- new(Class = "Simulation.Summary", region.name = object@region@region.name, strata.name = object@region@strata.name, total.reps = object@reps, failures = no.fails, individuals = individuals, clusters = clusters, expected.size = expected.size, population.covars = pop.covars, detection = detection, model.selection = tab.model.selection, design.summary = design.summary, detectability.summary = detectability.summary, analysis.summary = analysis.summary)
     }else{
-      summary.x <- new(Class = "Simulation.Summary", region.name = object@region@region.name, strata.name = object@region@strata.name, total.reps = object@reps, failures = no.fails, individuals = individuals, population.covars = object@population.description@covariates, detection = detection, model.selection = tab.model.selection, design.summary = design.summary, detectability.summary = detectability.summary, analysis.summary = analysis.summary)
+      summary.x <- new(Class = "Simulation.Summary", region.name = object@region@region.name, strata.name = object@region@strata.name, total.reps = object@reps, failures = no.fails, individuals = individuals, population.covars = pop.covars, detection = detection, model.selection = tab.model.selection, design.summary = design.summary, detectability.summary = detectability.summary, analysis.summary = analysis.summary)
     }
     return(summary.x)
   }
