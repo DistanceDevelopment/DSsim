@@ -14,7 +14,8 @@ run.analysis(object, data, ...)
 \S4method{run.analysis}{DDF.Analysis,DDF.Data}(object, data, dht = FALSE,
   point = FALSE, warnings = list())
 
-\S4method{run.analysis}{Simulation,Survey.Results}(object, data, dht = FALSE)
+\S4method{run.analysis}{Simulation,Survey.Results}(object, data,
+  dht = FALSE)
 
 \S4method{run.analysis}{Simulation,DDF.Data}(object, data, dht = FALSE)
 }

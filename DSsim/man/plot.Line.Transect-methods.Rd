@@ -5,8 +5,8 @@
 \alias{plot,Line.Transect,ANY-method}
 \title{Plot}
 \usage{
-\S4method{plot}{Line.Transect,ANY}(x, y, transect.ID = numeric(0), col = 1,
-  ...)
+\S4method{plot}{Line.Transect,ANY}(x, y, transect.ID = numeric(0),
+  col = 1, ...)
 }
 \arguments{
 \item{x}{object of class Line.Transect}

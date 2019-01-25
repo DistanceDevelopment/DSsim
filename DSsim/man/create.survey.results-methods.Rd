@@ -11,7 +11,8 @@
 \usage{
 create.survey.results(object, dht.tables = FALSE, ...)
 
-\S4method{create.survey.results}{Simulation}(object, dht.tables = FALSE, ...)
+\S4method{create.survey.results}{Simulation}(object, dht.tables = FALSE,
+  ...)
 
 \S4method{create.survey.results}{Single.Obs.LT.Survey}(object,
   dht.tables = FALSE, ...)

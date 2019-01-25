@@ -10,8 +10,8 @@
 \usage{
 generate.population(object, ...)
 
-\S4method{generate.population}{Population.Description}(object, detectability,
-  region.obj = NULL)
+\S4method{generate.population}{Population.Description}(object,
+  detectability, region.obj = NULL)
 
 \S4method{generate.population}{Simulation}(object, ...)
 }

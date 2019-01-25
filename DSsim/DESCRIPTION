@@ -124,4 +124,4 @@ Collate:
     'single.simulation.loop.R'
     'store.ddf.results.R'
     'store.dht.results.R'
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.1

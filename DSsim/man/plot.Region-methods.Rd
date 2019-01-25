@@ -5,8 +5,9 @@
 \alias{plot,Region,ANY-method}
 \title{Plot}
 \usage{
-\S4method{plot}{Region,ANY}(x, y, add = FALSE, plot.units = character(0),
-  region.col = NULL, gap.col = NULL, main = "", ...)
+\S4method{plot}{Region,ANY}(x, y, add = FALSE,
+  plot.units = character(0), region.col = NULL, gap.col = NULL,
+  main = "", ...)
 }
 \arguments{
 \item{x}{object of class Region}

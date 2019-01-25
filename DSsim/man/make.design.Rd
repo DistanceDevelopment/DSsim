@@ -6,8 +6,9 @@
 \usage{
 make.design(transect.type = "line", design.details = "default",
   region.obj = "region", design.axis = 0, spacing = 100,
-  nested.space = numeric(0), no.complex = numeric(0), angle = numeric(0),
-  plus.sampling = logical(0), path = character(0))
+  nested.space = numeric(0), no.complex = numeric(0),
+  angle = numeric(0), plus.sampling = logical(0),
+  path = character(0))
 }
 \arguments{
 \item{transect.type}{character variable specifying either "Line" or "Point"}

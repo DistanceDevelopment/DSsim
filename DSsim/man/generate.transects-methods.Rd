@@ -22,17 +22,17 @@ generate.transects(object, region = NULL, ...)
 \S4method{generate.transects}{PT.Nested.Design}(object, region = NULL,
   index = NULL, silent = FALSE)
 
-\S4method{generate.transects}{PT.Systematic.Design}(object, region = NULL,
-  index = NULL, silent = FALSE)
+\S4method{generate.transects}{PT.Systematic.Design}(object,
+  region = NULL, index = NULL, silent = FALSE)
 
 \S4method{generate.transects}{LT.Design}(object, region = NULL,
   index = NULL)
 
-\S4method{generate.transects}{LT.EqSpace.ZZ.Design}(object, region = NULL,
-  index = NULL, silent = FALSE, complement = FALSE)
+\S4method{generate.transects}{LT.EqSpace.ZZ.Design}(object,
+  region = NULL, index = NULL, silent = FALSE, complement = FALSE)
 
-\S4method{generate.transects}{LT.Systematic.Design}(object, region = NULL,
-  index = NULL, silent = FALSE)
+\S4method{generate.transects}{LT.Systematic.Design}(object,
+  region = NULL, index = NULL, silent = FALSE)
 
 \S4method{generate.transects}{Simulation}(object, region = NULL)
 }

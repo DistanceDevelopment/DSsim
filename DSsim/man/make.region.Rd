@@ -5,9 +5,9 @@
 \title{Creates a Region object}
 \usage{
 make.region(region.name = "region", strata.name = character(0),
-  units = "m", area = numeric(0), shapefile = NULL, coords = coords <-
-  list(list(data.frame(x = c(0, 0, 2000, 2000, 0), y = c(0, 500, 500, 0, 0)))),
-  gaps = list(), check.LinkID = TRUE)
+  units = "m", area = numeric(0), shapefile = NULL, coords = coords
+  <- list(list(data.frame(x = c(0, 0, 2000, 2000, 0), y = c(0, 500, 500, 0,
+  0)))), gaps = list(), check.LinkID = TRUE)
 }
 \arguments{
 \item{region.name}{the region name}
