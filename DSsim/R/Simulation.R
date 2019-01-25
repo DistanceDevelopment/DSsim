@@ -643,8 +643,11 @@ setMethod(
   signature="Simulation",
   definition=function(object, run.parallel = FALSE, max.cores = NA, save.data = FALSE, load.data = FALSE, data.path = character(0), counter = TRUE, progress.file = ""){
     #reset the error/warning message
-    object@warnings$message <- list()
-    object@warnings$counter <- list()
+    test <- try(object@warnings, silent = TRUE)
+    if(class(test) == list){
+      object@warnings$message <- list()
+      object@warnings$counter <- list()  
+    }
     #Note options save.data, load.data, data.path are not implemented in simulations run in parallel.
     #check the data.path ends in "/"
     if(length(data.path) > 0){
@@ -715,8 +718,15 @@ setMethod(
     object@results <- add.summary.results(object@results)
     object@design@file.index <- orig.file.index
     #Process warnings
-    for(i in seq(along = object@warnings$message)){
-      message(paste(object@warnings$message[[i]], " (occured ", object@warnings$counter[[i]], " times)"))
+    test <- try(object@warnings, silent = TRUE)
+    if(class(test) == list){
+      if(length(object@warnings$message) > 0 && !suppressWarn){
+        message("Summary of warnings and errors:")
+        for(i in seq(along = object@warnings$message)){
+          message(paste(object@warnings$message[[i]], " (occurred ", object@warnings$counter[[i]], " times)"))
+        }  
+        message("-----")
+      }
     }
     return(object)
   }
