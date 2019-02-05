@@ -78,6 +78,7 @@ single.simulation.loop <- function(i, object, save.data, load.data, data.path = 
   if(nrow(ddf.data@ddf.dat[!is.na(ddf.data@ddf.dat$distance),]) >= 20){
     ddf.results <- run.analysis(object, ddf.data)
     warnings <- ddf.results$warnings
+    num.successful.models <- ddf.results$num.successful.models
     ddf.results <- ddf.results$best.model
   }else{
     warning("There are too few data points (<20) to be analysed, skipping this iteration.", call. = FALSE, immediate. = TRUE)
@@ -86,7 +87,7 @@ single.simulation.loop <- function(i, object, save.data, load.data, data.path = 
   #Check at least one model worked
   if(!is.null(ddf.results)){
     #Store ddf results
-    object@results$Detection <- store.ddf.results(object@results$Detection, ddf.results, i, n.in.covered)
+    object@results$Detection <- store.ddf.results(object@results$Detection, ddf.results, i, n.in.covered, num.successful.models)
     #Check to see if the stratification is to be modified for analysis
     analysis.strata <- object@ddf.analyses[[1]]@analysis.strata
     if(nrow(analysis.strata) > 0){

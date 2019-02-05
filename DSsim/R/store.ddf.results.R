@@ -1,4 +1,4 @@
-store.ddf.results <- function(detection.results, ddf.results, i, N.in.covered){
+store.ddf.results <- function(detection.results, ddf.results, i, N.in.covered, num.successful.models){
   Nhat <- ddf.results$Nhat
   n <- length(ddf.results$fitted)
   True.Pa <- n/N.in.covered
@@ -14,6 +14,7 @@ store.ddf.results <- function(detection.results, ddf.results, i, N.in.covered){
   if(!is.null(ddf.results$delta.criteria)){
     detection.results[1, "DeltaCriteria", i] <- ddf.results$delta.criteria
   }
+  detection.results[1, "SuccessfulModels", i] <- num.successful.models
   return(detection.results)
 }
 

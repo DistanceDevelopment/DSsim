@@ -13,7 +13,7 @@
 \item{description.summary}{logical indicating whether an
 explanation of the summary should be included}
 
-\item{...}{not implemented}
+\item{...}{can specify if you want the maximum number of iterations to be used where at least one model converged (use.max.iters = TRUE) or only use iterations where all models converged (use.max.iters = FALSE)}
 }
 \description{
 Provides a summary of the simulation results.

@@ -18,6 +18,7 @@ setClass("Simulation.Summary", representation(region.name = "character",
                                       strata.name = "character",
                                       total.reps = "numeric",
                                       failures = "numeric",
+                                      use.max.iters = "logical",
                                       individuals = "list",
                                       clusters = "list",
                                       expected.size = "data.frame", 
@@ -34,12 +35,13 @@ setClass("Simulation.Summary", representation(region.name = "character",
 setMethod(
   f="initialize",   
   signature="Simulation.Summary",
-  definition=function(.Object, region.name, strata.name, total.reps, failures, individuals, clusters = list(), expected.size = data.frame(NULL), population.covars, detection, model.selection, design.summary = list(), detectability.summary = list(), analysis.summary = list(), include.glossary = FALSE){
+  definition=function(.Object, region.name, strata.name, total.reps, failures, use.max.iters, individuals, clusters = list(), expected.size = data.frame(NULL), population.covars, detection, model.selection, design.summary = list(), detectability.summary = list(), analysis.summary = list(), include.glossary = FALSE){
     #Set slots
     .Object@region.name     <- region.name
     .Object@strata.name     <- strata.name
     .Object@total.reps      <- total.reps
     .Object@failures        <- failures
+    .Object@use.max.iters       <- use.max.iters
     .Object@individuals     <- individuals    
     .Object@clusters        <- clusters
     .Object@expected.size   <- expected.size
@@ -95,9 +97,14 @@ setMethod(
     cat("\n\nRegion: ", object@region.name) 
     cat("\nNo. Repetitions: ", object@total.reps)
     if(not.run){
-      cat("\nNo. Failures: NA", fill = TRUE)
+      cat("\nNo. Excluded Repetitions: NA", fill = TRUE)
     }else{
-      cat("\nNo. Failures: ", object@failures, fill = TRUE)  
+      cat("\nNo. Excluded Repetitions: ", object@failures, fill = TRUE)  
+    }
+    if(object@use.max.iters){
+      cat("Using all repetitions where at least one model converged.", fill = TRUE)  
+    }else{
+      cat("Using only repetitions where all models converged.", fill = TRUE)  
     }
     show(object@design.summary)
     # for backwards compatibility
