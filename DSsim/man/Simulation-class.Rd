@@ -48,7 +48,8 @@ parameters associated with the detection function.}
 the estimated of abundance and density as well as other measures
 of interest.}
 
-\item{\code{warnings}}{A \code{"list"} to store warning and error messages}
+\item{\code{warnings}}{A \code{"list"} to store warnings and error messages encountered
+during runtime.}
 }}
 
 \section{Methods}{
