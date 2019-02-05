@@ -56,12 +56,13 @@ description.summary <- function(){
   
   cat("\n\nDetection Function Values\n")
   cat("~~~~~~~~~~~~~~~~~~~~~~~~~\n")
-  cat("\n mean.observed.Pa : mean proportion of animals observed in the covered 
-                    region.")  
-  cat("\n mean.estimte.Pa  : mean estimate of the proportion of animals observed 
-                    in the covered region.") 
+  cat("\n mean.observed.Pa : mean proportion of individuals/clusters observed in  
+                    the covered region.")  
+  cat("\n mean.estimte.Pa  : mean estimate of the proportion of individuals/
+                    clusters observed in the covered region.") 
   cat("\n sd.estimate.Pa   : standard deviation of the mean estimates of the 
-                    proportion of animals observed in the covered region.") 
+                    proportion of individuals/clusters observed in the 
+                    covered region.") 
   cat("\n mean.ESW         : mean estimated strip width.") 
   cat("\n sd.ESW           : standard deviation of the mean estimated strip widths.") 
   
