@@ -86,7 +86,7 @@ setClass("Simulation", representation(reps = "numeric",
 setMethod(
   f="initialize",
   signature="Simulation",
-  definition=function(.Object, reps, single.transect.set = FALSE, double.observer = FALSE, region, design, population.description, detectability, ddf.analyses, results){
+  definition=function(.Object, reps = 10, single.transect.set = FALSE, double.observer = FALSE, region = make.region(), design = make.design(), population.description = make.population.description(), detectability = make.detectability(), ddf.analyses = make.ddf.analysis.list(), results = list()){
     #Set slots
     .Object@reps            <- reps
     .Object@single.transect.set <- single.transect.set
@@ -97,6 +97,7 @@ setMethod(
     .Object@detectability   <- detectability
     .Object@ddf.analyses    <- ddf.analyses
     .Object@results         <- results
+    .Object@warnings        <- list()
     #Check object is valid
     validObject(.Object)
     # return object

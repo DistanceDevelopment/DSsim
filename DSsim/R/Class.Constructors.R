@@ -395,18 +395,6 @@ make.density <- function(region.obj = make.region(), density.surface = list(), x
 #' # Note that the covariate values have not affected the detectability (the scale parameter) to 
 #' # do this we need to set the cov.param argument in make.detectability. See ?make.detectability
 make.population.description <- make.pop.description <- function(region.obj = make.region(), density.obj = make.density(), covariates = list(), N = numeric(0), fixed.N = TRUE){
-  # Get the number of strata
-  no.strata <- ifelse(length(region.obj@strata.name) > 0, length(region.obj@strata.name), 1)
-  # Check covariate input
-  covariates <- check.covariates(covariates, no.strata)
-  # Check population size input
-  if(fixed.N){
-    if(length(N) == 0){
-      N <- rep(1000, no.strata)  
-    }else if(length(N) != no.strata){
-      stop("You have not supplied the correct number of constants for population size N for each strata", call. = FALSE)
-    }
-  }
   pop.description <- new(Class = "Population.Description", N = N, density = density.obj, region.obj = region.obj, covariates = covariates, gen.by.N = fixed.N)
   return(pop.description)
 }
@@ -646,39 +634,40 @@ make.simulation <- function(reps = 10, single.transect.set = FALSE, double.obser
   if(ddf.analyses.list[[1]]@truncation > detectability.obj@truncation){
     warning("The truncation distance for analysis is larger than the truncation distance for data generation, this will likely cause biased results.", immediate. = TRUE, call. = FALSE)
   }
-  # Make the results arrays and store in a list
-  no.strata <- ifelse(length(region.obj@strata.name) > 0, length(region.obj@strata.name)+1, 1) 
-  # Check to see if the strata are grouped in the analyses
-  new.strata.names <- NULL
-  if(nrow(ddf.analyses.list[[1]]@analysis.strata) > 0){
-    new.strata.names <- unique(ddf.analyses.list[[1]]@analysis.strata$analysis.id)  
-  }else{
-    new.strata.names <- NULL
-  }
-  if(length(region.obj@strata.name) > 0){
-    if(!is.null(new.strata.names)){
-      strata.name <- c(sort(new.strata.names), "Total")
-      no.strata <- length(strata.name)
-    }else{
-      strata.name <- c(sort(region.obj@strata.name), "Total")  
-    }
-  }else{
-    strata.name <- region.obj@region.name
-  }
-  individuals <- list(summary = array(NA, dim = c(no.strata, 8, reps+2), dimnames = list(strata.name, c("Area", "CoveredArea", "Effort", "n", "n.miss.dist", "ER", "se.ER", "cv.ER"), c(1:reps,"mean","sd"))), 
-                  N = array(NA, dim = c(no.strata, 6, reps+2), dimnames = list(strata.name, c("Estimate", "se", "cv", "lcl", "ucl", "df"), c(1:reps,"mean","sd"))), 
-                  D = array(NA, dim = c(no.strata, 6, reps+2), dimnames = list(strata.name, c("Estimate", "se", "cv", "lcl", "ucl", "df"), c(1:reps,"mean", "sd"))))
-  detection = array(NA, dim = c(1, 6, reps+2), dimnames = list("Pooled", c("True.Pa", "Pa", "ESW", "f(0)", "SelectedModel", "DeltaCriteria"), c(1:reps,"mean","sd")))
-  #create additional arrays if animals are in clusters
-  if(population.description.obj@size){
-    clusters <- list(summary = array(NA, dim = c(no.strata, 9, reps+2), dimnames = list(strata.name, c("Area", "CoveredArea", "Effort", "n", "n.miss.dist", "k", "ER", "se.ER", "cv.ER"), c(1:reps,"mean","sd"))), 
-                    N = array(NA, dim = c(no.strata, 6, reps+2), dimnames = list(strata.name, c("Estimate", "se", "cv", "lcl", "ucl", "df"), c(1:reps,"mean","sd"))), 
-                    D = array(NA, dim = c(no.strata, 6, reps+2), dimnames = list(strata.name, c("Estimate", "se", "cv", "lcl", "ucl", "df"), c(1:reps,"mean", "sd"))))
-    expected.size <- array(NA, dim = c(no.strata, 3, reps+2), dimnames = list(strata.name, c("Expected.S", "se.Expected.S", "cv.Expected.S"), c(1:reps,"mean","sd")))
-    results <- list(individuals = individuals, clusters = clusters, expected.size = expected.size, Detection = detection)
-  }else{
-    results <- list(individuals = individuals, Detection = detection)
-  }
+  results <- create.results.arrays(reps, region.obj, ddf.analyses.list, population.description.obj)
+  # # Make the results arrays and store in a list
+  # no.strata <- ifelse(length(region.obj@strata.name) > 0, length(region.obj@strata.name)+1, 1) 
+  # # Check to see if the strata are grouped in the analyses
+  # new.strata.names <- NULL
+  # if(nrow(ddf.analyses.list[[1]]@analysis.strata) > 0){
+  #   new.strata.names <- unique(ddf.analyses.list[[1]]@analysis.strata$analysis.id)  
+  # }else{
+  #   new.strata.names <- NULL
+  # }
+  # if(length(region.obj@strata.name) > 0){
+  #   if(!is.null(new.strata.names)){
+  #     strata.name <- c(sort(new.strata.names), "Total")
+  #     no.strata <- length(strata.name)
+  #   }else{
+  #     strata.name <- c(sort(region.obj@strata.name), "Total")  
+  #   }
+  # }else{
+  #   strata.name <- region.obj@region.name
+  # }
+  # individuals <- list(summary = array(NA, dim = c(no.strata, 8, reps+2), dimnames = list(strata.name, c("Area", "CoveredArea", "Effort", "n", "n.miss.dist", "ER", "se.ER", "cv.ER"), c(1:reps,"mean","sd"))), 
+  #                 N = array(NA, dim = c(no.strata, 6, reps+2), dimnames = list(strata.name, c("Estimate", "se", "cv", "lcl", "ucl", "df"), c(1:reps,"mean","sd"))), 
+  #                 D = array(NA, dim = c(no.strata, 6, reps+2), dimnames = list(strata.name, c("Estimate", "se", "cv", "lcl", "ucl", "df"), c(1:reps,"mean", "sd"))))
+  # detection = array(NA, dim = c(1, 7, reps+2), dimnames = list("Pooled", c("True.Pa", "Pa", "ESW", "f(0)", "SelectedModel", "DeltaCriteria", "SuccessfulModels"), c(1:reps,"mean","sd")))
+  # #create additional arrays if animals are in clusters
+  # if(population.description.obj@size){
+  #   clusters <- list(summary = array(NA, dim = c(no.strata, 9, reps+2), dimnames = list(strata.name, c("Area", "CoveredArea", "Effort", "n", "n.miss.dist", "k", "ER", "se.ER", "cv.ER"), c(1:reps,"mean","sd"))), 
+  #                   N = array(NA, dim = c(no.strata, 6, reps+2), dimnames = list(strata.name, c("Estimate", "se", "cv", "lcl", "ucl", "df"), c(1:reps,"mean","sd"))), 
+  #                   D = array(NA, dim = c(no.strata, 6, reps+2), dimnames = list(strata.name, c("Estimate", "se", "cv", "lcl", "ucl", "df"), c(1:reps,"mean", "sd"))))
+  #   expected.size <- array(NA, dim = c(no.strata, 3, reps+2), dimnames = list(strata.name, c("Expected.S", "se.Expected.S", "cv.Expected.S"), c(1:reps,"mean","sd")))
+  #   results <- list(individuals = individuals, clusters = clusters, expected.size = expected.size, Detection = detection)
+  # }else{
+  #   results <- list(individuals = individuals, Detection = detection)
+  # }
   #create a simulation object
   simulation <- new(Class = "Simulation", reps = reps, single.transect.set = single.transect.set, double.observer = double.observer, region = region.obj, design = design.obj, population.description = population.description.obj, detectability = detectability.obj, ddf.analyses = ddf.analyses.list, results = results)
   return(simulation)

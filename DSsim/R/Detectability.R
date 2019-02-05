@@ -28,7 +28,7 @@ setClass("Detectability", representation(key.function    = "character",
 setMethod(
   f="initialize",
   signature="Detectability",
-  definition=function(.Object, key.function, scale.param, shape.param = numeric(0), covariates = character(0), cov.param = numeric(0), truncation = numeric(0)){
+  definition=function(.Object, key.function = "hn", scale.param = 25, shape.param = numeric(0), covariates = character(0), cov.param = numeric(0), truncation = 50){
     #Input pre-processing
     #Set slots
     .Object@key.function <- key.function
