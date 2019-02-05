@@ -153,6 +153,33 @@ setMethod(
     if(description.summary){
       description.summary()
     }
+    #Check if simulation object is up-to-date
+    object <- dssim.update(object, warn = FALSE)
+    #Get number of reps
+    reps <- object@reps
+    #Check for additional arguments
+    additional.args <- names(list(...))
+    if (!("use.max.iters" %in% additional.args)){
+      #By default exclude all iterations where one or more models failed to converge
+      use.max.iters = FALSE
+    }
+    #Get index of iterations to use
+    model.count <- length(object@ddf.analyses)
+    #These will use max iters by default
+    results <- object@results
+    #Make backwards compatible
+    if("SuccessfulModels" %in% dimnames(object@results$Detection)[[2]]){
+      if(use.max.iters){
+        rep.index <- which(object@results$Detection[1,"SuccessfulModels",1:reps] > 0)
+      }else{
+        rep.index <- which(object@results$Detection[1,"SuccessfulModels",1:reps] == model.count)
+        results <- add.summary.results(results, length(object@ddf.analyses), use.max.iters = use.max.iters)
+      }  
+    }else{
+      #Otherwise get all repetitions where estimated abundance is not NA
+      rep.index <- which(!is.na(results$individuals$N[1,"Estimate",1:reps]))
+      use.max.iters = TRUE
+    }
     #Create function to calculate RMSE
     calc.RMSE <- function(x, reps){ 
       true.x <- x[(reps+1)]
@@ -642,6 +669,10 @@ setMethod(
   f="run",
   signature="Simulation",
   definition=function(object, run.parallel = FALSE, max.cores = NA, save.data = FALSE, load.data = FALSE, data.path = character(0), counter = TRUE, progress.file = ""){
+    #Check to see if the Simulation object is up-to-date
+    object <- dssim.update(object)
+    #Reset results arrays
+    object@results <- create.results.arrays(object@reps, object@region, object@ddf.analyses, object@population.description)
     #reset the error/warning message
     test <- try(object@warnings, silent = TRUE)
     if(class(test) == list){

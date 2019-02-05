@@ -100,6 +100,7 @@ Collate:
     'create.bins.R'
     'data.for.distance.R'
     'description.summary.R'
+    'dssim.update.R'
     'extract.spat.poly.coords.R'
     'generate.pop.D.R'
     'generate.pop.N.R'

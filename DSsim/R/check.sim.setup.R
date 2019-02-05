@@ -24,6 +24,7 @@ check.sim.setup <- function(simulation) {
   #  output:
   #     4-panel plot of study region with popn, study region with transects,
   #     study region with detected objects, and histogram of detection distances
+  simulation <- dssim.update(simulation, warn = FALSE)
   eg.survey <- create.survey.results(simulation)  #simulate the survey process of detection
   dist.data <- get.distance.data(eg.survey)  #look at distance data
   oldparams <- par(mfrow = c(2,2))
