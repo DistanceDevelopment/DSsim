@@ -98,6 +98,7 @@ Collate:
     'check.sim.setup.R'
     'coords.from.shapefile.R'
     'create.bins.R'
+    'create.results.arrays.R'
     'data.for.distance.R'
     'description.summary.R'
     'dssim.update.R'
