@@ -128,7 +128,7 @@ setMethod(
                                       warning=function(w){W <<- w; invokeRestart("muffleWarning")})
     #check if there was an error, warning or non-convergence
     if(any(class(ddf.result) == "error")){
-      warnings <- message.handler(warnings, paste("Error: ", ddf.result$message, sep = ""))
+      warnings <- message.handler(warnings, paste("Error: ", ddf.result$message, " (Model call: ", as.character(object@dsmodel)[2], ")", sep = ""))
       ddf.result <- NA
     }else if(ddf.result$ds$converge != 0){
       ddf.result <- NA
@@ -138,7 +138,7 @@ setMethod(
       warnings <- message.handler(warnings, "Negative predictions, excluding these results")
     } 
     if(!is.null(W)){
-      warnings <- message.handler(warnings, W)
+      warnings <- message.handler(warnings, paste(W, " (Model call: ", as.character(object@dsmodel)[2], ")", sep = ""))
     } 
     return(list(ddf.result = ddf.result, warnings = warnings))
   }    
