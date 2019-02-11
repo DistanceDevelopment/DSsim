@@ -54,7 +54,7 @@ single.simulation.loop <- function(i, object, save.data, load.data, data.path = 
     obs.table <- dist.data$obs.table
     sample.table <- dist.data$sample.table
     region.table <- dist.data$region.table
-    n.in.covered <- dist.data$n.in.covered 
+    dists.in.covered <- dist.data$n.in.covered 
   }else{
     #simulate survey
     survey.data <- create.survey.results(object = survey, dht.tables = TRUE, region = object@region)
@@ -62,17 +62,17 @@ single.simulation.loop <- function(i, object, save.data, load.data, data.path = 
     obs.table <- survey.data$obs.table
     sample.table <- survey.data$sample.table
     region.table <- survey.data$region.table
-    n.in.covered <- survey.data$n.in.covered 
+    dists.in.covered <- survey.data$n.in.covered 
     if(save.data){
-      dist.data <- list(ddf = ddf.data, obs.table = obs.table, sample.table = sample.table, region.table = region.table, n.in.covered = n.in.covered)  
+      dist.data <- list(ddf = ddf.data, obs.table = obs.table, sample.table = sample.table, region.table = region.table, n.in.covered = dists.in.covered)  
       save(dist.data, file = paste(data.path,"dataset_",i,".robj", sep = ""))
     }
   }
   #Find how many animals were in the covered region
   if(length(object@ddf.analyses[[1]]@truncation) > 0){
-    n.in.covered <- length(which(n.in.covered <= object@ddf.analyses[[1]]@truncation))  
+    n.in.covered <- length(which(dists.in.covered <= object@ddf.analyses[[1]]@truncation))  
   }else{
-    n.in.covered <- length(n.in.covered)
+    n.in.covered <- length(dists.in.covered)
   }
   #analyse survey if there are data to analyse
   if(nrow(ddf.data@ddf.dat[!is.na(ddf.data@ddf.dat$distance),]) >= 20){
