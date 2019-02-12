@@ -24,6 +24,7 @@ setClass(Class = "LT.Design",
 
 #' @rdname generate.transects-methods
 #' @importFrom utils read.table
+#' @importFrom shapefiles read.shapefile convert.to.shapefile
 #' @export
 setMethod(
   f="generate.transects",
@@ -43,19 +44,19 @@ setMethod(
     #Input pre-processing
     if(read.from.file){
       #Load the shapefle
-      shapefile <- shapefiles::read.shapefile(paste(object@path, "/", object@filenames[file.index], sep=""))
+      shapefile <- read.shapefile(paste(object@path, "/", object@filenames[file.index], sep=""))
       if(length(shapefile$shp$shp) == 0){
         warning("Survey transect shapefile has no transects.", call. = FALSE, immediate. = TRUE)
         dd <- data.frame(Id=c(1,1),X=c(1,1),Y=c(1,1))
         dd.table <- data.frame(Id=c(1),Name=c("1"))
-        shapefile <- shapefiles::convert.to.shapefile(dd, dd.table, "Id", 3)
+        shapefile <- convert.to.shapefile(dd, dd.table, "Id", 3)
         meta <- data.frame(V1 = as.factor(object@filenames[file.index]), V2 = 1, V3 = 1)  
       #Check the shapefile is the correct type
       }else if(!shapefile$shp$header$shape.type %in% c(3,13,23)){
         warning("Survey transect shapefile of wrong shapefile type (not lines) cannot load survey.", call. = FALSE, immediate. = TRUE)
         dd <- data.frame(Id=c(1,1),X=c(1,1),Y=c(1,1))
         dd.table <- data.frame(Id=c(1),Name=c("1"))
-        shapefile <- shapefiles::convert.to.shapefile(dd, dd.table, "Id", 3)
+        shapefile <- convert.to.shapefile(dd, dd.table, "Id", 3)
         meta <- data.frame(V1 = as.factor(object@filenames[file.index]), V2 = 1, V3 = 1)
       }else{
         #Load the meta file if it exists - describes which transects are in which strata
