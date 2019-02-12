@@ -4,6 +4,11 @@ DSsim 1.1.4
 New Features
 
   *Can now generate equal spaced zig zag designs with any design axis angle and can generate two sets of complimentary zigzags. 
+  *User can now select between using all repetitions where at least one model converged and ony repetitions where all models convgered. This is selected when calling summary on a simulation object.
+  *Now tells user which models cause issued in mrds.
+  
+Bug Fixes
+  *Improved backwards compatibility, including updating the S4 objects to include default values for missing slots
 
 DSsim 1.1.3
 -----------
