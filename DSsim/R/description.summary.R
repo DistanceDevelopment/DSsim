@@ -12,8 +12,8 @@ description.summary <- function(){
   cat("~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
   cat("\nRegion          : the region name.")
   cat("\nNo. Repetitions : the number of times the simulation was repeated.")
-  cat("\nNo. Failures    : the number of times the simulation failed (too
-                  few sightings, model fitting failure etc.)\n")
+  cat("\nNo. Excluded Repetitions : the number of times the simulation failed 
+                  (too few sightings, model fitting failure etc.)\n")
   
   cat("\nSummary for Individuals\n")
   cat("~~~~~~~~~~~~~~~~~~~~~~~\n")
