@@ -3,7 +3,7 @@
 #' @title Class "Population" 
 #' 
 #' @description Contains an instance of a population including a description of their detectability
-#' in the form of an object of calss Detectability.
+#' in the form of an object of class Detectability.
 #'
 #' @name Population-class
 #' @title S4 Class "Population"

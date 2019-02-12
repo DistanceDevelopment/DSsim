@@ -41,7 +41,7 @@ setMethod(
     .Object@strata.name     <- strata.name
     .Object@total.reps      <- total.reps
     .Object@failures        <- failures
-    .Object@use.max.iters       <- use.max.iters
+    .Object@use.max.iters   <- use.max.iters
     .Object@individuals     <- individuals    
     .Object@clusters        <- clusters
     .Object@expected.size   <- expected.size
@@ -101,7 +101,13 @@ setMethod(
     }else{
       cat("\nNo. Excluded Repetitions: ", object@failures, fill = TRUE)  
     }
-    if(object@use.max.iters){
+    test <- try(object@use.max.iters, silent = T)
+    if(class(test) != "try-error"){ #backwards compatibility
+      use.max.iters <- test  
+    }else{
+      use.max.iters <- TRUE  
+    }
+    if(use.max.iters){
       cat("Using all repetitions where at least one model converged.", fill = TRUE)  
     }else{
       cat("Using only repetitions where all models converged.", fill = TRUE)  

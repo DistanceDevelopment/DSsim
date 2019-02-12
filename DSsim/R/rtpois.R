@@ -1,4 +1,4 @@
-#' Ramdonly generates values from a zero-truncated Poisson distribution
+#' Randomly generates values from a zero-truncated Poisson distribution
 #'
 #' Generates values from a zero-truncated Poisson distribution with mean
 #' equal to that specified. It uses a look up table to check which value of 

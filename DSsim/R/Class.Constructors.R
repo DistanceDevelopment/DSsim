@@ -30,7 +30,7 @@
 #' @param area the area of the region (optional - if not supplied it will be 
 #'   calculated for you)
 #' @param shapefile a shapefile object of the region loaded into R using \code{read.shapefile(shape.name)} from the shapefiles library.
-#' @param coords A list with one element per stratum. Each element in the list is a list of dataframes describing the polygon coordinates. This allows multiple regions in each strata. The corrdinates should start and finish with the same point. By default DSsim will create a rectangular study region 2000 m by 500 m.
+#' @param coords A list with one element per stratum. Each element in the list is a list of dataframes describing the polygon coordinates. This allows multiple regions in each strata. The coordinates should start and finish with the same point. By default DSsim will create a rectangular study region 2000 m by 500 m.
 #' @param gaps A list with one element per stratum giving the areas to be excluded from the study area (the "holes"). Each element in the list is a list of \code{data.frame}s describing the polygon coordinates. This allows multiple gaps in each stratum. The corrdinates should start and finish with the same point.
 #' @param check.LinkID boolean to check the order of the LinkID value in the attribute table. This is important if this shapefile was used in Distance to create the survey shapefiles as Distance would have re-ordered the strata in this way. Failing to re-order the strata will mean that the strata in DSsim will not match the transect strata ID values created by Distance. If you have created your surveys outside Distance you can turn this option off.
 #' @return object of class Region 
@@ -104,10 +104,10 @@ make.region <- function(region.name = "region",
 #' @param region.obj the character name of the Region object where the survey is to be carried out.
 #' @param design.axis user may provide the angle of the design axis but not currently used
 #' @param spacing user may provide the systematic design spacing but but not currently used
-#' @param nested.space the number of spaces between nested points. If spacing = 1 then all points on the systematic design will be sepected.
+#' @param nested.space the number of spaces between nested points. If spacing = 1 then all points on the systematic design will be selected.
 #' @param no.complex the number of complex detectors to distribute based on simple random sampling of the systematic grid of detectors.
 #' @param angle user may provide the design angle (only relevant in equal angle zigzag designs) but not currently used
-#' @param plus.sampling logical vaule indicating whether a plus sampling protocol is used but not currently used
+#' @param plus.sampling logical value indicating whether a plus sampling protocol is used but not currently used
 #' @param path pathway giving the location of the folder of survey shapefiles 
 #' @return object of a class which inherits from class Survey.Design 
 #' @export
@@ -522,7 +522,7 @@ make.ddf.analysis.list <- function(dsmodel = list(~cds(key = "hn", formula = ~1)
 #' to generate a population, create or read in transects, simulate the survey process
 #' and fit detection functions and estimate density / abundance. This function can be
 #' used by itself based on default values to create a simple line transect example, see
-#' Examples below. To create more comples simulations it is advisable to define the 
+#' Examples below. To create more complex simulations it is advisable to define the 
 #' different parts of the simulation individually before grouping them together. See
 #' the Arguments for links to the functions which make the definitions for the 
 #' individual simulation components. Example simulations can also be found at

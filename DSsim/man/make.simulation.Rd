@@ -42,7 +42,7 @@ This creates a simulation with all the information necessary for DSsim
 to generate a population, create or read in transects, simulate the survey process
 and fit detection functions and estimate density / abundance. This function can be
 used by itself based on default values to create a simple line transect example, see
-Examples below. To create more comples simulations it is advisable to define the 
+Examples below. To create more complex simulations it is advisable to define the 
 different parts of the simulation individually before grouping them together. See
 the Arguments for links to the functions which make the definitions for the 
 individual simulation components. Example simulations can also be found at

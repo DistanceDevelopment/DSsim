@@ -56,7 +56,7 @@ listed in the filenames slot.}
 an object of class Line.Transect
 }
 \description{
-Uses the Survey.Design details to generate transects. Currenty this 
+Uses the Survey.Design details to generate transects. Currently this 
 involves loading a survey shapefile from the path specified in the 
 Survey.Design object and can only work with line transect designs.
 }

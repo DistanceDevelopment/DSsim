@@ -8,7 +8,7 @@
 Class "Detectability"
 }
 \details{
-Class \code{"Detectability"} is an S4 class describing the probablity
+Class \code{"Detectability"} is an S4 class describing the probability
 of detecting individuals / clusters in a population.
 }
 \section{Slots}{

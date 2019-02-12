@@ -2,7 +2,7 @@
 % Please edit documentation in R/rtpois.R
 \name{rtpois}
 \alias{rtpois}
-\title{Ramdonly generates values from a zero-truncated Poisson distribution}
+\title{Randomly generates values from a zero-truncated Poisson distribution}
 \usage{
 rtpois(N, mean = NA)
 }

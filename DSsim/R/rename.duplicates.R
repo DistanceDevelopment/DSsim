@@ -6,7 +6,7 @@
 #'  
 #' @param ddf.dat dataframe containing a single dataset with duplicate 
 #'   observations
-#' @param double.observer logical indicating whether it is a double obsever survey or not
+#' @param double.observer logical indicating whether it is a double observer survey or not
 #' @return list with 2 elements:
 #'   ddf.dat dataframe containing a single dataset with new and unique 
 #'     observation IDs 

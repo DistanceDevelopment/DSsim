@@ -11,7 +11,7 @@ rename.duplicates(ddf.dat, double.observer = FALSE)
 \item{ddf.dat}{dataframe containing a single dataset with duplicate 
 observations}
 
-\item{double.observer}{logical indicating whether it is a double obsever survey or not}
+\item{double.observer}{logical indicating whether it is a double observer survey or not}
 }
 \value{
 list with 2 elements:

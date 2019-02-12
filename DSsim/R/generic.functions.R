@@ -24,7 +24,7 @@ setGeneric("generate.population", function(object, ...){standardGeneric ("genera
 
 #' S4 generic method to generate an instance of a design
 #'
-#' Uses the Survey.Design details to generate transects. Currenty this 
+#' Uses the Survey.Design details to generate transects. Currently this 
 #' involves loading a survey shapefile from the path specified in the 
 #' Survey.Design object and can only work with line transect designs.
 #'
@@ -152,7 +152,7 @@ setGeneric(name = "run", def = function(object, run.parallel = FALSE, max.cores 
 #' @param data an object of class Survey.Results or DDF.Data
 #' @param ... optional arguments including the following:
 #' @param dht logical whether density should be estimated after fitting the model
-#' @return a list containing an S3 ddf object and optionally an S3 dht object relating to the model with the miminum criteria.
+#' @return a list containing an S3 ddf object and optionally an S3 dht object relating to the model with the minimum criteria.
 #' @export
 #' @rdname run.analysis-methods
 setGeneric(name = "run.analysis", def = function(object, data, ...){standardGeneric ("run.analysis")})

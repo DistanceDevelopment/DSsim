@@ -7,7 +7,7 @@
 \description{
   This is a list of 2 2D arrays. Each array contains parameter estimates from the covariate 
   simulations described in the vignette. These simulations generate data based on sex affecting
-  detectaibility, they then fit a model to these data with sex as a covariate to see if the 
+  detectability, they then fit a model to these data with sex as a covariate to see if the 
   original parameters can be estimated from the data. This process was repeated 999 times for 
   5 different truncation values to see if truncation distance affects the parameter estimates.
 }
