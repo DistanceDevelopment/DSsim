@@ -164,6 +164,8 @@ setMethod(
     if (!("use.max.iters" %in% additional.args)){
       #By default exclude all iterations where one or more models failed to converge
       use.max.iters = FALSE
+    }else{
+      use.max.iters = list(...)$use.max.iters
     }
     #Get index of iterations to use
     model.count <- length(object@ddf.analyses)
