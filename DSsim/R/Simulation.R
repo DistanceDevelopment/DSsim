@@ -144,7 +144,7 @@ setValidity("Simulation",
 #' @param object object of class Simulation
 #' @param description.summary logical indicating whether an
 #'  explanation of the summary should be included
-#' @param ... can specify if you want the maximum number of iterations to be used where at least one model converged (use.max.iters = TRUE) or only use iterations where all models converged (use.max.iters = FALSE)
+#' @param ... can specify if you want the maximum number of iterations to be used where at least one model converged (use.max.reps = TRUE) or only use iterations where all models converged (use.max.reps = FALSE)
 #' @rdname summary.Simulation-methods
 #' @importFrom stats na.omit qlnorm qnorm
 #' @export
@@ -161,11 +161,11 @@ setMethod(
     reps <- object@reps
     #Check for additional arguments
     additional.args <- names(list(...))
-    if (!("use.max.iters" %in% additional.args)){
+    if (!("use.max.reps" %in% additional.args)){
       #By default exclude all iterations where one or more models failed to converge
-      use.max.iters = FALSE
+      use.max.reps = FALSE
     }else{
-      use.max.iters = list(...)$use.max.iters
+      use.max.reps = list(...)$use.max.reps
     }
     #Get index of iterations to use
     model.count <- length(object@ddf.analyses)
@@ -173,16 +173,16 @@ setMethod(
     results <- object@results
     #Make backwards compatible
     if("SuccessfulModels" %in% dimnames(object@results$Detection)[[2]]){
-      if(use.max.iters){
+      if(use.max.reps){
         rep.index <- which(object@results$Detection[1,"SuccessfulModels",1:reps] > 0)
       }else{
         rep.index <- which(object@results$Detection[1,"SuccessfulModels",1:reps] == model.count)
-        results <- add.summary.results(results, length(object@ddf.analyses), use.max.iters = use.max.iters)
+        results <- add.summary.results(results, length(object@ddf.analyses), use.max.reps = use.max.reps)
       }  
     }else{
       #Otherwise get all repetitions where estimated abundance is not NA
       rep.index <- which(!is.na(results$individuals$N[1,"Estimate",1:reps]))
-      use.max.iters = TRUE
+      use.max.reps = TRUE
     }
     #Create function to calculate RMSE
     calc.RMSE <- function(x, reps){ 
@@ -444,9 +444,9 @@ setMethod(
     pop.covars <- ifelse(class(pop.covars) == "try-error", list(), pop.covars)
     #Create simulation summary object
     if(!is.null(results$clusters)){
-      summary.x <- new(Class = "Simulation.Summary", region.name = object@region@region.name, strata.name = object@region@strata.name, total.reps = object@reps, failures = no.fails, use.max.iters = use.max.iters, individuals = individuals, clusters = clusters, expected.size = expected.size, population.covars = pop.covars, detection = detection, model.selection = tab.model.selection, design.summary = design.summary, detectability.summary = detectability.summary, analysis.summary = analysis.summary)
+      summary.x <- new(Class = "Simulation.Summary", region.name = object@region@region.name, strata.name = object@region@strata.name, total.reps = object@reps, failures = no.fails, use.max.reps = use.max.reps, individuals = individuals, clusters = clusters, expected.size = expected.size, population.covars = pop.covars, detection = detection, model.selection = tab.model.selection, design.summary = design.summary, detectability.summary = detectability.summary, analysis.summary = analysis.summary)
     }else{
-      summary.x <- new(Class = "Simulation.Summary", region.name = object@region@region.name, strata.name = object@region@strata.name, total.reps = object@reps, failures = no.fails, use.max.iters = use.max.iters, individuals = individuals, population.covars = pop.covars, detection = detection, model.selection = tab.model.selection, design.summary = design.summary, detectability.summary = detectability.summary, analysis.summary = analysis.summary)
+      summary.x <- new(Class = "Simulation.Summary", region.name = object@region@region.name, strata.name = object@region@strata.name, total.reps = object@reps, failures = no.fails, use.max.reps = use.max.reps, individuals = individuals, population.covars = pop.covars, detection = detection, model.selection = tab.model.selection, design.summary = design.summary, detectability.summary = detectability.summary, analysis.summary = analysis.summary)
     }
     return(summary.x)
   }

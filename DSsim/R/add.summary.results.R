@@ -1,10 +1,10 @@
 #' @importFrom stats na.omit sd
-add.summary.results <- function(results, model.count, use.max.iters = TRUE){
+add.summary.results <- function(results, model.count, use.max.reps = TRUE){
   strata.names <- dimnames(results$individuals$summary)[[1]]
   reps <- length(dimnames(results$individuals$summary)[[3]])-2
   #Make backwards compatible
   if("SuccessfulModels" %in% dimnames(results$Detection)[[2]]){
-    if(use.max.iters){
+    if(use.max.reps){
       rep.index <- which(results$Detection[1,"SuccessfulModels",1:reps] > 0)
     }else{
       rep.index <- which(results$Detection[1,"SuccessfulModels",1:reps] == model.count)
