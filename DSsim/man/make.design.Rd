@@ -17,17 +17,19 @@ make.design(transect.type = "line", design.details = "default",
 
 \item{region.obj}{the character name of the Region object where the survey is to be carried out.}
 
-\item{design.axis}{user may provide the angle of the design axis but not currently used}
+\item{design.axis}{user may provide the angle of the design axis, only used when DSsim creates
+the transects. Otherwise useful to store parameters used in Distance to generate transects.}
 
-\item{spacing}{user may provide the systematic design spacing but but not currently used}
+\item{spacing}{user may provide the systematic design spacing, only used when DSsim creates
+the transects. Otherwise useful to store parameters used in Distance to generate transects.}
 
 \item{nested.space}{the number of spaces between nested points. If spacing = 1 then all points on the systematic design will be selected.}
 
 \item{no.complex}{the number of complex detectors to distribute based on simple random sampling of the systematic grid of detectors.}
 
-\item{angle}{user may provide the design angle (only relevant in equal angle zigzag designs) but not currently used}
+\item{angle}{user may provide the design angle (only relevant in equal angle zigzag designs)}
 
-\item{plus.sampling}{logical value indicating whether a plus sampling protocol is used but not currently used}
+\item{plus.sampling}{logical value indicating whether a plus sampling protocol is used but not currently used/implemented}
 
 \item{path}{pathway giving the location of the folder of survey shapefiles}
 }
@@ -35,10 +37,12 @@ make.design(transect.type = "line", design.details = "default",
 object of a class which inherits from class Survey.Design
 }
 \description{
-Currently surveys are only generated within the GIS in Distance. If you 
-are running a simulation in R you will need to get Distance to 
+Currently some surveys are only generated within the GIS in Distance. If you 
+are running a simulation in R you may need to get Distance to 
 generate all the surveys as shapefiles in advance and supply the path to
-the directory which contains these shapefiles and only these shapefiles.
+the directory which contains these shapefiles and only these shapefiles. DSsim can now 
+generate systematic point transect designs (angle = 0), basic systematic parallel lines
+(angle = 90) and equal spaced zigzag designs.
 }
 \details{
 The \code{design.details} argument should specify a character vector of either 1

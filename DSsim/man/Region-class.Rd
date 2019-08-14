@@ -18,9 +18,6 @@ name of the region.}
 \item{\code{strata.name}}{Object of class \code{"character"}; character 
 vector giving the names of the strata.}
 
-\item{\code{strata.name}}{Object of class \code{"character"}; character 
-vector giving the names of the strata.}
-
 \item{\code{units}}{Object of class \code{"character"}; character describing
 the coordinate units ("km" or "m")}
 

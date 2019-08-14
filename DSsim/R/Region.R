@@ -1,5 +1,3 @@
-#' @include generic.functions.R
-
 #' @title  Class "Region" 
 #' 
 #' @description Class \code{"Region"} is an S4 class containing descriptions of the 
@@ -12,8 +10,6 @@
 #' \code{make.region(region.name = "region.name", shapefile = region.shapefile)} 
 #' @slot region.name Object of class \code{"character"}; giving the 
 #'  name of the region.
-#' @slot strata.name Object of class \code{"character"}; character 
-#'  vector giving the names of the strata.
 #' @slot strata.name Object of class \code{"character"}; character 
 #'  vector giving the names of the strata.
 #' @slot units Object of class \code{"character"}; character describing
