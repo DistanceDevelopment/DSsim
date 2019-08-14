@@ -249,15 +249,16 @@ setMethod(
           size.dist <- size.list[[i]]
           dist <- size.dist[[1]]
           dist.param <- size.dist[[2]]
-          if(dist == "ztruncpois"){
-            temp <- rtpois(999, mean = dist.param$mean)
-            true.expected.s[i] <- quantile(temp, 0.5)
-          }else{
-            true.expected.s[i] <- switch(dist,
-                                "normal" = qnorm(0.5, dist.param$mean, dist.param$sd),
-                                "poisson" = qpois(0.5, dist.param$lambda),
-                                "lognormal" = qlnorm(0.5, dist.param$meanlog, dist.param$sdlog))
-          }
+          # if(dist == "ztruncpois"){
+          #   temp <- rtpois(99999, mean = dist.param$mean)
+          #   true.expected.s[i] <- mean(temp)
+          # }else{
+          true.expected.s[i] <- switch(dist,
+                                       "normal" = dist.param$mean,
+                                       "poisson" = dist.param$lambda,
+                                       "ztruncpois" = dist.param$mean,
+                                       "lognormal" = exp(dist.param$meanlog + 0.5 * dist.param$sdlog^2))
+          #}
         }
       }
       if(length(size.list) > 1){
