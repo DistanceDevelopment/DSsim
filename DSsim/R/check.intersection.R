@@ -6,6 +6,9 @@ check.intersection.TP <- function(transect, point, display.diagnostics = FALSE){
   if(is.nan(transect.m)){
     return(FALSE)
   }
+  if(transect[1] == transect[3] && transect[2] == transect[4]){
+    return(FALSE) #start and end points are the same
+  }
   #special cases when the transect is horizontal or vertical!
   if(transect.m == 0){
     if(transect[["start.X"]] < transect[["end.X"]]){
@@ -15,7 +18,7 @@ check.intersection.TP <- function(transect, point, display.diagnostics = FALSE){
       intersects.with.transect <- ifelse((point[["x"]] <= transect[["start.X"]] & point[["x"]] >= transect[["end.X"]]), TRUE, FALSE)
       return(intersects.with.transect)
     }
-  }else if(transect.m == Inf){
+  }else if(transect.m == Inf || transect.m == -Inf){
     if(transect[["start.Y"]] < transect[["end.Y"]]){
       intersects.with.transect <- ifelse((point[["y"]] >= transect[["start.Y"]] & point[["y"]] <= transect[["end.Y"]]), TRUE, FALSE)
       return(intersects.with.transect)
@@ -43,10 +46,10 @@ check.intersection.TP <- function(transect, point, display.diagnostics = FALSE){
   #check new x-coord is in the right direction
   #c = y - mx
   transect.c <- transect[["start.Y"]] - transect.m*transect[["start.X"]]
-  if(abs((transect.m*new.x.coord + transect.c)-new.y.coord) > 1.0e-3 &  abs((transect.m*new.x.coord + transect.c)-new.y.coord) < delta.Y/2){
+  if(abs((transect.m*new.x.coord + transect.c)-new.y.coord) > 1.0e-3 & abs((transect.m*new.x.coord + transect.c)-new.y.coord) < delta.Y/2){
     warning("error tolerance not big enough to check intersection")
   }
-  #Thorougly tested this function now so removing this warning (see inst folder for tests)
+  #Thorougly tested this function now so removing this warning (see tests)
 #   if(delta.Y/2 < 1.0e-3){
 #     message("Warning very small delta.Y")
 #   }
@@ -76,6 +79,9 @@ check.intersection.PT <- function(point, transect, display.diagnostics = FALSE){
   if(is.nan(transect.m)){
     return(FALSE)
   }
+  if(transect[1] == transect[3] && transect[2] == transect[4]){
+    return(FALSE) #start and end points are the same
+  }
   #special cases when the transect is horizontal or vertical!
   if(transect.m == 0){
     if(transect[["start.X"]] < transect[["end.X"]]){
@@ -85,7 +91,7 @@ check.intersection.PT <- function(point, transect, display.diagnostics = FALSE){
       intersects.with.transect <- ifelse((point[["x"]] <= transect[["start.X"]] & point[["x"]] >= transect[["end.X"]]), TRUE, FALSE)
       return(intersects.with.transect)
     }
-  }else if(transect.m == Inf){
+  }else if(transect.m == Inf || transect.m == -Inf){
     if(transect[["start.Y"]] < transect[["end.Y"]]){
       intersects.with.transect <- ifelse((point[["y"]] >= transect[["start.Y"]] & point[["y"]] <= transect[["end.Y"]]), TRUE, FALSE)
       return(intersects.with.transect)
