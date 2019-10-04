@@ -106,15 +106,15 @@ test_that("Can perform nested point transect simulations", {
   expect_that(region.table <- survey.results@region.table,
               is_a("Region.Table"))
 
-  #plot(survey.results)
+  plot(survey.results)
   
-  expect_that(nrow(ddf.data@ddf.dat),
-              equals(448))
+  expect_that(nrow(ddf.data@ddf.dat),equals(427))
+              #equals(448))
   
   with.dists <- ddf.data@ddf.dat[!is.na(ddf.data@ddf.dat$distance),]
   
-  expect_that(nrow(with.dists),
-              equals(119))
+  expect_that(nrow(with.dists), equals(108))
+              #equals(119))
   
   
 })

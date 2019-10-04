@@ -43,9 +43,9 @@ test_that("Tests calc.poss.detect.dists.lines functions", {
   expect_equal(test1, test2)
   
   # Test which points should be retained
-  popn@population <- popn@population[1:8,] 
-  popn@population$x <- c(1100,1100,290,290,400,392,100,1500)
-  popn@population$y <- c(95,105,50,205,305,302,200,100)
+  popn@population <- popn@population[1:9,] 
+  popn@population$x <- c(1100,1100,290,290,400,392,100,1500,250)
+  popn@population$y <- c(95,105,50,205,305,302,200,100,300)
   # Expected r, k, k, r, k, r, r, r
   
   survey@sampler.info <- survey@sampler.info[2:6,]
@@ -57,7 +57,7 @@ test_that("Tests calc.poss.detect.dists.lines functions", {
   test.orig <- calc.poss.detect.dists.lines(population = popn, survey = survey, perp.truncation = 20)
   
   expect_equal(test.new, test.orig)
-  expect_equal(test.new$object, c(2,3,5))
+  expect_equal(test.new$object, c(2,9))
   
   # Test what happens when there are no possible detections
   popn@population <- popn@population[1:4,] 
