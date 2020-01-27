@@ -3,26 +3,26 @@ DSsim 1.1.4
 
 New Features
 
-  *Can now generate equal spaced zig zag designs with any design axis angle and can generate two sets of complimentary zigzags. 
-  *User can now select between using all repetitions where at least one model converged and ony repetitions where all models convgered. This is selected when calling summary on a simulation object.
-  *Now tells user which models cause issued in mrds.
+  * Can now generate equal spaced zigzag designs with any design axis angle and can generate two sets of complimentary zigzags. 
+  * User can now select between using all repetitions where at least one model converged and ony repetitions where all models convgered. This is selected when calling summary on a simulation object.
+  * Now tells user which models cause issued in mrds.
   
 Bug Fixes
-  *Improved backwards compatibility, including updating the S4 objects to include default values for missing slots
+  * Improved backwards compatibility, including updating the S4 objects to include default values for missing slots.
 
 DSsim 1.1.3
 -----------
 
 New Features
 
-  *Now has a more efficient algorithm for population sizes >= 2000
-  *Writes % complete to file for Distance for Windows
+  * Now has a more efficient algorithm for population sizes >= 2000.
+  * Writes % complete to file for Distance for Windows.
 
 Bug Fixes
 
-  *Now includes transects with no observations in distance data created using data.for.distance 
-  *Systematic line transects now generated in areas with negative coordinates
-  *Fixed a bug so that DSsim can now deal with the scenario when all gaps are smaller than the buffer and therefore dissappear when creating the density grid. 
+  * Now includes transects with no observations in distance data created using data.for.distance .
+  * Systematic line transects now generated in areas with negative coordinates.
+  * Fixed a bug so that DSsim can now deal with the scenario when all gaps are smaller than the buffer and therefore disappear when creating the density grid. 
   
 DSsim 1.1.2
 -----------
