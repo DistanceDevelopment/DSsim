@@ -2,7 +2,6 @@
 % Please edit documentation in R/generic.functions.R, R/PT.Design.R,
 %   R/PT.Nested.Design.R, R/PT.Systematic.Design.R, R/LT.Design.R,
 %   R/LT.EqSpace.ZZ.Design.R, R/LT.Systematic.Design.R, R/Simulation.R
-\docType{methods}
 \name{generate.transects}
 \alias{generate.transects}
 \alias{generate.transects,PT.Design-method}
@@ -16,23 +15,23 @@
 \usage{
 generate.transects(object, region = NULL, ...)
 
-\S4method{generate.transects}{PT.Design}(object, region = NULL,
-  index = NULL)
+\S4method{generate.transects}{PT.Design}(object, region = NULL, index = NULL)
 
-\S4method{generate.transects}{PT.Nested.Design}(object, region = NULL,
-  index = NULL, silent = FALSE)
+\S4method{generate.transects}{PT.Nested.Design}(object, region = NULL, index = NULL, silent = FALSE)
 
-\S4method{generate.transects}{PT.Systematic.Design}(object,
-  region = NULL, index = NULL, silent = FALSE)
+\S4method{generate.transects}{PT.Systematic.Design}(object, region = NULL, index = NULL, silent = FALSE)
 
-\S4method{generate.transects}{LT.Design}(object, region = NULL,
-  index = NULL)
+\S4method{generate.transects}{LT.Design}(object, region = NULL, index = NULL)
 
-\S4method{generate.transects}{LT.EqSpace.ZZ.Design}(object,
-  region = NULL, index = NULL, silent = FALSE, complement = FALSE)
+\S4method{generate.transects}{LT.EqSpace.ZZ.Design}(
+  object,
+  region = NULL,
+  index = NULL,
+  silent = FALSE,
+  complement = FALSE
+)
 
-\S4method{generate.transects}{LT.Systematic.Design}(object,
-  region = NULL, index = NULL, silent = FALSE)
+\S4method{generate.transects}{LT.Systematic.Design}(object, region = NULL, index = NULL, silent = FALSE)
 
 \S4method{generate.transects}{Simulation}(object, region = NULL)
 }

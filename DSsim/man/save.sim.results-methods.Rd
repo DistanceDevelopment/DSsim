@@ -4,8 +4,7 @@
 \alias{save.sim.results}
 \title{save.sim.results}
 \usage{
-save.sim.results(simulation, filepath = character(0),
-  sim.ID = numeric(0))
+save.sim.results(simulation, filepath = character(0), sim.ID = numeric(0))
 }
 \arguments{
 \item{simulation}{object of class \code{Simulation} which has been run.}
