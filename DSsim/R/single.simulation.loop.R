@@ -10,7 +10,7 @@ single.simulation.loop <- function(i, object, save.data, load.data, data.path = 
   if(counter){
     if(progress.file == ""){
       # Write to terminal
-      cat("\r", i, " out of ", object@reps,  " reps \r")  
+      message("\r", i, " out of ", object@reps,  " reps     \r", appendLF = FALSE)  
     }else{
       # Calculate progress as an integer %
       progress <- round(i/object@reps*100)
