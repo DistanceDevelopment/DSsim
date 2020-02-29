@@ -1,3 +1,13 @@
+DSsim 1.1.5
+-----------
+
+Bug fixes
+
+  * Fixed warnings bug generated when there were too few data points
+  * Code to calculate perpendicular distance is more robust
+  * Fixed incorrect true expected cluster size values in simulation summary
+  * Documentation corrections
+
 DSsim 1.1.4
 -----------
 
