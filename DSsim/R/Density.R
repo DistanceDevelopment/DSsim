@@ -31,7 +31,7 @@ setClass("Density", representation(region.name = "character",
 setMethod(
   f="initialize",
   signature="Density",
-  definition=function(.Object, region, strata.name = character(0), density.surface = list(), x.space, y.space, constant = NULL, density.gam = NULL, buffer = numeric(0)){
+  definition=function(.Object, region, strata.name = character(0), density.surface = list(), x.space, y.space, constant = NULL, density.gam = NULL, buffer){
     #Input pre-processing
     if(length(density.surface) == 0){
       if(!is.null(density.gam)){
